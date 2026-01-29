@@ -7,11 +7,11 @@
 
 ### Run
 - Preferred: `run-all.bat` (starts backend + frontend).
-- Backend main: `main.py` (FastAPI/Uvicorn).
+- Backend main: `apps/api/app/main.py` (FastAPI/Uvicorn) — lo strumento di analisi standalone è `scripts/tools/main.py` (non parte dell'API).
 
 ### Tests
-- Py tests: `tests/` (use `pytest`).
-- Example: `pytest -q`.
+- Py tests: `tests/` (use `pytest` oppure, se non disponibile, `python -m unittest tests/test_market_engine.py`).
+- Example: `pytest -q` (richiede le dipendenze aggiornate nel `apps/api/requirements.txt`).
 
 ### Key Data Paths
 - CSV data: `data/`
