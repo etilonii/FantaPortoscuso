@@ -1,0 +1,70 @@
+Filtro titolarita >= 0.65; duplicati rimossi. Portieri da manual tiers.
+
+== P (manual tiers) ==
+Top:
+- Svilar (Roma) | Top
+- Maignan (Milan) | Top
+- Sommer (Inter) | Top
+- Di Gregorio (Juventus) | Top
+- Milinkovic-Savic V. (Napoli) | Top
+- Meret (Napoli) | Top
+
+SemiTop:
+- De Gea (Fiorentina) | SemiTop
+- Carnesecchi (Atalanta) | SemiTop
+- Caprile (Cagliari) | SemiTop
+- Provedel (Lazio) | SemiTop
+- Butez (Como) | SemiTop
+- Skorupski (Bologna) | SemiTop
+- Ravaglia F. (Bologna) | SemiTop
+
+Titolare:
+- Falcone (Lecce) | Titolare
+- Leali (Genoa) | Titolare
+- Audero (Cremonese) | Titolare
+- Semper (Pisa) | Titolare
+- Okoye (Udinese) | Titolare
+- Sava (Udinese) | Titolare
+- Scuffet (Pisa) | Titolare
+- Perilli (Verona) | Titolare
+- Bijlow (Genoa) | Titolare
+
+Panchinaro:
+- Montipò (Verona) | Panchinaro
+- Muric (Sassuolo) | Panchinaro
+- Paleari (Torino) | Panchinaro
+- Suzuki (Parma) | Panchinaro
+- Corvi (Parma) | Panchinaro
+- Israel (Torino) | Panchinaro
+- Silvestri (Cremonese) | Panchinaro
+- Perin (Juventus) | Panchinaro
+- Terracciano (Milan) | Panchinaro
+- Sommariva (Genoa) | Panchinaro
+- Padelli (Udinese) | Panchinaro
+- Turati (Sassuolo) | Panchinaro
+- Rinaldi (Parma) | Panchinaro
+- Pessina Mas. (Bologna) | Panchinaro
+- Sportiello (Atalanta) | Panchinaro
+- Rossi F. (Atalanta) | Panchinaro
+- Gollini (Roma) | Panchinaro
+- Ciocci (Cagliari) | Panchinaro
+- Pinsoglio (Juventus) | Panchinaro
+- Vigorito (Como) | Panchinaro
+- Nicolas (Pisa) | Panchinaro
+- Guaita * (Parma) | Panchinaro
+- Contini (Napoli) | Panchinaro
+- Furlanetto (Lazio) | Panchinaro
+- Lezzerini (Fiorentina) | Panchinaro
+- Satalino (Sassuolo) | Panchinaro
+- Nava (Cremonese) | Panchinaro
+- Samooja (Lecce) | Panchinaro
+- Vasquez D. (Roma) | Panchinaro
+- Di Gennaro (Inter) | Panchinaro
+- Popa * (Torino) | Panchinaro
+- Mandas (Lazio) | Panchinaro
+- Torriani (Milan) | Panchinaro
+- Fruchtl (Lecce) | Panchinaro
+- Siegrist (Genoa) | Panchinaro
+- Zelezny (Roma) | Panchinaro
+- Nunziante (Udinese) | Panchinaro
+- Cavlina (Como) | Panchinaro

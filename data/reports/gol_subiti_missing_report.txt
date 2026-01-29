@@ -1,0 +1,8 @@
+MISSING:
+
+- Josep Martinez -> ['Martinez Jo.', 'Martinez L.']
+
+AMBIGUOUS:
+
+- M. Silvestri -> ['Silvestri', 'De Silvestri']
+- P. Terracciano -> ['Terracciano', 'Terracciano F.']

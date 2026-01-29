@@ -1,0 +1,3912 @@
+* ProPro Proibito Di Gennaro acquisto 1.0 -> 1
+* ProPro Proibito Di Gennaro attuale 1.0 -> 1
+* ProPro Proibito Sommer acquisto 16.0 -> 16
+* ProPro Proibito Sommer attuale 14.0 -> 16
+* ProPro Proibito Martinez Jo. acquisto 2.0 -> 2
+* ProPro Proibito Martinez Jo. attuale 1.0 -> 2
+* ProPro Proibito Luperto acquisto 7.0 -> 7
+* ProPro Proibito Luperto attuale 9.0 -> 7
+* ProPro Proibito Pezzella Giu. acquisto 5.0 -> 5
+* ProPro Proibito Pezzella Giu. attuale 4.0 -> 5
+* ProPro Proibito Rrahmani acquisto 11.0 -> 11
+* ProPro Proibito Rrahmani attuale 13.0 -> 11
+* ProPro Proibito Bradaric acquisto 4.0 -> 4
+* ProPro Proibito Bradaric attuale 6.0 -> 4
+* ProPro Proibito Valeri acquisto 10.0 -> 10
+* ProPro Proibito Valeri attuale 10.0 -> 10
+* ProPro Proibito Tiago Gabriel acquisto 1.0 -> 1
+* ProPro Proibito Tiago Gabriel attuale 9.0 -> 1
+* ProPro Proibito Joao Mario acquisto 8.0 -> 8
+* ProPro Proibito Joao Mario attuale 2.0 -> 8
+* ProPro Proibito Cristante acquisto 9.0 -> 9
+* ProPro Proibito Cristante attuale 12.0 -> 9
+* ProPro Proibito Zaniolo acquisto 15.0 -> 15
+* ProPro Proibito Zaniolo attuale 20.0 -> 15
++ ProPro Proibito: McTominay
+* ProPro Proibito Zalewski acquisto 7.0 -> 7
+* ProPro Proibito Zalewski attuale 15.0 -> 7
+* ProPro Proibito Thuram K. acquisto 16.0 -> 16
+* ProPro Proibito Thuram K. attuale 13.0 -> 16
+* ProPro Proibito Folorunsho acquisto 9.0 -> 9
+* ProPro Proibito Folorunsho attuale 8.0 -> 9
+* ProPro Proibito Paz N. acquisto 20.0 -> 20
+* ProPro Proibito Paz N. attuale 30.0 -> 20
+* ProPro Proibito Hojholt acquisto 1.0 -> 1
+* ProPro Proibito Hojholt attuale 2.0 -> 1
+* ProPro Proibito Bonazzoli acquisto 1.0 -> 1
+* ProPro Proibito Bonazzoli attuale 20.0 -> 1
+* ProPro Proibito Vardy acquisto 19.0 -> 19
+* ProPro Proibito Vardy attuale 20.0 -> 19
+* ProPro Proibito Leao acquisto 26.0 -> 26
+* ProPro Proibito Leao attuale 30.0 -> 26
+* ProPro Proibito Davis K. acquisto 13.0 -> 13
+* ProPro Proibito Davis K. attuale 24.0 -> 13
+* ProPro Proibito Meister acquisto 3.0 -> 3
+* ProPro Proibito Meister attuale 8.0 -> 3
+* AC DENTI Sommer acquisto 16.0 -> 10
+* AC DENTI Sommer attuale 14.0 -> 10
+* AC DENTI Ravaglia F. acquisto 3.0 -> 3
+* AC DENTI Ravaglia F. attuale 12.0 -> 3
+* AC DENTI Martinez Jo. acquisto 2.0 -> 3
+* AC DENTI Martinez Jo. attuale 1.0 -> 3
+* AC DENTI Gosens acquisto 18.0 -> 18
+* AC DENTI Gosens attuale 10.0 -> 18
+* AC DENTI Cambiaso acquisto 15.0 -> 15
+* AC DENTI Cambiaso attuale 10.0 -> 15
+* AC DENTI Terracciano F. acquisto 2.0 -> 2
+* AC DENTI Terracciano F. attuale 11.0 -> 2
+* AC DENTI Doig acquisto 6.0 -> 6
+* AC DENTI Doig attuale 6.0 -> 6
+* AC DENTI Norton-Cuffy acquisto 3.0 -> 3
+* AC DENTI Norton-Cuffy attuale 7.0 -> 3
+* AC DENTI Tiago Gabriel acquisto 1.0 -> 1
+* AC DENTI Tiago Gabriel attuale 9.0 -> 1
+* AC DENTI Veiga D. acquisto 2.0 -> 2
+* AC DENTI Veiga D. attuale 5.0 -> 2
+* AC DENTI Politano acquisto 15.0 -> 15
+* AC DENTI Politano attuale 11.0 -> 15
+* AC DENTI Pulisic acquisto 28.0 -> 28
+* AC DENTI Pulisic attuale 31.0 -> 28
+* AC DENTI Odgaard acquisto 16.0 -> 16
+* AC DENTI Odgaard attuale 18.0 -> 16
++ AC DENTI: McKennie
+* AC DENTI Aebischer acquisto 4.0 -> 4
+* AC DENTI Aebischer attuale 5.0 -> 4
+* AC DENTI Karlstrom acquisto 7.0 -> 7
+* AC DENTI Karlstrom attuale 10.0 -> 7
+* AC DENTI Paz N. acquisto 21.0 -> 20
+* AC DENTI Paz N. attuale 30.0 -> 20
+* AC DENTI Atta acquisto 8.0 -> 6
+* AC DENTI Atta attuale 16.0 -> 6
+* AC DENTI Kean acquisto 33.0 -> 33
+* AC DENTI Kean attuale 18.0 -> 33
+* AC DENTI Cancellieri acquisto 10.0 -> 3
+* AC DENTI Cancellieri attuale 14.0 -> 3
+* AC DENTI Hojlund acquisto 21.0 -> 24
+* AC DENTI Hojlund attuale 25.0 -> 24
+* AC DENTI Yildiz acquisto 25.0 -> 25
+* AC DENTI Yildiz attuale 30.0 -> 25
+* AC DENTI Meister acquisto 3.0 -> 2
+* AC DENTI Meister attuale 8.0 -> 2
+* SAGATU Sommer acquisto 16.0 -> 16
+* SAGATU Sommer attuale 14.0 -> 16
+* SAGATU Martinez Jo. acquisto 2.0 -> 2
+* SAGATU Martinez Jo. attuale 1.0 -> 2
+* SAGATU Okoye acquisto 5.0 -> 5
+* SAGATU Okoye attuale 10.0 -> 5
+* SAGATU Bianchetti acquisto 3.0 -> 3
+* SAGATU Bianchetti attuale 6.0 -> 3
+* SAGATU Gosens acquisto 18.0 -> 18
+* SAGATU Gosens attuale 10.0 -> 18
+* SAGATU Cambiaso acquisto 11.0 -> 11
+* SAGATU Cambiaso attuale 10.0 -> 11
+* SAGATU Terracciano F. acquisto 2.0 -> 2
+* SAGATU Terracciano F. attuale 11.0 -> 2
+* SAGATU Doig acquisto 6.0 -> 6
+* SAGATU Doig attuale 6.0 -> 6
+* SAGATU Nelsson acquisto 4.0 -> 4
+* SAGATU Nelsson attuale 4.0 -> 4
+* SAGATU Canestrelli acquisto 3.0 -> 3
+* SAGATU Canestrelli attuale 5.0 -> 3
+* SAGATU Politano acquisto 15.0 -> 15
+* SAGATU Politano attuale 11.0 -> 15
+* SAGATU Pulisic acquisto 28.0 -> 28
+* SAGATU Pulisic attuale 31.0 -> 28
+* SAGATU Saelemaekers acquisto 18.0 -> 18
+* SAGATU Saelemaekers attuale 19.0 -> 18
+* SAGATU Lovric acquisto 9.0 -> 9
+* SAGATU Lovric attuale 3.0 -> 9
+* SAGATU Zerbin acquisto 3.0 -> 3
+* SAGATU Zerbin attuale 6.0 -> 3
+* SAGATU Prati acquisto 3.0 -> 3
+* SAGATU Prati attuale 6.0 -> 3
+* SAGATU Atta acquisto 6.0 -> 6
+* SAGATU Atta attuale 16.0 -> 6
+* SAGATU Hojholt acquisto 1.0 -> 1
+* SAGATU Hojholt attuale 2.0 -> 1
+* SAGATU Pinamonti acquisto 15.0 -> 15
+* SAGATU Pinamonti attuale 14.0 -> 15
+* SAGATU Vlahovic acquisto 21.0 -> 21
+* SAGATU Vlahovic attuale 15.0 -> 21
+* SAGATU Leao acquisto 23.0 -> 23
+* SAGATU Leao attuale 30.0 -> 23
+* SAGATU Thuram acquisto 28.0 -> 28
+* SAGATU Thuram attuale 29.0 -> 28
+* SAGATU Giovane acquisto 3.0 -> 3
+* SAGATU Giovane attuale 17.0 -> 3
+* lagg Terracciano acquisto 1.0 -> 1
+* lagg Terracciano attuale 1.0 -> 1
+* lagg Maignan acquisto 16.0 -> 16
+* lagg Maignan attuale 20.0 -> 16
+* lagg Torriani acquisto 1.0 -> 1
+* lagg Torriani attuale 1.0 -> 1
+* lagg Martin acquisto 10.0 -> 10
+* lagg Martin attuale 14.0 -> 10
+* lagg Miranda J. acquisto 9.0 -> 9
+* lagg Miranda J. attuale 11.0 -> 9
+* lagg Tavares N. acquisto 12.0 -> 12
+* lagg Tavares N. attuale 6.0 -> 12
+* lagg Paz Y. acquisto 1.0 -> 1
+* lagg Paz Y. attuale 1.0 -> 1
+* lagg Joao Mario acquisto 8.0 -> 8
+* lagg Joao Mario attuale 2.0 -> 8
+* lagg Wesley acquisto 15.0 -> 15
+* lagg Wesley attuale 16.0 -> 15
+* lagg Heggem acquisto 5.0 -> 5
+* lagg Heggem attuale 9.0 -> 5
+* lagg Zaccagni acquisto 24.0 -> 24
+* lagg Zaccagni attuale 14.0 -> 24
+* lagg Malinovskyi acquisto 8.0 -> 8
+* lagg Malinovskyi attuale 12.0 -> 8
+* lagg Maldini acquisto 9.0 -> 9
+* lagg Maldini attuale 3.0 -> 9
+* lagg Da Cunha acquisto 12.0 -> 12
+* lagg Da Cunha attuale 11.0 -> 12
+* lagg Gudmundsson A. acquisto 24.0 -> 24
+* lagg Gudmundsson A. attuale 17.0 -> 24
+* lagg Kaba acquisto 2.0 -> 2
+* lagg Kaba attuale 3.0 -> 2
+* lagg Prati acquisto 3.0 -> 3
+* lagg Prati attuale 6.0 -> 3
+* lagg Paz N. acquisto 20.0 -> 20
+* lagg Paz N. attuale 30.0 -> 20
+* lagg Pavoletti acquisto 1.0 -> 1
+* lagg Pavoletti attuale 1.0 -> 1
+* lagg Zapata D. acquisto 10.0 -> 10
+* lagg Zapata D. attuale 7.0 -> 10
+* lagg Kean acquisto 22.0 -> 22
+* lagg Kean attuale 18.0 -> 22
+* lagg Vlahovic acquisto 21.0 -> 21
+* lagg Vlahovic attuale 15.0 -> 21
+* lagg Giovane acquisto 1.0 -> 1
+* lagg Giovane attuale 17.0 -> 1
+* BARAKALLAHOUFIK Milinkovic-Savic V. acquisto 4.0 -> 4
+* BARAKALLAHOUFIK Milinkovic-Savic V. attuale 19.0 -> 4
+* BARAKALLAHOUFIK Provedel acquisto 12.0 -> 12
+* BARAKALLAHOUFIK Provedel attuale 17.0 -> 12
++ BARAKALLAHOUFIK: Mandas *
+* BARAKALLAHOUFIK Bellanova acquisto 13.0 -> 13
+* BARAKALLAHOUFIK Bellanova attuale 6.0 -> 13
+* BARAKALLAHOUFIK Cambiaso acquisto 15.0 -> 15
+* BARAKALLAHOUFIK Cambiaso attuale 10.0 -> 15
+* BARAKALLAHOUFIK Zanoli acquisto 3.0 -> 3
+* BARAKALLAHOUFIK Zanoli attuale 9.0 -> 3
+* BARAKALLAHOUFIK Doig acquisto 6.0 -> 6
+* BARAKALLAHOUFIK Doig attuale 6.0 -> 6
+* BARAKALLAHOUFIK Norton-Cuffy acquisto 3.0 -> 3
+* BARAKALLAHOUFIK Norton-Cuffy attuale 7.0 -> 3
+* BARAKALLAHOUFIK Dembelè A. acquisto 1.0 -> 1
+* BARAKALLAHOUFIK Dembelè A. attuale 1.0 -> 1
+* BARAKALLAHOUFIK Palestra acquisto 4.0 -> 4
+* BARAKALLAHOUFIK Palestra attuale 15.0 -> 4
+* BARAKALLAHOUFIK Politano acquisto 15.0 -> 16
+* BARAKALLAHOUFIK Politano attuale 11.0 -> 16
+* BARAKALLAHOUFIK Orsolini acquisto 31.0 -> 31
+* BARAKALLAHOUFIK Orsolini attuale 24.0 -> 31
+* BARAKALLAHOUFIK Pulisic acquisto 28.0 -> 28
+* BARAKALLAHOUFIK Pulisic attuale 31.0 -> 28
+* BARAKALLAHOUFIK Bondo acquisto 3.0 -> 3
+* BARAKALLAHOUFIK Bondo attuale 7.0 -> 3
+* BARAKALLAHOUFIK Ilkhan acquisto 1.0 -> 1
+* BARAKALLAHOUFIK Ilkhan attuale 2.0 -> 1
+* BARAKALLAHOUFIK Kaba acquisto 1.0 -> 1
+* BARAKALLAHOUFIK Kaba attuale 3.0 -> 1
+* BARAKALLAHOUFIK Paz N. acquisto 21.0 -> 20
+* BARAKALLAHOUFIK Paz N. attuale 30.0 -> 20
+* BARAKALLAHOUFIK Cremaschi acquisto 2.0 -> 2
+* BARAKALLAHOUFIK Cremaschi attuale 1.0 -> 2
+* BARAKALLAHOUFIK Kean acquisto 33.0 -> 33
+* BARAKALLAHOUFIK Kean attuale 18.0 -> 33
+* BARAKALLAHOUFIK Scamacca acquisto 16.0 -> 21
+* BARAKALLAHOUFIK Scamacca attuale 22.0 -> 21
+* BARAKALLAHOUFIK Cutrone acquisto 10.0 -> 10
+* BARAKALLAHOUFIK Cutrone attuale 6.0 -> 10
+* BARAKALLAHOUFIK Thuram acquisto 31.0 -> 31
+* BARAKALLAHOUFIK Thuram attuale 29.0 -> 31
+* BARAKALLAHOUFIK Meister acquisto 3.0 -> 2
+* BARAKALLAHOUFIK Meister attuale 8.0 -> 2
+* SPERA EBBASTA Padelli acquisto 1.0 -> 1
+* SPERA EBBASTA Padelli attuale 4.0 -> 1
+* SPERA EBBASTA Sommer acquisto 10.0 -> 10
+* SPERA EBBASTA Sommer attuale 14.0 -> 10
+* SPERA EBBASTA Ravaglia F. acquisto 3.0 -> 3
+* SPERA EBBASTA Ravaglia F. attuale 12.0 -> 3
+* SPERA EBBASTA Bellanova acquisto 13.0 -> 13
+* SPERA EBBASTA Bellanova attuale 6.0 -> 13
+* SPERA EBBASTA Valeri acquisto 10.0 -> 10
+* SPERA EBBASTA Valeri attuale 10.0 -> 10
+* SPERA EBBASTA Dodò acquisto 11.0 -> 11
+* SPERA EBBASTA Dodò attuale 6.0 -> 11
+* SPERA EBBASTA Unai Nunez * acquisto 5.0 -> 5
+* SPERA EBBASTA Unai Nunez * attuale 4.0 -> 5
+* SPERA EBBASTA Lovik * acquisto 3.0 -> 3
+* SPERA EBBASTA Lovik * attuale clean_nome
+Lovik    2.0
+Lovik    0.0
+Name: QA, dtype: float64 -> 3
+* SPERA EBBASTA Tiago Gabriel acquisto 1.0 -> 1
+* SPERA EBBASTA Tiago Gabriel attuale 9.0 -> 1
+* SPERA EBBASTA Wesley acquisto 14.0 -> 14
+* SPERA EBBASTA Wesley attuale 16.0 -> 14
+* SPERA EBBASTA Zaccagni acquisto 26.0 -> 26
+* SPERA EBBASTA Zaccagni attuale 14.0 -> 26
+* SPERA EBBASTA Pulisic acquisto 28.0 -> 28
+* SPERA EBBASTA Pulisic attuale 31.0 -> 28
+* SPERA EBBASTA Akpa Akpro acquisto 1.0 -> 1
+* SPERA EBBASTA Akpa Akpro attuale 2.0 -> 1
+* SPERA EBBASTA Zerbin acquisto 3.0 -> 3
+* SPERA EBBASTA Zerbin attuale 6.0 -> 3
+* SPERA EBBASTA Ilkhan acquisto 1.0 -> 1
+* SPERA EBBASTA Ilkhan attuale 2.0 -> 1
+* SPERA EBBASTA Konè I. acquisto 6.0 -> 6
+* SPERA EBBASTA Konè I. attuale 16.0 -> 6
+* SPERA EBBASTA Gronbaek acquisto 12.0 -> 12
+* SPERA EBBASTA Gronbaek attuale 2.0 -> 12
+* SPERA EBBASTA Paz N. acquisto 21.0 -> 21
+* SPERA EBBASTA Paz N. attuale 30.0 -> 21
+* SPERA EBBASTA Leao acquisto 23.0 -> 23
+* SPERA EBBASTA Leao attuale 30.0 -> 23
+* SPERA EBBASTA Thuram acquisto 31.0 -> 31
+* SPERA EBBASTA Thuram attuale 29.0 -> 31
+* SPERA EBBASTA Hojlund acquisto 21.0 -> 21
+* SPERA EBBASTA Hojlund attuale 25.0 -> 21
+* SPERA EBBASTA Lucca * acquisto 15.0 -> 15
+* SPERA EBBASTA Lucca * attuale 5.0 -> 15
+* SPERA EBBASTA Buffon L. acquisto 1.0 -> 1
+* SPERA EBBASTA Buffon L. attuale 1.0 -> 1
+* DonBosko46 Perin acquisto 1.0 -> 1
+* DonBosko46 Perin attuale 3.0 -> 1
+* DonBosko46 Sommer acquisto 16.0 -> 16
+* DonBosko46 Sommer attuale 14.0 -> 16
+* DonBosko46 Martinez Jo. acquisto 2.0 -> 2
+* DonBosko46 Martinez Jo. attuale 1.0 -> 2
+* DonBosko46 Mancini acquisto 11.0 -> 11
+* DonBosko46 Mancini attuale 10.0 -> 11
++ DonBosko46: Lykogiannis
+* DonBosko46 Bellanova acquisto 13.0 -> 13
+* DonBosko46 Bellanova attuale 6.0 -> 13
+* DonBosko46 Pavlovic acquisto 7.0 -> 12
+* DonBosko46 Pavlovic attuale 15.0 -> 12
+* DonBosko46 Dodò acquisto 11.0 -> 7
+* DonBosko46 Dodò attuale 6.0 -> 7
+* DonBosko46 Tiago Gabriel acquisto 1.0 -> 1
+* DonBosko46 Tiago Gabriel attuale 9.0 -> 1
+* DonBosko46 Oyegoke acquisto 2.0 -> 2
+* DonBosko46 Oyegoke attuale 1.0 -> 2
+* DonBosko46 Politano acquisto 15.0 -> 15
+* DonBosko46 Politano attuale 11.0 -> 15
+* DonBosko46 Orsolini acquisto 31.0 -> 31
+* DonBosko46 Orsolini attuale 24.0 -> 31
+* DonBosko46 Pulisic acquisto 28.0 -> 28
+* DonBosko46 Pulisic attuale 31.0 -> 28
+* DonBosko46 Saelemaekers acquisto 12.0 -> 12
+* DonBosko46 Saelemaekers attuale 19.0 -> 12
+* DonBosko46 Berisha M. acquisto 3.0 -> 3
+* DonBosko46 Berisha M. attuale 13.0 -> 3
+* DonBosko46 Kaba acquisto 1.0 -> 2
+* DonBosko46 Kaba attuale 3.0 -> 2
+* DonBosko46 Atta acquisto 8.0 -> 6
+* DonBosko46 Atta attuale 16.0 -> 6
+* DonBosko46 Iannoni acquisto 1.0 -> 1
+* DonBosko46 Iannoni attuale 5.0 -> 1
++ DonBosko46: Immobile
+* DonBosko46 Martinez L. acquisto 34.0 -> 34
+* DonBosko46 Martinez L. attuale 34.0 -> 34
+* DonBosko46 Vlahovic acquisto 21.0 -> 21
+* DonBosko46 Vlahovic attuale 15.0 -> 21
+* DonBosko46 Hojlund acquisto 21.0 -> 21
+* DonBosko46 Hojlund attuale 25.0 -> 21
+* DonBosko46 Giovane acquisto 1.0 -> 1
+* DonBosko46 Giovane attuale 17.0 -> 1
+* LosPollosHermanos Terracciano acquisto 1.0 -> 1
+* LosPollosHermanos Terracciano attuale 1.0 -> 1
+* LosPollosHermanos Maignan acquisto 16.0 -> 16
+* LosPollosHermanos Maignan attuale 20.0 -> 16
+* LosPollosHermanos Torriani acquisto 1.0 -> 1
+* LosPollosHermanos Torriani attuale 1.0 -> 1
+* LosPollosHermanos Lazaro acquisto 7.0 -> 7
+* LosPollosHermanos Lazaro attuale 7.0 -> 7
+* LosPollosHermanos Bellanova acquisto 13.0 -> 13
+* LosPollosHermanos Bellanova attuale 6.0 -> 13
+* LosPollosHermanos Dumfries acquisto 20.0 -> 21
+* LosPollosHermanos Dumfries attuale 10.0 -> 21
+* LosPollosHermanos Zanoli acquisto 3.0 -> 3
+* LosPollosHermanos Zanoli attuale 9.0 -> 3
+* LosPollosHermanos Delprato acquisto 8.0 -> 8
+* LosPollosHermanos Delprato attuale 9.0 -> 8
+* LosPollosHermanos Smolcic I. acquisto 2.0 -> 2
+* LosPollosHermanos Smolcic I. attuale 3.0 -> 2
+* LosPollosHermanos Joao Mario acquisto 8.0 -> 8
+* LosPollosHermanos Joao Mario attuale 2.0 -> 8
+* LosPollosHermanos Bernardeschi acquisto 9.0 -> 9
+* LosPollosHermanos Bernardeschi attuale 5.0 -> 9
+* LosPollosHermanos El Shaarawy acquisto 8.0 -> 8
+* LosPollosHermanos El Shaarawy attuale 8.0 -> 8
+* LosPollosHermanos Orsolini acquisto 31.0 -> 31
+* LosPollosHermanos Orsolini attuale 24.0 -> 31
++ LosPollosHermanos: McKennie
+* LosPollosHermanos Ekkelenkamp acquisto 10.0 -> 10
+* LosPollosHermanos Ekkelenkamp attuale 12.0 -> 10
+* LosPollosHermanos Paz N. acquisto 21.0 -> 20
+* LosPollosHermanos Paz N. attuale 30.0 -> 20
+* LosPollosHermanos Atta acquisto 8.0 -> 8
+* LosPollosHermanos Atta attuale 16.0 -> 8
+* LosPollosHermanos Vandeputte acquisto 12.0 -> 12
+* LosPollosHermanos Vandeputte attuale 13.0 -> 12
+* LosPollosHermanos Pinamonti acquisto 16.0 -> 17
+* LosPollosHermanos Pinamonti attuale 14.0 -> 17
+* LosPollosHermanos Thuram acquisto 31.0 -> 29
+* LosPollosHermanos Thuram attuale 29.0 -> 29
+* LosPollosHermanos Soulè acquisto 20.0 -> 20
+* LosPollosHermanos Soulè attuale 26.0 -> 20
+* LosPollosHermanos Benedyczak acquisto 1.0 -> 1
+* LosPollosHermanos Benedyczak attuale 8.0 -> 1
+* LosPollosHermanos Meister acquisto 3.0 -> 3
+* LosPollosHermanos Meister attuale 8.0 -> 3
+* SerSi-FC Di Gennaro acquisto 1.0 -> 1
+* SerSi-FC Di Gennaro attuale 1.0 -> 1
+* SerSi-FC Sommer acquisto 16.0 -> 16
+* SerSi-FC Sommer attuale 14.0 -> 16
+* SerSi-FC Martinez Jo. acquisto 2.0 -> 2
+* SerSi-FC Martinez Jo. attuale 1.0 -> 2
+* SerSi-FC Martin acquisto 10.0 -> 10
+* SerSi-FC Martin attuale 14.0 -> 10
+* SerSi-FC Tomori acquisto 8.0 -> 8
+* SerSi-FC Tomori attuale 7.0 -> 8
+* SerSi-FC Cambiaso acquisto 15.0 -> 15
+* SerSi-FC Cambiaso attuale 10.0 -> 15
+* SerSi-FC Ostigard acquisto 9.0 -> 9
+* SerSi-FC Ostigard attuale 15.0 -> 9
+* SerSi-FC Palestra acquisto 4.0 -> 4
+* SerSi-FC Palestra attuale 15.0 -> 4
+* SerSi-FC Valle acquisto 6.0 -> 6
+* SerSi-FC Valle attuale 8.0 -> 6
+* SerSi-FC Esteves T. * acquisto 1.0 -> 1
+* SerSi-FC Esteves T. * attuale 1.0 -> 1
+* SerSi-FC Pulisic acquisto 28.0 -> 28
+* SerSi-FC Pulisic attuale 31.0 -> 28
+* SerSi-FC Loftus-Cheek acquisto 8.0 -> 8
+* SerSi-FC Loftus-Cheek attuale 13.0 -> 8
+* SerSi-FC Malinovskyi acquisto 7.0 -> 7
+* SerSi-FC Malinovskyi attuale 12.0 -> 7
+* SerSi-FC Adopo acquisto 5.0 -> 5
+* SerSi-FC Adopo attuale 6.0 -> 5
+* SerSi-FC Zalewski acquisto 6.0 -> 6
+* SerSi-FC Zalewski attuale 15.0 -> 6
+* SerSi-FC Gudmundsson A. acquisto 24.0 -> 24
+* SerSi-FC Gudmundsson A. attuale 17.0 -> 24
+* SerSi-FC Paz N. acquisto 21.0 -> 21
+* SerSi-FC Paz N. attuale 30.0 -> 21
+* SerSi-FC Atta acquisto 6.0 -> 6
+* SerSi-FC Atta attuale 16.0 -> 6
+* SerSi-FC Bonazzoli acquisto 1.0 -> 1
+* SerSi-FC Bonazzoli attuale 20.0 -> 1
+* SerSi-FC Simeone acquisto 18.0 -> 18
+* SerSi-FC Simeone attuale 19.0 -> 18
+* SerSi-FC Scamacca acquisto 16.0 -> 16
+* SerSi-FC Scamacca attuale 22.0 -> 16
+* SerSi-FC Castellanos * acquisto 21.0 -> 21
+* SerSi-FC Castellanos * attuale 18.0 -> 21
+* SerSi-FC Gueye acquisto 1.0 -> 1
+* SerSi-FC Gueye attuale 2.0 -> 1
+* Boiali Terracciano acquisto 1.0 -> 1
+* Boiali Terracciano attuale 1.0 -> 1
+* Boiali Maignan acquisto 16.0 -> 16
+* Boiali Maignan attuale 20.0 -> 16
+* Boiali Torriani acquisto 1.0 -> 1
+* Boiali Torriani attuale 1.0 -> 1
+* Boiali Vasquez acquisto 9.0 -> 9
+* Boiali Vasquez attuale 10.0 -> 9
+* Boiali Ghilardi acquisto 4.0 -> 4
+* Boiali Ghilardi attuale 4.0 -> 4
+* Boiali Frese acquisto 3.0 -> 3
+* Boiali Frese attuale 6.0 -> 3
+* Boiali Delprato acquisto 8.0 -> 8
+* Boiali Delprato attuale 9.0 -> 8
+* Boiali Ramon acquisto 4.0 -> 4
+* Boiali Ramon attuale 12.0 -> 4
+* Boiali Tiago Gabriel acquisto 1.0 -> 1
+* Boiali Tiago Gabriel attuale 9.0 -> 1
+* Boiali Canestrelli acquisto 3.0 -> 3
+* Boiali Canestrelli attuale 5.0 -> 3
+* Boiali Zaccagni acquisto 26.0 -> 24
+* Boiali Zaccagni attuale 14.0 -> 24
+* Boiali Zaniolo acquisto 15.0 -> 15
+* Boiali Zaniolo attuale 20.0 -> 15
++ Boiali: McTominay
+* Boiali Tramoni M. acquisto 12.0 -> 12
+* Boiali Tramoni M. attuale 9.0 -> 12
+* Boiali Zerbin acquisto 3.0 -> 3
+* Boiali Zerbin attuale 6.0 -> 3
+* Boiali Ilkhan acquisto 1.0 -> 1
+* Boiali Ilkhan attuale 2.0 -> 1
+* Boiali Paz N. acquisto 21.0 -> 20
+* Boiali Paz N. attuale 30.0 -> 20
+* Boiali Atta acquisto 8.0 -> 6
+* Boiali Atta attuale 16.0 -> 6
+* Boiali Kean acquisto 33.0 -> 33
+* Boiali Kean attuale 18.0 -> 33
+* Boiali Martinez L. acquisto 34.0 -> 34
+* Boiali Martinez L. attuale 34.0 -> 34
+* Boiali Vlahovic acquisto 21.0 -> 21
+* Boiali Vlahovic attuale 15.0 -> 21
+* Boiali Banda acquisto 5.0 -> 5
+* Boiali Banda attuale 11.0 -> 5
+* Boiali Giovane acquisto 1.0 -> 1
+* Boiali Giovane attuale 17.0 -> 1
+* CuginiDiCampagna Sportiello acquisto 1.0 -> 1
+* CuginiDiCampagna Sportiello attuale 1.0 -> 1
+* CuginiDiCampagna Rossi F. acquisto 1.0 -> 1
+* CuginiDiCampagna Rossi F. attuale 1.0 -> 1
+* CuginiDiCampagna Carnesecchi acquisto 14.0 -> 14
+* CuginiDiCampagna Carnesecchi attuale 17.0 -> 14
+* CuginiDiCampagna Angelino acquisto 15.0 -> 15
+* CuginiDiCampagna Angelino attuale 7.0 -> 15
+* CuginiDiCampagna Cambiaso acquisto 15.0 -> 15
+* CuginiDiCampagna Cambiaso attuale 10.0 -> 15
+* CuginiDiCampagna Pongracic acquisto 4.0 -> 4
+* CuginiDiCampagna Pongracic attuale 5.0 -> 4
+* CuginiDiCampagna Frese acquisto 3.0 -> 3
+* CuginiDiCampagna Frese attuale 6.0 -> 3
+* CuginiDiCampagna Ramon acquisto 4.0 -> 4
+* CuginiDiCampagna Ramon attuale 12.0 -> 4
+* CuginiDiCampagna Tiago Gabriel acquisto 1.0 -> 1
+* CuginiDiCampagna Tiago Gabriel attuale 9.0 -> 1
+* CuginiDiCampagna Muharemovic acquisto 4.0 -> 4
+* CuginiDiCampagna Muharemovic attuale 7.0 -> 4
+* CuginiDiCampagna Orsolini acquisto 31.0 -> 30
+* CuginiDiCampagna Orsolini attuale 24.0 -> 30
+* CuginiDiCampagna Pulisic acquisto 28.0 -> 28
+* CuginiDiCampagna Pulisic attuale 31.0 -> 28
+* CuginiDiCampagna Zaniolo acquisto 15.0 -> 11
+* CuginiDiCampagna Zaniolo attuale 20.0 -> 11
+* CuginiDiCampagna Adopo acquisto 5.0 -> 5
+* CuginiDiCampagna Adopo attuale 6.0 -> 5
+* CuginiDiCampagna Asllani acquisto 4.0 -> 4
+* CuginiDiCampagna Asllani attuale 3.0 -> 4
+* CuginiDiCampagna Zerbin acquisto 3.0 -> 3
+* CuginiDiCampagna Zerbin attuale 6.0 -> 3
+* CuginiDiCampagna Marchwinski acquisto 1.0 -> 1
+* CuginiDiCampagna Marchwinski attuale 1.0 -> 1
+* CuginiDiCampagna Collocolo acquisto 8.0 -> 8
+* CuginiDiCampagna Collocolo attuale 2.0 -> 8
+* CuginiDiCampagna Bonazzoli acquisto 1.0 -> 1
+* CuginiDiCampagna Bonazzoli attuale 20.0 -> 1
+* CuginiDiCampagna Pinamonti acquisto 16.0 -> 17
+* CuginiDiCampagna Pinamonti attuale 14.0 -> 17
+* CuginiDiCampagna Kean acquisto 33.0 -> 33
+* CuginiDiCampagna Kean attuale 18.0 -> 33
+* CuginiDiCampagna Esposito Se. acquisto 7.0 -> 7
+* CuginiDiCampagna Esposito Se. attuale 16.0 -> 7
+* CuginiDiCampagna David acquisto 16.0 -> 16
+* CuginiDiCampagna David attuale 13.0 -> 16
+* Mapoitta Milinkovic-Savic V. acquisto 4.0 -> 4
+* Mapoitta Milinkovic-Savic V. attuale 19.0 -> 4
+* Mapoitta Ravaglia F. acquisto 3.0 -> 3
+* Mapoitta Ravaglia F. attuale 12.0 -> 3
+* Mapoitta Semper acquisto 3.0 -> 3
+* Mapoitta Semper attuale 9.0 -> 3
+* Mapoitta Zappacosta acquisto 9.0 -> 13
+* Mapoitta Zappacosta attuale 8.0 -> 13
+* Mapoitta Gosens acquisto 18.0 -> 18
+* Mapoitta Gosens attuale 10.0 -> 18
+* Mapoitta Bellanova acquisto 13.0 -> 10
+* Mapoitta Bellanova attuale 6.0 -> 10
+* Mapoitta Vojvoda acquisto 6.0 -> 6
+* Mapoitta Vojvoda attuale 12.0 -> 6
+* Mapoitta Cambiaso acquisto 15.0 -> 15
+* Mapoitta Cambiaso attuale 10.0 -> 15
+* Mapoitta Valeri acquisto 10.0 -> 10
+* Mapoitta Valeri attuale 10.0 -> 10
+* Mapoitta Tiago Gabriel acquisto 1.0 -> 1
+* Mapoitta Tiago Gabriel attuale 9.0 -> 1
+* Mapoitta Politano acquisto 15.0 -> 15
+* Mapoitta Politano attuale 11.0 -> 15
+* Mapoitta Malinovskyi acquisto 7.0 -> 8
+* Mapoitta Malinovskyi attuale 12.0 -> 8
++ Mapoitta: McTominay
+* Mapoitta Saelemaekers acquisto 18.0 -> 18
+* Mapoitta Saelemaekers attuale 19.0 -> 18
+* Mapoitta Akpa Akpro acquisto 1.0 -> 1
+* Mapoitta Akpa Akpro attuale 2.0 -> 1
+* Mapoitta Moro N. acquisto 3.0 -> 3
+* Mapoitta Moro N. attuale 8.0 -> 3
+* Mapoitta Marchwinski acquisto 1.0 -> 1
+* Mapoitta Marchwinski attuale 1.0 -> 1
+* Mapoitta Paz N. acquisto 21.0 -> 20
+* Mapoitta Paz N. attuale 30.0 -> 20
+* Mapoitta Vlahovic acquisto 21.0 -> 21
+* Mapoitta Vlahovic attuale 15.0 -> 21
+* Mapoitta Leao acquisto 26.0 -> 26
+* Mapoitta Leao attuale 30.0 -> 26
+* Mapoitta Thuram acquisto 31.0 -> 31
+* Mapoitta Thuram attuale 29.0 -> 31
+* Mapoitta Benedyczak acquisto 1.0 -> 1
+* Mapoitta Benedyczak attuale 8.0 -> 1
+* Mapoitta Ekhator acquisto 1.0 -> 1
+* Mapoitta Ekhator attuale 10.0 -> 1
+* Lunarossa Sportiello acquisto 1.0 -> 1
+* Lunarossa Sportiello attuale 1.0 -> 1
+* Lunarossa Sommer acquisto 16.0 -> 16
+* Lunarossa Sommer attuale 14.0 -> 16
+* Lunarossa Martinez Jo. acquisto 2.0 -> 2
+* Lunarossa Martinez Jo. attuale 1.0 -> 2
+* Lunarossa Mina acquisto 7.0 -> 7
+* Lunarossa Mina attuale 8.0 -> 7
+* Lunarossa Lazaro acquisto 7.0 -> 7
+* Lunarossa Lazaro attuale 7.0 -> 7
+* Lunarossa Vojvoda acquisto 6.0 -> 6
+* Lunarossa Vojvoda attuale 12.0 -> 6
+* Lunarossa Tavares N. acquisto 12.0 -> 12
+* Lunarossa Tavares N. attuale 6.0 -> 12
+* Lunarossa Terracciano F. acquisto 2.0 -> 2
+* Lunarossa Terracciano F. attuale 11.0 -> 2
+* Lunarossa Tiago Gabriel acquisto 1.0 -> 1
+* Lunarossa Tiago Gabriel attuale 9.0 -> 1
+* Lunarossa Wesley acquisto 14.0 -> 14
+* Lunarossa Wesley attuale 16.0 -> 14
+* Lunarossa Pulisic acquisto 28.0 -> 28
+* Lunarossa Pulisic attuale 31.0 -> 28
+* Lunarossa Elmas acquisto 8.0 -> 11
+* Lunarossa Elmas attuale 6.0 -> 11
++ Lunarossa: McTominay
+* Lunarossa Saelemaekers acquisto 12.0 -> 12
+* Lunarossa Saelemaekers attuale 19.0 -> 12
+* Lunarossa Zerbin acquisto 3.0 -> 3
+* Lunarossa Zerbin attuale 6.0 -> 3
+* Lunarossa Ilkhan acquisto 1.0 -> 1
+* Lunarossa Ilkhan attuale 2.0 -> 1
+* Lunarossa Paz N. acquisto 21.0 -> 28
+* Lunarossa Paz N. attuale 30.0 -> 28
+* Lunarossa Stanciu * acquisto 8.0 -> 8
+* Lunarossa Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* Lunarossa Kean acquisto 33.0 -> 31
+* Lunarossa Kean attuale 18.0 -> 31
+* Lunarossa Martinez L. acquisto 34.0 -> 27
+* Lunarossa Martinez L. attuale 34.0 -> 27
+* Lunarossa Leao acquisto 26.0 -> 23
+* Lunarossa Leao attuale 30.0 -> 23
+* Lunarossa Benedyczak acquisto 1.0 -> 1
+* Lunarossa Benedyczak attuale 8.0 -> 1
+* Lunarossa Aboukhlal acquisto 9.0 -> 4
+* Lunarossa Aboukhlal attuale 3.0 -> 4
+* EquipoA Milinkovic-Savic V. acquisto 4.0 -> 4
+* EquipoA Milinkovic-Savic V. attuale 19.0 -> 4
+* EquipoA De Gea acquisto 14.0 -> 14
+* EquipoA De Gea attuale 11.0 -> 14
+* EquipoA Martinelli T. * acquisto 1.0 -> 1
+* EquipoA Martinelli T. * attuale 1.0 -> 1
+* EquipoA Zappacosta acquisto 9.0 -> 9
+* EquipoA Zappacosta attuale 8.0 -> 9
+* EquipoA Rrahmani acquisto 7.0 -> 7
+* EquipoA Rrahmani attuale 13.0 -> 7
+* EquipoA Nkounkou acquisto 4.0 -> 4
+* EquipoA Nkounkou attuale 2.0 -> 4
+* EquipoA Dumfries acquisto 20.0 -> 20
+* EquipoA Dumfries attuale 10.0 -> 20
+* EquipoA Zemura acquisto 4.0 -> 3
+* EquipoA Zemura attuale 2.0 -> 3
+* EquipoA Palestra acquisto 4.0 -> 4
+* EquipoA Palestra attuale 15.0 -> 4
+* EquipoA Ramon acquisto 4.0 -> 5
+* EquipoA Ramon attuale 12.0 -> 5
+* EquipoA Orsolini acquisto 31.0 -> 30
+* EquipoA Orsolini attuale 24.0 -> 30
+* EquipoA Pulisic acquisto 28.0 -> 28
+* EquipoA Pulisic attuale 31.0 -> 28
+* EquipoA Zerbin acquisto 3.0 -> 3
+* EquipoA Zerbin attuale 6.0 -> 3
+* EquipoA Ilkhan acquisto 1.0 -> 1
+* EquipoA Ilkhan attuale 2.0 -> 1
+* EquipoA Ndour acquisto 2.0 -> 2
+* EquipoA Ndour attuale 6.0 -> 2
+* EquipoA Kaba acquisto 1.0 -> 2
+* EquipoA Kaba attuale 3.0 -> 2
+* EquipoA Paz N. acquisto 21.0 -> 21
+* EquipoA Paz N. attuale 30.0 -> 21
+* EquipoA Atta acquisto 8.0 -> 6
+* EquipoA Atta attuale 16.0 -> 6
+* EquipoA Berardi acquisto 21.0 -> 24
+* EquipoA Berardi attuale 21.0 -> 24
+* EquipoA Martinez L. acquisto 34.0 -> 34
+* EquipoA Martinez L. attuale 34.0 -> 34
+* EquipoA Leao acquisto 26.0 -> 23
+* EquipoA Leao attuale 30.0 -> 23
+* EquipoA Cancellieri acquisto 10.0 -> 3
+* EquipoA Cancellieri attuale 14.0 -> 3
+* EquipoA Rodriguez Je. acquisto 6.0 -> 6
+* EquipoA Rodriguez Je. attuale 12.0 -> 6
+* I COMPARI Radunovic * acquisto 1.0 -> 1
+* I COMPARI Radunovic * attuale 1.0 -> 1
+* I COMPARI Milinkovic-Savic V. acquisto 4.0 -> 4
+* I COMPARI Milinkovic-Savic V. attuale 19.0 -> 4
+* I COMPARI Caprile acquisto 7.0 -> 7
+* I COMPARI Caprile attuale 12.0 -> 7
+* I COMPARI Martin acquisto 10.0 -> 10
+* I COMPARI Martin attuale 14.0 -> 10
+* I COMPARI Bellanova acquisto 13.0 -> 13
+* I COMPARI Bellanova attuale 6.0 -> 13
+* I COMPARI Estupinan acquisto 11.0 -> 6
+* I COMPARI Estupinan attuale 3.0 -> 6
+* I COMPARI Terracciano F. acquisto 2.0 -> 2
+* I COMPARI Terracciano F. attuale 11.0 -> 2
+* I COMPARI Valeri acquisto 10.0 -> 10
+* I COMPARI Valeri attuale 10.0 -> 10
+* I COMPARI Dembelè A. acquisto 1.0 -> 1
+* I COMPARI Dembelè A. attuale 1.0 -> 1
+* I COMPARI Tiago Gabriel acquisto 1.0 -> 2
+* I COMPARI Tiago Gabriel attuale 9.0 -> 2
+* I COMPARI Barella acquisto 14.0 -> 14
+* I COMPARI Barella attuale 17.0 -> 14
+* I COMPARI Pulisic acquisto 28.0 -> 28
+* I COMPARI Pulisic attuale 31.0 -> 28
++ I COMPARI: McTominay
+* I COMPARI Akpa Akpro acquisto 1.0 -> 1
+* I COMPARI Akpa Akpro attuale 2.0 -> 1
+* I COMPARI Tramoni M. acquisto 12.0 -> 12
+* I COMPARI Tramoni M. attuale 9.0 -> 12
+* I COMPARI Kaba acquisto 1.0 -> 1
+* I COMPARI Kaba attuale 3.0 -> 1
+* I COMPARI Adzic acquisto 1.0 -> 1
+* I COMPARI Adzic attuale 3.0 -> 1
+* I COMPARI Paz N. acquisto 21.0 -> 20
+* I COMPARI Paz N. attuale 30.0 -> 20
+* I COMPARI Pavoletti acquisto 1.0 -> 2
+* I COMPARI Pavoletti attuale 1.0 -> 2
+* I COMPARI Martinez L. acquisto 34.0 -> 27
+* I COMPARI Martinez L. attuale 34.0 -> 27
+* I COMPARI Leao acquisto 26.0 -> 26
+* I COMPARI Leao attuale 30.0 -> 26
+* I COMPARI Soulè acquisto 20.0 -> 20
+* I COMPARI Soulè attuale 26.0 -> 20
+* I COMPARI Giovane acquisto 1.0 -> 1
+* I COMPARI Giovane attuale 17.0 -> 1
+* SMOG Perin acquisto 1.0 -> 1
+* SMOG Perin attuale 3.0 -> 1
+* SMOG Meret acquisto 16.0 -> 16
+* SMOG Meret attuale 8.0 -> 16
+* SMOG Milinkovic-Savic V. acquisto 4.0 -> 4
+* SMOG Milinkovic-Savic V. attuale 19.0 -> 4
+* SMOG Martin acquisto 10.0 -> 10
+* SMOG Martin attuale 14.0 -> 10
+* SMOG Cambiaso acquisto 15.0 -> 15
+* SMOG Cambiaso attuale 10.0 -> 15
+* SMOG Terracciano F. acquisto 2.0 -> 2
+* SMOG Terracciano F. attuale 11.0 -> 2
+* SMOG Ehizibue acquisto 4.0 -> 4
+* SMOG Ehizibue attuale 3.0 -> 4
+* SMOG Delprato acquisto 8.0 -> 8
+* SMOG Delprato attuale 9.0 -> 8
+* SMOG Kempf acquisto 5.0 -> 5
+* SMOG Kempf attuale 14.0 -> 5
+* SMOG Canestrelli acquisto 3.0 -> 3
+* SMOG Canestrelli attuale 5.0 -> 3
+* SMOG Politano acquisto 16.0 -> 16
+* SMOG Politano attuale 11.0 -> 16
+* SMOG Modric acquisto 12.0 -> 12
+* SMOG Modric attuale 19.0 -> 12
+* SMOG Odgaard acquisto 16.0 -> 16
+* SMOG Odgaard attuale 18.0 -> 16
+* SMOG Zaniolo acquisto 15.0 -> 15
+* SMOG Zaniolo attuale 20.0 -> 15
+* SMOG Gudmundsson A. acquisto 24.0 -> 24
+* SMOG Gudmundsson A. attuale 17.0 -> 24
+* SMOG Marchwinski acquisto 1.0 -> 1
+* SMOG Marchwinski attuale 1.0 -> 1
+* SMOG Paz N. acquisto 20.0 -> 20
+* SMOG Paz N. attuale 30.0 -> 20
+* SMOG Tourè I. acquisto 6.0 -> 6
+* SMOG Tourè I. attuale 10.0 -> 6
+* SMOG Kean acquisto 31.0 -> 31
+* SMOG Kean attuale 18.0 -> 31
+* SMOG Vlahovic acquisto 21.0 -> 21
+* SMOG Vlahovic attuale 15.0 -> 21
+* SMOG Esposito Se. acquisto 7.0 -> 7
+* SMOG Esposito Se. attuale 16.0 -> 7
+* SMOG Giovane acquisto 3.0 -> 3
+* SMOG Giovane attuale 17.0 -> 3
+* SMOG Kilicsoy acquisto 3.0 -> 3
+* SMOG Kilicsoy attuale 12.0 -> 3
+* CLAN Perin acquisto 1.0 -> 1
+* CLAN Perin attuale 3.0 -> 1
+* CLAN Silvestri acquisto 1.0 -> 1
+* CLAN Silvestri attuale 1.0 -> 1
+* CLAN Di Gregorio acquisto 16.0 -> 16
+* CLAN Di Gregorio attuale 16.0 -> 16
+* CLAN Cuadrado acquisto 7.0 -> 7
+* CLAN Cuadrado attuale 8.0 -> 7
+* CLAN Lazaro acquisto 7.0 -> 7
+* CLAN Lazaro attuale 7.0 -> 7
+* CLAN Gutierrez acquisto 7.0 -> 7
+* CLAN Gutierrez attuale 3.0 -> 7
+* CLAN Tavares N. acquisto 12.0 -> 12
+* CLAN Tavares N. attuale 6.0 -> 12
+* CLAN Comuzzo acquisto 8.0 -> 7
+* CLAN Comuzzo attuale 7.0 -> 7
+* CLAN Canestrelli acquisto 3.0 -> 3
+* CLAN Canestrelli attuale 5.0 -> 3
+* CLAN Wesley acquisto 14.0 -> 14
+* CLAN Wesley attuale 16.0 -> 14
+* CLAN Bernardeschi acquisto 9.0 -> 9
+* CLAN Bernardeschi attuale 5.0 -> 9
+* CLAN Zaccagni acquisto 26.0 -> 26
+* CLAN Zaccagni attuale 14.0 -> 26
+* CLAN Modric acquisto 12.0 -> 12
+* CLAN Modric attuale 19.0 -> 12
+* CLAN Malinovskyi acquisto 7.0 -> 7
+* CLAN Malinovskyi attuale 12.0 -> 7
++ CLAN: McTominay
+* CLAN Zalewski acquisto 6.0 -> 6
+* CLAN Zalewski attuale 15.0 -> 6
+* CLAN Asllani acquisto 4.0 -> 4
+* CLAN Asllani attuale 3.0 -> 4
+* CLAN Folorunsho acquisto 9.0 -> 9
+* CLAN Folorunsho attuale 8.0 -> 9
+* CLAN Zapata D. acquisto 10.0 -> 10
+* CLAN Zapata D. attuale 7.0 -> 10
+* CLAN Esposito Se. acquisto 7.0 -> 7
+* CLAN Esposito Se. attuale 16.0 -> 7
+* CLAN Lookman acquisto 19.0 -> 19
+* CLAN Lookman attuale 14.0 -> 19
+* CLAN Thuram acquisto 31.0 -> 31
+* CLAN Thuram attuale 29.0 -> 31
+* CLAN Rodriguez Je. acquisto 6.0 -> 6
+* CLAN Rodriguez Je. attuale 12.0 -> 6
+* Evergreen Lezzerini acquisto 1.0 -> 1
+* Evergreen Lezzerini attuale 1.0 -> 1
+* Evergreen Gollini acquisto 1.0 -> 1
+* Evergreen Gollini attuale 1.0 -> 1
+* Evergreen De Gea acquisto 14.0 -> 14
+* Evergreen De Gea attuale 11.0 -> 14
+* Evergreen Pezzella Giu. acquisto 5.0 -> 6
+* Evergreen Pezzella Giu. attuale 4.0 -> 6
+* Evergreen Buongiorno acquisto 13.0 -> 13
+* Evergreen Buongiorno attuale 10.0 -> 13
+* Evergreen Dumfries acquisto 20.0 -> 20
+* Evergreen Dumfries attuale 10.0 -> 20
+* Evergreen Kossounou acquisto 9.0 -> 9
+* Evergreen Kossounou attuale 8.0 -> 9
+* Evergreen Ostigard acquisto 5.0 -> 9
+* Evergreen Ostigard attuale 15.0 -> 9
+* Evergreen Posch * acquisto 7.0 -> 7
+* Evergreen Posch * attuale 9.0 -> 7
+* Evergreen Paz Y. acquisto 1.0 -> 1
+* Evergreen Paz Y. attuale 1.0 -> 1
+* Evergreen Politano acquisto 15.0 -> 16
+* Evergreen Politano attuale 11.0 -> 16
+* Evergreen Zalewski acquisto 6.0 -> 6
+* Evergreen Zalewski attuale 15.0 -> 6
+* Evergreen Harroui acquisto 7.0 -> 7
+* Evergreen Harroui attuale 2.0 -> 7
+* Evergreen Gudmundsson A. acquisto 17.0 -> 17
+* Evergreen Gudmundsson A. attuale 17.0 -> 17
+* Evergreen Ilkhan acquisto 1.0 -> 1
+* Evergreen Ilkhan attuale 2.0 -> 1
+* Evergreen Paz N. acquisto 21.0 -> 20
+* Evergreen Paz N. attuale 30.0 -> 20
+* Evergreen Sucic P. acquisto 14.0 -> 9
+* Evergreen Sucic P. attuale 11.0 -> 9
+* Evergreen Iannoni acquisto 1.0 -> 1
+* Evergreen Iannoni attuale 5.0 -> 1
+* Evergreen Pavoletti acquisto 1.0 -> 1
+* Evergreen Pavoletti attuale 1.0 -> 1
+* Evergreen Vardy acquisto 19.0 -> 19
+* Evergreen Vardy attuale 20.0 -> 19
+* Evergreen Thuram acquisto 31.0 -> 31
+* Evergreen Thuram attuale 29.0 -> 31
+* Evergreen Castro S. acquisto 22.0 -> 24
+* Evergreen Castro S. attuale 24.0 -> 24
+* Evergreen Ekhator acquisto 1.0 -> 1
+* Evergreen Ekhator attuale 10.0 -> 1
+* Sciabolata Classica Perin acquisto 1.0 -> 1
+* Sciabolata Classica Perin attuale 3.0 -> 1
+* Sciabolata Classica Gollini acquisto 1.0 -> 1
+* Sciabolata Classica Gollini attuale 1.0 -> 1
+* Sciabolata Classica Svilar acquisto 15.0 -> 15
+* Sciabolata Classica Svilar attuale 19.0 -> 15
+* Sciabolata Classica Martin acquisto 10.0 -> 10
+* Sciabolata Classica Martin attuale 14.0 -> 10
+* Sciabolata Classica Bellanova acquisto 13.0 -> 13
+* Sciabolata Classica Bellanova attuale 6.0 -> 13
+* Sciabolata Classica Cambiaso acquisto 15.0 -> 15
+* Sciabolata Classica Cambiaso attuale 10.0 -> 15
+* Sciabolata Classica Tavares N. acquisto 12.0 -> 12
+* Sciabolata Classica Tavares N. attuale 6.0 -> 12
+* Sciabolata Classica Veiga D. acquisto 1.0 -> 1
+* Sciabolata Classica Veiga D. attuale 5.0 -> 1
+* Sciabolata Classica Vitik acquisto 8.0 -> 8
+* Sciabolata Classica Vitik attuale 4.0 -> 8
+* Sciabolata Classica Angori acquisto 5.0 -> 5
+* Sciabolata Classica Angori attuale 9.0 -> 5
+* Sciabolata Classica Hernani * acquisto 3.0 -> 3
+* Sciabolata Classica Hernani * attuale 2.0 -> 3
++ Sciabolata Classica: McTominay
+* Sciabolata Classica Vlasic acquisto 15.0 -> 15
+* Sciabolata Classica Vlasic attuale 18.0 -> 15
+* Sciabolata Classica Asllani acquisto 4.0 -> 4
+* Sciabolata Classica Asllani attuale 3.0 -> 4
+* Sciabolata Classica Gudmundsson A. acquisto 17.0 -> 17
+* Sciabolata Classica Gudmundsson A. attuale 17.0 -> 17
+* Sciabolata Classica Paz N. acquisto 21.0 -> 21
+* Sciabolata Classica Paz N. attuale 30.0 -> 21
+* Sciabolata Classica Atta acquisto 8.0 -> 8
+* Sciabolata Classica Atta attuale 16.0 -> 8
+* Sciabolata Classica Stanciu * acquisto 8.0 -> 8
+* Sciabolata Classica Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* Sciabolata Classica Berardi acquisto 21.0 -> 21
+* Sciabolata Classica Berardi attuale 21.0 -> 21
+* Sciabolata Classica Zapata D. acquisto 10.0 -> 10
+* Sciabolata Classica Zapata D. attuale 7.0 -> 10
+* Sciabolata Classica Kean acquisto 33.0 -> 33
+* Sciabolata Classica Kean attuale 18.0 -> 33
+* Sciabolata Classica Vlahovic acquisto 21.0 -> 21
+* Sciabolata Classica Vlahovic attuale 15.0 -> 21
+* Sciabolata Classica Benedyczak acquisto 1.0 -> 1
+* Sciabolata Classica Benedyczak attuale 8.0 -> 1
+* Malmö FF Perin acquisto 1.0 -> 1
+* Malmö FF Perin attuale 3.0 -> 1
+* Malmö FF Pinsoglio acquisto 1.0 -> 1
+* Malmö FF Pinsoglio attuale 1.0 -> 1
+* Malmö FF Di Gregorio acquisto 16.0 -> 16
+* Malmö FF Di Gregorio attuale 16.0 -> 16
+* Malmö FF Buongiorno acquisto 13.0 -> 13
+* Malmö FF Buongiorno attuale 10.0 -> 13
+* Malmö FF Bellanova acquisto 13.0 -> 13
+* Malmö FF Bellanova attuale 6.0 -> 13
+* Malmö FF De Winter acquisto 8.0 -> 8
+* Malmö FF De Winter attuale 4.0 -> 8
+* Malmö FF Terracciano F. acquisto 2.0 -> 5
+* Malmö FF Terracciano F. attuale 11.0 -> 5
+* Malmö FF Gila acquisto 9.0 -> 9
+* Malmö FF Gila attuale 8.0 -> 9
+* Malmö FF Comuzzo acquisto 8.0 -> 8
+* Malmö FF Comuzzo attuale 7.0 -> 8
+* Malmö FF Wesley acquisto 14.0 -> 14
+* Malmö FF Wesley attuale 16.0 -> 14
+* Malmö FF Modric acquisto 12.0 -> 12
+* Malmö FF Modric attuale 19.0 -> 12
++ Malmö FF: McTominay
+* Malmö FF Coulibaly L. acquisto 7.0 -> 7
+* Malmö FF Coulibaly L. attuale 13.0 -> 7
+* Malmö FF El Aynaoui acquisto 9.0 -> 9
+* Malmö FF El Aynaoui attuale 5.0 -> 9
+* Malmö FF Pierret acquisto 6.0 -> 6
+* Malmö FF Pierret attuale 1.0 -> 6
+* Malmö FF Bernabè acquisto 11.0 -> 11
+* Malmö FF Bernabè attuale 16.0 -> 11
+* Malmö FF Ekkelenkamp acquisto 10.0 -> 10
+* Malmö FF Ekkelenkamp attuale 12.0 -> 10
+* Malmö FF Sucic P. acquisto 14.0 -> 9
+* Malmö FF Sucic P. attuale 11.0 -> 9
+* Malmö FF Berardi acquisto 21.0 -> 21
+* Malmö FF Berardi attuale 21.0 -> 21
+* Malmö FF Martinez L. acquisto 34.0 -> 27
+* Malmö FF Martinez L. attuale 34.0 -> 27
+* Malmö FF Esposito Se. acquisto 7.0 -> 7
+* Malmö FF Esposito Se. attuale 16.0 -> 7
+* Malmö FF Ekuban acquisto 8.0 -> 8
+* Malmö FF Ekuban attuale 9.0 -> 8
+* Malmö FF Bonny acquisto 5.0 -> 16
+* Malmö FF Bonny attuale 14.0 -> 16
+* Giubbentus Milinkovic-Savic V. acquisto 4.0 -> 4
+* Giubbentus Milinkovic-Savic V. attuale 19.0 -> 4
+* Giubbentus Terracciano acquisto 1.0 -> 1
+* Giubbentus Terracciano attuale 1.0 -> 1
+* Giubbentus Maignan acquisto 16.0 -> 16
+* Giubbentus Maignan attuale 20.0 -> 16
+* Giubbentus Obert acquisto 4.0 -> 4
+* Giubbentus Obert attuale 5.0 -> 4
+* Giubbentus Cabal acquisto 4.0 -> 4
+* Giubbentus Cabal attuale 9.0 -> 4
+* Giubbentus Norton-Cuffy acquisto 3.0 -> 3
+* Giubbentus Norton-Cuffy attuale 7.0 -> 3
+* Giubbentus Tiago Gabriel acquisto 1.0 -> 1
+* Giubbentus Tiago Gabriel attuale 9.0 -> 1
+* Giubbentus Veiga D. acquisto 2.0 -> 2
+* Giubbentus Veiga D. attuale 5.0 -> 2
+* Giubbentus Smolcic I. acquisto 2.0 -> 3
+* Giubbentus Smolcic I. attuale 3.0 -> 3
+* Giubbentus Canestrelli acquisto 3.0 -> 3
+* Giubbentus Canestrelli attuale 5.0 -> 3
+* Giubbentus Politano acquisto 15.0 -> 16
+* Giubbentus Politano attuale 11.0 -> 16
+* Giubbentus Zaccagni acquisto 26.0 -> 26
+* Giubbentus Zaccagni attuale 14.0 -> 26
+* Giubbentus Pulisic acquisto 28.0 -> 28
+* Giubbentus Pulisic attuale 31.0 -> 28
+* Giubbentus Akpa Akpro acquisto 1.0 -> 3
+* Giubbentus Akpa Akpro attuale 2.0 -> 3
+* Giubbentus Aebischer acquisto 4.0 -> 4
+* Giubbentus Aebischer attuale 5.0 -> 4
+* Giubbentus Folorunsho acquisto 9.0 -> 8
+* Giubbentus Folorunsho attuale 8.0 -> 8
+* Giubbentus Isaksen acquisto 14.0 -> 14
+* Giubbentus Isaksen attuale 14.0 -> 14
+* Giubbentus Prati acquisto 4.0 -> 3
+* Giubbentus Prati attuale 6.0 -> 3
+* Giubbentus Scamacca acquisto 16.0 -> 19
+* Giubbentus Scamacca attuale 22.0 -> 19
+* Giubbentus Martinez L. acquisto 34.0 -> 34
+* Giubbentus Martinez L. attuale 34.0 -> 34
+* Giubbentus Thuram acquisto 31.0 -> 31
+* Giubbentus Thuram attuale 29.0 -> 31
+* Giubbentus Meister acquisto 3.0 -> 2
+* Giubbentus Meister attuale 8.0 -> 2
+* Giubbentus Stulic acquisto 8.0 -> 8
+* Giubbentus Stulic attuale 8.0 -> 8
+* Tana delle Tigri Sportiello acquisto 1.0 -> 1
+* Tana delle Tigri Sportiello attuale 1.0 -> 1
+* Tana delle Tigri Perin acquisto 1.0 -> 1
+* Tana delle Tigri Perin attuale 3.0 -> 1
+* Tana delle Tigri Carnesecchi acquisto 14.0 -> 14
+* Tana delle Tigri Carnesecchi attuale 17.0 -> 14
+* Tana delle Tigri Martin acquisto 10.0 -> 10
+* Tana delle Tigri Martin attuale 14.0 -> 10
+* Tana delle Tigri Bellanova acquisto 13.0 -> 13
+* Tana delle Tigri Bellanova attuale 6.0 -> 13
+* Tana delle Tigri Pavlovic acquisto 17.0 -> 17
+* Tana delle Tigri Pavlovic attuale 15.0 -> 17
+* Tana delle Tigri Barbieri acquisto 3.0 -> 3
+* Tana delle Tigri Barbieri attuale 9.0 -> 3
+* Tana delle Tigri Solet acquisto 11.0 -> 11
+* Tana delle Tigri Solet attuale 11.0 -> 11
+* Tana delle Tigri Tiago Gabriel acquisto 1.0 -> 1
+* Tana delle Tigri Tiago Gabriel attuale 9.0 -> 1
+* Tana delle Tigri Angori acquisto 5.0 -> 5
+* Tana delle Tigri Angori attuale 9.0 -> 5
+* Tana delle Tigri Zaccagni acquisto 26.0 -> 26
+* Tana delle Tigri Zaccagni attuale 14.0 -> 26
+* Tana delle Tigri Pulisic acquisto 28.0 -> 28
+* Tana delle Tigri Pulisic attuale 31.0 -> 28
++ Tana delle Tigri: McTominay
+* Tana delle Tigri Zerbin acquisto 3.0 -> 3
+* Tana delle Tigri Zerbin attuale 6.0 -> 3
+* Tana delle Tigri Ilkhan acquisto 1.0 -> 1
+* Tana delle Tigri Ilkhan attuale 2.0 -> 1
+* Tana delle Tigri Berisha M. acquisto 3.0 -> 3
+* Tana delle Tigri Berisha M. attuale 13.0 -> 3
+* Tana delle Tigri Kaba acquisto 1.0 -> 1
+* Tana delle Tigri Kaba attuale 3.0 -> 1
+* Tana delle Tigri Atta acquisto 6.0 -> 6
+* Tana delle Tigri Atta attuale 16.0 -> 6
+* Tana delle Tigri Bonazzoli acquisto 1.0 -> 1
+* Tana delle Tigri Bonazzoli attuale 20.0 -> 1
+* Tana delle Tigri Berardi acquisto 24.0 -> 24
+* Tana delle Tigri Berardi attuale 21.0 -> 24
+* Tana delle Tigri Martinez L. acquisto 34.0 -> 34
+* Tana delle Tigri Martinez L. attuale 34.0 -> 34
+* Tana delle Tigri Leao acquisto 19.0 -> 19
+* Tana delle Tigri Leao attuale 30.0 -> 19
+* Tana delle Tigri Giovane acquisto 1.0 -> 1
+* Tana delle Tigri Giovane attuale 17.0 -> 1
+* puerto rosso blu Skorupski acquisto 10.0 -> 10
+* puerto rosso blu Skorupski attuale 10.0 -> 10
+* puerto rosso blu Ravaglia F. acquisto 3.0 -> 3
+* puerto rosso blu Ravaglia F. attuale 12.0 -> 3
+* puerto rosso blu Pessina Mas. acquisto 1.0 -> 1
+* puerto rosso blu Pessina Mas. attuale 1.0 -> 1
+* puerto rosso blu Walukiewicz acquisto 5.0 -> 5
+* puerto rosso blu Walukiewicz attuale 6.0 -> 5
+* puerto rosso blu Vojvoda acquisto 6.0 -> 6
+* puerto rosso blu Vojvoda attuale 12.0 -> 6
+* puerto rosso blu Estupinan acquisto 6.0 -> 6
+* puerto rosso blu Estupinan attuale 3.0 -> 6
+* puerto rosso blu Cambiaso acquisto 15.0 -> 15
+* puerto rosso blu Cambiaso attuale 10.0 -> 15
+* puerto rosso blu Zemura acquisto 3.0 -> 3
+* puerto rosso blu Zemura attuale 2.0 -> 3
+* puerto rosso blu Palestra acquisto 4.0 -> 4
+* puerto rosso blu Palestra attuale 15.0 -> 4
+* puerto rosso blu Wesley acquisto 14.0 -> 14
+* puerto rosso blu Wesley attuale 16.0 -> 14
+* puerto rosso blu Zaccagni acquisto 24.0 -> 24
+* puerto rosso blu Zaccagni attuale 14.0 -> 24
++ puerto rosso blu: McTominay
+* puerto rosso blu Saelemaekers acquisto 12.0 -> 12
+* puerto rosso blu Saelemaekers attuale 19.0 -> 12
+* puerto rosso blu Gudmundsson A. acquisto 24.0 -> 24
+* puerto rosso blu Gudmundsson A. attuale 17.0 -> 24
+* puerto rosso blu Folorunsho acquisto 9.0 -> 9
+* puerto rosso blu Folorunsho attuale 8.0 -> 9
+* puerto rosso blu Kaba acquisto 2.0 -> 2
+* puerto rosso blu Kaba attuale 3.0 -> 2
+* puerto rosso blu Dele-Bashiru acquisto 11.0 -> 11
+* puerto rosso blu Dele-Bashiru attuale 3.0 -> 11
+* puerto rosso blu Hojholt acquisto 1.0 -> 1
+* puerto rosso blu Hojholt attuale 2.0 -> 1
+* puerto rosso blu Scamacca acquisto 14.0 -> 14
+* puerto rosso blu Scamacca attuale 22.0 -> 14
+* puerto rosso blu Esposito Se. acquisto 7.0 -> 7
+* puerto rosso blu Esposito Se. attuale 16.0 -> 7
+* puerto rosso blu Thuram acquisto 31.0 -> 31
+* puerto rosso blu Thuram attuale 29.0 -> 31
+* puerto rosso blu Soulè acquisto 20.0 -> 20
+* puerto rosso blu Soulè attuale 26.0 -> 20
+* puerto rosso blu Gueye acquisto 1.0 -> 1
+* puerto rosso blu Gueye attuale 2.0 -> 1
+* OnlyFans Sportiello acquisto 1.0 -> 1
+* OnlyFans Sportiello attuale 1.0 -> 1
+* OnlyFans Rossi F. acquisto 1.0 -> 1
+* OnlyFans Rossi F. attuale 1.0 -> 1
+* OnlyFans Carnesecchi acquisto 14.0 -> 14
+* OnlyFans Carnesecchi attuale 17.0 -> 14
+* OnlyFans Gosens acquisto 18.0 -> 18
+* OnlyFans Gosens attuale 10.0 -> 18
+* OnlyFans Martin acquisto 10.0 -> 10
+* OnlyFans Martin attuale 14.0 -> 10
+* OnlyFans Di Lorenzo acquisto 14.0 -> 14
+* OnlyFans Di Lorenzo attuale 12.0 -> 14
+* OnlyFans Mina acquisto 7.0 -> 7
+* OnlyFans Mina attuale 8.0 -> 7
+* OnlyFans Terracciano F. acquisto 2.0 -> 2
+* OnlyFans Terracciano F. attuale 11.0 -> 2
+* OnlyFans Dodò acquisto 11.0 -> 7
+* OnlyFans Dodò attuale 6.0 -> 7
+* OnlyFans Ebosse acquisto 4.0 -> 4
+* OnlyFans Ebosse attuale 2.0 -> 4
+* OnlyFans Pulisic acquisto 28.0 -> 28
+* OnlyFans Pulisic attuale 31.0 -> 28
+* OnlyFans Zaniolo acquisto 15.0 -> 15
+* OnlyFans Zaniolo attuale 20.0 -> 15
++ OnlyFans: McTominay
+* OnlyFans Adopo acquisto 5.0 -> 5
+* OnlyFans Adopo attuale 6.0 -> 5
+* OnlyFans Thuram K. acquisto 15.0 -> 16
+* OnlyFans Thuram K. attuale 13.0 -> 16
+* OnlyFans Ilkhan acquisto 1.0 -> 1
+* OnlyFans Ilkhan attuale 2.0 -> 1
+* OnlyFans Kaba acquisto 1.0 -> 1
+* OnlyFans Kaba attuale 3.0 -> 1
+* OnlyFans Tourè I. acquisto 6.0 -> 6
+* OnlyFans Tourè I. attuale 10.0 -> 6
+* OnlyFans Berardi acquisto 21.0 -> 21
+* OnlyFans Berardi attuale 21.0 -> 21
+* OnlyFans Esposito Se. acquisto 7.0 -> 7
+* OnlyFans Esposito Se. attuale 16.0 -> 7
+* OnlyFans Leao acquisto 26.0 -> 26
+* OnlyFans Leao attuale 30.0 -> 26
+* OnlyFans Thuram acquisto 31.0 -> 29
+* OnlyFans Thuram attuale 29.0 -> 29
+* OnlyFans Ambrosino acquisto 1.0 -> 1
+* OnlyFans Ambrosino attuale 2.0 -> 1
+* Peaky Tunas Perin acquisto 1.0 -> 1
+* Peaky Tunas Perin attuale 3.0 -> 1
+* Peaky Tunas Pinsoglio acquisto 1.0 -> 1
+* Peaky Tunas Pinsoglio attuale 1.0 -> 1
+* Peaky Tunas Di Gregorio acquisto 16.0 -> 16
+* Peaky Tunas Di Gregorio attuale 16.0 -> 16
+* Peaky Tunas Hysaj acquisto 1.0 -> 1
+* Peaky Tunas Hysaj attuale 1.0 -> 1
+* Peaky Tunas Bastoni acquisto 16.0 -> 16
+* Peaky Tunas Bastoni attuale 17.0 -> 16
+* Peaky Tunas Di Lorenzo acquisto 14.0 -> 14
+* Peaky Tunas Di Lorenzo attuale 12.0 -> 14
+* Peaky Tunas Obert acquisto 4.0 -> 4
+* Peaky Tunas Obert attuale 5.0 -> 4
+* Peaky Tunas Terracciano F. acquisto 5.0 -> 5
+* Peaky Tunas Terracciano F. attuale 11.0 -> 5
+* Peaky Tunas Tiago Gabriel acquisto 2.0 -> 2
+* Peaky Tunas Tiago Gabriel attuale 9.0 -> 2
+* Peaky Tunas Angori acquisto 5.0 -> 5
+* Peaky Tunas Angori attuale 9.0 -> 5
+* Peaky Tunas Zaccagni acquisto 24.0 -> 24
+* Peaky Tunas Zaccagni attuale 14.0 -> 24
+* Peaky Tunas Barella acquisto 14.0 -> 14
+* Peaky Tunas Barella attuale 17.0 -> 14
+* Peaky Tunas Pulisic acquisto 28.0 -> 28
+* Peaky Tunas Pulisic attuale 31.0 -> 28
+* Peaky Tunas Zambo Anguissa acquisto 16.0 -> 16
+* Peaky Tunas Zambo Anguissa attuale 19.0 -> 16
+* Peaky Tunas Lovric acquisto 9.0 -> 9
+* Peaky Tunas Lovric attuale 3.0 -> 9
+* Peaky Tunas Zarraga acquisto 2.0 -> 2
+* Peaky Tunas Zarraga attuale 2.0 -> 2
+* Peaky Tunas Konè I. acquisto 6.0 -> 6
+* Peaky Tunas Konè I. attuale 16.0 -> 6
+* Peaky Tunas Piotrowski acquisto 6.0 -> 6
+* Peaky Tunas Piotrowski attuale 8.0 -> 6
+* Peaky Tunas Simeone acquisto 18.0 -> 18
+* Peaky Tunas Simeone attuale 19.0 -> 18
+* Peaky Tunas Martinez L. acquisto 34.0 -> 34
+* Peaky Tunas Martinez L. attuale 34.0 -> 34
+* Peaky Tunas Leao acquisto 19.0 -> 19
+* Peaky Tunas Leao attuale 30.0 -> 19
+* Peaky Tunas Ekhator acquisto 1.0 -> 1
+* Peaky Tunas Ekhator attuale 10.0 -> 1
+* Peaky Tunas Meister acquisto 2.0 -> 2
+* Peaky Tunas Meister attuale 8.0 -> 2
+* i fratelli merda Sportiello acquisto 1.0 -> 1
+* i fratelli merda Sportiello attuale 1.0 -> 1
+* i fratelli merda Terracciano acquisto 1.0 -> 1
+* i fratelli merda Terracciano attuale 1.0 -> 1
+* i fratelli merda Carnesecchi acquisto 14.0 -> 14
+* i fratelli merda Carnesecchi attuale 17.0 -> 14
+* i fratelli merda Zappa acquisto 6.0 -> 6
+* i fratelli merda Zappa attuale 7.0 -> 6
++ i fratelli merda: Casale
+* i fratelli merda Dumfries acquisto 20.0 -> 20
+* i fratelli merda Dumfries attuale 10.0 -> 20
+* i fratelli merda Tavares N. acquisto 7.0 -> 7
+* i fratelli merda Tavares N. attuale 6.0 -> 7
+* i fratelli merda Van Der Brempt acquisto 4.0 -> 4
+* i fratelli merda Van Der Brempt attuale 3.0 -> 4
+* i fratelli merda Tiago Gabriel acquisto 1.0 -> 1
+* i fratelli merda Tiago Gabriel attuale 9.0 -> 1
++ i fratelli merda: Arizala
+* i fratelli merda Barella acquisto 14.0 -> 14
+* i fratelli merda Barella attuale 17.0 -> 14
+* i fratelli merda Loftus-Cheek acquisto 9.0 -> 9
+* i fratelli merda Loftus-Cheek attuale 13.0 -> 9
+* i fratelli merda Da Cunha acquisto 12.0 -> 12
+* i fratelli merda Da Cunha attuale 11.0 -> 12
+* i fratelli merda Thuram K. acquisto 16.0 -> 16
+* i fratelli merda Thuram K. attuale 13.0 -> 16
+* i fratelli merda Zerbin acquisto 5.0 -> 5
+* i fratelli merda Zerbin attuale 6.0 -> 5
+* i fratelli merda Gineitis acquisto 5.0 -> 5
+* i fratelli merda Gineitis attuale 4.0 -> 5
+* i fratelli merda Bernabè acquisto 11.0 -> 11
+* i fratelli merda Bernabè attuale 16.0 -> 11
+* i fratelli merda Paz N. acquisto 21.0 -> 21
+* i fratelli merda Paz N. attuale 30.0 -> 21
+* i fratelli merda Bonazzoli acquisto 3.0 -> 3
+* i fratelli merda Bonazzoli attuale 20.0 -> 3
+* i fratelli merda Martinez L. acquisto 34.0 -> 34
+* i fratelli merda Martinez L. attuale 34.0 -> 34
+* i fratelli merda Esposito Se. acquisto 7.0 -> 7
+* i fratelli merda Esposito Se. attuale 16.0 -> 7
+* i fratelli merda Colombo acquisto 10.0 -> 10
+* i fratelli merda Colombo attuale 14.0 -> 10
+* i fratelli merda Yildiz acquisto 25.0 -> 25
+* i fratelli merda Yildiz attuale 30.0 -> 25
+* Pro secco Sportiello acquisto 1.0 -> 1
+* Pro secco Sportiello attuale 1.0 -> 1
+* Pro secco Terracciano acquisto 1.0 -> 1
+* Pro secco Terracciano attuale 1.0 -> 1
+* Pro secco Maignan acquisto 16.0 -> 16
+* Pro secco Maignan attuale 20.0 -> 16
+* Pro secco Ranieri L. acquisto 7.0 -> 7
+* Pro secco Ranieri L. attuale 7.0 -> 7
+* Pro secco Zappa acquisto 6.0 -> 6
+* Pro secco Zappa attuale 7.0 -> 6
+* Pro secco Vojvoda acquisto 6.0 -> 6
+* Pro secco Vojvoda attuale 12.0 -> 6
+* Pro secco Terracciano F. acquisto 2.0 -> 2
+* Pro secco Terracciano F. attuale 11.0 -> 2
+* Pro secco Ehizibue acquisto 5.0 -> 5
+* Pro secco Ehizibue attuale 3.0 -> 5
+* Pro secco Gaspar K. acquisto 8.0 -> 8
+* Pro secco Gaspar K. attuale 4.0 -> 8
+* Pro secco Tiago Gabriel acquisto 1.0 -> 1
+* Pro secco Tiago Gabriel attuale 9.0 -> 1
+* Pro secco Orsolini acquisto 30.0 -> 30
+* Pro secco Orsolini attuale 24.0 -> 30
+* Pro secco Leris acquisto 2.0 -> 2
+* Pro secco Leris attuale 12.0 -> 2
+* Pro secco Pulisic acquisto 28.0 -> 28
+* Pro secco Pulisic attuale 31.0 -> 28
++ Pro secco: McTominay
+* Pro secco Vlasic acquisto 9.0 -> 9
+* Pro secco Vlasic attuale 18.0 -> 9
+* Pro secco Zerbin acquisto 3.0 -> 3
+* Pro secco Zerbin attuale 6.0 -> 3
+* Pro secco Kaba acquisto 2.0 -> 2
+* Pro secco Kaba attuale 3.0 -> 2
+* Pro secco Paz N. acquisto 21.0 -> 21
+* Pro secco Paz N. attuale 30.0 -> 21
+* Pro secco Martinez L. acquisto 34.0 -> 34
+* Pro secco Martinez L. attuale 34.0 -> 34
+* Pro secco Vlahovic acquisto 21.0 -> 21
+* Pro secco Vlahovic attuale 15.0 -> 21
+* Pro secco Lookman acquisto 24.0 -> 24
+* Pro secco Lookman attuale 14.0 -> 24
+* Pro secco Moro L. acquisto 1.0 -> 1
+* Pro secco Moro L. attuale 1.0 -> 1
+* Pro secco Giovane acquisto 3.0 -> 3
+* Pro secco Giovane attuale 17.0 -> 3
+* TomMat-iga Perin acquisto 1.0 -> 1
+* TomMat-iga Perin attuale 3.0 -> 1
+* TomMat-iga Terracciano acquisto 1.0 -> 1
+* TomMat-iga Terracciano attuale 1.0 -> 1
+* TomMat-iga Maignan acquisto 16.0 -> 16
+* TomMat-iga Maignan attuale 20.0 -> 16
+* TomMat-iga Gosens acquisto 18.0 -> 18
+* TomMat-iga Gosens attuale 10.0 -> 18
+* TomMat-iga Martin acquisto 10.0 -> 10
+* TomMat-iga Martin attuale 14.0 -> 10
+* TomMat-iga Terracciano F. acquisto 2.0 -> 2
+* TomMat-iga Terracciano F. attuale 11.0 -> 2
+* TomMat-iga Ramon acquisto 5.0 -> 5
+* TomMat-iga Ramon attuale 12.0 -> 5
+* TomMat-iga Tiago Gabriel acquisto 1.0 -> 1
+* TomMat-iga Tiago Gabriel attuale 9.0 -> 1
+* TomMat-iga Veiga D. acquisto 1.0 -> 1
+* TomMat-iga Veiga D. attuale 5.0 -> 1
+* TomMat-iga Joao Mario acquisto 8.0 -> 8
+* TomMat-iga Joao Mario attuale 2.0 -> 8
+* TomMat-iga El Shaarawy acquisto 8.0 -> 8
+* TomMat-iga El Shaarawy attuale 8.0 -> 8
+* TomMat-iga Orsolini acquisto 31.0 -> 31
+* TomMat-iga Orsolini attuale 24.0 -> 31
+* TomMat-iga Pulisic acquisto 28.0 -> 28
+* TomMat-iga Pulisic attuale 31.0 -> 28
++ TomMat-iga: McTominay
+* TomMat-iga Folorunsho acquisto 9.0 -> 9
+* TomMat-iga Folorunsho attuale 8.0 -> 9
+* TomMat-iga Kaba acquisto 1.0 -> 1
+* TomMat-iga Kaba attuale 3.0 -> 1
+* TomMat-iga Atta acquisto 6.0 -> 6
+* TomMat-iga Atta attuale 16.0 -> 6
+* TomMat-iga Stanciu * acquisto 8.0 -> 8
+* TomMat-iga Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* TomMat-iga Scamacca acquisto 16.0 -> 16
+* TomMat-iga Scamacca attuale 22.0 -> 16
+* TomMat-iga Esposito Se. acquisto 7.0 -> 7
+* TomMat-iga Esposito Se. attuale 16.0 -> 7
+* TomMat-iga Thuram acquisto 31.0 -> 31
+* TomMat-iga Thuram attuale 29.0 -> 31
+* TomMat-iga Soulè acquisto 20.0 -> 20
+* TomMat-iga Soulè attuale 26.0 -> 20
+* TomMat-iga Giovane acquisto 1.0 -> 1
+* TomMat-iga Giovane attuale 17.0 -> 1
+* pacho team Milinkovic-Savic V. acquisto 4.0 -> 4
+* pacho team Milinkovic-Savic V. attuale 19.0 -> 4
+* pacho team Contini acquisto 1.0 -> 1
+* pacho team Contini attuale 1.0 -> 1
+* pacho team Caprile acquisto 7.0 -> 7
+* pacho team Caprile attuale 12.0 -> 7
+* pacho team Martin acquisto 10.0 -> 10
+* pacho team Martin attuale 14.0 -> 10
+* pacho team Mina acquisto 7.0 -> 7
+* pacho team Mina attuale 8.0 -> 7
+* pacho team Estupinan acquisto 11.0 -> 11
+* pacho team Estupinan attuale 3.0 -> 11
+* pacho team Baschirotto acquisto 8.0 -> 8
+* pacho team Baschirotto attuale 13.0 -> 8
+* pacho team Valeri acquisto 10.0 -> 10
+* pacho team Valeri attuale 10.0 -> 10
+* pacho team Marcandalli acquisto 2.0 -> 2
+* pacho team Marcandalli attuale 6.0 -> 2
+* pacho team Ramon acquisto 4.0 -> 4
+* pacho team Ramon attuale 12.0 -> 4
+* pacho team Zaccagni acquisto 26.0 -> 26
+* pacho team Zaccagni attuale 14.0 -> 26
+* pacho team Pulisic acquisto 28.0 -> 28
+* pacho team Pulisic attuale 31.0 -> 28
+* pacho team Vlasic acquisto 15.0 -> 15
+* pacho team Vlasic attuale 18.0 -> 15
+* pacho team Zerbin acquisto 3.0 -> 3
+* pacho team Zerbin attuale 6.0 -> 3
+* pacho team Kaba acquisto 2.0 -> 2
+* pacho team Kaba attuale 3.0 -> 2
+* pacho team Marchwinski acquisto 1.0 -> 1
+* pacho team Marchwinski attuale 1.0 -> 1
+* pacho team Paz N. acquisto 21.0 -> 21
+* pacho team Paz N. attuale 30.0 -> 21
+* pacho team Atta acquisto 8.0 -> 8
+* pacho team Atta attuale 16.0 -> 8
+* pacho team Kean acquisto 22.0 -> 22
+* pacho team Kean attuale 18.0 -> 22
+* pacho team Thuram acquisto 29.0 -> 29
+* pacho team Thuram attuale 29.0 -> 29
+* pacho team Hojlund acquisto 21.0 -> 21
+* pacho team Hojlund attuale 25.0 -> 21
+* pacho team Meister acquisto 2.0 -> 2
+* pacho team Meister attuale 8.0 -> 2
+* pacho team Pellegrino M. acquisto 13.0 -> 13
+* pacho team Pellegrino M. attuale 21.0 -> 13
+* Longobarda Perin acquisto 1.0 -> 1
+* Longobarda Perin attuale 3.0 -> 1
+* Longobarda Terracciano acquisto 1.0 -> 1
+* Longobarda Terracciano attuale 1.0 -> 1
+* Longobarda Maignan acquisto 16.0 -> 16
+* Longobarda Maignan attuale 20.0 -> 16
+* Longobarda Pezzella Giu. acquisto 5.0 -> 5
+* Longobarda Pezzella Giu. attuale 4.0 -> 5
+* Longobarda Akanji acquisto 9.0 -> 10
+* Longobarda Akanji attuale 11.0 -> 10
+* Longobarda Vasquez acquisto 9.0 -> 10
+* Longobarda Vasquez attuale 10.0 -> 10
+* Longobarda Cambiaso acquisto 15.0 -> 15
+* Longobarda Cambiaso attuale 10.0 -> 15
+* Longobarda Dodò acquisto 11.0 -> 11
+* Longobarda Dodò attuale 6.0 -> 11
+* Longobarda Gaspar K. acquisto 8.0 -> 8
+* Longobarda Gaspar K. attuale 4.0 -> 8
+* Longobarda Tiago Gabriel acquisto 1.0 -> 2
+* Longobarda Tiago Gabriel attuale 9.0 -> 2
+* Longobarda Fofana Y. acquisto 11.0 -> 11
+* Longobarda Fofana Y. attuale 10.0 -> 11
++ Longobarda: McTominay
+* Longobarda Konè M. acquisto 14.0 -> 14
+* Longobarda Konè M. attuale 17.0 -> 14
+* Longobarda Harroui acquisto 7.0 -> 7
+* Longobarda Harroui attuale 2.0 -> 7
+* Longobarda Bondo acquisto 3.0 -> 3
+* Longobarda Bondo attuale 7.0 -> 3
+* Longobarda Kaba acquisto 1.0 -> 1
+* Longobarda Kaba attuale 3.0 -> 1
+* Longobarda Paz N. acquisto 21.0 -> 20
+* Longobarda Paz N. attuale 30.0 -> 20
+* Longobarda Marin M. acquisto 4.0 -> 4
+* Longobarda Marin M. attuale 5.0 -> 4
+* Longobarda Dybala acquisto 13.0 -> 26
+* Longobarda Dybala attuale 13.0 -> 26
+* Longobarda Berardi acquisto 21.0 -> 24
+* Longobarda Berardi attuale 21.0 -> 24
+* Longobarda Kean acquisto 33.0 -> 22
+* Longobarda Kean attuale 18.0 -> 22
+* Longobarda Soulè acquisto 20.0 -> 20
+* Longobarda Soulè attuale 26.0 -> 20
+* Longobarda Almqvist acquisto 4.0 -> 4
+* Longobarda Almqvist attuale 3.0 -> 4
+* Real Mellandro Milinkovic-Savic V. acquisto 4.0 -> 4
+* Real Mellandro Milinkovic-Savic V. attuale 19.0 -> 4
+* Real Mellandro Terracciano acquisto 1.0 -> 1
+* Real Mellandro Terracciano attuale 1.0 -> 1
+* Real Mellandro Maignan acquisto 16.0 -> 16
+* Real Mellandro Maignan attuale 20.0 -> 16
+* Real Mellandro Biraghi acquisto 8.0 -> 8
+* Real Mellandro Biraghi attuale 3.0 -> 8
+* Real Mellandro Barbieri acquisto 3.0 -> 3
+* Real Mellandro Barbieri attuale 9.0 -> 3
+* Real Mellandro Marcandalli acquisto 2.0 -> 2
+* Real Mellandro Marcandalli attuale 6.0 -> 2
+* Real Mellandro Norton-Cuffy acquisto 3.0 -> 3
+* Real Mellandro Norton-Cuffy attuale 7.0 -> 3
+* Real Mellandro Tiago Gabriel acquisto 1.0 -> 1
+* Real Mellandro Tiago Gabriel attuale 9.0 -> 1
+* Real Mellandro Smolcic I. acquisto 3.0 -> 3
+* Real Mellandro Smolcic I. attuale 3.0 -> 3
+* Real Mellandro Canestrelli acquisto 3.0 -> 3
+* Real Mellandro Canestrelli attuale 5.0 -> 3
+* Real Mellandro Zaccagni acquisto 26.0 -> 26
+* Real Mellandro Zaccagni attuale 14.0 -> 26
+* Real Mellandro Barella acquisto 14.0 -> 14
+* Real Mellandro Barella attuale 17.0 -> 14
+* Real Mellandro Pulisic acquisto 28.0 -> 28
+* Real Mellandro Pulisic attuale 31.0 -> 28
+* Real Mellandro Akpa Akpro acquisto 3.0 -> 3
+* Real Mellandro Akpa Akpro attuale 2.0 -> 3
+* Real Mellandro Asllani acquisto 4.0 -> 4
+* Real Mellandro Asllani attuale 3.0 -> 4
+* Real Mellandro Aebischer acquisto 4.0 -> 4
+* Real Mellandro Aebischer attuale 5.0 -> 4
+* Real Mellandro Kaba acquisto 2.0 -> 2
+* Real Mellandro Kaba attuale 3.0 -> 2
+* Real Mellandro Paz N. acquisto 21.0 -> 21
+* Real Mellandro Paz N. attuale 30.0 -> 21
+* Real Mellandro Berardi acquisto 21.0 -> 21
+* Real Mellandro Berardi attuale 21.0 -> 21
+* Real Mellandro Martinez L. acquisto 34.0 -> 34
+* Real Mellandro Martinez L. attuale 34.0 -> 34
+* Real Mellandro Thuram acquisto 28.0 -> 28
+* Real Mellandro Thuram attuale 29.0 -> 28
+* Real Mellandro Meister acquisto 2.0 -> 2
+* Real Mellandro Meister attuale 8.0 -> 2
+* Real Mellandro Diao acquisto 17.0 -> 17
+* Real Mellandro Diao attuale 4.0 -> 17
+* BANDITI Lezzerini acquisto 1.0 -> 1
+* BANDITI Lezzerini attuale 1.0 -> 1
+* BANDITI De Gea acquisto 14.0 -> 14
+* BANDITI De Gea attuale 11.0 -> 14
+* BANDITI Martinelli T. * acquisto 1.0 -> 1
+* BANDITI Martinelli T. * attuale 1.0 -> 1
+* BANDITI Martin acquisto 10.0 -> 10
+* BANDITI Martin attuale 14.0 -> 10
+* BANDITI Valeri acquisto 10.0 -> 10
+* BANDITI Valeri attuale 10.0 -> 10
+* BANDITI Frese acquisto 3.0 -> 4
+* BANDITI Frese attuale 6.0 -> 4
+* BANDITI Norton-Cuffy acquisto 3.0 -> 6
+* BANDITI Norton-Cuffy attuale 7.0 -> 6
+* BANDITI Canestrelli acquisto 3.0 -> 3
+* BANDITI Canestrelli attuale 5.0 -> 3
+* BANDITI Muharemovic acquisto 4.0 -> 5
+* BANDITI Muharemovic attuale 7.0 -> 5
+* BANDITI Rodriguez Ju. acquisto 1.0 -> 1
+* BANDITI Rodriguez Ju. attuale 3.0 -> 1
+* BANDITI Orsolini acquisto 31.0 -> 30
+* BANDITI Orsolini attuale 24.0 -> 30
+* BANDITI Calhanoglu acquisto 30.0 -> 30
+* BANDITI Calhanoglu attuale 28.0 -> 30
+* BANDITI Pulisic acquisto 28.0 -> 28
+* BANDITI Pulisic attuale 31.0 -> 28
+* BANDITI Aebischer acquisto 4.0 -> 5
+* BANDITI Aebischer attuale 5.0 -> 5
+* BANDITI Bondo acquisto 3.0 -> 3
+* BANDITI Bondo attuale 7.0 -> 3
+* BANDITI Zerbin acquisto 3.0 -> 3
+* BANDITI Zerbin attuale 6.0 -> 3
+* BANDITI Prati acquisto 4.0 -> 3
+* BANDITI Prati attuale 6.0 -> 3
+* BANDITI Paz N. acquisto 21.0 -> 21
+* BANDITI Paz N. attuale 30.0 -> 21
+* BANDITI Pavoletti acquisto 1.0 -> 1
+* BANDITI Pavoletti attuale 1.0 -> 1
+* BANDITI Leao acquisto 26.0 -> 23
+* BANDITI Leao attuale 30.0 -> 23
+* BANDITI Thuram acquisto 31.0 -> 29
+* BANDITI Thuram attuale 29.0 -> 29
+* BANDITI Soulè acquisto 20.0 -> 24
+* BANDITI Soulè attuale 26.0 -> 24
+* BANDITI Balentien acquisto 1.0 -> 1
+* BANDITI Balentien attuale 1.0 -> 1
+* Plu-Team Perin acquisto 1.0 -> 1
+* Plu-Team Perin attuale 3.0 -> 1
+* Plu-Team Di Gregorio acquisto 14.0 -> 14
+* Plu-Team Di Gregorio attuale 16.0 -> 14
+* Plu-Team Corvi acquisto 1.0 -> 1
+* Plu-Team Corvi attuale 12.0 -> 1
+* Plu-Team Gosens acquisto 18.0 -> 18
+* Plu-Team Gosens attuale 10.0 -> 18
+* Plu-Team Martin acquisto 10.0 -> 10
+* Plu-Team Martin attuale 14.0 -> 10
+* Plu-Team Bellanova acquisto 13.0 -> 13
+* Plu-Team Bellanova attuale 6.0 -> 13
+* Plu-Team Dumfries acquisto 20.0 -> 20
+* Plu-Team Dumfries attuale 10.0 -> 20
+* Plu-Team Paz Y. acquisto 1.0 -> 1
+* Plu-Team Paz Y. attuale 1.0 -> 1
+* Plu-Team Frese acquisto 3.0 -> 3
+* Plu-Team Frese attuale 6.0 -> 3
+* Plu-Team Wesley acquisto 15.0 -> 15
+* Plu-Team Wesley attuale 16.0 -> 15
+* Plu-Team Orsolini acquisto 30.0 -> 30
+* Plu-Team Orsolini attuale 24.0 -> 30
+* Plu-Team Pulisic acquisto 28.0 -> 28
+* Plu-Team Pulisic attuale 31.0 -> 28
+* Plu-Team Saelemaekers acquisto 12.0 -> 12
+* Plu-Team Saelemaekers attuale 19.0 -> 12
+* Plu-Team Niasse acquisto 3.0 -> 3
+* Plu-Team Niasse attuale 4.0 -> 3
+* Plu-Team Zerbin acquisto 3.0 -> 3
+* Plu-Team Zerbin attuale 6.0 -> 3
+* Plu-Team Adzic acquisto 1.0 -> 1
+* Plu-Team Adzic attuale 3.0 -> 1
+* Plu-Team Paz N. acquisto 21.0 -> 21
+* Plu-Team Paz N. attuale 30.0 -> 21
+* Plu-Team Tourè I. acquisto 6.0 -> 6
+* Plu-Team Tourè I. attuale 10.0 -> 6
+* Plu-Team Pinamonti acquisto 16.0 -> 16
+* Plu-Team Pinamonti attuale 14.0 -> 16
+* Plu-Team Martinez L. acquisto 27.0 -> 27
+* Plu-Team Martinez L. attuale 34.0 -> 27
+* Plu-Team Bonny acquisto 5.0 -> 5
+* Plu-Team Bonny attuale 14.0 -> 5
+* Plu-Team Moro L. acquisto 1.0 -> 1
+* Plu-Team Moro L. attuale 1.0 -> 1
+* Plu-Team Giovane acquisto 1.0 -> 1
+* Plu-Team Giovane attuale 17.0 -> 1
+* Ipa Bali Terracciano acquisto 1.0 -> 1
+* Ipa Bali Terracciano attuale 1.0 -> 1
+* Ipa Bali Maignan acquisto 16.0 -> 16
+* Ipa Bali Maignan attuale 20.0 -> 16
+* Ipa Bali Sava acquisto 4.0 -> 4
+* Ipa Bali Sava attuale 1.0 -> 4
+* Ipa Bali Luperto acquisto 7.0 -> 7
+* Ipa Bali Luperto attuale 9.0 -> 7
+* Ipa Bali Bianchetti acquisto 3.0 -> 3
+* Ipa Bali Bianchetti attuale 6.0 -> 3
+* Ipa Bali Martin acquisto 10.0 -> 10
+* Ipa Bali Martin attuale 14.0 -> 10
+* Ipa Bali Gallo acquisto 5.0 -> 5
+* Ipa Bali Gallo attuale 8.0 -> 5
+* Ipa Bali Ostigard acquisto 5.0 -> 5
+* Ipa Bali Ostigard attuale 15.0 -> 5
+* Ipa Bali Doig acquisto 6.0 -> 6
+* Ipa Bali Doig attuale 6.0 -> 6
+* Ipa Bali Ramon acquisto 4.0 -> 6
+* Ipa Bali Ramon attuale 12.0 -> 6
+* Ipa Bali Calhanoglu acquisto 30.0 -> 30
+* Ipa Bali Calhanoglu attuale 28.0 -> 30
+* Ipa Bali Pulisic acquisto 28.0 -> 28
+* Ipa Bali Pulisic attuale 31.0 -> 28
++ Ipa Bali: McTominay
+* Ipa Bali Maldini acquisto 9.0 -> 4
+* Ipa Bali Maldini attuale 3.0 -> 4
+* Ipa Bali Pobega acquisto 5.0 -> 5
+* Ipa Bali Pobega attuale 11.0 -> 5
+* Ipa Bali Bondo acquisto 3.0 -> 3
+* Ipa Bali Bondo attuale 7.0 -> 3
+* Ipa Bali Kaba acquisto 1.0 -> 2
+* Ipa Bali Kaba attuale 3.0 -> 2
+* Ipa Bali Paz N. acquisto 21.0 -> 21
+* Ipa Bali Paz N. attuale 30.0 -> 21
+* Ipa Bali Pavoletti acquisto 1.0 -> 1
+* Ipa Bali Pavoletti attuale 1.0 -> 1
+* Ipa Bali Berardi acquisto 21.0 -> 21
+* Ipa Bali Berardi attuale 21.0 -> 21
+* Ipa Bali Kean acquisto 33.0 -> 33
+* Ipa Bali Kean attuale 18.0 -> 33
+* Ipa Bali Vlahovic acquisto 21.0 -> 24
+* Ipa Bali Vlahovic attuale 15.0 -> 24
+* Ipa Bali Meister acquisto 3.0 -> 2
+* Ipa Bali Meister attuale 8.0 -> 2
+* A.C.TUA CUCS Perin acquisto 1.0 -> 1
+* A.C.TUA CUCS Perin attuale 3.0 -> 1
+* A.C.TUA CUCS Sommer acquisto 16.0 -> 16
+* A.C.TUA CUCS Sommer attuale 14.0 -> 16
+* A.C.TUA CUCS Ravaglia F. acquisto 3.0 -> 3
+* A.C.TUA CUCS Ravaglia F. attuale 12.0 -> 3
+* A.C.TUA CUCS Martin acquisto 10.0 -> 10
+* A.C.TUA CUCS Martin attuale 14.0 -> 10
+* A.C.TUA CUCS Valeri acquisto 10.0 -> 10
+* A.C.TUA CUCS Valeri attuale 10.0 -> 10
+* A.C.TUA CUCS Barbieri acquisto 3.0 -> 3
+* A.C.TUA CUCS Barbieri attuale 9.0 -> 3
+* A.C.TUA CUCS Marcandalli acquisto 2.0 -> 2
+* A.C.TUA CUCS Marcandalli attuale 6.0 -> 2
+* A.C.TUA CUCS Kempf acquisto 5.0 -> 5
+* A.C.TUA CUCS Kempf attuale 14.0 -> 5
+* A.C.TUA CUCS Tiago Gabriel acquisto 1.0 -> 1
+* A.C.TUA CUCS Tiago Gabriel attuale 9.0 -> 1
+* A.C.TUA CUCS Rodriguez Ju. acquisto 1.0 -> 1
+* A.C.TUA CUCS Rodriguez Ju. attuale 3.0 -> 1
+* A.C.TUA CUCS Orsolini acquisto 31.0 -> 30
+* A.C.TUA CUCS Orsolini attuale 24.0 -> 30
+* A.C.TUA CUCS Calhanoglu acquisto 30.0 -> 30
+* A.C.TUA CUCS Calhanoglu attuale 28.0 -> 30
+* A.C.TUA CUCS Pulisic acquisto 28.0 -> 28
+* A.C.TUA CUCS Pulisic attuale 31.0 -> 28
+* A.C.TUA CUCS Ilkhan acquisto 1.0 -> 1
+* A.C.TUA CUCS Ilkhan attuale 2.0 -> 1
+* A.C.TUA CUCS Prati acquisto 4.0 -> 4
+* A.C.TUA CUCS Prati attuale 6.0 -> 4
+* A.C.TUA CUCS Paz N. acquisto 21.0 -> 21
+* A.C.TUA CUCS Paz N. attuale 30.0 -> 21
+* A.C.TUA CUCS Collocolo acquisto 8.0 -> 8
+* A.C.TUA CUCS Collocolo attuale 2.0 -> 8
+* A.C.TUA CUCS Stanciu * acquisto 8.0 -> 8
+* A.C.TUA CUCS Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* A.C.TUA CUCS Bonazzoli acquisto 1.0 -> 1
+* A.C.TUA CUCS Bonazzoli attuale 20.0 -> 1
+* A.C.TUA CUCS Leao acquisto 26.0 -> 22
+* A.C.TUA CUCS Leao attuale 30.0 -> 22
+* A.C.TUA CUCS Thuram acquisto 31.0 -> 31
+* A.C.TUA CUCS Thuram attuale 29.0 -> 31
+* A.C.TUA CUCS Soulè acquisto 20.0 -> 20
+* A.C.TUA CUCS Soulè attuale 26.0 -> 20
+* A.C.TUA CUCS Buffon L. acquisto 1.0 -> 1
+* A.C.TUA CUCS Buffon L. attuale 1.0 -> 1
+* ROCKY 3 Meret acquisto 16.0 -> 16
+* ROCKY 3 Meret attuale 8.0 -> 16
+* ROCKY 3 Milinkovic-Savic V. acquisto 4.0 -> 4
+* ROCKY 3 Milinkovic-Savic V. attuale 19.0 -> 4
+* ROCKY 3 Contini acquisto 1.0 -> 1
+* ROCKY 3 Contini attuale 1.0 -> 1
+* ROCKY 3 Martin acquisto 10.0 -> 10
+* ROCKY 3 Martin attuale 14.0 -> 10
+* ROCKY 3 Tomori acquisto 8.0 -> 8
+* ROCKY 3 Tomori attuale 7.0 -> 8
+* ROCKY 3 Kristensen T. acquisto 5.0 -> 5
+* ROCKY 3 Kristensen T. attuale 7.0 -> 5
+* ROCKY 3 Norton-Cuffy acquisto 6.0 -> 6
+* ROCKY 3 Norton-Cuffy attuale 7.0 -> 6
+* ROCKY 3 Coppola F. acquisto 1.0 -> 1
+* ROCKY 3 Coppola F. attuale 2.0 -> 1
+* ROCKY 3 Joao Mario acquisto 8.0 -> 8
+* ROCKY 3 Joao Mario attuale 2.0 -> 8
+* ROCKY 3 Wesley acquisto 14.0 -> 14
+* ROCKY 3 Wesley attuale 16.0 -> 14
+* ROCKY 3 Calhanoglu acquisto 30.0 -> 30
+* ROCKY 3 Calhanoglu attuale 28.0 -> 30
+* ROCKY 3 Rovella acquisto 8.0 -> 8
+* ROCKY 3 Rovella attuale 4.0 -> 8
+* ROCKY 3 Basic acquisto 1.0 -> 1
+* ROCKY 3 Basic attuale 14.0 -> 1
+* ROCKY 3 Koopmeiners acquisto 5.0 -> 5
+* ROCKY 3 Koopmeiners attuale 5.0 -> 5
+* ROCKY 3 Ederson D.S. acquisto 9.0 -> 9
+* ROCKY 3 Ederson D.S. attuale 10.0 -> 9
+* ROCKY 3 Ilkhan acquisto 1.0 -> 1
+* ROCKY 3 Ilkhan attuale 2.0 -> 1
+* ROCKY 3 Marchwinski acquisto 1.0 -> 1
+* ROCKY 3 Marchwinski attuale 1.0 -> 1
+* ROCKY 3 Paz N. acquisto 20.0 -> 20
+* ROCKY 3 Paz N. attuale 30.0 -> 20
+* ROCKY 3 Pavoletti acquisto 1.0 -> 1
+* ROCKY 3 Pavoletti attuale 1.0 -> 1
+* ROCKY 3 Berardi acquisto 21.0 -> 21
+* ROCKY 3 Berardi attuale 21.0 -> 21
+* ROCKY 3 Leao acquisto 26.0 -> 26
+* ROCKY 3 Leao attuale 30.0 -> 26
+* ROCKY 3 Thuram acquisto 31.0 -> 31
+* ROCKY 3 Thuram attuale 29.0 -> 31
+* ROCKY 3 Benedyczak acquisto 1.0 -> 1
+* ROCKY 3 Benedyczak attuale 8.0 -> 1
+* Fc nipiri Meret acquisto 16.0 -> 16
+* Fc nipiri Meret attuale 8.0 -> 16
+* Fc nipiri Satalino acquisto 1.0 -> 1
+* Fc nipiri Satalino attuale 1.0 -> 1
+* Fc nipiri Milinkovic-Savic V. acquisto 4.0 -> 4
+* Fc nipiri Milinkovic-Savic V. attuale 19.0 -> 4
+* Fc nipiri Gosens acquisto 18.0 -> 18
+* Fc nipiri Gosens attuale 10.0 -> 18
+* Fc nipiri Di Lorenzo acquisto 14.0 -> 14
+* Fc nipiri Di Lorenzo attuale 12.0 -> 14
+* Fc nipiri Akanji acquisto 9.0 -> 9
+* Fc nipiri Akanji attuale 11.0 -> 9
+* Fc nipiri Scalvini acquisto 8.0 -> 8
+* Fc nipiri Scalvini attuale 12.0 -> 8
+* Fc nipiri Doig acquisto 6.0 -> 6
+* Fc nipiri Doig attuale 6.0 -> 6
+* Fc nipiri Solet acquisto 11.0 -> 11
+* Fc nipiri Solet attuale 11.0 -> 11
+* Fc nipiri Mbambi * acquisto 1.0 -> 1
+* Fc nipiri Mbambi * attuale clean_nome
+Mbambi    1.0
+Mbambi    0.0
+Name: QA, dtype: float64 -> 1
+* Fc nipiri Orsolini acquisto 31.0 -> 30
+* Fc nipiri Orsolini attuale 24.0 -> 30
+* Fc nipiri Musah acquisto 6.0 -> 6
+* Fc nipiri Musah attuale 5.0 -> 6
+* Fc nipiri Thuram K. acquisto 15.0 -> 15
+* Fc nipiri Thuram K. attuale 13.0 -> 15
+* Fc nipiri Gineitis acquisto 4.0 -> 5
+* Fc nipiri Gineitis attuale 4.0 -> 5
+* Fc nipiri Zarraga acquisto 2.0 -> 2
+* Fc nipiri Zarraga attuale 2.0 -> 2
+* Fc nipiri Karlstrom acquisto 7.0 -> 6
+* Fc nipiri Karlstrom attuale 10.0 -> 6
+* Fc nipiri Paz N. acquisto 21.0 -> 21
+* Fc nipiri Paz N. attuale 30.0 -> 21
+* Fc nipiri Liteta acquisto 1.0 -> 1
+* Fc nipiri Liteta attuale 1.0 -> 1
+* Fc nipiri Pavoletti acquisto 1.0 -> 1
+* Fc nipiri Pavoletti attuale 1.0 -> 1
+* Fc nipiri Berardi acquisto 21.0 -> 21
+* Fc nipiri Berardi attuale 21.0 -> 21
+* Fc nipiri David acquisto 16.0 -> 27
+* Fc nipiri David attuale 13.0 -> 27
+* Fc nipiri Bonny acquisto 5.0 -> 16
+* Fc nipiri Bonny attuale 14.0 -> 16
+* Fc nipiri Buffon L. acquisto 1.0 -> 1
+* Fc nipiri Buffon L. attuale 1.0 -> 1
+* Non troppo cattivi Perin acquisto 1.0 -> 1
+* Non troppo cattivi Perin attuale 3.0 -> 1
+* Non troppo cattivi Svilar acquisto 15.0 -> 15
+* Non troppo cattivi Svilar attuale 19.0 -> 15
+* Non troppo cattivi Vasquez D. acquisto 1.0 -> 1
+* Non troppo cattivi Vasquez D. attuale 1.0 -> 1
+* Non troppo cattivi Dimarco acquisto 27.0 -> 19
+* Non troppo cattivi Dimarco attuale 29.0 -> 19
+* Non troppo cattivi Bianchetti acquisto 3.0 -> 3
+* Non troppo cattivi Bianchetti attuale 6.0 -> 3
+* Non troppo cattivi Martin acquisto 10.0 -> 10
+* Non troppo cattivi Martin attuale 14.0 -> 10
+* Non troppo cattivi Angelino acquisto 15.0 -> 15
+* Non troppo cattivi Angelino attuale 7.0 -> 15
+* Non troppo cattivi Zemura acquisto 4.0 -> 3
+* Non troppo cattivi Zemura attuale 2.0 -> 3
+* Non troppo cattivi Tiago Gabriel acquisto 1.0 -> 2
+* Non troppo cattivi Tiago Gabriel attuale 9.0 -> 2
+* Non troppo cattivi Angori acquisto 5.0 -> 5
+* Non troppo cattivi Angori attuale 9.0 -> 5
+* Non troppo cattivi Orsolini acquisto 31.0 -> 31
+* Non troppo cattivi Orsolini attuale 24.0 -> 31
+* Non troppo cattivi Pulisic acquisto 28.0 -> 28
+* Non troppo cattivi Pulisic attuale 31.0 -> 28
++ Non troppo cattivi: McTominay
+* Non troppo cattivi Niasse acquisto 3.0 -> 3
+* Non troppo cattivi Niasse attuale 4.0 -> 3
+* Non troppo cattivi Ndour acquisto 2.0 -> 2
+* Non troppo cattivi Ndour attuale 6.0 -> 2
+* Non troppo cattivi Kaba acquisto 1.0 -> 2
+* Non troppo cattivi Kaba attuale 3.0 -> 2
+* Non troppo cattivi Prati acquisto 4.0 -> 3
+* Non troppo cattivi Prati attuale 6.0 -> 3
+* Non troppo cattivi Paz N. acquisto 21.0 -> 20
+* Non troppo cattivi Paz N. attuale 30.0 -> 20
+* Non troppo cattivi Pinamonti acquisto 16.0 -> 17
+* Non troppo cattivi Pinamonti attuale 14.0 -> 17
+* Non troppo cattivi Thuram acquisto 31.0 -> 31
+* Non troppo cattivi Thuram attuale 29.0 -> 31
+* Non troppo cattivi Sarr A. acquisto 5.0 -> 5
+* Non troppo cattivi Sarr A. attuale 5.0 -> 5
+* Non troppo cattivi Almqvist acquisto 4.0 -> 4
+* Non troppo cattivi Almqvist attuale 3.0 -> 4
+* Non troppo cattivi Moro L. acquisto 1.0 -> 1
+* Non troppo cattivi Moro L. attuale 1.0 -> 1
+* BOBONE32 Lezzerini acquisto 1.0 -> 1
+* BOBONE32 Lezzerini attuale 1.0 -> 1
+* BOBONE32 De Gea acquisto 14.0 -> 14
+* BOBONE32 De Gea attuale 11.0 -> 14
+* BOBONE32 Martinelli T. * acquisto 1.0 -> 1
+* BOBONE32 Martinelli T. * attuale 1.0 -> 1
+* BOBONE32 Gallo acquisto 5.0 -> 5
+* BOBONE32 Gallo attuale 8.0 -> 5
+* BOBONE32 Pavlovic acquisto 7.0 -> 9
+* BOBONE32 Pavlovic attuale 15.0 -> 9
+* BOBONE32 Cambiaso acquisto 15.0 -> 15
+* BOBONE32 Cambiaso attuale 10.0 -> 15
+* BOBONE32 Ramon acquisto 4.0 -> 6
+* BOBONE32 Ramon attuale 12.0 -> 6
+* BOBONE32 Tiago Gabriel acquisto 1.0 -> 2
+* BOBONE32 Tiago Gabriel attuale 9.0 -> 2
+* BOBONE32 Canestrelli acquisto 3.0 -> 3
+* BOBONE32 Canestrelli attuale 5.0 -> 3
+* BOBONE32 Ndiaye acquisto 3.0 -> 3
+* BOBONE32 Ndiaye attuale 1.0 -> 3
+* BOBONE32 Barella acquisto 14.0 -> 14
+* BOBONE32 Barella attuale 17.0 -> 14
++ BOBONE32: McTominay
+* BOBONE32 Saelemaekers acquisto 12.0 -> 12
+* BOBONE32 Saelemaekers attuale 19.0 -> 12
+* BOBONE32 Asllani acquisto 4.0 -> 4
+* BOBONE32 Asllani attuale 3.0 -> 4
+* BOBONE32 Aebischer acquisto 4.0 -> 4
+* BOBONE32 Aebischer attuale 5.0 -> 4
+* BOBONE32 Carboni V. * acquisto 11.0 -> 11
+* BOBONE32 Carboni V. * attuale 4.0 -> 11
+* BOBONE32 Folorunsho acquisto 9.0 -> 9
+* BOBONE32 Folorunsho attuale 8.0 -> 9
+* BOBONE32 Paz N. acquisto 21.0 -> 20
+* BOBONE32 Paz N. attuale 30.0 -> 20
+* BOBONE32 Berardi acquisto 21.0 -> 21
+* BOBONE32 Berardi attuale 21.0 -> 21
+* BOBONE32 Martinez L. acquisto 34.0 -> 34
+* BOBONE32 Martinez L. attuale 34.0 -> 34
+* BOBONE32 Davis K. acquisto 13.0 -> 13
+* BOBONE32 Davis K. attuale 24.0 -> 13
+* BOBONE32 Castellanos * acquisto 21.0 -> 21
+* BOBONE32 Castellanos * attuale 18.0 -> 21
+* BOBONE32 Bonny acquisto 5.0 -> 16
+* BOBONE32 Bonny attuale 14.0 -> 16
+* buttiglia25 Gollini acquisto 1.0 -> 1
+* buttiglia25 Gollini attuale 1.0 -> 1
+* buttiglia25 Svilar acquisto 15.0 -> 15
+* buttiglia25 Svilar attuale 19.0 -> 15
+* buttiglia25 Vasquez D. acquisto 1.0 -> 1
+* buttiglia25 Vasquez D. attuale 1.0 -> 1
+* buttiglia25 Pezzella Giu. acquisto 5.0 -> 5
+* buttiglia25 Pezzella Giu. attuale 4.0 -> 5
+* buttiglia25 Martin acquisto 10.0 -> 10
+* buttiglia25 Martin attuale 14.0 -> 10
+* buttiglia25 Zortea acquisto 16.0 -> 16
+* buttiglia25 Zortea attuale 8.0 -> 16
+* buttiglia25 Bellanova acquisto 13.0 -> 13
+* buttiglia25 Bellanova attuale 6.0 -> 13
+* buttiglia25 Dumfries acquisto 20.0 -> 20
+* buttiglia25 Dumfries attuale 10.0 -> 20
+* buttiglia25 Tiago Gabriel acquisto 1.0 -> 1
+* buttiglia25 Tiago Gabriel attuale 9.0 -> 1
+* buttiglia25 Idrissi R. acquisto 3.0 -> 3
+* buttiglia25 Idrissi R. attuale 8.0 -> 3
+* buttiglia25 Zaccagni acquisto 24.0 -> 24
+* buttiglia25 Zaccagni attuale 14.0 -> 24
+* buttiglia25 Pulisic acquisto 28.0 -> 28
+* buttiglia25 Pulisic attuale 31.0 -> 28
++ buttiglia25: McTominay
+* buttiglia25 Akpa Akpro acquisto 3.0 -> 3
+* buttiglia25 Akpa Akpro attuale 2.0 -> 3
+* buttiglia25 Estevez acquisto 2.0 -> 2
+* buttiglia25 Estevez attuale 5.0 -> 2
+* buttiglia25 Ricci S. acquisto 10.0 -> 10
+* buttiglia25 Ricci S. attuale 13.0 -> 10
+* buttiglia25 Zerbin acquisto 3.0 -> 3
+* buttiglia25 Zerbin attuale 6.0 -> 3
+* buttiglia25 Tete Morente acquisto 9.0 -> 9
+* buttiglia25 Tete Morente attuale 3.0 -> 9
+* buttiglia25 Pavoletti acquisto 2.0 -> 2
+* buttiglia25 Pavoletti attuale 1.0 -> 2
+* buttiglia25 Bonazzoli acquisto 1.0 -> 1
+* buttiglia25 Bonazzoli attuale 20.0 -> 1
+* buttiglia25 Vlahovic acquisto 21.0 -> 21
+* buttiglia25 Vlahovic attuale 15.0 -> 21
+* buttiglia25 Thuram acquisto 29.0 -> 29
+* buttiglia25 Thuram attuale 29.0 -> 29
+* buttiglia25 Benedyczak acquisto 1.0 -> 1
+* buttiglia25 Benedyczak attuale 8.0 -> 1
+* kalashnikov Skorupski acquisto 10.0 -> 10
+* kalashnikov Skorupski attuale 10.0 -> 10
+* kalashnikov Ravaglia F. acquisto 3.0 -> 3
+* kalashnikov Ravaglia F. attuale 12.0 -> 3
+* kalashnikov Pessina Mas. acquisto 1.0 -> 1
+* kalashnikov Pessina Mas. attuale 1.0 -> 1
+* kalashnikov Juan Jesus acquisto 4.0 -> 4
+* kalashnikov Juan Jesus attuale 4.0 -> 4
+* kalashnikov Sernicola * acquisto 1.0 -> 1
+* kalashnikov Sernicola * attuale 1.0 -> 1
+* kalashnikov Mina acquisto 7.0 -> 7
+* kalashnikov Mina attuale 8.0 -> 7
+* kalashnikov Rrahmani acquisto 7.0 -> 7
+* kalashnikov Rrahmani attuale 13.0 -> 7
+* kalashnikov Pavlovic acquisto 7.0 -> 7
+* kalashnikov Pavlovic attuale 15.0 -> 7
+* kalashnikov Dumfries acquisto 16.0 -> 16
+* kalashnikov Dumfries attuale 10.0 -> 16
+* kalashnikov Cambiaso acquisto 15.0 -> 15
+* kalashnikov Cambiaso attuale 10.0 -> 15
+* kalashnikov Politano acquisto 16.0 -> 16
+* kalashnikov Politano attuale 11.0 -> 16
+* kalashnikov Barella acquisto 14.0 -> 14
+* kalashnikov Barella attuale 17.0 -> 14
+* kalashnikov Pasalic acquisto 11.0 -> 11
+* kalashnikov Pasalic attuale 13.0 -> 11
+* kalashnikov Pulisic acquisto 28.0 -> 28
+* kalashnikov Pulisic attuale 31.0 -> 28
+* kalashnikov Zaniolo acquisto 15.0 -> 15
+* kalashnikov Zaniolo attuale 20.0 -> 15
+* kalashnikov Messias acquisto 7.0 -> 7
+* kalashnikov Messias attuale 2.0 -> 7
+* kalashnikov Zarraga acquisto 2.0 -> 2
+* kalashnikov Zarraga attuale 2.0 -> 2
+* kalashnikov Adzic acquisto 1.0 -> 1
+* kalashnikov Adzic attuale 3.0 -> 1
+* kalashnikov Kean acquisto 33.0 -> 33
+* kalashnikov Kean attuale 18.0 -> 33
+* kalashnikov Leao acquisto 23.0 -> 23
+* kalashnikov Leao attuale 30.0 -> 23
+* kalashnikov Lookman acquisto 19.0 -> 19
+* kalashnikov Lookman attuale 14.0 -> 19
+* kalashnikov Bonny acquisto 5.0 -> 5
+* kalashnikov Bonny attuale 14.0 -> 5
+* kalashnikov Meister acquisto 3.0 -> 3
+* kalashnikov Meister attuale 8.0 -> 3
+* SPOSTATI Lezzerini acquisto 1.0 -> 1
+* SPOSTATI Lezzerini attuale 1.0 -> 1
+* SPOSTATI De Gea acquisto 14.0 -> 14
+* SPOSTATI De Gea attuale 11.0 -> 14
+* SPOSTATI Martinelli T. * acquisto 1.0 -> 1
+* SPOSTATI Martinelli T. * attuale 1.0 -> 1
+* SPOSTATI Pezzella Giu. acquisto 6.0 -> 6
+* SPOSTATI Pezzella Giu. attuale 4.0 -> 6
+* SPOSTATI Martin acquisto 10.0 -> 10
+* SPOSTATI Martin attuale 14.0 -> 10
+* SPOSTATI Mina acquisto 7.0 -> 7
+* SPOSTATI Mina attuale 8.0 -> 7
+* SPOSTATI Bellanova acquisto 13.0 -> 13
+* SPOSTATI Bellanova attuale 6.0 -> 13
+* SPOSTATI Terracciano F. acquisto 2.0 -> 2
+* SPOSTATI Terracciano F. attuale 11.0 -> 2
+* SPOSTATI Valle acquisto 6.0 -> 6
+* SPOSTATI Valle attuale 8.0 -> 6
+* SPOSTATI Lovik * acquisto 3.0 -> 3
+* SPOSTATI Lovik * attuale clean_nome
+Lovik    2.0
+Lovik    0.0
+Name: QA, dtype: float64 -> 3
+* SPOSTATI El Shaarawy acquisto 8.0 -> 8
+* SPOSTATI El Shaarawy attuale 8.0 -> 8
+* SPOSTATI Pulisic acquisto 28.0 -> 28
+* SPOSTATI Pulisic attuale 31.0 -> 28
+* SPOSTATI Saelemaekers acquisto 12.0 -> 12
+* SPOSTATI Saelemaekers attuale 19.0 -> 12
+* SPOSTATI Tramoni M. acquisto 12.0 -> 12
+* SPOSTATI Tramoni M. attuale 9.0 -> 12
+* SPOSTATI Vranckx acquisto 4.0 -> 4
+* SPOSTATI Vranckx attuale 3.0 -> 4
+* SPOSTATI Isaksen acquisto 14.0 -> 14
+* SPOSTATI Isaksen attuale 14.0 -> 14
+* SPOSTATI Kaba acquisto 1.0 -> 1
+* SPOSTATI Kaba attuale 3.0 -> 1
+* SPOSTATI Paz N. acquisto 20.0 -> 20
+* SPOSTATI Paz N. attuale 30.0 -> 20
+* SPOSTATI Leao acquisto 24.0 -> 24
+* SPOSTATI Leao attuale 30.0 -> 24
+* SPOSTATI Thuram acquisto 31.0 -> 31
+* SPOSTATI Thuram attuale 29.0 -> 31
+* SPOSTATI Hojlund acquisto 24.0 -> 24
+* SPOSTATI Hojlund attuale 25.0 -> 24
+* SPOSTATI Meister acquisto 2.0 -> 2
+* SPOSTATI Meister attuale 8.0 -> 2
+* SPOSTATI Giovane acquisto 1.0 -> 1
+* SPOSTATI Giovane attuale 17.0 -> 1
+* Lions Sportiello acquisto 1.0 -> 1
+* Lions Sportiello attuale 1.0 -> 1
+* Lions Perin acquisto 1.0 -> 1
+* Lions Perin attuale 3.0 -> 1
+* Lions Di Gregorio acquisto 16.0 -> 16
+* Lions Di Gregorio attuale 16.0 -> 16
+* Lions Di Lorenzo acquisto 14.0 -> 14
+* Lions Di Lorenzo attuale 12.0 -> 14
+* Lions Bellanova acquisto 13.0 -> 13
+* Lions Bellanova attuale 6.0 -> 13
+* Lions Cambiaso acquisto 15.0 -> 15
+* Lions Cambiaso attuale 10.0 -> 15
+* Lions Kristensen T. acquisto 7.0 -> 7
+* Lions Kristensen T. attuale 7.0 -> 7
+* Lions Van Der Brempt acquisto 4.0 -> 2
+* Lions Van Der Brempt attuale 3.0 -> 2
+* Lions Tiago Gabriel acquisto 1.0 -> 1
+* Lions Tiago Gabriel attuale 9.0 -> 1
+* Lions Provstgaard acquisto 3.0 -> 3
+* Lions Provstgaard attuale 3.0 -> 3
+* Lions Politano acquisto 15.0 -> 15
+* Lions Politano attuale 11.0 -> 15
+* Lions Orsolini acquisto 31.0 -> 31
+* Lions Orsolini attuale 24.0 -> 31
+* Lions Pulisic acquisto 28.0 -> 28
+* Lions Pulisic attuale 31.0 -> 28
++ Lions: McTominay
+* Lions Ndour acquisto 2.0 -> 2
+* Lions Ndour attuale 6.0 -> 2
+* Lions Kaba acquisto 1.0 -> 1
+* Lions Kaba attuale 3.0 -> 1
+* Lions Prati acquisto 4.0 -> 3
+* Lions Prati attuale 6.0 -> 3
+* Lions Paz N. acquisto 21.0 -> 21
+* Lions Paz N. attuale 30.0 -> 21
+* Lions Thuram acquisto 31.0 -> 31
+* Lions Thuram attuale 29.0 -> 31
+* Lions Cancellieri acquisto 10.0 -> 3
+* Lions Cancellieri attuale 14.0 -> 3
+* Lions Almqvist acquisto 4.0 -> 4
+* Lions Almqvist attuale 3.0 -> 4
+* Lions Rodriguez Je. acquisto 6.0 -> 6
+* Lions Rodriguez Je. attuale 12.0 -> 6
+* Lions Moro L. acquisto 1.0 -> 1
+* Lions Moro L. attuale 1.0 -> 1
+* CISCO TEAM Milinkovic-Savic V. acquisto 4.0 -> 4
+* CISCO TEAM Milinkovic-Savic V. attuale 19.0 -> 4
+* CISCO TEAM Terracciano acquisto 1.0 -> 1
+* CISCO TEAM Terracciano attuale 1.0 -> 1
+* CISCO TEAM Maignan acquisto 16.0 -> 16
+* CISCO TEAM Maignan attuale 20.0 -> 16
+* CISCO TEAM Martin acquisto 10.0 -> 10
+* CISCO TEAM Martin attuale 14.0 -> 10
+* CISCO TEAM Cambiaso acquisto 15.0 -> 15
+* CISCO TEAM Cambiaso attuale 10.0 -> 15
+* CISCO TEAM Doig acquisto 6.0 -> 6
+* CISCO TEAM Doig attuale 6.0 -> 6
+* CISCO TEAM Valeri acquisto 10.0 -> 10
+* CISCO TEAM Valeri attuale 10.0 -> 10
+* CISCO TEAM Norton-Cuffy acquisto 3.0 -> 6
+* CISCO TEAM Norton-Cuffy attuale 7.0 -> 6
+* CISCO TEAM Tiago Gabriel acquisto 1.0 -> 1
+* CISCO TEAM Tiago Gabriel attuale 9.0 -> 1
+* CISCO TEAM Canestrelli acquisto 3.0 -> 3
+* CISCO TEAM Canestrelli attuale 5.0 -> 3
+* CISCO TEAM Pellegrini Lo. acquisto 16.0 -> 16
+* CISCO TEAM Pellegrini Lo. attuale 14.0 -> 16
+* CISCO TEAM Zaccagni acquisto 26.0 -> 26
+* CISCO TEAM Zaccagni attuale 14.0 -> 26
+* CISCO TEAM Pulisic acquisto 28.0 -> 28
+* CISCO TEAM Pulisic attuale 31.0 -> 28
+* CISCO TEAM Asllani acquisto 4.0 -> 4
+* CISCO TEAM Asllani attuale 3.0 -> 4
+* CISCO TEAM Aebischer acquisto 4.0 -> 4
+* CISCO TEAM Aebischer attuale 5.0 -> 4
+* CISCO TEAM Prati acquisto 4.0 -> 3
+* CISCO TEAM Prati attuale 6.0 -> 3
+* CISCO TEAM Marchwinski acquisto 1.0 -> 1
+* CISCO TEAM Marchwinski attuale 1.0 -> 1
+* CISCO TEAM Paz N. acquisto 21.0 -> 21
+* CISCO TEAM Paz N. attuale 30.0 -> 21
++ CISCO TEAM: Berardi
+* CISCO TEAM Vlahovic acquisto 21.0 -> 21
+* CISCO TEAM Vlahovic attuale 15.0 -> 21
++ CISCO TEAM: Cancellieri
++ CISCO TEAM: Ferguson E.
+* CISCO TEAM Giovane acquisto 1.0 -> 1
+* CISCO TEAM Giovane attuale 17.0 -> 1
+* FC Plasmon Perin acquisto 1.0 -> 1
+* FC Plasmon Perin attuale 3.0 -> 1
+* FC Plasmon Provedel acquisto 12.0 -> 12
+* FC Plasmon Provedel attuale 17.0 -> 12
++ FC Plasmon: Mandas *
+* FC Plasmon Martin acquisto 10.0 -> 10
+* FC Plasmon Martin attuale 14.0 -> 10
+* FC Plasmon Miranda J. acquisto 9.0 -> 9
+* FC Plasmon Miranda J. attuale 11.0 -> 9
+* FC Plasmon Angelino acquisto 15.0 -> 8
+* FC Plasmon Angelino attuale 7.0 -> 8
+* FC Plasmon Cambiaso acquisto 15.0 -> 15
+* FC Plasmon Cambiaso attuale 10.0 -> 15
+* FC Plasmon Terracciano F. acquisto 2.0 -> 2
+* FC Plasmon Terracciano F. attuale 11.0 -> 2
+* FC Plasmon Dodò acquisto 11.0 -> 11
+* FC Plasmon Dodò attuale 6.0 -> 11
+* FC Plasmon Tiago Gabriel acquisto 1.0 -> 1
+* FC Plasmon Tiago Gabriel attuale 9.0 -> 1
+* FC Plasmon Pulisic acquisto 28.0 -> 28
+* FC Plasmon Pulisic attuale 31.0 -> 28
+* FC Plasmon Malinovskyi acquisto 7.0 -> 7
+* FC Plasmon Malinovskyi attuale 12.0 -> 7
+* FC Plasmon Akpa Akpro acquisto 1.0 -> 1
+* FC Plasmon Akpa Akpro attuale 2.0 -> 1
+* FC Plasmon Zerbin acquisto 3.0 -> 3
+* FC Plasmon Zerbin attuale 6.0 -> 3
+* FC Plasmon Ndour acquisto 2.0 -> 2
+* FC Plasmon Ndour attuale 6.0 -> 2
+* FC Plasmon Isaksen acquisto 14.0 -> 14
+* FC Plasmon Isaksen attuale 14.0 -> 14
+* FC Plasmon Kaba acquisto 1.0 -> 1
+* FC Plasmon Kaba attuale 3.0 -> 1
+* FC Plasmon Paz N. acquisto 21.0 -> 20
+* FC Plasmon Paz N. attuale 30.0 -> 20
+* FC Plasmon Kean acquisto 33.0 -> 31
+* FC Plasmon Kean attuale 18.0 -> 31
+* FC Plasmon Leao acquisto 26.0 -> 26
+* FC Plasmon Leao attuale 30.0 -> 26
+* FC Plasmon Thuram acquisto 31.0 -> 31
+* FC Plasmon Thuram attuale 29.0 -> 31
+* FC Plasmon Giovane acquisto 1.0 -> 1
+* FC Plasmon Giovane attuale 17.0 -> 1
+* FC Plasmon Buffon L. acquisto 1.0 -> 1
+* FC Plasmon Buffon L. attuale 1.0 -> 1
+* Piovra73 Sportiello acquisto 1.0 -> 1
+* Piovra73 Sportiello attuale 1.0 -> 1
+* Piovra73 Terracciano acquisto 1.0 -> 1
+* Piovra73 Terracciano attuale 1.0 -> 1
+* Piovra73 Maignan acquisto 16.0 -> 16
+* Piovra73 Maignan attuale 20.0 -> 16
+* Piovra73 Cambiaso acquisto 15.0 -> 15
+* Piovra73 Cambiaso attuale 10.0 -> 15
+* Piovra73 Tavares N. acquisto 12.0 -> 12
+* Piovra73 Tavares N. attuale 6.0 -> 12
+* Piovra73 Terracciano F. acquisto 5.0 -> 5
+* Piovra73 Terracciano F. attuale 11.0 -> 5
+* Piovra73 Marcandalli acquisto 2.0 -> 2
+* Piovra73 Marcandalli attuale 6.0 -> 2
+* Piovra73 Tiago Gabriel acquisto 1.0 -> 1
+* Piovra73 Tiago Gabriel attuale 9.0 -> 1
+* Piovra73 Veiga D. acquisto 2.0 -> 2
+* Piovra73 Veiga D. attuale 5.0 -> 2
+* Piovra73 Canestrelli acquisto 3.0 -> 3
+* Piovra73 Canestrelli attuale 5.0 -> 3
+* Piovra73 Zaccagni acquisto 26.0 -> 26
+* Piovra73 Zaccagni attuale 14.0 -> 26
+* Piovra73 Modric acquisto 12.0 -> 12
+* Piovra73 Modric attuale 19.0 -> 12
+* Piovra73 Tramoni M. acquisto 12.0 -> 12
+* Piovra73 Tramoni M. attuale 9.0 -> 12
+* Piovra73 Asllani acquisto 4.0 -> 4
+* Piovra73 Asllani attuale 3.0 -> 4
+* Piovra73 Kaba acquisto 1.0 -> 1
+* Piovra73 Kaba attuale 3.0 -> 1
+* Piovra73 Paz N. acquisto 20.0 -> 20
+* Piovra73 Paz N. attuale 30.0 -> 20
+* Piovra73 Vandeputte acquisto 12.0 -> 12
+* Piovra73 Vandeputte attuale 13.0 -> 12
+* Piovra73 Sorensen O. acquisto 5.0 -> 5
+* Piovra73 Sorensen O. attuale 7.0 -> 5
+* Piovra73 Berardi acquisto 24.0 -> 24
+* Piovra73 Berardi attuale 21.0 -> 24
+* Piovra73 Kean acquisto 31.0 -> 31
+* Piovra73 Kean attuale 18.0 -> 31
+* Piovra73 Martinez L. acquisto 27.0 -> 27
+* Piovra73 Martinez L. attuale 34.0 -> 27
+* Piovra73 Ekuban acquisto 2.0 -> 2
+* Piovra73 Ekuban attuale 9.0 -> 2
+* Piovra73 Giovane acquisto 1.0 -> 1
+* Piovra73 Giovane attuale 17.0 -> 1
+* Leonte FC Perin acquisto 1.0 -> 1
+* Leonte FC Perin attuale 3.0 -> 1
+* Leonte FC Di Gregorio acquisto 16.0 -> 16
+* Leonte FC Di Gregorio attuale 16.0 -> 16
+* Leonte FC Nava acquisto 1.0 -> 1
+* Leonte FC Nava attuale 1.0 -> 1
+* Leonte FC Bastoni acquisto 17.0 -> 16
+* Leonte FC Bastoni attuale 17.0 -> 16
+* Leonte FC Di Lorenzo acquisto 14.0 -> 14
+* Leonte FC Di Lorenzo attuale 12.0 -> 14
+* Leonte FC Pavlovic acquisto 7.0 -> 12
+* Leonte FC Pavlovic attuale 15.0 -> 12
+* Leonte FC Valenti acquisto 4.0 -> 4
+* Leonte FC Valenti attuale 7.0 -> 4
+* Leonte FC Dodò acquisto 11.0 -> 11
+* Leonte FC Dodò attuale 6.0 -> 11
+* Leonte FC Canestrelli acquisto 3.0 -> 3
+* Leonte FC Canestrelli attuale 5.0 -> 3
+* Leonte FC Esteves T. * acquisto 1.0 -> 1
+* Leonte FC Esteves T. * attuale 1.0 -> 1
+* Leonte FC Pulisic acquisto 28.0 -> 28
+* Leonte FC Pulisic attuale 31.0 -> 28
++ Leonte FC: McTominay
+* Leonte FC Estevez acquisto 2.0 -> 2
+* Leonte FC Estevez attuale 5.0 -> 2
+* Leonte FC Basic acquisto 1.0 -> 1
+* Leonte FC Basic attuale 14.0 -> 1
+* Leonte FC Folorunsho acquisto 9.0 -> 9
+* Leonte FC Folorunsho attuale 8.0 -> 9
+* Leonte FC Ndour acquisto 2.0 -> 2
+* Leonte FC Ndour attuale 6.0 -> 2
+* Leonte FC Kaba acquisto 1.0 -> 1
+* Leonte FC Kaba attuale 3.0 -> 1
+* Leonte FC Tourè I. acquisto 6.0 -> 9
+* Leonte FC Tourè I. attuale 10.0 -> 9
+* Leonte FC Leao acquisto 26.0 -> 26
+* Leonte FC Leao attuale 30.0 -> 26
+* Leonte FC Thuram acquisto 31.0 -> 31
+* Leonte FC Thuram attuale 29.0 -> 31
+* Leonte FC Cancellieri acquisto 10.0 -> 3
+* Leonte FC Cancellieri attuale 14.0 -> 3
+* Leonte FC Soulè acquisto 20.0 -> 20
+* Leonte FC Soulè attuale 26.0 -> 20
+* Leonte FC Stulic acquisto 8.0 -> 8
+* Leonte FC Stulic attuale 8.0 -> 8
+* Concali Craboni FC Provedel acquisto 12.0 -> 12
+* Concali Craboni FC Provedel attuale 17.0 -> 12
+* Concali Craboni FC Furlanetto acquisto 1.0 -> 1
+* Concali Craboni FC Furlanetto attuale 1.0 -> 1
++ Concali Craboni FC: Mandas *
+* Concali Craboni FC Dimarco acquisto 27.0 -> 27
+* Concali Craboni FC Dimarco attuale 29.0 -> 27
+* Concali Craboni FC Akanji acquisto 9.0 -> 10
+* Concali Craboni FC Akanji attuale 11.0 -> 10
+* Concali Craboni FC Mina acquisto 7.0 -> 7
+* Concali Craboni FC Mina attuale 8.0 -> 7
+* Concali Craboni FC Baschirotto acquisto 8.0 -> 8
+* Concali Craboni FC Baschirotto attuale 13.0 -> 8
+* Concali Craboni FC Palestra acquisto 4.0 -> 4
+* Concali Craboni FC Palestra attuale 15.0 -> 4
+* Concali Craboni FC Valle acquisto 6.0 -> 6
+* Concali Craboni FC Valle attuale 8.0 -> 6
+* Concali Craboni FC Canestrelli acquisto 3.0 -> 3
+* Concali Craboni FC Canestrelli attuale 5.0 -> 3
+* Concali Craboni FC Barella acquisto 14.0 -> 14
+* Concali Craboni FC Barella attuale 17.0 -> 14
+* Concali Craboni FC Pulisic acquisto 28.0 -> 28
+* Concali Craboni FC Pulisic attuale 31.0 -> 28
+* Concali Craboni FC Zambo Anguissa acquisto 16.0 -> 15
+* Concali Craboni FC Zambo Anguissa attuale 19.0 -> 15
+* Concali Craboni FC Vranckx acquisto 4.0 -> 4
+* Concali Craboni FC Vranckx attuale 3.0 -> 4
+* Concali Craboni FC Berisha M. acquisto 3.0 -> 3
+* Concali Craboni FC Berisha M. attuale 13.0 -> 3
+* Concali Craboni FC Akinsanmiro acquisto 3.0 -> 3
+* Concali Craboni FC Akinsanmiro attuale 7.0 -> 3
+* Concali Craboni FC Paz N. acquisto 21.0 -> 21
+* Concali Craboni FC Paz N. attuale 30.0 -> 21
+* Concali Craboni FC Tourè I. acquisto 6.0 -> 6
+* Concali Craboni FC Tourè I. attuale 10.0 -> 6
+* Concali Craboni FC Bonazzoli acquisto 1.0 -> 13
+* Concali Craboni FC Bonazzoli attuale 20.0 -> 13
+* Concali Craboni FC Simeone acquisto 18.0 -> 18
+* Concali Craboni FC Simeone attuale 19.0 -> 18
+* Concali Craboni FC Esposito Se. acquisto 7.0 -> 7
+* Concali Craboni FC Esposito Se. attuale 16.0 -> 7
+* Concali Craboni FC David acquisto 16.0 -> 27
+* Concali Craboni FC David attuale 13.0 -> 27
+* Concali Craboni FC Douvikas acquisto 19.0 -> 9
+* Concali Craboni FC Douvikas attuale 21.0 -> 9
+* LEONE Meret acquisto 16.0 -> 16
+* LEONE Meret attuale 8.0 -> 16
+* LEONE Milinkovic-Savic V. acquisto 4.0 -> 4
+* LEONE Milinkovic-Savic V. attuale 19.0 -> 4
+* LEONE Contini acquisto 1.0 -> 1
+* LEONE Contini attuale 1.0 -> 1
+* LEONE Bremer acquisto 13.0 -> 13
+* LEONE Bremer attuale 13.0 -> 13
+* LEONE Pavlovic acquisto 7.0 -> 7
+* LEONE Pavlovic attuale 15.0 -> 7
+* LEONE Cambiaso acquisto 15.0 -> 15
+* LEONE Cambiaso attuale 10.0 -> 15
+* LEONE Dodò acquisto 11.0 -> 11
+* LEONE Dodò attuale 6.0 -> 11
+* LEONE Bisseck acquisto 5.0 -> 5
+* LEONE Bisseck attuale 10.0 -> 5
+* LEONE Kempf acquisto 5.0 -> 6
+* LEONE Kempf attuale 14.0 -> 6
+* LEONE Wesley acquisto 14.0 -> 14
+* LEONE Wesley attuale 16.0 -> 14
+* LEONE Adopo acquisto 5.0 -> 6
+* LEONE Adopo attuale 6.0 -> 6
+* LEONE Saelemaekers acquisto 12.0 -> 12
+* LEONE Saelemaekers attuale 19.0 -> 12
+* LEONE Tramoni M. acquisto 12.0 -> 12
+* LEONE Tramoni M. attuale 9.0 -> 12
+* LEONE Aebischer acquisto 4.0 -> 4
+* LEONE Aebischer attuale 5.0 -> 4
+* LEONE Ederson D.S. acquisto 9.0 -> 9
+* LEONE Ederson D.S. attuale 10.0 -> 9
+* LEONE Paz N. acquisto 21.0 -> 28
+* LEONE Paz N. attuale 30.0 -> 28
+* LEONE Atta acquisto 8.0 -> 6
+* LEONE Atta attuale 16.0 -> 6
+* LEONE Stanciu * acquisto 8.0 -> 8
+* LEONE Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* LEONE Berardi acquisto 21.0 -> 24
+* LEONE Berardi attuale 21.0 -> 24
+* LEONE Simeone acquisto 18.0 -> 11
+* LEONE Simeone attuale 19.0 -> 11
+* LEONE Piccoli acquisto 17.0 -> 17
+* LEONE Piccoli attuale 9.0 -> 17
+* LEONE Davis K. acquisto 13.0 -> 12
+* LEONE Davis K. attuale 24.0 -> 12
+* LEONE Kilicsoy acquisto 3.0 -> 6
+* LEONE Kilicsoy attuale 12.0 -> 6
+* XLiverpuh Svilar acquisto 15.0 -> 15
+* XLiverpuh Svilar attuale 19.0 -> 15
+* XLiverpuh Vasquez D. acquisto 1.0 -> 1
+* XLiverpuh Vasquez D. attuale 1.0 -> 1
+* XLiverpuh Zelezny acquisto 1.0 -> 1
+* XLiverpuh Zelezny attuale 1.0 -> 1
+* XLiverpuh Pezzella Giu. acquisto 5.0 -> 5
+* XLiverpuh Pezzella Giu. attuale 4.0 -> 5
+* XLiverpuh Lykogiannis acquisto 5.0 -> 5
+* XLiverpuh Lykogiannis attuale 2.0 -> 5
+* XLiverpuh Terracciano F. acquisto 5.0 -> 5
+* XLiverpuh Terracciano F. attuale 11.0 -> 5
+* XLiverpuh Paz Y. acquisto 1.0 -> 1
+* XLiverpuh Paz Y. attuale 1.0 -> 1
+* XLiverpuh Palestra acquisto 4.0 -> 4
+* XLiverpuh Palestra attuale 15.0 -> 4
+* XLiverpuh Valle acquisto 6.0 -> 6
+* XLiverpuh Valle attuale 8.0 -> 6
+* XLiverpuh Kempf acquisto 10.0 -> 10
+* XLiverpuh Kempf attuale 14.0 -> 10
+* XLiverpuh Pulisic acquisto 28.0 -> 28
+* XLiverpuh Pulisic attuale 31.0 -> 28
+* XLiverpuh Zaniolo acquisto 15.0 -> 15
+* XLiverpuh Zaniolo attuale 20.0 -> 15
+* XLiverpuh Saelemaekers acquisto 12.0 -> 12
+* XLiverpuh Saelemaekers attuale 19.0 -> 12
+* XLiverpuh Zarraga acquisto 2.0 -> 2
+* XLiverpuh Zarraga attuale 2.0 -> 2
+* XLiverpuh Prati acquisto 3.0 -> 3
+* XLiverpuh Prati attuale 6.0 -> 3
+* XLiverpuh Marchwinski acquisto 1.0 -> 1
+* XLiverpuh Marchwinski attuale 1.0 -> 1
+* XLiverpuh Paz N. acquisto 20.0 -> 20
+* XLiverpuh Paz N. attuale 30.0 -> 20
+* XLiverpuh Atta acquisto 8.0 -> 8
+* XLiverpuh Atta attuale 16.0 -> 8
+* XLiverpuh Bonazzoli acquisto 1.0 -> 1
+* XLiverpuh Bonazzoli attuale 20.0 -> 1
+* XLiverpuh Esposito Se. acquisto 7.0 -> 7
+* XLiverpuh Esposito Se. attuale 16.0 -> 7
+* XLiverpuh Leao acquisto 26.0 -> 26
+* XLiverpuh Leao attuale 30.0 -> 26
+* XLiverpuh Thuram acquisto 31.0 -> 31
+* XLiverpuh Thuram attuale 29.0 -> 31
+* XLiverpuh Hojlund acquisto 21.0 -> 21
+* XLiverpuh Hojlund attuale 25.0 -> 21
+* Sarzanello Team Terracciano acquisto 1.0 -> 1
+* Sarzanello Team Terracciano attuale 1.0 -> 1
+* Sarzanello Team Maignan acquisto 16.0 -> 16
+* Sarzanello Team Maignan attuale 20.0 -> 16
+* Sarzanello Team Okoye acquisto 6.0 -> 6
+* Sarzanello Team Okoye attuale 10.0 -> 6
+* Sarzanello Team Martin acquisto 10.0 -> 10
+* Sarzanello Team Martin attuale 14.0 -> 10
+* Sarzanello Team Scalvini acquisto 8.0 -> 8
+* Sarzanello Team Scalvini attuale 12.0 -> 8
+* Sarzanello Team Tavares N. acquisto 12.0 -> 12
+* Sarzanello Team Tavares N. attuale 6.0 -> 12
+* Sarzanello Team Barbieri acquisto 3.0 -> 3
+* Sarzanello Team Barbieri attuale 9.0 -> 3
+* Sarzanello Team Angori acquisto 5.0 -> 5
+* Sarzanello Team Angori attuale 9.0 -> 5
+* Sarzanello Team Joao Mario acquisto 8.0 -> 8
+* Sarzanello Team Joao Mario attuale 2.0 -> 8
+* Sarzanello Team Wesley acquisto 15.0 -> 15
+* Sarzanello Team Wesley attuale 16.0 -> 15
+* Sarzanello Team Pasalic acquisto 11.0 -> 11
+* Sarzanello Team Pasalic attuale 13.0 -> 11
+* Sarzanello Team Sergi Roberto acquisto 4.0 -> 4
+* Sarzanello Team Sergi Roberto attuale 3.0 -> 4
+* Sarzanello Team Adopo acquisto 5.0 -> 5
+* Sarzanello Team Adopo attuale 6.0 -> 5
+* Sarzanello Team Carboni V. * acquisto 11.0 -> 11
+* Sarzanello Team Carboni V. * attuale 4.0 -> 11
+* Sarzanello Team Isaksen acquisto 14.0 -> 14
+* Sarzanello Team Isaksen attuale 14.0 -> 14
+* Sarzanello Team Paz N. acquisto 20.0 -> 20
+* Sarzanello Team Paz N. attuale 30.0 -> 20
+* Sarzanello Team Atta acquisto 8.0 -> 8
+* Sarzanello Team Atta attuale 16.0 -> 8
+* Sarzanello Team Sucic P. acquisto 9.0 -> 9
+* Sarzanello Team Sucic P. attuale 11.0 -> 9
+* Sarzanello Team Kean acquisto 31.0 -> 31
+* Sarzanello Team Kean attuale 18.0 -> 31
+* Sarzanello Team Martinez L. acquisto 34.0 -> 34
+* Sarzanello Team Martinez L. attuale 34.0 -> 34
+* Sarzanello Team Esposito Se. acquisto 7.0 -> 7
+* Sarzanello Team Esposito Se. attuale 16.0 -> 7
+* Sarzanello Team Esposito F.P. acquisto 7.0 -> 7
+* Sarzanello Team Esposito F.P. attuale 18.0 -> 7
+* Sarzanello Team Giovane acquisto 3.0 -> 3
+* Sarzanello Team Giovane attuale 17.0 -> 3
+* FC Spiaze Perin acquisto 1.0 -> 1
+* FC Spiaze Perin attuale 3.0 -> 1
+* FC Spiaze Di Gregorio acquisto 16.0 -> 16
+* FC Spiaze Di Gregorio attuale 16.0 -> 16
+* FC Spiaze Siegrist acquisto 1.0 -> 1
+* FC Spiaze Siegrist attuale 1.0 -> 1
+* FC Spiaze Dimarco acquisto 27.0 -> 19
+* FC Spiaze Dimarco attuale 29.0 -> 19
+* FC Spiaze Angelino acquisto 15.0 -> 8
+* FC Spiaze Angelino attuale 7.0 -> 8
+* FC Spiaze Beukema acquisto 10.0 -> 10
+* FC Spiaze Beukema attuale 7.0 -> 10
+* FC Spiaze Delprato acquisto 8.0 -> 8
+* FC Spiaze Delprato attuale 9.0 -> 8
+* FC Spiaze Palma * acquisto 1.0 -> 1
+* FC Spiaze Palma * attuale 2.0 -> 1
+* FC Spiaze Tiago Gabriel acquisto 1.0 -> 1
+* FC Spiaze Tiago Gabriel attuale 9.0 -> 1
+* FC Spiaze Belghali acquisto 8.0 -> 8
+* FC Spiaze Belghali attuale 11.0 -> 8
+* FC Spiaze Leris acquisto 2.0 -> 2
+* FC Spiaze Leris attuale 12.0 -> 2
+* FC Spiaze Pulisic acquisto 28.0 -> 28
+* FC Spiaze Pulisic attuale 31.0 -> 28
+* FC Spiaze Tramoni M. acquisto 12.0 -> 12
+* FC Spiaze Tramoni M. attuale 9.0 -> 12
+* FC Spiaze Ricci S. acquisto 10.0 -> 10
+* FC Spiaze Ricci S. attuale 13.0 -> 10
+* FC Spiaze Kaba acquisto 1.0 -> 1
+* FC Spiaze Kaba attuale 3.0 -> 1
+* FC Spiaze Paz N. acquisto 21.0 -> 20
+* FC Spiaze Paz N. attuale 30.0 -> 20
+* FC Spiaze Stanciu * acquisto 8.0 -> 8
+* FC Spiaze Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* FC Spiaze Iannoni acquisto 1.0 -> 1
+* FC Spiaze Iannoni attuale 5.0 -> 1
+* FC Spiaze Bonazzoli acquisto 1.0 -> 13
+* FC Spiaze Bonazzoli attuale 20.0 -> 13
+* FC Spiaze Martinez L. acquisto 34.0 -> 34
+* FC Spiaze Martinez L. attuale 34.0 -> 34
+* FC Spiaze De Ketelaere acquisto 19.0 -> 22
+* FC Spiaze De Ketelaere attuale 17.0 -> 22
+* FC Spiaze Benedyczak acquisto 1.0 -> 1
+* FC Spiaze Benedyczak attuale 8.0 -> 1
+* FC Spiaze Rodriguez Je. acquisto 6.0 -> 6
+* FC Spiaze Rodriguez Je. attuale 12.0 -> 6
+* KARABE 1975 Skorupski acquisto 10.0 -> 10
+* KARABE 1975 Skorupski attuale 10.0 -> 10
+* KARABE 1975 Ravaglia F. acquisto 3.0 -> 3
+* KARABE 1975 Ravaglia F. attuale 12.0 -> 3
+* KARABE 1975 Pessina Mas. acquisto 1.0 -> 1
+* KARABE 1975 Pessina Mas. attuale 1.0 -> 1
+* KARABE 1975 Zappacosta acquisto 9.0 -> 9
+* KARABE 1975 Zappacosta attuale 8.0 -> 9
+* KARABE 1975 Marusic acquisto 8.0 -> 8
+* KARABE 1975 Marusic attuale 7.0 -> 8
+* KARABE 1975 Pavlovic acquisto 7.0 -> 7
+* KARABE 1975 Pavlovic attuale 15.0 -> 7
+* KARABE 1975 Valeri acquisto 10.0 -> 10
+* KARABE 1975 Valeri attuale 10.0 -> 10
+* KARABE 1975 Tiago Gabriel acquisto 1.0 -> 1
+* KARABE 1975 Tiago Gabriel attuale 9.0 -> 1
+* KARABE 1975 Idrissi R. acquisto 3.0 -> 3
+* KARABE 1975 Idrissi R. attuale 8.0 -> 3
+* KARABE 1975 Canestrelli acquisto 3.0 -> 3
+* KARABE 1975 Canestrelli attuale 5.0 -> 3
+* KARABE 1975 Zaccagni acquisto 26.0 -> 26
+* KARABE 1975 Zaccagni attuale 14.0 -> 26
+* KARABE 1975 Pulisic acquisto 28.0 -> 28
+* KARABE 1975 Pulisic attuale 31.0 -> 28
+* KARABE 1975 Gudmundsson A. acquisto 17.0 -> 17
+* KARABE 1975 Gudmundsson A. attuale 17.0 -> 17
+* KARABE 1975 Gineitis acquisto 4.0 -> 5
+* KARABE 1975 Gineitis attuale 4.0 -> 5
+* KARABE 1975 Ndour acquisto 2.0 -> 2
+* KARABE 1975 Ndour attuale 6.0 -> 2
+* KARABE 1975 Prati acquisto 4.0 -> 3
+* KARABE 1975 Prati attuale 6.0 -> 3
+* KARABE 1975 Karlstrom acquisto 7.0 -> 6
+* KARABE 1975 Karlstrom attuale 10.0 -> 6
+* KARABE 1975 Stanciu * acquisto 8.0 -> 8
+* KARABE 1975 Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* KARABE 1975 Kean acquisto 33.0 -> 31
+* KARABE 1975 Kean attuale 18.0 -> 31
+* KARABE 1975 Esposito Se. acquisto 7.0 -> 7
+* KARABE 1975 Esposito Se. attuale 16.0 -> 7
+* KARABE 1975 Leao acquisto 26.0 -> 26
+* KARABE 1975 Leao attuale 30.0 -> 26
+* KARABE 1975 Thuram acquisto 31.0 -> 29
+* KARABE 1975 Thuram attuale 29.0 -> 29
+* KARABE 1975 Colombo acquisto 6.0 -> 6
+* KARABE 1975 Colombo attuale 14.0 -> 6
+* SPARROW Gollini acquisto 1.0 -> 1
+* SPARROW Gollini attuale 1.0 -> 1
+* SPARROW Terracciano acquisto 1.0 -> 1
+* SPARROW Terracciano attuale 1.0 -> 1
+* SPARROW Maignan acquisto 16.0 -> 16
+* SPARROW Maignan attuale 20.0 -> 16
+* SPARROW Martin acquisto 10.0 -> 10
+* SPARROW Martin attuale 14.0 -> 10
+* SPARROW Bellanova acquisto 13.0 -> 13
+* SPARROW Bellanova attuale 6.0 -> 13
+* SPARROW Valeri acquisto 9.0 -> 9
+* SPARROW Valeri attuale 10.0 -> 9
+* SPARROW Dodò acquisto 11.0 -> 11
+* SPARROW Dodò attuale 6.0 -> 11
+* SPARROW Barbieri acquisto 3.0 -> 3
+* SPARROW Barbieri attuale 9.0 -> 3
+* SPARROW Tiago Gabriel acquisto 1.0 -> 1
+* SPARROW Tiago Gabriel attuale 9.0 -> 1
+* SPARROW Wesley acquisto 15.0 -> 15
+* SPARROW Wesley attuale 16.0 -> 15
+* SPARROW Pulisic acquisto 28.0 -> 28
+* SPARROW Pulisic attuale 31.0 -> 28
++ SPARROW: McTominay
+* SPARROW Gudmundsson A. acquisto 17.0 -> 17
+* SPARROW Gudmundsson A. attuale 17.0 -> 17
+* SPARROW Ilkhan acquisto 1.0 -> 1
+* SPARROW Ilkhan attuale 2.0 -> 1
+* SPARROW Kaba acquisto 1.0 -> 1
+* SPARROW Kaba attuale 3.0 -> 1
+* SPARROW Paz N. acquisto 20.0 -> 20
+* SPARROW Paz N. attuale 30.0 -> 20
+* SPARROW Tourè I. acquisto 7.0 -> 7
+* SPARROW Tourè I. attuale 10.0 -> 7
+* SPARROW Iannoni acquisto 1.0 -> 1
+* SPARROW Iannoni attuale 5.0 -> 1
+* SPARROW Bonazzoli acquisto 1.0 -> 1
+* SPARROW Bonazzoli attuale 20.0 -> 1
+* SPARROW Martinez L. acquisto 27.0 -> 27
+* SPARROW Martinez L. attuale 34.0 -> 27
+* SPARROW Soulè acquisto 20.0 -> 20
+* SPARROW Soulè attuale 26.0 -> 20
+* SPARROW Esposito F.P. acquisto 7.0 -> 7
+* SPARROW Esposito F.P. attuale 18.0 -> 7
+* SPARROW Gueye acquisto 1.0 -> 1
+* SPARROW Gueye attuale 2.0 -> 1
+* DEEDPULLY Gollini acquisto 1.0 -> 1
+* DEEDPULLY Gollini attuale 1.0 -> 1
+* DEEDPULLY Svilar acquisto 15.0 -> 15
+* DEEDPULLY Svilar attuale 19.0 -> 15
+* DEEDPULLY Vasquez D. acquisto 1.0 -> 1
+* DEEDPULLY Vasquez D. attuale 1.0 -> 1
+* DEEDPULLY Biraghi acquisto 8.0 -> 8
+* DEEDPULLY Biraghi attuale 3.0 -> 8
+* DEEDPULLY Mina acquisto 7.0 -> 12
+* DEEDPULLY Mina attuale 8.0 -> 12
+* DEEDPULLY Tavares N. acquisto 12.0 -> 12
+* DEEDPULLY Tavares N. attuale 6.0 -> 12
+* DEEDPULLY De Winter acquisto 8.0 -> 8
+* DEEDPULLY De Winter attuale 4.0 -> 8
+* DEEDPULLY Norton-Cuffy acquisto 3.0 -> 3
+* DEEDPULLY Norton-Cuffy attuale 7.0 -> 3
+* DEEDPULLY Muharemovic acquisto 4.0 -> 7
+* DEEDPULLY Muharemovic attuale 7.0 -> 7
+* DEEDPULLY Joao Mario acquisto 8.0 -> 8
+* DEEDPULLY Joao Mario attuale 2.0 -> 8
+* DEEDPULLY Orsolini acquisto 31.0 -> 30
+* DEEDPULLY Orsolini attuale 24.0 -> 30
+* DEEDPULLY Pulisic acquisto 28.0 -> 28
+* DEEDPULLY Pulisic attuale 31.0 -> 28
+* DEEDPULLY Zaniolo acquisto 15.0 -> 15
+* DEEDPULLY Zaniolo attuale 20.0 -> 15
+* DEEDPULLY Loftus-Cheek acquisto 8.0 -> 9
+* DEEDPULLY Loftus-Cheek attuale 13.0 -> 9
+* DEEDPULLY Zalewski acquisto 6.0 -> 7
+* DEEDPULLY Zalewski attuale 15.0 -> 7
+* DEEDPULLY Ilkhan acquisto 1.0 -> 1
+* DEEDPULLY Ilkhan attuale 2.0 -> 1
+* DEEDPULLY Kaba acquisto 1.0 -> 1
+* DEEDPULLY Kaba attuale 3.0 -> 1
+* DEEDPULLY Iannoni acquisto 1.0 -> 1
+* DEEDPULLY Iannoni attuale 5.0 -> 1
+* DEEDPULLY Bonazzoli acquisto 1.0 -> 1
+* DEEDPULLY Bonazzoli attuale 20.0 -> 1
+* DEEDPULLY Berardi acquisto 21.0 -> 21
+* DEEDPULLY Berardi attuale 21.0 -> 21
+* DEEDPULLY Thuram acquisto 31.0 -> 31
+* DEEDPULLY Thuram attuale 29.0 -> 31
+* DEEDPULLY Castro S. acquisto 22.0 -> 24
+* DEEDPULLY Castro S. attuale 24.0 -> 24
+* DEEDPULLY Kilicsoy acquisto 3.0 -> 6
+* DEEDPULLY Kilicsoy attuale 12.0 -> 6
+* Temptation Haaland Radunovic * acquisto 1.0 -> 1
+* Temptation Haaland Radunovic * attuale 1.0 -> 1
+* Temptation Haaland Terracciano acquisto 1.0 -> 1
+* Temptation Haaland Terracciano attuale 1.0 -> 1
+* Temptation Haaland Maignan acquisto 16.0 -> 16
+* Temptation Haaland Maignan attuale 20.0 -> 16
+* Temptation Haaland Martin acquisto 10.0 -> 10
+* Temptation Haaland Martin attuale 14.0 -> 10
+* Temptation Haaland Walukiewicz acquisto 5.0 -> 5
+* Temptation Haaland Walukiewicz attuale 6.0 -> 5
+* Temptation Haaland Lazaro acquisto 7.0 -> 7
+* Temptation Haaland Lazaro attuale 7.0 -> 7
+* Temptation Haaland Bellanova acquisto 13.0 -> 13
+* Temptation Haaland Bellanova attuale 6.0 -> 13
+* Temptation Haaland Valeri acquisto 10.0 -> 10
+* Temptation Haaland Valeri attuale 10.0 -> 10
+* Temptation Haaland Barbieri acquisto 3.0 -> 3
+* Temptation Haaland Barbieri attuale 9.0 -> 3
+* Temptation Haaland Frese acquisto 3.0 -> 3
+* Temptation Haaland Frese attuale 6.0 -> 3
+* Temptation Haaland Calhanoglu acquisto 30.0 -> 30
+* Temptation Haaland Calhanoglu attuale 28.0 -> 30
+* Temptation Haaland Pulisic acquisto 28.0 -> 28
+* Temptation Haaland Pulisic attuale 31.0 -> 28
++ Temptation Haaland: McTominay
+* Temptation Haaland Zerbin acquisto 3.0 -> 3
+* Temptation Haaland Zerbin attuale 6.0 -> 3
+* Temptation Haaland Ndour acquisto 2.0 -> 2
+* Temptation Haaland Ndour attuale 6.0 -> 2
+* Temptation Haaland Paz N. acquisto 20.0 -> 20
+* Temptation Haaland Paz N. attuale 30.0 -> 20
+* Temptation Haaland Baturina acquisto 9.0 -> 9
+* Temptation Haaland Baturina attuale 14.0 -> 9
+* Temptation Haaland Stanciu * acquisto 8.0 -> 8
+* Temptation Haaland Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* Temptation Haaland Kean acquisto 33.0 -> 33
+* Temptation Haaland Kean attuale 18.0 -> 33
+* Temptation Haaland Thuram acquisto 31.0 -> 31
+* Temptation Haaland Thuram attuale 29.0 -> 31
+* Temptation Haaland Moro L. acquisto 1.0 -> 1
+* Temptation Haaland Moro L. attuale 1.0 -> 1
+* Temptation Haaland Giovane acquisto 1.0 -> 1
+* Temptation Haaland Giovane attuale 17.0 -> 1
+* Temptation Haaland Buffon L. acquisto 1.0 -> 1
+* Temptation Haaland Buffon L. attuale 1.0 -> 1
+* Pi-Ciaccio Terracciano acquisto 1.0 -> 1
+* Pi-Ciaccio Terracciano attuale 1.0 -> 1
+* Pi-Ciaccio Maignan acquisto 16.0 -> 16
+* Pi-Ciaccio Maignan attuale 20.0 -> 16
+* Pi-Ciaccio Martinez Jo. acquisto 2.0 -> 2
+* Pi-Ciaccio Martinez Jo. attuale 1.0 -> 2
+* Pi-Ciaccio Mancini acquisto 11.0 -> 11
+* Pi-Ciaccio Mancini attuale 10.0 -> 11
+* Pi-Ciaccio Martin acquisto 10.0 -> 10
+* Pi-Ciaccio Martin attuale 14.0 -> 10
+* Pi-Ciaccio Bremer acquisto 13.0 -> 13
+* Pi-Ciaccio Bremer attuale 13.0 -> 13
+* Pi-Ciaccio Di Lorenzo acquisto 14.0 -> 14
+* Pi-Ciaccio Di Lorenzo attuale 12.0 -> 14
+* Pi-Ciaccio Mina acquisto 7.0 -> 7
+* Pi-Ciaccio Mina attuale 8.0 -> 7
+* Pi-Ciaccio Kempf acquisto 5.0 -> 5
+* Pi-Ciaccio Kempf attuale 14.0 -> 5
+* Pi-Ciaccio Tiago Gabriel acquisto 1.0 -> 1
+* Pi-Ciaccio Tiago Gabriel attuale 9.0 -> 1
++ Pi-Ciaccio: Vazquez *
+* Pi-Ciaccio Orsolini acquisto 31.0 -> 31
+* Pi-Ciaccio Orsolini attuale 24.0 -> 31
+* Pi-Ciaccio Pulisic acquisto 28.0 -> 28
+* Pi-Ciaccio Pulisic attuale 31.0 -> 28
+* Pi-Ciaccio Bondo acquisto 3.0 -> 4
+* Pi-Ciaccio Bondo attuale 7.0 -> 4
+* Pi-Ciaccio Prati acquisto 4.0 -> 3
+* Pi-Ciaccio Prati attuale 6.0 -> 3
+* Pi-Ciaccio Akinsanmiro acquisto 3.0 -> 3
+* Pi-Ciaccio Akinsanmiro attuale 7.0 -> 3
+* Pi-Ciaccio Paz N. acquisto 21.0 -> 20
+* Pi-Ciaccio Paz N. attuale 30.0 -> 20
+* Pi-Ciaccio Atta acquisto 8.0 -> 6
+* Pi-Ciaccio Atta attuale 16.0 -> 6
+* Pi-Ciaccio Esposito Se. acquisto 7.0 -> 7
+* Pi-Ciaccio Esposito Se. attuale 16.0 -> 7
+* Pi-Ciaccio Thuram acquisto 31.0 -> 28
+* Pi-Ciaccio Thuram attuale 29.0 -> 28
+* Pi-Ciaccio Colombo acquisto 6.0 -> 6
+* Pi-Ciaccio Colombo attuale 14.0 -> 6
+* Pi-Ciaccio Benedyczak acquisto 1.0 -> 1
+* Pi-Ciaccio Benedyczak attuale 8.0 -> 1
+* Pi-Ciaccio Giovane acquisto 1.0 -> 1
+* Pi-Ciaccio Giovane attuale 17.0 -> 1
+* LE 4 M Sportiello acquisto 1.0 -> 1
+* LE 4 M Sportiello attuale 1.0 -> 1
+* LE 4 M Perin acquisto 1.0 -> 1
+* LE 4 M Perin attuale 3.0 -> 1
+* LE 4 M Di Gregorio acquisto 16.0 -> 16
+* LE 4 M Di Gregorio attuale 16.0 -> 16
+* LE 4 M Martin acquisto 10.0 -> 10
+* LE 4 M Martin attuale 14.0 -> 10
+* LE 4 M Sernicola * acquisto 1.0 -> 1
+* LE 4 M Sernicola * attuale 1.0 -> 1
+* LE 4 M Dumfries acquisto 20.0 -> 20
+* LE 4 M Dumfries attuale 10.0 -> 20
+* LE 4 M Delprato acquisto 8.0 -> 8
+* LE 4 M Delprato attuale 9.0 -> 8
+* LE 4 M Kempf acquisto 5.0 -> 10
+* LE 4 M Kempf attuale 14.0 -> 10
+* LE 4 M Van Der Brempt acquisto 4.0 -> 4
+* LE 4 M Van Der Brempt attuale 3.0 -> 4
+* LE 4 M Solet acquisto 11.0 -> 11
+* LE 4 M Solet attuale 11.0 -> 11
+* LE 4 M Pulisic acquisto 28.0 -> 28
+* LE 4 M Pulisic attuale 31.0 -> 28
+* LE 4 M Zaniolo acquisto 15.0 -> 15
+* LE 4 M Zaniolo attuale 20.0 -> 15
+* LE 4 M Basic acquisto 1.0 -> 1
+* LE 4 M Basic attuale 14.0 -> 1
+* LE 4 M Ndour acquisto 2.0 -> 2
+* LE 4 M Ndour attuale 6.0 -> 2
+* LE 4 M Prati acquisto 4.0 -> 3
+* LE 4 M Prati attuale 6.0 -> 3
+* LE 4 M Marchwinski acquisto 1.0 -> 1
+* LE 4 M Marchwinski attuale 1.0 -> 1
+* LE 4 M Paz N. acquisto 21.0 -> 27
+* LE 4 M Paz N. attuale 30.0 -> 27
+* LE 4 M Sucic P. acquisto 14.0 -> 9
+* LE 4 M Sucic P. attuale 11.0 -> 9
+* LE 4 M Kean acquisto 33.0 -> 31
+* LE 4 M Kean attuale 18.0 -> 31
+* LE 4 M Martinez L. acquisto 34.0 -> 34
+* LE 4 M Martinez L. attuale 34.0 -> 34
+* LE 4 M Leao acquisto 26.0 -> 26
+* LE 4 M Leao attuale 30.0 -> 26
+* LE 4 M Benedyczak acquisto 1.0 -> 1
+* LE 4 M Benedyczak attuale 8.0 -> 1
+* LE 4 M Buffon L. acquisto 1.0 -> 1
+* LE 4 M Buffon L. attuale 1.0 -> 1
+* i bro Gollini acquisto 1.0 -> 1
+* i bro Gollini attuale 1.0 -> 1
+* i bro Svilar acquisto 15.0 -> 15
+* i bro Svilar attuale 19.0 -> 15
+* i bro Vasquez D. acquisto 1.0 -> 1
+* i bro Vasquez D. attuale 1.0 -> 1
+* i bro Di Lorenzo acquisto 9.0 -> 9
+* i bro Di Lorenzo attuale 12.0 -> 9
+* i bro Mina acquisto 7.0 -> 7
+* i bro Mina attuale 8.0 -> 7
+* i bro Lazaro acquisto 7.0 -> 7
+* i bro Lazaro attuale 7.0 -> 7
+* i bro Dumfries acquisto 20.0 -> 20
+* i bro Dumfries attuale 10.0 -> 20
+* i bro Zemura acquisto 4.0 -> 4
+* i bro Zemura attuale 2.0 -> 4
+* i bro Paz Y. acquisto 1.0 -> 1
+* i bro Paz Y. attuale 1.0 -> 1
+* i bro Tiago Gabriel acquisto 1.0 -> 1
+* i bro Tiago Gabriel attuale 9.0 -> 1
+* i bro Pulisic acquisto 28.0 -> 28
+* i bro Pulisic attuale 31.0 -> 28
+* i bro Mkhitaryan acquisto 9.0 -> 9
+* i bro Mkhitaryan attuale 7.0 -> 9
++ i bro: McTominay
+* i bro Akpa Akpro acquisto 1.0 -> 1
+* i bro Akpa Akpro attuale 2.0 -> 1
+* i bro Miretti acquisto 1.0 -> 1
+* i bro Miretti attuale 9.0 -> 1
+* i bro Zerbin acquisto 3.0 -> 3
+* i bro Zerbin attuale 6.0 -> 3
+* i bro Folorunsho acquisto 9.0 -> 9
+* i bro Folorunsho attuale 8.0 -> 9
+* i bro Stanciu * acquisto 8.0 -> 8
+* i bro Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* i bro Vlahovic acquisto 21.0 -> 21
+* i bro Vlahovic attuale 15.0 -> 21
+* i bro Esposito Se. acquisto 7.0 -> 7
+* i bro Esposito Se. attuale 16.0 -> 7
+* i bro Leao acquisto 26.0 -> 26
+* i bro Leao attuale 30.0 -> 26
+* i bro Thuram acquisto 31.0 -> 31
+* i bro Thuram attuale 29.0 -> 31
+* i bro Castro S. acquisto 22.0 -> 22
+* i bro Castro S. attuale 24.0 -> 22
+* Hellas merdona Lezzerini acquisto 1.0 -> 1
+* Hellas merdona Lezzerini attuale 1.0 -> 1
+* Hellas merdona De Gea acquisto 14.0 -> 14
+* Hellas merdona De Gea attuale 11.0 -> 14
+* Hellas merdona Martinelli T. * acquisto 1.0 -> 1
+* Hellas merdona Martinelli T. * attuale 1.0 -> 1
+* Hellas merdona Marusic acquisto 8.0 -> 8
+* Hellas merdona Marusic attuale 7.0 -> 8
+* Hellas merdona Mancini acquisto 11.0 -> 11
+* Hellas merdona Mancini attuale 10.0 -> 11
+* Hellas merdona Lazaro acquisto 7.0 -> 7
+* Hellas merdona Lazaro attuale 7.0 -> 7
+* Hellas merdona Dumfries acquisto 20.0 -> 20
+* Hellas merdona Dumfries attuale 10.0 -> 20
+* Hellas merdona Terracciano F. acquisto 2.0 -> 2
+* Hellas merdona Terracciano F. attuale 11.0 -> 2
+* Hellas merdona Norton-Cuffy acquisto 3.0 -> 3
+* Hellas merdona Norton-Cuffy attuale 7.0 -> 3
+* Hellas merdona Tiago Gabriel acquisto 1.0 -> 1
+* Hellas merdona Tiago Gabriel attuale 9.0 -> 1
+* Hellas merdona Pulisic acquisto 28.0 -> 28
+* Hellas merdona Pulisic attuale 31.0 -> 28
+* Hellas merdona Elmas acquisto 8.0 -> 8
+* Hellas merdona Elmas attuale 6.0 -> 8
+* Hellas merdona Adopo acquisto 5.0 -> 5
+* Hellas merdona Adopo attuale 6.0 -> 5
+* Hellas merdona Akpa Akpro acquisto 1.0 -> 1
+* Hellas merdona Akpa Akpro attuale 2.0 -> 1
+* Hellas merdona Thorstvedt acquisto 8.0 -> 8
+* Hellas merdona Thorstvedt attuale 12.0 -> 8
+* Hellas merdona Bondo acquisto 3.0 -> 3
+* Hellas merdona Bondo attuale 7.0 -> 3
+* Hellas merdona Ilkhan acquisto 1.0 -> 1
+* Hellas merdona Ilkhan attuale 2.0 -> 1
+* Hellas merdona Paz N. acquisto 21.0 -> 28
+* Hellas merdona Paz N. attuale 30.0 -> 28
+* Hellas merdona Martinez L. acquisto 34.0 -> 34
+* Hellas merdona Martinez L. attuale 34.0 -> 34
+* Hellas merdona Leao acquisto 26.0 -> 26
+* Hellas merdona Leao attuale 30.0 -> 26
+* Hellas merdona Lookman acquisto 19.0 -> 19
+* Hellas merdona Lookman attuale 14.0 -> 19
+* Hellas merdona Banda acquisto 5.0 -> 5
+* Hellas merdona Banda attuale 11.0 -> 5
+* Hellas merdona Ngonge acquisto 8.0 -> 8
+* Hellas merdona Ngonge attuale 9.0 -> 8
+* Sisal Palace Milinkovic-Savic V. acquisto 4.0 -> 4
+* Sisal Palace Milinkovic-Savic V. attuale 19.0 -> 4
+* Sisal Palace Svilar acquisto 15.0 -> 15
+* Sisal Palace Svilar attuale 19.0 -> 15
+* Sisal Palace Vasquez D. acquisto 1.0 -> 1
+* Sisal Palace Vasquez D. attuale 1.0 -> 1
+* Sisal Palace Di Lorenzo acquisto 9.0 -> 9
+* Sisal Palace Di Lorenzo attuale 12.0 -> 9
+* Sisal Palace Tomori acquisto 8.0 -> 8
+* Sisal Palace Tomori attuale 7.0 -> 8
+* Sisal Palace Estupinan acquisto 11.0 -> 11
+* Sisal Palace Estupinan attuale 3.0 -> 11
+* Sisal Palace Cambiaso acquisto 15.0 -> 15
+* Sisal Palace Cambiaso attuale 10.0 -> 15
+* Sisal Palace Olivera acquisto 10.0 -> 10
+* Sisal Palace Olivera attuale 3.0 -> 10
+* Sisal Palace Kristensen T. acquisto 7.0 -> 7
+* Sisal Palace Kristensen T. attuale 7.0 -> 7
+* Sisal Palace Canestrelli acquisto 3.0 -> 3
+* Sisal Palace Canestrelli attuale 5.0 -> 3
+* Sisal Palace Zaccagni acquisto 24.0 -> 24
+* Sisal Palace Zaccagni attuale 14.0 -> 24
+* Sisal Palace Barella acquisto 14.0 -> 14
+* Sisal Palace Barella attuale 17.0 -> 14
+* Sisal Palace Pulisic acquisto 28.0 -> 28
+* Sisal Palace Pulisic attuale 31.0 -> 28
+* Sisal Palace Adopo acquisto 5.0 -> 5
+* Sisal Palace Adopo attuale 6.0 -> 5
+* Sisal Palace Akpa Akpro acquisto 1.0 -> 1
+* Sisal Palace Akpa Akpro attuale 2.0 -> 1
+* Sisal Palace Thuram K. acquisto 15.0 -> 15
+* Sisal Palace Thuram K. attuale 13.0 -> 15
+* Sisal Palace Zerbin acquisto 3.0 -> 3
+* Sisal Palace Zerbin attuale 6.0 -> 3
+* Sisal Palace Iannoni acquisto 1.0 -> 1
+* Sisal Palace Iannoni attuale 5.0 -> 1
+* Sisal Palace Scamacca acquisto 14.0 -> 14
+* Sisal Palace Scamacca attuale 22.0 -> 14
+* Sisal Palace Thuram acquisto 31.0 -> 31
+* Sisal Palace Thuram attuale 29.0 -> 31
+* Sisal Palace Ferguson E. acquisto 15.0 -> 15
+* Sisal Palace Ferguson E. attuale 16.0 -> 15
+* Sisal Palace Dallinga acquisto 10.0 -> 10
+* Sisal Palace Dallinga attuale 8.0 -> 10
+* Sisal Palace Giovane acquisto 1.0 -> 1
+* Sisal Palace Giovane attuale 17.0 -> 1
+* real donk Gollini acquisto 1.0 -> 1
+* real donk Gollini attuale 1.0 -> 1
+* real donk Svilar acquisto 15.0 -> 15
+* real donk Svilar attuale 19.0 -> 15
++ real donk: Mandas *
+* real donk Pezzella Giu. acquisto 5.0 -> 5
+* real donk Pezzella Giu. attuale 4.0 -> 5
+* real donk Vojvoda acquisto 6.0 -> 6
+* real donk Vojvoda attuale 12.0 -> 6
+* real donk Ostigard acquisto 5.0 -> 5
+* real donk Ostigard attuale 15.0 -> 5
+* real donk Bertola acquisto 6.0 -> 6
+* real donk Bertola attuale 6.0 -> 6
+* real donk Gatti acquisto 8.0 -> 8
+* real donk Gatti attuale 5.0 -> 8
+* real donk Lucumì acquisto 8.0 -> 8
+* real donk Lucumì attuale 7.0 -> 8
+* real donk Wesley acquisto 15.0 -> 15
+* real donk Wesley attuale 16.0 -> 15
+* real donk Pasalic acquisto 11.0 -> 11
+* real donk Pasalic attuale 13.0 -> 11
+* real donk Orsolini acquisto 31.0 -> 31
+* real donk Orsolini attuale 24.0 -> 31
+* real donk Pulisic acquisto 28.0 -> 28
+* real donk Pulisic attuale 31.0 -> 28
+* real donk Zalewski acquisto 6.0 -> 6
+* real donk Zalewski attuale 15.0 -> 6
+* real donk Aebischer acquisto 4.0 -> 4
+* real donk Aebischer attuale 5.0 -> 4
+* real donk Pafundi * acquisto 1.0 -> 1
+* real donk Pafundi * attuale 1.0 -> 1
+* real donk Prati acquisto 3.0 -> 3
+* real donk Prati attuale 6.0 -> 3
+* real donk Marchwinski acquisto 1.0 -> 1
+* real donk Marchwinski attuale 1.0 -> 1
+* real donk Berardi acquisto 21.0 -> 21
+* real donk Berardi attuale 21.0 -> 21
+* real donk Vlahovic acquisto 26.0 -> 26
+* real donk Vlahovic attuale 15.0 -> 26
+* real donk Krstovic acquisto 20.0 -> 20
+* real donk Krstovic attuale 20.0 -> 20
+* real donk Pellegrino M. acquisto 16.0 -> 16
+* real donk Pellegrino M. attuale 21.0 -> 16
+* real donk Giovane acquisto 1.0 -> 1
+* real donk Giovane attuale 17.0 -> 1
+* Imperatori del culo Ravaglia F. acquisto 3.0 -> 3
+* Imperatori del culo Ravaglia F. attuale 12.0 -> 3
+* Imperatori del culo Terracciano acquisto 1.0 -> 1
+* Imperatori del culo Terracciano attuale 1.0 -> 1
+* Imperatori del culo Maignan acquisto 16.0 -> 16
+* Imperatori del culo Maignan attuale 20.0 -> 16
+* Imperatori del culo Bastoni acquisto 17.0 -> 17
+* Imperatori del culo Bastoni attuale 17.0 -> 17
+* Imperatori del culo Bellanova acquisto 13.0 -> 13
+* Imperatori del culo Bellanova attuale 6.0 -> 13
+* Imperatori del culo Cambiaso acquisto 15.0 -> 15
+* Imperatori del culo Cambiaso attuale 10.0 -> 15
+* Imperatori del culo Ostigard acquisto 5.0 -> 5
+* Imperatori del culo Ostigard attuale 15.0 -> 5
+* Imperatori del culo Tiago Gabriel acquisto 1.0 -> 1
+* Imperatori del culo Tiago Gabriel attuale 9.0 -> 1
+* Imperatori del culo Vitik acquisto 8.0 -> 8
+* Imperatori del culo Vitik attuale 4.0 -> 8
+* Imperatori del culo Idrissi R. acquisto 3.0 -> 3
+* Imperatori del culo Idrissi R. attuale 8.0 -> 3
+* Imperatori del culo Zaccagni acquisto 26.0 -> 26
+* Imperatori del culo Zaccagni attuale 14.0 -> 26
+* Imperatori del culo Pulisic acquisto 28.0 -> 28
+* Imperatori del culo Pulisic attuale 31.0 -> 28
+* Imperatori del culo Adopo acquisto 5.0 -> 5
+* Imperatori del culo Adopo attuale 6.0 -> 5
+* Imperatori del culo Akpa Akpro acquisto 1.0 -> 1
+* Imperatori del culo Akpa Akpro attuale 2.0 -> 1
+* Imperatori del culo Tramoni M. acquisto 12.0 -> 12
+* Imperatori del culo Tramoni M. attuale 9.0 -> 12
+* Imperatori del culo Gudmundsson A. acquisto 17.0 -> 17
+* Imperatori del culo Gudmundsson A. attuale 17.0 -> 17
+* Imperatori del culo Sulemana I. acquisto 1.0 -> 4
+* Imperatori del culo Sulemana I. attuale 1.0 -> 4
+* Imperatori del culo Marchwinski acquisto 1.0 -> 1
+* Imperatori del culo Marchwinski attuale 1.0 -> 1
+* Imperatori del culo Kean acquisto 33.0 -> 22
+* Imperatori del culo Kean attuale 18.0 -> 22
+* Imperatori del culo Martinez L. acquisto 34.0 -> 27
+* Imperatori del culo Martinez L. attuale 34.0 -> 27
+* Imperatori del culo Ferguson E. acquisto 13.0 -> 19
+* Imperatori del culo Ferguson E. attuale 16.0 -> 19
+* Imperatori del culo Giovane acquisto 1.0 -> 1
+* Imperatori del culo Giovane attuale 17.0 -> 1
+* Imperatori del culo Buffon L. acquisto 1.0 -> 1
+* Imperatori del culo Buffon L. attuale 1.0 -> 1
+* Due Amici al Var Perin acquisto 1.0 -> 1
+* Due Amici al Var Perin attuale 3.0 -> 1
+* Due Amici al Var Di Gregorio acquisto 16.0 -> 16
+* Due Amici al Var Di Gregorio attuale 16.0 -> 16
+* Due Amici al Var Sava acquisto 4.0 -> 4
+* Due Amici al Var Sava attuale 1.0 -> 4
+* Due Amici al Var Lazzari acquisto 3.0 -> 4
+* Due Amici al Var Lazzari attuale 4.0 -> 4
+* Due Amici al Var Lazaro acquisto 7.0 -> 7
+* Due Amici al Var Lazaro attuale 7.0 -> 7
+* Due Amici al Var Tomori acquisto 8.0 -> 8
+* Due Amici al Var Tomori attuale 7.0 -> 8
+* Due Amici al Var Dodò acquisto 11.0 -> 11
+* Due Amici al Var Dodò attuale 6.0 -> 11
+* Due Amici al Var Lovik * acquisto 3.0 -> 3
+* Due Amici al Var Lovik * attuale clean_nome
+Lovik    2.0
+Lovik    0.0
+Name: QA, dtype: float64 -> 3
+* Due Amici al Var Tiago Gabriel acquisto 1.0 -> 1
+* Due Amici al Var Tiago Gabriel attuale 9.0 -> 1
+* Due Amici al Var Wesley acquisto 14.0 -> 14
+* Due Amici al Var Wesley attuale 16.0 -> 14
+* Due Amici al Var Pellegrini Lo. acquisto 16.0 -> 16
+* Due Amici al Var Pellegrini Lo. attuale 14.0 -> 16
+* Due Amici al Var Kastanos acquisto 1.0 -> 1
+* Due Amici al Var Kastanos attuale 1.0 -> 1
+* Due Amici al Var Orsolini acquisto 31.0 -> 30
+* Due Amici al Var Orsolini attuale 24.0 -> 30
+* Due Amici al Var Pulisic acquisto 28.0 -> 28
+* Due Amici al Var Pulisic attuale 31.0 -> 28
+* Due Amici al Var Malinovskyi acquisto 7.0 -> 8
+* Due Amici al Var Malinovskyi attuale 12.0 -> 8
+* Due Amici al Var Gineitis acquisto 4.0 -> 4
+* Due Amici al Var Gineitis attuale 4.0 -> 4
+* Due Amici al Var Prati acquisto 4.0 -> 3
+* Due Amici al Var Prati attuale 6.0 -> 3
+* Due Amici al Var Paz N. acquisto 21.0 -> 21
+* Due Amici al Var Paz N. attuale 30.0 -> 21
+* Due Amici al Var Pavoletti acquisto 1.0 -> 1
+* Due Amici al Var Pavoletti attuale 1.0 -> 1
+* Due Amici al Var Kean acquisto 33.0 -> 22
+* Due Amici al Var Kean attuale 18.0 -> 22
+* Due Amici al Var David acquisto 16.0 -> 13
+* Due Amici al Var David attuale 13.0 -> 13
+* Due Amici al Var De Ketelaere acquisto 19.0 -> 19
+* Due Amici al Var De Ketelaere attuale 17.0 -> 19
+* Due Amici al Var Giovane acquisto 1.0 -> 3
+* Due Amici al Var Giovane attuale 17.0 -> 3
+* MARCIO TEAM Perin acquisto 1.0 -> 1
+* MARCIO TEAM Perin attuale 3.0 -> 1
+* MARCIO TEAM Di Gregorio acquisto 16.0 -> 16
+* MARCIO TEAM Di Gregorio attuale 16.0 -> 16
++ MARCIO TEAM: Mandas *
+* MARCIO TEAM Hermoso acquisto 4.0 -> 4
+* MARCIO TEAM Hermoso attuale 10.0 -> 4
++ MARCIO TEAM: Casale
+* MARCIO TEAM Dumfries acquisto 20.0 -> 20
+* MARCIO TEAM Dumfries attuale 10.0 -> 20
+* MARCIO TEAM Cambiaso acquisto 15.0 -> 15
+* MARCIO TEAM Cambiaso attuale 10.0 -> 15
+* MARCIO TEAM Obert acquisto 4.0 -> 4
+* MARCIO TEAM Obert attuale 5.0 -> 4
+* MARCIO TEAM Norton-Cuffy acquisto 3.0 -> 3
+* MARCIO TEAM Norton-Cuffy attuale 7.0 -> 3
+* MARCIO TEAM Palestra acquisto 4.0 -> 4
+* MARCIO TEAM Palestra attuale 15.0 -> 4
+* MARCIO TEAM Zaccagni acquisto 26.0 -> 24
+* MARCIO TEAM Zaccagni attuale 14.0 -> 24
+* MARCIO TEAM El Shaarawy acquisto 8.0 -> 8
+* MARCIO TEAM El Shaarawy attuale 8.0 -> 8
+* MARCIO TEAM Pulisic acquisto 28.0 -> 28
+* MARCIO TEAM Pulisic attuale 31.0 -> 28
++ MARCIO TEAM: McTominay
+* MARCIO TEAM Ilkhan acquisto 1.0 -> 1
+* MARCIO TEAM Ilkhan attuale 2.0 -> 1
+* MARCIO TEAM Ndour acquisto 2.0 -> 2
+* MARCIO TEAM Ndour attuale 6.0 -> 2
+* MARCIO TEAM Paz N. acquisto 21.0 -> 21
+* MARCIO TEAM Paz N. attuale 30.0 -> 21
+* MARCIO TEAM Stanciu * acquisto 8.0 -> 8
+* MARCIO TEAM Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* MARCIO TEAM Berardi acquisto 21.0 -> 24
+* MARCIO TEAM Berardi attuale 21.0 -> 24
+* MARCIO TEAM Martinez L. acquisto 34.0 -> 34
+* MARCIO TEAM Martinez L. attuale 34.0 -> 34
+* MARCIO TEAM Esposito Se. acquisto 7.0 -> 7
+* MARCIO TEAM Esposito Se. attuale 16.0 -> 7
+* MARCIO TEAM Ferguson E. acquisto 13.0 -> 19
+* MARCIO TEAM Ferguson E. attuale 16.0 -> 19
+* MARCIO TEAM Moro L. acquisto 1.0 -> 1
+* MARCIO TEAM Moro L. attuale 1.0 -> 1
+* FC Galli Scuffet acquisto 3.0 -> 3
+* FC Galli Scuffet attuale 4.0 -> 3
+* FC Galli Gollini acquisto 1.0 -> 1
+* FC Galli Gollini attuale 1.0 -> 1
+* FC Galli Svilar acquisto 15.0 -> 15
+* FC Galli Svilar attuale 19.0 -> 15
+* FC Galli Lazzari acquisto 3.0 -> 3
+* FC Galli Lazzari attuale 4.0 -> 3
+* FC Galli Sernicola * acquisto 1.0 -> 1
+* FC Galli Sernicola * attuale 1.0 -> 1
+* FC Galli Kalulu acquisto 9.0 -> 9
+* FC Galli Kalulu attuale 12.0 -> 9
+* FC Galli Dumfries acquisto 20.0 -> 20
+* FC Galli Dumfries attuale 10.0 -> 20
+* FC Galli De Winter acquisto 8.0 -> 8
+* FC Galli De Winter attuale 4.0 -> 8
+* FC Galli Doig acquisto 6.0 -> 4
+* FC Galli Doig attuale 6.0 -> 4
+* FC Galli Kristensen T. acquisto 7.0 -> 5
+* FC Galli Kristensen T. attuale 7.0 -> 5
+* FC Galli Pasalic acquisto 11.0 -> 11
+* FC Galli Pasalic attuale 13.0 -> 11
+* FC Galli Pulisic acquisto 28.0 -> 28
+* FC Galli Pulisic attuale 31.0 -> 28
+* FC Galli Malinovskyi acquisto 7.0 -> 7
+* FC Galli Malinovskyi attuale 12.0 -> 7
++ FC Galli: McTominay
+* FC Galli Akpa Akpro acquisto 1.0 -> 1
+* FC Galli Akpa Akpro attuale 2.0 -> 1
+* FC Galli Basic acquisto 1.0 -> 1
+* FC Galli Basic attuale 14.0 -> 1
+* FC Galli Zarraga acquisto 2.0 -> 3
+* FC Galli Zarraga attuale 2.0 -> 3
+* FC Galli Folorunsho acquisto 9.0 -> 9
+* FC Galli Folorunsho attuale 8.0 -> 9
+* FC Galli Martinez L. acquisto 34.0 -> 34
+* FC Galli Martinez L. attuale 34.0 -> 34
+* FC Galli Leao acquisto 26.0 -> 22
+* FC Galli Leao attuale 30.0 -> 22
+* FC Galli Soulè acquisto 20.0 -> 25
+* FC Galli Soulè attuale 26.0 -> 25
+* FC Galli Ekhator acquisto 1.0 -> 1
+* FC Galli Ekhator attuale 10.0 -> 1
+* FC Galli Moro L. acquisto 1.0 -> 1
+* FC Galli Moro L. attuale 1.0 -> 1
+* coach 71 Milinkovic-Savic V. acquisto 4.0 -> 4
+* coach 71 Milinkovic-Savic V. attuale 19.0 -> 4
+* coach 71 Terracciano acquisto 1.0 -> 1
+* coach 71 Terracciano attuale 1.0 -> 1
+* coach 71 Maignan acquisto 16.0 -> 16
+* coach 71 Maignan attuale 20.0 -> 16
+* coach 71 Caracciolo A. acquisto 4.0 -> 4
+* coach 71 Caracciolo A. attuale 6.0 -> 4
+* coach 71 Ranieri L. acquisto 7.0 -> 7
+* coach 71 Ranieri L. attuale 7.0 -> 7
+* coach 71 Miranda J. acquisto 9.0 -> 9
+* coach 71 Miranda J. attuale 11.0 -> 9
+* coach 71 Dumfries acquisto 20.0 -> 20
+* coach 71 Dumfries attuale 10.0 -> 20
+* coach 71 Terracciano F. acquisto 2.0 -> 2
+* coach 71 Terracciano F. attuale 11.0 -> 2
+* coach 71 Norton-Cuffy acquisto 6.0 -> 6
+* coach 71 Norton-Cuffy attuale 7.0 -> 6
+* coach 71 Tiago Gabriel acquisto 2.0 -> 2
+* coach 71 Tiago Gabriel attuale 9.0 -> 2
+* coach 71 Barella acquisto 14.0 -> 14
+* coach 71 Barella attuale 17.0 -> 14
+* coach 71 Pulisic acquisto 28.0 -> 28
+* coach 71 Pulisic attuale 31.0 -> 28
+* coach 71 Zaniolo acquisto 15.0 -> 15
+* coach 71 Zaniolo attuale 20.0 -> 15
+* coach 71 Adopo acquisto 5.0 -> 5
+* coach 71 Adopo attuale 6.0 -> 5
+* coach 71 Akpa Akpro acquisto 1.0 -> 1
+* coach 71 Akpa Akpro attuale 2.0 -> 1
+* coach 71 Ilkhan acquisto 1.0 -> 1
+* coach 71 Ilkhan attuale 2.0 -> 1
+* coach 71 Kaba acquisto 1.0 -> 1
+* coach 71 Kaba attuale 3.0 -> 1
+* coach 71 Paz N. acquisto 21.0 -> 21
+* coach 71 Paz N. attuale 30.0 -> 21
+* coach 71 Kean acquisto 31.0 -> 31
+* coach 71 Kean attuale 18.0 -> 31
+* coach 71 Vlahovic acquisto 21.0 -> 21
+* coach 71 Vlahovic attuale 15.0 -> 21
+* coach 71 Hojlund acquisto 21.0 -> 21
+* coach 71 Hojlund attuale 25.0 -> 21
+* coach 71 Ferguson E. acquisto 19.0 -> 19
+* coach 71 Ferguson E. attuale 16.0 -> 19
+* coach 71 Giovane acquisto 1.0 -> 1
+* coach 71 Giovane attuale 17.0 -> 1
+* scarsenal Radunovic * acquisto 1.0 -> 1
+* scarsenal Radunovic * attuale 1.0 -> 1
+* scarsenal Caprile acquisto 7.0 -> 7
+* scarsenal Caprile attuale 12.0 -> 7
+* scarsenal Ciocci acquisto 1.0 -> 1
+* scarsenal Ciocci attuale 1.0 -> 1
+* scarsenal Pavlovic acquisto 7.0 -> 7
+* scarsenal Pavlovic attuale 15.0 -> 7
+* scarsenal Dodò acquisto 11.0 -> 11
+* scarsenal Dodò attuale 6.0 -> 11
+* scarsenal Kristensen T. acquisto 7.0 -> 7
+* scarsenal Kristensen T. attuale 7.0 -> 7
+* scarsenal Norton-Cuffy acquisto 3.0 -> 3
+* scarsenal Norton-Cuffy attuale 7.0 -> 3
+* scarsenal Ramon acquisto 5.0 -> 5
+* scarsenal Ramon attuale 12.0 -> 5
+* scarsenal Canestrelli acquisto 3.0 -> 3
+* scarsenal Canestrelli attuale 5.0 -> 3
+* scarsenal Britschgi acquisto 6.0 -> 6
+* scarsenal Britschgi attuale 7.0 -> 6
+* scarsenal Zaccagni acquisto 26.0 -> 26
+* scarsenal Zaccagni attuale 14.0 -> 26
+* scarsenal Lobotka acquisto 9.0 -> 9
+* scarsenal Lobotka attuale 10.0 -> 9
++ scarsenal: McTominay
+* scarsenal Saelemaekers acquisto 12.0 -> 12
+* scarsenal Saelemaekers attuale 19.0 -> 12
+* scarsenal Tramoni M. acquisto 12.0 -> 12
+* scarsenal Tramoni M. attuale 9.0 -> 12
+* scarsenal Gudmundsson A. acquisto 24.0 -> 24
+* scarsenal Gudmundsson A. attuale 17.0 -> 24
+* scarsenal Zerbin acquisto 3.0 -> 3
+* scarsenal Zerbin attuale 6.0 -> 3
+* scarsenal Atta acquisto 6.0 -> 6
+* scarsenal Atta attuale 16.0 -> 6
+* scarsenal Pinamonti acquisto 16.0 -> 16
+* scarsenal Pinamonti attuale 14.0 -> 16
+* scarsenal Scamacca acquisto 14.0 -> 14
+* scarsenal Scamacca attuale 22.0 -> 14
+* scarsenal Martinez L. acquisto 27.0 -> 27
+* scarsenal Martinez L. attuale 34.0 -> 27
+* scarsenal Rodriguez Je. acquisto 6.0 -> 6
+* scarsenal Rodriguez Je. attuale 12.0 -> 6
+* scarsenal Giovane acquisto 1.0 -> 1
+* scarsenal Giovane attuale 17.0 -> 1
+* BinuSpuntu Radunovic * acquisto 1.0 -> 1
+* BinuSpuntu Radunovic * attuale 1.0 -> 1
+* BinuSpuntu Sommer acquisto 16.0 -> 10
+* BinuSpuntu Sommer attuale 14.0 -> 10
+* BinuSpuntu Caprile acquisto 7.0 -> 7
+* BinuSpuntu Caprile attuale 12.0 -> 7
+* BinuSpuntu Dumfries acquisto 20.0 -> 20
+* BinuSpuntu Dumfries attuale 10.0 -> 20
+* BinuSpuntu Cambiaso acquisto 15.0 -> 15
+* BinuSpuntu Cambiaso attuale 10.0 -> 15
+* BinuSpuntu Terracciano F. acquisto 2.0 -> 2
+* BinuSpuntu Terracciano F. attuale 11.0 -> 2
+* BinuSpuntu Valeri acquisto 10.0 -> 10
+* BinuSpuntu Valeri attuale 10.0 -> 10
+* BinuSpuntu Van Der Brempt acquisto 4.0 -> 4
+* BinuSpuntu Van Der Brempt attuale 3.0 -> 4
+* BinuSpuntu Canestrelli acquisto 3.0 -> 3
+* BinuSpuntu Canestrelli attuale 5.0 -> 3
+* BinuSpuntu Esteves T. * acquisto 1.0 -> 1
+* BinuSpuntu Esteves T. * attuale 1.0 -> 1
++ BinuSpuntu: McTominay
+* BinuSpuntu Adopo acquisto 5.0 -> 5
+* BinuSpuntu Adopo attuale 6.0 -> 5
+* BinuSpuntu Saelemaekers acquisto 12.0 -> 12
+* BinuSpuntu Saelemaekers attuale 19.0 -> 12
+* BinuSpuntu Da Cunha acquisto 11.0 -> 12
+* BinuSpuntu Da Cunha attuale 11.0 -> 12
+* BinuSpuntu Kaba acquisto 1.0 -> 2
+* BinuSpuntu Kaba attuale 3.0 -> 2
+* BinuSpuntu Akinsanmiro acquisto 3.0 -> 3
+* BinuSpuntu Akinsanmiro attuale 7.0 -> 3
+* BinuSpuntu Paz N. acquisto 21.0 -> 28
+* BinuSpuntu Paz N. attuale 30.0 -> 28
+* BinuSpuntu Atta acquisto 8.0 -> 6
+* BinuSpuntu Atta attuale 16.0 -> 6
+* BinuSpuntu Bonazzoli acquisto 1.0 -> 1
+* BinuSpuntu Bonazzoli attuale 20.0 -> 1
+* BinuSpuntu Kean acquisto 33.0 -> 31
+* BinuSpuntu Kean attuale 18.0 -> 31
+* BinuSpuntu David acquisto 16.0 -> 16
+* BinuSpuntu David attuale 13.0 -> 16
+* BinuSpuntu Hojlund acquisto 21.0 -> 21
+* BinuSpuntu Hojlund attuale 25.0 -> 21
+* BinuSpuntu Benedyczak acquisto 1.0 -> 1
+* BinuSpuntu Benedyczak attuale 8.0 -> 1
+* HeineKean Gollini acquisto 1.0 -> 1
+* HeineKean Gollini attuale 1.0 -> 1
+* HeineKean Milinkovic-Savic V. acquisto 4.0 -> 4
+* HeineKean Milinkovic-Savic V. attuale 19.0 -> 4
+* HeineKean Svilar acquisto 15.0 -> 15
+* HeineKean Svilar attuale 19.0 -> 15
+* HeineKean Bellanova acquisto 13.0 -> 13
+* HeineKean Bellanova attuale 6.0 -> 13
+* HeineKean Cambiaso acquisto 15.0 -> 15
+* HeineKean Cambiaso attuale 10.0 -> 15
+* HeineKean Dodò acquisto 11.0 -> 11
+* HeineKean Dodò attuale 6.0 -> 11
+* HeineKean Ramon acquisto 4.0 -> 4
+* HeineKean Ramon attuale 12.0 -> 4
+* HeineKean Tiago Gabriel acquisto 1.0 -> 1
+* HeineKean Tiago Gabriel attuale 9.0 -> 1
+* HeineKean Angori acquisto 5.0 -> 5
+* HeineKean Angori attuale 9.0 -> 5
+* HeineKean Mbambi * acquisto 1.0 -> 1
+* HeineKean Mbambi * attuale clean_nome
+Mbambi    1.0
+Mbambi    0.0
+Name: QA, dtype: float64 -> 1
+* HeineKean Politano acquisto 15.0 -> 16
+* HeineKean Politano attuale 11.0 -> 16
+* HeineKean Loftus-Cheek acquisto 8.0 -> 8
+* HeineKean Loftus-Cheek attuale 13.0 -> 8
+* HeineKean Gudmundsson A. acquisto 17.0 -> 24
+* HeineKean Gudmundsson A. attuale 17.0 -> 24
+* HeineKean Folorunsho acquisto 9.0 -> 9
+* HeineKean Folorunsho attuale 8.0 -> 9
+* HeineKean Prati acquisto 4.0 -> 3
+* HeineKean Prati attuale 6.0 -> 3
+* HeineKean Marchwinski acquisto 1.0 -> 1
+* HeineKean Marchwinski attuale 1.0 -> 1
+* HeineKean Conceicao acquisto 18.0 -> 18
+* HeineKean Conceicao attuale 15.0 -> 18
+* HeineKean Stanciu * acquisto 8.0 -> 8
+* HeineKean Stanciu * attuale clean_nome
+Stanciu    1.0
+Stanciu    0.0
+Name: QA, dtype: float64 -> 8
+* HeineKean Thuram acquisto 31.0 -> 31
+* HeineKean Thuram attuale 29.0 -> 31
+* HeineKean David acquisto 16.0 -> 27
+* HeineKean David attuale 13.0 -> 27
+* HeineKean Castellanos * acquisto 21.0 -> 21
+* HeineKean Castellanos * attuale 18.0 -> 21
+* HeineKean Cheddira acquisto 4.0 -> 4
+* HeineKean Cheddira attuale 6.0 -> 4
+* HeineKean Addai acquisto 10.0 -> 7
+* HeineKean Addai attuale 12.0 -> 7
+* Antibro Svilar acquisto 15.0 -> 15
+* Antibro Svilar attuale 19.0 -> 15
+* Antibro Vasquez D. acquisto 1.0 -> 1
+* Antibro Vasquez D. attuale 1.0 -> 1
+* Antibro Nava acquisto 1.0 -> 1
+* Antibro Nava attuale 1.0 -> 1
+* Antibro Bastoni acquisto 17.0 -> 17
+* Antibro Bastoni attuale 17.0 -> 17
+* Antibro Vasquez acquisto 9.0 -> 9
+* Antibro Vasquez attuale 10.0 -> 9
+* Antibro Cambiaso acquisto 15.0 -> 15
+* Antibro Cambiaso attuale 10.0 -> 15
+* Antibro Tavares N. acquisto 12.0 -> 12
+* Antibro Tavares N. attuale 6.0 -> 12
+* Antibro Terracciano F. acquisto 2.0 -> 2
+* Antibro Terracciano F. attuale 11.0 -> 2
+* Antibro Dodò acquisto 11.0 -> 11
+* Antibro Dodò attuale 6.0 -> 11
+* Antibro Vitik acquisto 8.0 -> 8
+* Antibro Vitik attuale 4.0 -> 8
+* Antibro Orsolini acquisto 31.0 -> 31
+* Antibro Orsolini attuale 24.0 -> 31
+* Antibro Pulisic acquisto 28.0 -> 28
+* Antibro Pulisic attuale 31.0 -> 28
+* Antibro Estevez acquisto 2.0 -> 2
+* Antibro Estevez attuale 5.0 -> 2
+* Antibro Vlasic acquisto 14.0 -> 15
+* Antibro Vlasic attuale 18.0 -> 15
+* Antibro Asllani acquisto 4.0 -> 4
+* Antibro Asllani attuale 3.0 -> 4
+* Antibro Aebischer acquisto 4.0 -> 4
+* Antibro Aebischer attuale 5.0 -> 4
+* Antibro Paz N. acquisto 21.0 -> 20
+* Antibro Paz N. attuale 30.0 -> 20
+* Antibro Keita M. acquisto 6.0 -> 6
+* Antibro Keita M. attuale 8.0 -> 6
+* Antibro Berardi acquisto 21.0 -> 24
+* Antibro Berardi attuale 21.0 -> 24
+* Antibro Martinez L. acquisto 34.0 -> 27
+* Antibro Martinez L. attuale 34.0 -> 27
+* Antibro Esposito Se. acquisto 7.0 -> 7
+* Antibro Esposito Se. attuale 16.0 -> 7
+* Antibro Meister acquisto 3.0 -> 3
+* Antibro Meister attuale 8.0 -> 3
+* Antibro Giovane acquisto 1.0 -> 1
+* Antibro Giovane attuale 17.0 -> 1
+* Scarzooka Perin acquisto 1.0 -> 1
+* Scarzooka Perin attuale 3.0 -> 1
+* Scarzooka Pinsoglio acquisto 1.0 -> 1
+* Scarzooka Pinsoglio attuale 1.0 -> 1
+* Scarzooka Di Gregorio acquisto 16.0 -> 16
+* Scarzooka Di Gregorio attuale 16.0 -> 16
+* Scarzooka Di Lorenzo acquisto 9.0 -> 9
+* Scarzooka Di Lorenzo attuale 12.0 -> 9
+* Scarzooka Lazaro acquisto 7.0 -> 7
+* Scarzooka Lazaro attuale 7.0 -> 7
+* Scarzooka Vojvoda acquisto 6.0 -> 6
+* Scarzooka Vojvoda attuale 12.0 -> 6
+* Scarzooka Dumfries acquisto 21.0 -> 21
+* Scarzooka Dumfries attuale 10.0 -> 21
+* Scarzooka Paz Y. acquisto 1.0 -> 1
+* Scarzooka Paz Y. attuale 1.0 -> 1
+* Scarzooka Norton-Cuffy acquisto 3.0 -> 3
+* Scarzooka Norton-Cuffy attuale 7.0 -> 3
+* Scarzooka Tiago Gabriel acquisto 1.0 -> 1
+* Scarzooka Tiago Gabriel attuale 9.0 -> 1
+* Scarzooka Pulisic acquisto 28.0 -> 28
+* Scarzooka Pulisic attuale 31.0 -> 28
+* Scarzooka Adopo acquisto 5.0 -> 5
+* Scarzooka Adopo attuale 6.0 -> 5
+* Scarzooka Zalewski acquisto 7.0 -> 7
+* Scarzooka Zalewski attuale 15.0 -> 7
+* Scarzooka Da Cunha acquisto 11.0 -> 11
+* Scarzooka Da Cunha attuale 11.0 -> 11
+* Scarzooka Zerbin acquisto 3.0 -> 3
+* Scarzooka Zerbin attuale 6.0 -> 3
+* Scarzooka Isaksen acquisto 14.0 -> 14
+* Scarzooka Isaksen attuale 14.0 -> 14
+* Scarzooka Paz N. acquisto 27.0 -> 27
+* Scarzooka Paz N. attuale 30.0 -> 27
+* Scarzooka Liteta acquisto 1.0 -> 1
+* Scarzooka Liteta attuale 1.0 -> 1
+* Scarzooka Kean acquisto 31.0 -> 31
+* Scarzooka Kean attuale 18.0 -> 31
+* Scarzooka Martinez L. acquisto 34.0 -> 34
+* Scarzooka Martinez L. attuale 34.0 -> 34
+* Scarzooka Leao acquisto 26.0 -> 26
+* Scarzooka Leao attuale 30.0 -> 26
+* Scarzooka Njie acquisto 1.0 -> 1
+* Scarzooka Njie attuale 6.0 -> 1
+* Scarzooka Buffon L. acquisto 1.0 -> 1
+* Scarzooka Buffon L. attuale 1.0 -> 1
+* Fc Cortomuso Meret acquisto 16.0 -> 16
+* Fc Cortomuso Meret attuale 8.0 -> 16
+* Fc Cortomuso Milinkovic-Savic V. acquisto 4.0 -> 4
+* Fc Cortomuso Milinkovic-Savic V. attuale 19.0 -> 4
+* Fc Cortomuso Sava acquisto 4.0 -> 4
+* Fc Cortomuso Sava attuale 1.0 -> 4
+* Fc Cortomuso Martin acquisto 10.0 -> 10
+* Fc Cortomuso Martin attuale 14.0 -> 10
+* Fc Cortomuso Bellanova acquisto 13.0 -> 10
+* Fc Cortomuso Bellanova attuale 6.0 -> 10
+* Fc Cortomuso Pavlovic acquisto 7.0 -> 7
+* Fc Cortomuso Pavlovic attuale 15.0 -> 7
+* Fc Cortomuso Dodò acquisto 11.0 -> 11
+* Fc Cortomuso Dodò attuale 6.0 -> 11
+* Fc Cortomuso Palma * acquisto 1.0 -> 1
+* Fc Cortomuso Palma * attuale 2.0 -> 1
+* Fc Cortomuso Tiago Gabriel acquisto 1.0 -> 1
+* Fc Cortomuso Tiago Gabriel attuale 9.0 -> 1
+* Fc Cortomuso Angori acquisto 5.0 -> 5
+* Fc Cortomuso Angori attuale 9.0 -> 5
+* Fc Cortomuso Orsolini acquisto 31.0 -> 30
+* Fc Cortomuso Orsolini attuale 24.0 -> 30
+* Fc Cortomuso Pulisic acquisto 28.0 -> 28
+* Fc Cortomuso Pulisic attuale 31.0 -> 28
+* Fc Cortomuso Malinovskyi acquisto 7.0 -> 7
+* Fc Cortomuso Malinovskyi attuale 12.0 -> 7
+* Fc Cortomuso Ilkhan acquisto 1.0 -> 1
+* Fc Cortomuso Ilkhan attuale 2.0 -> 1
+* Fc Cortomuso Kaba acquisto 1.0 -> 1
+* Fc Cortomuso Kaba attuale 3.0 -> 1
+* Fc Cortomuso Paz N. acquisto 21.0 -> 20
+* Fc Cortomuso Paz N. attuale 30.0 -> 20
+* Fc Cortomuso Atta acquisto 8.0 -> 6
+* Fc Cortomuso Atta attuale 16.0 -> 6
+* Fc Cortomuso Venturino acquisto 3.0 -> 3
+* Fc Cortomuso Venturino attuale 1.0 -> 3
+* Fc Cortomuso Dybala acquisto 13.0 -> 13
+* Fc Cortomuso Dybala attuale 13.0 -> 13
+* Fc Cortomuso Martinez L. acquisto 34.0 -> 27
+* Fc Cortomuso Martinez L. attuale 34.0 -> 27
+* Fc Cortomuso Leao acquisto 26.0 -> 22
+* Fc Cortomuso Leao attuale 30.0 -> 22
+* Fc Cortomuso Pellegrino M. acquisto 13.0 -> 13
+* Fc Cortomuso Pellegrino M. attuale 21.0 -> 13
+* Fc Cortomuso Giovane acquisto 1.0 -> 1
+* Fc Cortomuso Giovane attuale 17.0 -> 1
+* I Cigni Sportiello acquisto 1.0 -> 1
+* I Cigni Sportiello attuale 1.0 -> 1
+* I Cigni Sommer acquisto 16.0 -> 16
+* I Cigni Sommer attuale 14.0 -> 16
+* I Cigni Martinez Jo. acquisto 2.0 -> 2
+* I Cigni Martinez Jo. attuale 1.0 -> 2
+* I Cigni Hermoso acquisto 4.0 -> 4
+* I Cigni Hermoso attuale 10.0 -> 4
+* I Cigni Tavares N. acquisto 12.0 -> 12
+* I Cigni Tavares N. attuale 6.0 -> 12
+* I Cigni Doig acquisto 6.0 -> 6
+* I Cigni Doig attuale 6.0 -> 6
+* I Cigni Valeri acquisto 10.0 -> 10
+* I Cigni Valeri attuale 10.0 -> 10
+* I Cigni Dodò acquisto 11.0 -> 11
+* I Cigni Dodò attuale 6.0 -> 11
+* I Cigni Valle acquisto 6.0 -> 6
+* I Cigni Valle attuale 8.0 -> 6
+* I Cigni Esteves T. * acquisto 1.0 -> 1
+* I Cigni Esteves T. * attuale 1.0 -> 1
+* I Cigni Politano acquisto 15.0 -> 13
+* I Cigni Politano attuale 11.0 -> 13
+* I Cigni El Shaarawy acquisto 8.0 -> 8
+* I Cigni El Shaarawy attuale 8.0 -> 8
+* I Cigni Akpa Akpro acquisto 1.0 -> 1
+* I Cigni Akpa Akpro attuale 2.0 -> 1
+* I Cigni Tramoni M. acquisto 12.0 -> 12
+* I Cigni Tramoni M. attuale 9.0 -> 12
+* I Cigni Zhegrova acquisto 14.0 -> 14
+* I Cigni Zhegrova attuale 9.0 -> 14
+* I Cigni Folorunsho acquisto 9.0 -> 9
+* I Cigni Folorunsho attuale 8.0 -> 9
+* I Cigni Ndour acquisto 2.0 -> 2
+* I Cigni Ndour attuale 6.0 -> 2
+* I Cigni Isaksen acquisto 14.0 -> 13
+* I Cigni Isaksen attuale 14.0 -> 13
+* I Cigni Berardi acquisto 21.0 -> 21
+* I Cigni Berardi attuale 21.0 -> 21
+* I Cigni Kean acquisto 33.0 -> 22
+* I Cigni Kean attuale 18.0 -> 22
+* I Cigni Martinez L. acquisto 34.0 -> 34
+* I Cigni Martinez L. attuale 34.0 -> 34
+* I Cigni Almqvist acquisto 4.0 -> 4
+* I Cigni Almqvist attuale 3.0 -> 4
+* I Cigni Castellanos * acquisto 22.0 -> 22
+* I Cigni Castellanos * attuale 18.0 -> 22
+* SILVEDO Silvestri acquisto 1.0 -> 1
+* SILVEDO Silvestri attuale 1.0 -> 1
+* SILVEDO Terracciano acquisto 1.0 -> 1
+* SILVEDO Terracciano attuale 1.0 -> 1
+* SILVEDO Maignan acquisto 16.0 -> 16
+* SILVEDO Maignan attuale 20.0 -> 16
+* SILVEDO Biraghi acquisto 8.0 -> 8
+* SILVEDO Biraghi attuale 3.0 -> 8
+* SILVEDO Ranieri L. acquisto 7.0 -> 7
+* SILVEDO Ranieri L. attuale 7.0 -> 7
+* SILVEDO Vasquez acquisto 9.0 -> 9
+* SILVEDO Vasquez attuale 10.0 -> 9
+* SILVEDO Holm acquisto 8.0 -> 8
+* SILVEDO Holm attuale 13.0 -> 8
+* SILVEDO Terracciano F. acquisto 2.0 -> 2
+* SILVEDO Terracciano F. attuale 11.0 -> 2
+* SILVEDO Dodò acquisto 11.0 -> 11
+* SILVEDO Dodò attuale 6.0 -> 11
+* SILVEDO Idrissi R. acquisto 3.0 -> 3
+* SILVEDO Idrissi R. attuale 8.0 -> 3
+* SILVEDO Grassi acquisto 4.0 -> 4
+* SILVEDO Grassi attuale 5.0 -> 4
+* SILVEDO Odgaard acquisto 19.0 -> 19
+* SILVEDO Odgaard attuale 18.0 -> 19
+* SILVEDO Zaniolo acquisto 15.0 -> 15
+* SILVEDO Zaniolo attuale 20.0 -> 15
+* SILVEDO Koopmeiners acquisto 14.0 -> 14
+* SILVEDO Koopmeiners attuale 5.0 -> 14
+* SILVEDO Pisilli acquisto 7.0 -> 7
+* SILVEDO Pisilli attuale 6.0 -> 7
+* SILVEDO Folorunsho acquisto 9.0 -> 9
+* SILVEDO Folorunsho attuale 8.0 -> 9
+* SILVEDO Ndour acquisto 2.0 -> 2
+* SILVEDO Ndour attuale 6.0 -> 2
+* SILVEDO Paz N. acquisto 20.0 -> 20
+* SILVEDO Paz N. attuale 30.0 -> 20
+* SILVEDO Pavoletti acquisto 1.0 -> 1
+* SILVEDO Pavoletti attuale 1.0 -> 1
+* SILVEDO Berardi acquisto 21.0 -> 21
+* SILVEDO Berardi attuale 21.0 -> 21
+* SILVEDO Lukaku acquisto 19.0 -> 19
+* SILVEDO Lukaku attuale 15.0 -> 19
+* SILVEDO Martinez L. acquisto 27.0 -> 27
+* SILVEDO Martinez L. attuale 34.0 -> 27
+* SILVEDO Davis K. acquisto 13.0 -> 13
+* SILVEDO Davis K. attuale 24.0 -> 13
+* F.C Pennic Hellas Milinkovic-Savic V. acquisto 4.0 -> 4
+* F.C Pennic Hellas Milinkovic-Savic V. attuale 19.0 -> 4
+* F.C Pennic Hellas Caprile acquisto 7.0 -> 7
+* F.C Pennic Hellas Caprile attuale 12.0 -> 7
++ F.C Pennic Hellas: Mandas *
+* F.C Pennic Hellas Dimarco acquisto 27.0 -> 27
+* F.C Pennic Hellas Dimarco attuale 29.0 -> 27
+* F.C Pennic Hellas Dodò acquisto 11.0 -> 11
+* F.C Pennic Hellas Dodò attuale 6.0 -> 11
+* F.C Pennic Hellas Norton-Cuffy acquisto 3.0 -> 3
+* F.C Pennic Hellas Norton-Cuffy attuale 7.0 -> 3
+* F.C Pennic Hellas Valle acquisto 6.0 -> 6
+* F.C Pennic Hellas Valle attuale 8.0 -> 6
+* F.C Pennic Hellas Tiago Gabriel acquisto 1.0 -> 1
+* F.C Pennic Hellas Tiago Gabriel attuale 9.0 -> 1
+* F.C Pennic Hellas Muharemovic acquisto 4.0 -> 4
+* F.C Pennic Hellas Muharemovic attuale 7.0 -> 4
+* F.C Pennic Hellas Ndaba acquisto 1.0 -> 1
+* F.C Pennic Hellas Ndaba attuale 3.0 -> 1
+* F.C Pennic Hellas Zaccagni acquisto 26.0 -> 26
+* F.C Pennic Hellas Zaccagni attuale 14.0 -> 26
+* F.C Pennic Hellas Pulisic acquisto 28.0 -> 28
+* F.C Pennic Hellas Pulisic attuale 31.0 -> 28
+* F.C Pennic Hellas Adopo acquisto 5.0 -> 5
+* F.C Pennic Hellas Adopo attuale 6.0 -> 5
+* F.C Pennic Hellas Basic acquisto 1.0 -> 1
+* F.C Pennic Hellas Basic attuale 14.0 -> 1
+* F.C Pennic Hellas Vlasic acquisto 14.0 -> 14
+* F.C Pennic Hellas Vlasic attuale 18.0 -> 14
+* F.C Pennic Hellas Lipani acquisto 4.0 -> 4
+* F.C Pennic Hellas Lipani attuale 3.0 -> 4
+* F.C Pennic Hellas Ndour acquisto 2.0 -> 2
+* F.C Pennic Hellas Ndour attuale 6.0 -> 2
+* F.C Pennic Hellas Atta acquisto 8.0 -> 6
+* F.C Pennic Hellas Atta attuale 16.0 -> 6
+* F.C Pennic Hellas Martinez L. acquisto 34.0 -> 34
+* F.C Pennic Hellas Martinez L. attuale 34.0 -> 34
+* F.C Pennic Hellas Hojlund acquisto 21.0 -> 24
+* F.C Pennic Hellas Hojlund attuale 25.0 -> 24
+* F.C Pennic Hellas Dallinga acquisto 10.0 -> 10
+* F.C Pennic Hellas Dallinga attuale 8.0 -> 10
+* F.C Pennic Hellas Esposito F.P. acquisto 7.0 -> 7
+* F.C Pennic Hellas Esposito F.P. attuale 18.0 -> 7
+* F.C Pennic Hellas Giovane acquisto 1.0 -> 3
+* F.C Pennic Hellas Giovane attuale 17.0 -> 3
+* PEAKY BLINDERS Radunovic * acquisto 1.0 -> 1
+* PEAKY BLINDERS Radunovic * attuale 1.0 -> 1
+* PEAKY BLINDERS Perin acquisto 1.0 -> 1
+* PEAKY BLINDERS Perin attuale 3.0 -> 1
+* PEAKY BLINDERS Di Gregorio acquisto 16.0 -> 16
+* PEAKY BLINDERS Di Gregorio attuale 16.0 -> 16
+* PEAKY BLINDERS Martin acquisto 10.0 -> 10
+* PEAKY BLINDERS Martin attuale 14.0 -> 10
+* PEAKY BLINDERS Bellanova acquisto 13.0 -> 13
+* PEAKY BLINDERS Bellanova attuale 6.0 -> 13
+* PEAKY BLINDERS Valeri acquisto 10.0 -> 10
+* PEAKY BLINDERS Valeri attuale 10.0 -> 10
+* PEAKY BLINDERS Dodò acquisto 11.0 -> 11
+* PEAKY BLINDERS Dodò attuale 6.0 -> 11
+* PEAKY BLINDERS Barbieri acquisto 3.0 -> 3
+* PEAKY BLINDERS Barbieri attuale 9.0 -> 3
+* PEAKY BLINDERS Frese acquisto 3.0 -> 3
+* PEAKY BLINDERS Frese attuale 6.0 -> 3
+* PEAKY BLINDERS Norton-Cuffy acquisto 3.0 -> 3
+* PEAKY BLINDERS Norton-Cuffy attuale 7.0 -> 3
+* PEAKY BLINDERS Orsolini acquisto 31.0 -> 31
+* PEAKY BLINDERS Orsolini attuale 24.0 -> 31
+* PEAKY BLINDERS Calhanoglu acquisto 30.0 -> 30
+* PEAKY BLINDERS Calhanoglu attuale 28.0 -> 30
+* PEAKY BLINDERS Pulisic acquisto 28.0 -> 28
+* PEAKY BLINDERS Pulisic attuale 31.0 -> 28
+* PEAKY BLINDERS Adopo acquisto 5.0 -> 5
+* PEAKY BLINDERS Adopo attuale 6.0 -> 5
+* PEAKY BLINDERS Zerbin acquisto 3.0 -> 3
+* PEAKY BLINDERS Zerbin attuale 6.0 -> 3
+* PEAKY BLINDERS Kaba acquisto 1.0 -> 1
+* PEAKY BLINDERS Kaba attuale 3.0 -> 1
+* PEAKY BLINDERS Paz N. acquisto 21.0 -> 21
+* PEAKY BLINDERS Paz N. attuale 30.0 -> 21
+* PEAKY BLINDERS Sorensen O. acquisto 5.0 -> 5
+* PEAKY BLINDERS Sorensen O. attuale 7.0 -> 5
+* PEAKY BLINDERS Leao acquisto 26.0 -> 23
+* PEAKY BLINDERS Leao attuale 30.0 -> 23
+* PEAKY BLINDERS Thuram acquisto 31.0 -> 31
+* PEAKY BLINDERS Thuram attuale 29.0 -> 31
+* PEAKY BLINDERS Moro L. acquisto 1.0 -> 1
+* PEAKY BLINDERS Moro L. attuale 1.0 -> 1
+* PEAKY BLINDERS Giovane acquisto 1.0 -> 1
+* PEAKY BLINDERS Giovane attuale 17.0 -> 1
+* PEAKY BLINDERS Buffon L. acquisto 1.0 -> 1
+* PEAKY BLINDERS Buffon L. attuale 1.0 -> 1
+* FC Buttarighe Lezzerini acquisto 1.0 -> 1
+* FC Buttarighe Lezzerini attuale 1.0 -> 1
+* FC Buttarighe De Gea acquisto 14.0 -> 14
+* FC Buttarighe De Gea attuale 11.0 -> 14
+* FC Buttarighe Terracciano acquisto 1.0 -> 1
+* FC Buttarighe Terracciano attuale 1.0 -> 1
+* FC Buttarighe Mina acquisto 7.0 -> 7
+* FC Buttarighe Mina attuale 8.0 -> 7
+* FC Buttarighe Dumfries acquisto 20.0 -> 20
+* FC Buttarighe Dumfries attuale 10.0 -> 20
+* FC Buttarighe Dodò acquisto 11.0 -> 12
+* FC Buttarighe Dodò attuale 6.0 -> 12
+* FC Buttarighe Delprato acquisto 8.0 -> 8
+* FC Buttarighe Delprato attuale 9.0 -> 8
+* FC Buttarighe Norton-Cuffy acquisto 3.0 -> 6
+* FC Buttarighe Norton-Cuffy attuale 7.0 -> 6
+* FC Buttarighe Van Der Brempt acquisto 4.0 -> 4
+* FC Buttarighe Van Der Brempt attuale 3.0 -> 4
+* FC Buttarighe Coppola F. acquisto 1.0 -> 1
+* FC Buttarighe Coppola F. attuale 2.0 -> 1
+* FC Buttarighe El Shaarawy acquisto 8.0 -> 8
+* FC Buttarighe El Shaarawy attuale 8.0 -> 8
+* FC Buttarighe Leris acquisto 2.0 -> 2
+* FC Buttarighe Leris attuale 12.0 -> 2
+* FC Buttarighe Pulisic acquisto 28.0 -> 28
+* FC Buttarighe Pulisic attuale 31.0 -> 28
+* FC Buttarighe Modric acquisto 12.0 -> 12
+* FC Buttarighe Modric attuale 19.0 -> 12
++ FC Buttarighe: McTominay
+* FC Buttarighe Zalewski acquisto 6.0 -> 6
+* FC Buttarighe Zalewski attuale 15.0 -> 6
+* FC Buttarighe Paz N. acquisto 21.0 -> 20
+* FC Buttarighe Paz N. attuale 30.0 -> 20
+* FC Buttarighe Hojholt acquisto 1.0 -> 1
+* FC Buttarighe Hojholt attuale 2.0 -> 1
+* FC Buttarighe Bonazzoli acquisto 1.0 -> 3
+* FC Buttarighe Bonazzoli attuale 20.0 -> 3
+* FC Buttarighe Thuram acquisto 31.0 -> 29
+* FC Buttarighe Thuram attuale 29.0 -> 29
+* FC Buttarighe Ferguson E. acquisto 13.0 -> 13
+* FC Buttarighe Ferguson E. attuale 16.0 -> 13
+* FC Buttarighe Esposito F.P. acquisto 7.0 -> 7
+* FC Buttarighe Esposito F.P. attuale 18.0 -> 7
+* FC Buttarighe Rodriguez Je. acquisto 6.0 -> 6
+* FC Buttarighe Rodriguez Je. attuale 12.0 -> 6
+* mezzebirre Maignan acquisto 16.0 -> 16
+* mezzebirre Maignan attuale 20.0 -> 16
+* mezzebirre Caprile acquisto 7.0 -> 7
+* mezzebirre Caprile attuale 12.0 -> 7
+* mezzebirre Ciocci acquisto 1.0 -> 1
+* mezzebirre Ciocci attuale 1.0 -> 1
+* mezzebirre Holm acquisto 8.0 -> 8
+* mezzebirre Holm attuale 13.0 -> 8
+* mezzebirre Barbieri acquisto 3.0 -> 3
+* mezzebirre Barbieri attuale 9.0 -> 3
+* mezzebirre Beukema acquisto 10.0 -> 10
+* mezzebirre Beukema attuale 7.0 -> 10
+* mezzebirre Kempf acquisto 5.0 -> 5
+* mezzebirre Kempf attuale 14.0 -> 5
+* mezzebirre Canestrelli acquisto 4.0 -> 4
+* mezzebirre Canestrelli attuale 5.0 -> 4
+* mezzebirre Esteves T. * acquisto 1.0 -> 1
+* mezzebirre Esteves T. * attuale 1.0 -> 1
+* mezzebirre Wesley acquisto 14.0 -> 14
+* mezzebirre Wesley attuale 16.0 -> 14
+* mezzebirre Zaccagni acquisto 26.0 -> 26
+* mezzebirre Zaccagni attuale 14.0 -> 26
+* mezzebirre Pulisic acquisto 28.0 -> 28
+* mezzebirre Pulisic attuale 31.0 -> 28
+* mezzebirre Odgaard acquisto 16.0 -> 16
+* mezzebirre Odgaard attuale 18.0 -> 16
+* mezzebirre Zerbin acquisto 3.0 -> 3
+* mezzebirre Zerbin attuale 6.0 -> 3
+* mezzebirre Ilkhan acquisto 1.0 -> 1
+* mezzebirre Ilkhan attuale 2.0 -> 1
+* mezzebirre Folorunsho acquisto 9.0 -> 9
+* mezzebirre Folorunsho attuale 8.0 -> 9
+* mezzebirre Ndour acquisto 2.0 -> 2
+* mezzebirre Ndour attuale 6.0 -> 2
+* mezzebirre Neres acquisto 13.0 -> 13
+* mezzebirre Neres attuale 17.0 -> 13
+* mezzebirre Morata acquisto 18.0 -> 18
+* mezzebirre Morata attuale 4.0 -> 18
+* mezzebirre Leao acquisto 24.0 -> 24
+* mezzebirre Leao attuale 30.0 -> 24
+* mezzebirre Davis K. acquisto 13.0 -> 13
+* mezzebirre Davis K. attuale 24.0 -> 13
+* mezzebirre Camarda acquisto 12.0 -> 12
+* mezzebirre Camarda attuale 4.0 -> 12
+* mezzebirre Addai acquisto 10.0 -> 10
+* mezzebirre Addai attuale 12.0 -> 10
+* ISGOPPAISI2 Milinkovic-Savic V. acquisto 4.0 -> 4
+* ISGOPPAISI2 Milinkovic-Savic V. attuale 19.0 -> 4
+* ISGOPPAISI2 Svilar acquisto 15.0 -> 15
+* ISGOPPAISI2 Svilar attuale 19.0 -> 15
+* ISGOPPAISI2 Vasquez D. acquisto 1.0 -> 1
+* ISGOPPAISI2 Vasquez D. attuale 1.0 -> 1
+* ISGOPPAISI2 Di Lorenzo acquisto 14.0 -> 14
+* ISGOPPAISI2 Di Lorenzo attuale 12.0 -> 14
+* ISGOPPAISI2 Sernicola * acquisto 1.0 -> 1
+* ISGOPPAISI2 Sernicola * attuale 1.0 -> 1
+* ISGOPPAISI2 Vojvoda acquisto 6.0 -> 6
+* ISGOPPAISI2 Vojvoda attuale 12.0 -> 6
+* ISGOPPAISI2 Dodò acquisto 11.0 -> 11
+* ISGOPPAISI2 Dodò attuale 6.0 -> 11
+* ISGOPPAISI2 Lucumì acquisto 9.0 -> 9
+* ISGOPPAISI2 Lucumì attuale 7.0 -> 9
+* ISGOPPAISI2 Tiago Gabriel acquisto 1.0 -> 2
+* ISGOPPAISI2 Tiago Gabriel attuale 9.0 -> 2
+* ISGOPPAISI2 Joao Mario acquisto 8.0 -> 8
+* ISGOPPAISI2 Joao Mario attuale 2.0 -> 8
+* ISGOPPAISI2 Zaccagni acquisto 26.0 -> 26
+* ISGOPPAISI2 Zaccagni attuale 14.0 -> 26
+* ISGOPPAISI2 Calhanoglu acquisto 30.0 -> 30
+* ISGOPPAISI2 Calhanoglu attuale 28.0 -> 30
+* ISGOPPAISI2 Adopo acquisto 5.0 -> 5
+* ISGOPPAISI2 Adopo attuale 6.0 -> 5
+* ISGOPPAISI2 Saelemaekers acquisto 12.0 -> 12
+* ISGOPPAISI2 Saelemaekers attuale 19.0 -> 12
+* ISGOPPAISI2 Akpa Akpro acquisto 1.0 -> 1
+* ISGOPPAISI2 Akpa Akpro attuale 2.0 -> 1
+* ISGOPPAISI2 Sulemana I. acquisto 1.0 -> 1
+* ISGOPPAISI2 Sulemana I. attuale 1.0 -> 1
+* ISGOPPAISI2 Boloca acquisto 6.0 -> 6
+* ISGOPPAISI2 Boloca attuale 2.0 -> 6
+* ISGOPPAISI2 Paz N. acquisto 21.0 -> 20
+* ISGOPPAISI2 Paz N. attuale 30.0 -> 20
+* ISGOPPAISI2 Scamacca acquisto 16.0 -> 16
+* ISGOPPAISI2 Scamacca attuale 22.0 -> 16
+* ISGOPPAISI2 Thuram acquisto 31.0 -> 31
+* ISGOPPAISI2 Thuram attuale 29.0 -> 31
+* ISGOPPAISI2 David acquisto 16.0 -> 13
+* ISGOPPAISI2 David attuale 13.0 -> 13
+* ISGOPPAISI2 Soulè acquisto 20.0 -> 20
+* ISGOPPAISI2 Soulè attuale 26.0 -> 20
+* ISGOPPAISI2 Bonny acquisto 5.0 -> 5
+* ISGOPPAISI2 Bonny attuale 14.0 -> 5
+* Kung-Fu Pandev Di Gennaro acquisto 1.0 -> 1
+* Kung-Fu Pandev Di Gennaro attuale 1.0 -> 1
+* Kung-Fu Pandev Sommer acquisto 16.0 -> 16
+* Kung-Fu Pandev Sommer attuale 14.0 -> 16
+* Kung-Fu Pandev Martinez Jo. acquisto 2.0 -> 2
+* Kung-Fu Pandev Martinez Jo. attuale 1.0 -> 2
+* Kung-Fu Pandev Pezzella Giu. acquisto 5.0 -> 5
+* Kung-Fu Pandev Pezzella Giu. attuale 4.0 -> 5
+* Kung-Fu Pandev Angelino acquisto 15.0 -> 15
+* Kung-Fu Pandev Angelino attuale 7.0 -> 15
+* Kung-Fu Pandev Valenti acquisto 4.0 -> 5
+* Kung-Fu Pandev Valenti attuale 7.0 -> 5
+* Kung-Fu Pandev Cambiaso acquisto 15.0 -> 15
+* Kung-Fu Pandev Cambiaso attuale 10.0 -> 15
+* Kung-Fu Pandev Doig acquisto 6.0 -> 6
+* Kung-Fu Pandev Doig attuale 6.0 -> 6
++ Kung-Fu Pandev: Tiago Gabriel
+* Kung-Fu Pandev Veiga D. acquisto 2.0 -> 1
+* Kung-Fu Pandev Veiga D. attuale 5.0 -> 1
+* Kung-Fu Pandev Politano acquisto 15.0 -> 16
+* Kung-Fu Pandev Politano attuale 11.0 -> 16
++ Kung-Fu Pandev: McKennie
+* Kung-Fu Pandev Vlasic acquisto 14.0 -> 14
+* Kung-Fu Pandev Vlasic attuale 18.0 -> 14
+* Kung-Fu Pandev Asllani acquisto 4.0 -> 4
+* Kung-Fu Pandev Asllani attuale 3.0 -> 4
+* Kung-Fu Pandev Zarraga acquisto 2.0 -> 2
+* Kung-Fu Pandev Zarraga attuale 2.0 -> 2
+* Kung-Fu Pandev Marchwinski acquisto 1.0 -> 1
+* Kung-Fu Pandev Marchwinski attuale 1.0 -> 1
+* Kung-Fu Pandev Paz N. acquisto 21.0 -> 20
+* Kung-Fu Pandev Paz N. attuale 30.0 -> 20
+* Kung-Fu Pandev Conceicao acquisto 18.0 -> 18
+* Kung-Fu Pandev Conceicao attuale 15.0 -> 18
+* Kung-Fu Pandev Kean acquisto 33.0 -> 31
+* Kung-Fu Pandev Kean attuale 18.0 -> 31
+* Kung-Fu Pandev Soulè acquisto 20.0 -> 20
+* Kung-Fu Pandev Soulè attuale 26.0 -> 20
+* Kung-Fu Pandev Hojlund acquisto 21.0 -> 21
+* Kung-Fu Pandev Hojlund attuale 25.0 -> 21
+* Kung-Fu Pandev Benedyczak acquisto 1.0 -> 1
+* Kung-Fu Pandev Benedyczak attuale 8.0 -> 1
+* Kung-Fu Pandev Pellegrino M. acquisto 13.0 -> 13
+* Kung-Fu Pandev Pellegrino M. attuale 21.0 -> 13
+* Riccardigno Terracciano acquisto 1.0 -> 1
+* Riccardigno Terracciano attuale 1.0 -> 1
+* Riccardigno Maignan acquisto 16.0 -> 16
+* Riccardigno Maignan attuale 20.0 -> 16
+* Riccardigno Okoye acquisto 5.0 -> 5
+* Riccardigno Okoye attuale 10.0 -> 5
+* Riccardigno Angelino acquisto 15.0 -> 15
+* Riccardigno Angelino attuale 7.0 -> 15
+* Riccardigno Tavares N. acquisto 12.0 -> 12
+* Riccardigno Tavares N. attuale 6.0 -> 12
+* Riccardigno Doig acquisto 6.0 -> 6
+* Riccardigno Doig attuale 6.0 -> 6
+* Riccardigno Valeri acquisto 10.0 -> 10
+* Riccardigno Valeri attuale 10.0 -> 10
+* Riccardigno Kempf acquisto 5.0 -> 5
+* Riccardigno Kempf attuale 14.0 -> 5
+* Riccardigno Tiago Gabriel acquisto 1.0 -> 1
+* Riccardigno Tiago Gabriel attuale 9.0 -> 1
+* Riccardigno Canestrelli acquisto 3.0 -> 3
+* Riccardigno Canestrelli attuale 5.0 -> 3
+* Riccardigno Politano acquisto 15.0 -> 15
+* Riccardigno Politano attuale 11.0 -> 15
+* Riccardigno Pulisic acquisto 28.0 -> 28
+* Riccardigno Pulisic attuale 31.0 -> 28
+* Riccardigno Zaniolo acquisto 15.0 -> 15
+* Riccardigno Zaniolo attuale 20.0 -> 15
+* Riccardigno Akpa Akpro acquisto 1.0 -> 1
+* Riccardigno Akpa Akpro attuale 2.0 -> 1
+* Riccardigno Zerbin acquisto 3.0 -> 3
+* Riccardigno Zerbin attuale 6.0 -> 3
+* Riccardigno Isaksen acquisto 13.0 -> 13
+* Riccardigno Isaksen attuale 14.0 -> 13
+* Riccardigno Paz N. acquisto 20.0 -> 20
+* Riccardigno Paz N. attuale 30.0 -> 20
+* Riccardigno Sucic P. acquisto 14.0 -> 14
+* Riccardigno Sucic P. attuale 11.0 -> 14
+* Riccardigno Bonazzoli acquisto 1.0 -> 1
+* Riccardigno Bonazzoli attuale 20.0 -> 1
+* Riccardigno Berardi acquisto 21.0 -> 21
+* Riccardigno Berardi attuale 21.0 -> 21
+* Riccardigno Kean acquisto 31.0 -> 31
+* Riccardigno Kean attuale 18.0 -> 31
+* Riccardigno David acquisto 16.0 -> 16
+* Riccardigno David attuale 13.0 -> 16
+* Riccardigno Aboukhlal acquisto 9.0 -> 9
+* Riccardigno Aboukhlal attuale 3.0 -> 9
+* Nastro Azzurro Gollini acquisto 1.0 -> 1
+* Nastro Azzurro Gollini attuale 1.0 -> 1
+* Nastro Azzurro Svilar acquisto 15.0 -> 15
+* Nastro Azzurro Svilar attuale 19.0 -> 15
+* Nastro Azzurro Vasquez D. acquisto 1.0 -> 1
+* Nastro Azzurro Vasquez D. attuale 1.0 -> 1
+* Nastro Azzurro Pezzella Giu. acquisto 5.0 -> 5
+* Nastro Azzurro Pezzella Giu. attuale 4.0 -> 5
+* Nastro Azzurro Gosens acquisto 18.0 -> 18
+* Nastro Azzurro Gosens attuale 10.0 -> 18
+* Nastro Azzurro Gabbia acquisto 7.0 -> 7
+* Nastro Azzurro Gabbia attuale 8.0 -> 7
+* Nastro Azzurro Valenti acquisto 4.0 -> 4
+* Nastro Azzurro Valenti attuale 7.0 -> 4
+* Nastro Azzurro Obert acquisto 4.0 -> 4
+* Nastro Azzurro Obert attuale 5.0 -> 4
+* Nastro Azzurro Veiga D. acquisto 2.0 -> 2
+* Nastro Azzurro Veiga D. attuale 5.0 -> 2
+* Nastro Azzurro Angori acquisto 5.0 -> 5
+* Nastro Azzurro Angori attuale 9.0 -> 5
+* Nastro Azzurro Orsolini acquisto 31.0 -> 31
+* Nastro Azzurro Orsolini attuale 24.0 -> 31
+* Nastro Azzurro Pulisic acquisto 28.0 -> 28
+* Nastro Azzurro Pulisic attuale 31.0 -> 28
++ Nastro Azzurro: McTominay
+* Nastro Azzurro Saelemaekers acquisto 12.0 -> 12
+* Nastro Azzurro Saelemaekers attuale 19.0 -> 12
+* Nastro Azzurro Asllani acquisto 4.0 -> 4
+* Nastro Azzurro Asllani attuale 3.0 -> 4
+* Nastro Azzurro Zerbin acquisto 3.0 -> 3
+* Nastro Azzurro Zerbin attuale 6.0 -> 3
+* Nastro Azzurro Prati acquisto 4.0 -> 4
+* Nastro Azzurro Prati attuale 6.0 -> 4
+* Nastro Azzurro Paz N. acquisto 21.0 -> 21
+* Nastro Azzurro Paz N. attuale 30.0 -> 21
+* Nastro Azzurro Kean acquisto 33.0 -> 33
+* Nastro Azzurro Kean attuale 18.0 -> 33
+* Nastro Azzurro Vardy acquisto 19.0 -> 19
+* Nastro Azzurro Vardy attuale 20.0 -> 19
+* Nastro Azzurro Cancellieri acquisto 10.0 -> 10
+* Nastro Azzurro Cancellieri attuale 14.0 -> 10
+* Nastro Azzurro Castellanos * acquisto 22.0 -> 22
+* Nastro Azzurro Castellanos * attuale 18.0 -> 22
+* Nastro Azzurro Buffon L. acquisto 1.0 -> 1
+* Nastro Azzurro Buffon L. attuale 1.0 -> 1
+* Collocolo Team Gollini acquisto 1.0 -> 1
+* Collocolo Team Gollini attuale 1.0 -> 1
+* Collocolo Team Sommer acquisto 16.0 -> 16
+* Collocolo Team Sommer attuale 14.0 -> 16
+* Collocolo Team Martinez Jo. acquisto 2.0 -> 2
+* Collocolo Team Martinez Jo. attuale 1.0 -> 2
+* Collocolo Team Martin acquisto 10.0 -> 10
+* Collocolo Team Martin attuale 14.0 -> 10
+* Collocolo Team Di Lorenzo acquisto 14.0 -> 14
+* Collocolo Team Di Lorenzo attuale 12.0 -> 14
+* Collocolo Team Sernicola * acquisto 1.0 -> 1
+* Collocolo Team Sernicola * attuale 1.0 -> 1
+* Collocolo Team Estupinan acquisto 11.0 -> 11
+* Collocolo Team Estupinan attuale 3.0 -> 11
+* Collocolo Team Valeri acquisto 10.0 -> 10
+* Collocolo Team Valeri attuale 10.0 -> 10
+* Collocolo Team Norton-Cuffy acquisto 3.0 -> 3
+* Collocolo Team Norton-Cuffy attuale 7.0 -> 3
+* Collocolo Team Belghali acquisto 8.0 -> 8
+* Collocolo Team Belghali attuale 11.0 -> 8
+* Collocolo Team Politano acquisto 15.0 -> 15
+* Collocolo Team Politano attuale 11.0 -> 15
+* Collocolo Team Rog * acquisto 1.0 -> 1
+* Collocolo Team Rog * attuale 1.0 -> 1
+* Collocolo Team Pulisic acquisto 28.0 -> 28
+* Collocolo Team Pulisic attuale 31.0 -> 28
+* Collocolo Team Basic acquisto 1.0 -> 1
+* Collocolo Team Basic attuale 14.0 -> 1
+* Collocolo Team Gudmundsson A. acquisto 17.0 -> 17
+* Collocolo Team Gudmundsson A. attuale 17.0 -> 17
+* Collocolo Team Isaksen acquisto 14.0 -> 14
+* Collocolo Team Isaksen attuale 14.0 -> 14
+* Collocolo Team Marchwinski acquisto 1.0 -> 1
+* Collocolo Team Marchwinski attuale 1.0 -> 1
+* Collocolo Team Atta acquisto 8.0 -> 8
+* Collocolo Team Atta attuale 16.0 -> 8
+* Collocolo Team Kean acquisto 33.0 -> 33
+* Collocolo Team Kean attuale 18.0 -> 33
+* Collocolo Team Martinez L. acquisto 34.0 -> 34
+* Collocolo Team Martinez L. attuale 34.0 -> 34
+* Collocolo Team Leao acquisto 26.0 -> 26
+* Collocolo Team Leao attuale 30.0 -> 26
+* Collocolo Team Pellegrino M. acquisto 13.0 -> 13
+* Collocolo Team Pellegrino M. attuale 21.0 -> 13
+* Collocolo Team Buffon L. acquisto 1.0 -> 1
+* Collocolo Team Buffon L. attuale 1.0 -> 1
+- AC DENTI: Mckennie *
+- BARAKALLAHOUFIK: Mandas
+- BOBONE32: Mctominay *
+- BinuSpuntu: Mctominay *
+- Boiali: Mctominay *
+- CISCO TEAM: Hojlund
+- CISCO TEAM: Lucca *
+- CISCO TEAM: Martinez L.
+- CLAN: Mctominay *
+- Concali Craboni FC: Mandas
+- DonBosko46: Palma *
+- DonBosko46: Lucca *
+- F.C Pennic Hellas: Mandas
+- FC Buttarighe: Mctominay *
+- FC Galli: Mctominay *
+- FC Plasmon: Mandas
+- I COMPARI: Mctominay *
+- Ipa Bali: Mctominay *
+- Kung-Fu Pandev: Tavares N.
+- Kung-Fu Pandev: Mckennie *
+- Leonte FC: Mctominay *
+- Lions: Mctominay *
+- Longobarda: Mctominay *
+- LosPollosHermanos: Mckennie *
+- Lunarossa: Mctominay *
+- MARCIO TEAM: Mandas
+- MARCIO TEAM: Palma *
+- MARCIO TEAM: Mctominay *
+- Malmö FF: Mctominay *
+- Mapoitta: Mctominay *
+- Nastro Azzurro: Mctominay *
+- Non troppo cattivi: Mctominay *
+- OnlyFans: Mctominay *
+- Pi-Ciaccio: Vazquez
+- Pro secco: Mctominay *
+- ProPro Proibito: Mctominay *
+- SPARROW: Mctominay *
+- Sciabolata Classica: Mctominay *
+- Tana delle Tigri: Mctominay *
+- Temptation Haaland: Mctominay *
+- TomMat-iga: Mctominay *
+- buttiglia25: Mctominay *
+- i bro: Mctominay *
+- i fratelli merda: Esteves T. *
+- i fratelli merda: Lovik *
+- puerto rosso blu: Mctominay *
+- real donk: Mandas
+- scarsenal: Mctominay *
