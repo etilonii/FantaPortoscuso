@@ -7,5 +7,5 @@ def get_env(name: str, default: str) -> str:
 
 
 APP_NAME = get_env("APP_NAME", "FantaPortoscuso API")
-DATABASE_URL = get_env("DATABASE_URL", "sqlite:///./app.db")
+DATABASE_URL = get_env("DATABASE_URL", "sqlite:///./data/db/app.db")
 KEY_LENGTH = int(get_env("KEY_LENGTH", "8"))

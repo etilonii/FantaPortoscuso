@@ -1,4 +1,25 @@
+# OS / IDE
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Node
+apps/web/node_modules/
+apps/web/.env
+
+# Local DB / runtime
+app.db
+data/db/*.db
 
 # Large dataset
 data/db/player_stats.csv
 
+# Incoming/archival/temp data
+data/incoming/
+data/archive/
+data/tmp/
+data/reports/*missing_report.txt

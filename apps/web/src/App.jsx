@@ -1,4 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
+import ListoneSection from "./components/sections/ListoneSection";
+import HomeSection from "./components/sections/HomeSection";
+import MercatoSection from "./components/sections/MercatoSection";
+import PlusvalenzeSection from "./components/sections/PlusvalenzeSection";
+import RoseSection from "./components/sections/RoseSection";
+import StatsSection from "./components/sections/StatsSection";
+import TopAcquistiSection from "./components/sections/TopAcquistiSection";
 
 /* ===========================
    DEVICE ID
@@ -63,7 +70,7 @@ const formatDecimal = (value, digits = 2) => {
 =========================== */
 const KEY_STORAGE = "fp_access_key";
 const API_BASE =
-  import.meta.env.VITE_API_BASE || "http://localhost:8000";
+  import.meta.env.VITE_API_BASE || "http://localhost:8001";
 
 /* ===========================
    APP
@@ -90,10 +97,56 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("rose");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [expandedRose, setExpandedRose] = useState(new Set());
+  const [hasSearched, setHasSearched] = useState(false);
+
+  const aggregatedRoseResults = useMemo(() => {
+    if (activeTab !== "rose" || !results?.length) return [];
+    const map = new Map();
+    results.forEach((row) => {
+      const player = String(row.Giocatore || row.nome || "").trim();
+      if (!player) return;
+      const key = player.toLowerCase();
+      const entry = map.get(key) || { name: player, teams: new Set() };
+      const teamName = String(row.Team || row.team || "").trim();
+      if (teamName) {
+        entry.teams.add(teamName);
+      }
+      map.set(key, entry);
+    });
+    return Array.from(map.values()).slice(0, 30).map((entry) => {
+      const teamsAll = Array.from(entry.teams);
+      return {
+        name: entry.name,
+        teamsAll,
+        teamsList: teamsAll.slice(0, 10),
+        teamCount: entry.teams.size,
+        hasMore: teamsAll.length > 10,
+      };
+    });
+  }, [results, activeTab]);
+
+  const quoteSearchResults = useMemo(() => {
+    if (activeTab !== "quotazioni" || !results?.length) return [];
+    return results.slice(0, 30).map((row) => ({
+      name: String(row.Giocatore || row.nome || "").trim(),
+      role: String(row.Ruolo || row.ruolo || row.role || "").trim().toUpperCase(),
+      team: String(row.Squadra || row.club || row.team || "").trim(),
+      price:
+        row.PrezzoAttuale ??
+        row.QuotazioneAttuale ??
+        row.Prezzo ??
+        row.QA ??
+        row.PrezzoAcquisto ??
+        "-",
+    }));
+  }, [results, activeTab]);
 
   /* ===== STATS ===== */
   const [statsTab, setStatsTab] = useState("gol");
   const [statsItems, setStatsItems] = useState([]);
+  const [statsQuery, setStatsQuery] = useState("");
+  const [topTab, setTopTab] = useState("quotazioni");
 
   /* ===== TEAMS / ROSE ===== */
   const [teams, setTeams] = useState([]);
@@ -108,12 +161,14 @@ export default function App() {
   const [quoteOrder, setQuoteOrder] = useState("price_desc");
   const [quoteTeam, setQuoteTeam] = useState("all");
   const [quoteList, setQuoteList] = useState([]);
+  const [topQuotesAll, setTopQuotesAll] = useState([]);
   const [listoneQuery, setListoneQuery] = useState("");
 
   /* ===== PLUSVALENZE ===== */
   const [plusvalenze, setPlusvalenze] = useState([]);
   const [allPlusvalenze, setAllPlusvalenze] = useState([]);
   const [plusvalenzePeriod, setPlusvalenzePeriod] = useState("december");
+  const [plusvalenzeQuery, setPlusvalenzeQuery] = useState("");
 
   /* ===== TOP ACQUISTI ===== */
   const [topPlayersByRole, setTopPlayersByRole] = useState({
@@ -123,6 +178,7 @@ export default function App() {
     A: [],
   });
   const [activeTopRole, setActiveTopRole] = useState("P");
+  const [topAcquistiQuery, setTopAcquistiQuery] = useState("");
 
   /* ===== PLAYER ===== */
   const [selectedPlayer, setSelectedPlayer] = useState(null);
@@ -140,17 +196,21 @@ const [marketItems, setMarketItems] = useState([]);
 const [marketTeams, setMarketTeams] = useState([]);
 const [marketView, setMarketView] = useState("players");
 const [marketPreview, setMarketPreview] = useState(false);
+const [marketUpdatedAt, setMarketUpdatedAt] = useState("");
 
 const [suggestPayload, setSuggestPayload] = useState(null);
 const [suggestTeam, setSuggestTeam] = useState("");
 const [suggestions, setSuggestions] = useState([]);
 const [suggestError, setSuggestError] = useState("");
 const [suggestLoading, setSuggestLoading] = useState(false);
+const [suggestHasRun, setSuggestHasRun] = useState(false);
 
 const [manualOuts, setManualOuts] = useState([]);
 const [manualResult, setManualResult] = useState(null);
 const [manualError, setManualError] = useState("");
 const [manualLoading, setManualLoading] = useState(false);
+const [manualDislikes, setManualDislikes] = useState(new Set());
+const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   /* ===========================
      THEME
@@ -226,7 +286,9 @@ const [manualLoading, setManualLoading] = useState(false);
       const res = await fetch(`${API_BASE}/data/teams`);
       if (!res.ok) return;
       const data = await res.json();
-      const items = data.items || [];
+      const items = (data.items || [])
+        .slice()
+        .sort((a, b) => a.localeCompare(b, "it", { sensitivity: "base" }));
       setTeams(items);
       if (items.length && !selectedTeam) setSelectedTeam(items[0]);
     } catch {}
@@ -254,6 +316,31 @@ const [manualLoading, setManualLoading] = useState(false);
       if (!res.ok) return;
       const data = await res.json();
       setQuoteList(data.items || []);
+    } catch {}
+  };
+
+  const loadTopQuotesAllRoles = async () => {
+    try {
+      const roles = ["P", "D", "C", "A"];
+      const responses = await Promise.all(
+        roles.map((role) =>
+          fetch(
+            `${API_BASE}/data/listone?ruolo=${encodeURIComponent(
+              role
+            )}&order=price_desc&limit=200`
+          )
+        )
+      );
+      const items = [];
+      for (const res of responses) {
+        if (!res.ok) continue;
+        const data = await res.json();
+        items.push(...(data.items || []));
+      }
+      items.sort(
+        (a, b) => Number(b.PrezzoAttuale || 0) - Number(a.PrezzoAttuale || 0)
+      );
+      setTopQuotesAll(items);
     } catch {}
   };
 
@@ -294,6 +381,18 @@ const [manualLoading, setManualLoading] = useState(false);
     return map[tab] || tab;
   };
 
+  const statColumn = useMemo(() => tabToColumn(statsTab), [statsTab]);
+
+  const filteredStatsItems = useMemo(() => {
+    const q = String(statsQuery || "").trim().toLowerCase();
+    if (!q) return statsItems;
+    return (statsItems || []).filter((item) =>
+      String(item.Giocatore || "")
+        .toLowerCase()
+        .includes(q)
+    );
+  }, [statsItems, statsQuery]);
+
   const loadStatList = async (tab) => {
     try {
       const res = await fetch(
@@ -309,16 +408,46 @@ const [manualLoading, setManualLoading] = useState(false);
     const value = String(searchValue ?? query).trim();
     if (!value) {
       setResults([]);
+      setHasSearched(false);
       return;
     }
 
-    const url =
-      activeTab === "quotazioni"
-        ? `${API_BASE}/data/quotazioni?q=${encodeURIComponent(value)}`
-        : `${API_BASE}/data/players?q=${encodeURIComponent(value)}`;
-
     try {
-      const res = await fetch(url);
+      setHasSearched(true);
+      if (activeTab === "quotazioni") {
+        const [quotRes, playersRes] = await Promise.all([
+          fetch(`${API_BASE}/data/quotazioni?q=${encodeURIComponent(value)}`),
+          fetch(`${API_BASE}/data/players?q=${encodeURIComponent(value)}&limit=200`),
+        ]);
+        if (!quotRes.ok) {
+          setResults([]);
+          return;
+        }
+        const quotData = await quotRes.json();
+        const quotItems = quotData.items || [];
+        let playerMap = new Map();
+        if (playersRes.ok) {
+          const playersData = await playersRes.json();
+          (playersData.items || []).forEach((row) => {
+            const name = String(row.Giocatore || "").trim();
+            if (!name || playerMap.has(name)) return;
+            playerMap.set(name, row);
+          });
+        }
+        const merged = quotItems.map((row) => {
+          const name = String(row.Giocatore || row.nome || "").trim();
+          const meta = playerMap.get(name) || {};
+          return {
+            ...row,
+            Ruolo: row.Ruolo || meta.Ruolo,
+            Squadra: row.Squadra || meta.Squadra,
+          };
+        });
+        setResults(merged);
+        return;
+      }
+
+      const res = await fetch(`${API_BASE}/data/players?q=${encodeURIComponent(value)}`);
       if (!res.ok) {
         setResults([]);
         return;
@@ -326,6 +455,7 @@ const [manualLoading, setManualLoading] = useState(false);
       const data = await res.json();
       setResults(data.items || []);
     } catch {
+      setHasSearched(true);
       setResults([]);
     }
   };
@@ -475,6 +605,62 @@ const [manualLoading, setManualLoading] = useState(false);
     return map;
   }, [manualResult]);
 
+  const qaOfPlayer = (player) =>
+    Number(player?.QA ?? player?.PrezzoAttuale ?? player?.prezzo_attuale ?? 0) || 0;
+
+  const manualBudgetSummary = useMemo(() => {
+    const credits = Number(suggestPayload?.credits_residui ?? 0) || 0;
+    const squad = suggestPayload?.user_squad || [];
+    const outNames = (manualOuts || [])
+      .map((v) => String(v || "").trim())
+      .filter(Boolean);
+    const outMap = new Map(
+      squad.map((p) => [normalizeName(p.nome || p.Giocatore), p])
+    );
+    const outSum = outNames.reduce((sum, name) => {
+      const player = outMap.get(normalizeName(name));
+      return sum + (player ? qaOfPlayer(player) : 0);
+    }, 0);
+    const maxBudget = credits + outSum;
+    const spent = (manualResult?.swaps || []).reduce(
+      (sum, s) => sum + (Number(s.qa_in) || 0),
+      0
+    );
+    const budgetFinal = maxBudget - spent;
+    return {
+      credits,
+      outSum,
+      maxBudget,
+      spent,
+      budgetFinal,
+    };
+  }, [suggestPayload, manualOuts, manualResult]);
+
+  const topQuotes = useMemo(() => (topQuotesAll || []).slice(0, 5), [topQuotesAll]);
+  const topPlusvalenze = useMemo(() => (plusvalenze || []).slice(0, 5), [plusvalenze]);
+  const topStats = useMemo(() => (statsItems || []).slice(0, 5), [statsItems]);
+
+  const filteredPlusvalenze = useMemo(() => {
+    const q = String(plusvalenzeQuery || "").trim().toLowerCase();
+    if (!q) return allPlusvalenze || [];
+    return (allPlusvalenze || []).filter((item) =>
+      String(item.team || "")
+        .toLowerCase()
+        .includes(q)
+    );
+  }, [allPlusvalenze, plusvalenzeQuery]);
+
+  const filteredTopAcquisti = useMemo(() => {
+    const q = String(topAcquistiQuery || "").trim().toLowerCase();
+    const list = topPlayersByRole[activeTopRole] || [];
+    if (!q) return list;
+    return list.filter((p) =>
+      String(p.name || "")
+        .toLowerCase()
+        .includes(q)
+    );
+  }, [topPlayersByRole, activeTopRole, topAcquistiQuery]);
+
   /* ===========================
      MERCATO: countdown
   =========================== */
@@ -501,6 +687,12 @@ const [manualLoading, setManualLoading] = useState(false);
       const data = await res.json();
       setMarketItems(data.items || []);
       setMarketTeams(data.teams || []);
+      const allDates = [
+        ...(data.items || []).map((it) => it.date).filter(Boolean),
+        ...(data.teams || []).map((t) => t.last_date).filter(Boolean),
+      ];
+      const latest = allDates.sort().slice(-1)[0] || "";
+      setMarketUpdatedAt(latest);
     } catch {}
   };
 
@@ -536,6 +728,7 @@ const [manualLoading, setManualLoading] = useState(false);
   const runSuggest = async () => {
     setSuggestError("");
     setSuggestions([]);
+    setSuggestHasRun(true);
 
     if (!suggestPayload) {
       setSuggestError("Payload non disponibile. Riprova il login o aggiorna i dati.");
@@ -561,7 +754,7 @@ const [manualLoading, setManualLoading] = useState(false);
       setSuggestions(rawSolutions);
 
       if (rawSolutions.length < 3) {
-        setSuggestError("Impossibile generare 3 soluzioni diverse con i vincoli attuali.");
+        setSuggestError("Nessuna soluzione disponibile.");
       }
     } catch {
       setSuggestError("Errore di connessione al motore consigli.");
@@ -588,18 +781,22 @@ const [manualLoading, setManualLoading] = useState(false);
     setManualOuts(Array.from({ length: maxManualOuts }, () => ""));
     setManualResult(null);
     setManualError("");
+    setManualDislikes(new Set());
+    setManualExcludedIns(new Set());
   }, [maxManualOuts, suggestPayload]);
 
   const resetManual = () => {
     setManualOuts(Array.from({ length: maxManualOuts }, () => ""));
     setManualResult(null);
     setManualError("");
+    setManualDislikes(new Set());
+    setManualExcludedIns(new Set());
   };
 
   /* ===========================
      GUIDED: compute (client-side)
   =========================== */
-  const computeManualSuggestions = () => {
+  const computeManualSuggestions = async () => {
     if (!suggestPayload) {
       setManualError("Payload non disponibile.");
       return;
@@ -617,115 +814,83 @@ const [manualLoading, setManualLoading] = useState(false);
 
     setManualError("");
     setManualLoading(true);
+    const previousResult = manualResult;
 
     try {
-      const squad = suggestPayload.user_squad || [];
-      const pool = suggestPayload.players_pool || [];
+      const fixedSwaps =
+        manualResult?.swaps
+          ?.filter((s) => s?.in && !manualDislikes.has(normalizeName(s.in)))
+          .map((s) => [s.out, s.in]) || [];
 
-      const normalize = (value) =>
-        String(value || "")
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "");
-
-      const roleOf = (player) =>
-        String(player?.ruolo_base || player?.Ruolo || "")
-          .trim()
-          .toUpperCase();
-
-      const qaOf = (player) =>
-        Number(player?.QA ?? player?.PrezzoAttuale ?? player?.prezzo_attuale ?? 0) || 0;
-
-      const teamOf = (player) => String(player?.Squadra || player?.squadra || "");
-
-      const squadMap = new Map(
-        squad.map((p) => [normalize(p.nome || p.Giocatore), p])
-      );
-
-      const outSet = new Set(outs.map((name) => normalize(name)));
-
-      const teamCounts = new Map();
-      squad.forEach((p) => {
-        const team = teamOf(p);
-        if (!team) return;
-        const key = normalize(p.nome || p.Giocatore);
-        if (outSet.has(key)) return;
-        teamCounts.set(team, (teamCounts.get(team) || 0) + 1);
-      });
-
-      const usedIn = new Set();
-      const swaps = [];
-
-      const scorePlayer = (candidate) => {
-        const pv = Number(candidate?.PV_S ?? candidate?.Pv_S ?? 0) || 0;
-        const efp = Number(candidate?.Efp ?? candidate?.EFP ?? candidate?.Bonus ?? 0) || 0;
-        const qa = qaOf(candidate);
-        return pv + efp - qa * 0.05;
+      const params = {
+        ...(suggestPayload.params || {}),
+        required_outs: outs,
+        exclude_ins: Array.from(
+          new Set([...(manualDislikes || []), ...(manualExcludedIns || [])])
+        ),
+        fixed_swaps: fixedSwaps,
+        max_changes: outs.length,
       };
 
-      const pickCandidate = (outRole) => {
-        const strict = pool
-          .filter((p) => {
-            const name = normalize(p.nome || p.Giocatore);
-            if (!name || usedIn.has(name)) return false;
-            if (squadMap.has(name) && !outSet.has(name)) return false;
-            if (roleOf(p) !== outRole) return false;
-            const team = teamOf(p);
-            const count = teamCounts.get(team) || 0;
-            return count < 3;
-          })
-          .sort((a, b) => scorePlayer(b) - scorePlayer(a));
-
-        if (strict.length) return strict[0];
-
-        const relaxed = pool
-          .filter((p) => {
-            const name = normalize(p.nome || p.Giocatore);
-            if (!name || usedIn.has(name)) return false;
-            if (squadMap.has(name) && !outSet.has(name)) return false;
-            if (roleOf(p) !== outRole) return false;
-            return true;
-          })
-          .sort((a, b) => scorePlayer(b) - scorePlayer(a));
-
-        return relaxed[0] || null;
-      };
-
-      outs.forEach((outName) => {
-        const outKey = normalize(outName);
-        const outPlayer = squadMap.get(outKey);
-        if (!outPlayer) return;
-
-        const outRole = roleOf(outPlayer);
-        const outQa = qaOf(outPlayer);
-
-        const inPlayer = pickCandidate(outRole);
-        if (!inPlayer) return;
-
-        const inName = inPlayer.nome || inPlayer.Giocatore;
-        const inKey = normalize(inName);
-
-        usedIn.add(inKey);
-
-        const team = teamOf(inPlayer);
-        if (team) teamCounts.set(team, (teamCounts.get(team) || 0) + 1);
-
-        const inQa = qaOf(inPlayer);
-        swaps.push({
-          out: outName,
-          in: inName,
-          qa_out: outQa,
-          qa_in: inQa,
-          gain: outQa - inQa,
-          cost_net: inQa - outQa,
-        });
+      const res = await fetch(`${API_BASE}/data/market/suggest`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...suggestPayload,
+          params,
+        }),
       });
 
-      if (!swaps.length) {
+      if (!res.ok) {
+        setManualError("Errore nel motore consigli.");
+        setManualResult(null);
+        return;
+      }
+
+      const data = await res.json();
+      const solutions = data.solutions || [];
+      if (!solutions.length) {
         setManualError("Nessun IN trovato con i vincoli dati.");
         setManualResult(null);
-      } else {
-        setManualResult({ swaps });
+        return;
       }
+
+      let next = solutions[0];
+      if (next && previousResult?.swaps?.length && fixedSwaps.length) {
+        const prevMap = new Map(
+          previousResult.swaps.map((s) => [normalizeName(s.out), s])
+        );
+        const fixedSet = new Set(fixedSwaps.map((s) => normalizeName(s[0])));
+        const merged = [];
+        const used = new Set();
+        (next.swaps || []).forEach((s) => {
+          const outKey = normalizeName(s.out);
+          if (fixedSet.has(outKey) && prevMap.has(outKey)) {
+            merged.push(prevMap.get(outKey));
+          } else {
+            merged.push(s);
+          }
+          used.add(outKey);
+        });
+        fixedSet.forEach((outKey) => {
+          if (!used.has(outKey) && prevMap.has(outKey)) {
+            merged.push(prevMap.get(outKey));
+          }
+        });
+        next = { ...next, swaps: merged };
+      }
+      setManualResult(next);
+      setManualExcludedIns((prev) => {
+        const nextSet = new Set(prev);
+        (next?.swaps || []).forEach((s) => {
+          if (s?.in) {
+            nextSet.add(normalizeName(s.in));
+          }
+        });
+        manualDislikes.forEach((name) => nextSet.add(name));
+        return nextSet;
+      });
+      setManualDislikes(new Set());
     } catch {
       setManualError("Errore durante il calcolo degli IN.");
       setManualResult(null);
@@ -789,14 +954,23 @@ const [manualLoading, setManualLoading] = useState(false);
   }, []);
 
   useEffect(() => {
-    if (!loggedIn) return;
-
     loadSummary();
     loadTeams();
     loadPlusvalenze();
     loadAllPlusvalenze();
     loadListone();
+    loadTopQuotesAllRoles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     loadStatList(statsTab);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statsTab]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+
     loadAdminKeys();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
@@ -871,6 +1045,7 @@ useEffect(() => {
     setSuggestTeam("");
     setSuggestions([]);
     setSuggestError("");
+    setSuggestHasRun(false);
     return;
   }
   loadMarket();
@@ -987,16 +1162,6 @@ useEffect(() => {
               </button>
 
               <button
-                className={activeMenu === "medie" ? "menu-item active" : "menu-item"}
-                onClick={() => {
-                  setActiveMenu("medie");
-                  setMenuOpen(false);
-                }}
-              >
-                Medie
-              </button>
-
-              <button
                 className={activeMenu === "listone" ? "menu-item active" : "menu-item"}
                 onClick={() => {
                   setActiveMenu("listone");
@@ -1015,7 +1180,7 @@ useEffect(() => {
                   setMenuOpen(false);
                 }}
               >
-                Top Giocatori Acquistati
+                Giocatori più acquistati
               </button>
               <button
                 className={activeMenu === "mercato" ? "menu-item active" : "menu-item"}
@@ -1065,8 +1230,6 @@ useEffect(() => {
                   ? "Rose"
                   : activeMenu === "plusvalenze"
                   ? "Plusvalenze"
-                  : activeMenu === "medie"
-                  ? "Medie"
                   : activeMenu === "listone"
                   ? "Listone"
                   : activeMenu === "top-acquisti"
@@ -1091,784 +1254,149 @@ useEffect(() => {
                 HOME (placeholder minimale)
             =========================== */}
             {activeMenu === "home" && (
-              <section className="dashboard">
-                <div className="dashboard-header left row">
-                  <div>
-                    <p className="eyebrow">Home</p>
-                    <h2>Panoramica Lega</h2>
-                  </div>
-
-                  <div className="summary">
-                    <button
-                      type="button"
-                      className="summary-card clickable"
-                      onClick={() => setActiveMenu("rose")}
-                    >
-                      <span>Squadre</span>
-                      <strong>{summary.teams}</strong>
-                    </button>
-
-                    <button
-                      type="button"
-                      className="summary-card clickable"
-                      onClick={() => setActiveMenu("listone")}
-                    >
-                      <span>Giocatori</span>
-                      <strong>{summary.players}</strong>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="panel-header">
-                    <h3>Ricerca rapida</h3>
-                    <div className="tabs">
-                      {["Rose", "Quotazioni"].map((tab) => (
-                        <button
-                          key={tab}
-                          className={
-                            activeTab === tab.toLowerCase() ? "tab active" : "tab"
-                          }
-                          onClick={() => setActiveTab(tab.toLowerCase())}
-                        >
-                          {tab}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="search-box">
-                    <input
-                      placeholder={`Cerca in ${activeTab}...`}
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                    />
-                    <button className="ghost" onClick={() => runSearch(query)}>
-                      Filtra
-                    </button>
-                  </div>
-
-                  <div className="list">
-                    {results.map((item, index) => (
-                      <div
-                        key={`${item.Giocatore}-${index}`}
-                        className="list-item player-card"
-                        onClick={() => openPlayer(item.Giocatore)}
-                      >
-                        <div>
-                          <p>
-                            <button
-                              type="button"
-                              className="link-button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openPlayer(item.Giocatore);
-                              }}
-                            >
-                              {item.Giocatore}
-                            </button>{" "}
-                            <span className="muted">· {item.Squadra || "-"}</span>
-                          </p>
-                          <span className="muted">Team: {item.Team || "-"}</span>
-                        </div>
-                        <strong>{formatInt(item.PrezzoAttuale || item.QuotazioneAttuale)}</strong>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
+              <HomeSection
+                summary={summary}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                query={query}
+                setQuery={setQuery}
+                hasSearched={hasSearched}
+                aggregatedRoseResults={aggregatedRoseResults}
+                expandedRose={expandedRose}
+                setExpandedRose={setExpandedRose}
+                quoteSearchResults={quoteSearchResults}
+                formatInt={formatInt}
+                openPlayer={openPlayer}
+                topTab={topTab}
+                setTopTab={setTopTab}
+                topQuotes={topQuotes}
+                topPlusvalenze={topPlusvalenze}
+                topStats={topStats}
+                statsTab={statsTab}
+                setStatsTab={setStatsTab}
+                statColumn={statColumn}
+                goToTeam={goToTeam}
+                setActiveMenu={setActiveMenu}
+              />
             )}
 
             {/* ===========================
                 STATS
             =========================== */}
             {activeMenu === "stats" && (
-              <section className="dashboard">
-                <div className="dashboard-header">
-                  <div>
-                    <p className="eyebrow">Statistiche Giocatori</p>
-                    <h2>Classifiche per statistica</h2>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="role-switch">
-                    {[
-                      { key: "gol", label: "Gol" },
-                      { key: "assist", label: "Assist" },
-                      { key: "ammonizioni", label: "Ammonizioni" },
-                      { key: "espulsioni", label: "Espulsioni" },
-                      { key: "cleansheet", label: "Clean Sheet" },
-                    ].map((tab) => (
-                      <button
-                        key={tab.key}
-                        className={`role-pill ${statsTab === tab.key ? "active" : ""}`}
-                        onClick={() => setStatsTab(tab.key)}
-                      >
-                        {tab.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="list">
-                    {statsItems.length === 0 ? (
-                      <p className="muted">Nessun dato disponibile.</p>
-                    ) : (
-                      statsItems.map((item, index) => {
-                        const itemSlug = slugify(item.Giocatore);
-                        return (
-                          <div
-                            key={`${item.Giocatore}-${index}`}
-                            id={`stat-${statsTab}-${itemSlug}`}
-                            className="list-item player-card"
-                            onClick={() => openPlayer(item.Giocatore)}
-                          >
-                            <div>
-                              <p className="rank-title">
-                                <span className="rank-badge">#{index + 1}</span>
-                                <button
-                                  type="button"
-                                  className="link-button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openPlayer(item.Giocatore);
-                                  }}
-                                >
-                                  {item.Giocatore}
-                                </button>
-                              </p>
-                              <span className="muted">{item.Squadra || "-"}</span>
-                            </div>
-                            <strong>
-                              {item[tabToColumn(statsTab)] ?? item[statsTab] ?? "-"}
-                            </strong>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </div>
-              </section>
+              <StatsSection
+                statsTab={statsTab}
+                setStatsTab={setStatsTab}
+                statsQuery={statsQuery}
+                setStatsQuery={setStatsQuery}
+                filteredStatsItems={filteredStatsItems}
+                slugify={slugify}
+                openPlayer={openPlayer}
+                tabToColumn={tabToColumn}
+              />
             )}
 
             {/* ===========================
                 PLUSVALENZE
             =========================== */}
             {activeMenu === "plusvalenze" && (
-              <section className="dashboard">
-                <div className="dashboard-header">
-                  <div>
-                    <p className="eyebrow">Plusvalenze</p>
-                    <h2>Classifica completa</h2>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="filters inline">
-                    <label className="field">
-                      <span>Periodo</span>
-                      <select
-                        className="select"
-                        value={plusvalenzePeriod}
-                        onChange={(e) => setPlusvalenzePeriod(e.target.value)}
-                      >
-                        <option value="december">Da Dicembre</option>
-                        <option value="start">Dall&apos;inizio</option>
-                      </select>
-                    </label>
-                  </div>
-
-                  <div className="list">
-                    {allPlusvalenze.length === 0 ? (
-                      <p className="muted">Nessun dato disponibile.</p>
-                    ) : (
-                      allPlusvalenze.map((item, index) => (
-                        <div
-                          key={item.team}
-                          className="list-item player-card"
-                          onClick={() => goToTeam(item.team)}
-                        >
-                          <div>
-                            <p className="rank-title">
-                              <span className="rank-badge">#{index + 1}</span>
-                              <span className="team-name">{item.team}</span>
-                            </p>
-                            <span className="muted">
-                              Acquisto {formatInt(item.acquisto)} · Attuale{" "}
-                              {formatInt(item.attuale)}
-                            </span>
-                          </div>
-                          <strong>
-                            {formatInt(item.plusvalenza)} ({item.percentuale}%)
-                          </strong>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </section>
+              <PlusvalenzeSection
+                plusvalenzePeriod={plusvalenzePeriod}
+                setPlusvalenzePeriod={setPlusvalenzePeriod}
+                plusvalenzeQuery={plusvalenzeQuery}
+                setPlusvalenzeQuery={setPlusvalenzeQuery}
+                filteredPlusvalenze={filteredPlusvalenze}
+                formatInt={formatInt}
+                goToTeam={goToTeam}
+              />
             )}
 
             {/* ===========================
                 ROSE
             =========================== */}
             {activeMenu === "rose" && (
-              <section className="dashboard">
-                <div className="dashboard-header">
-                  <div>
-                    <p className="eyebrow">Rose</p>
-                    <h2>Rosa squadra</h2>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <label className="field">
-                    <span>Seleziona squadra</span>
-                    <select
-                      className="select"
-                      value={selectedTeam}
-                      onChange={(e) => setSelectedTeam(e.target.value)}
-                    >
-                      {teams.map((team) => (
-                        <option key={team} value={team}>
-                          {team}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <label className="field">
-                    <span>Cerca giocatore</span>
-                    <input
-                      placeholder="Es. Lautaro, Di Lorenzo..."
-                      value={rosterQuery}
-                      onChange={(e) => setRosterQuery(e.target.value)}
-                    />
-                  </label>
-
-                  <div className="filters">
-                    <label className="field">
-                      <span>Ruolo</span>
-                      <select
-                        className="select"
-                        value={roleFilter}
-                        onChange={(e) => setRoleFilter(e.target.value)}
-                      >
-                        <option value="all">Tutti</option>
-                        <option value="P">Portieri</option>
-                        <option value="D">Difensori</option>
-                        <option value="C">Centrocampisti</option>
-                        <option value="A">Attaccanti</option>
-                      </select>
-                    </label>
-
-                    <label className="field">
-                      <span>Squadra reale</span>
-                      <select
-                        className="select"
-                        value={squadraFilter}
-                        onChange={(e) => setSquadraFilter(e.target.value)}
-                      >
-                        <option value="all">Tutte</option>
-                        {[...new Set(roster.map((r) => r.Squadra).filter(Boolean))].map(
-                          (sq) => (
-                            <option key={sq} value={sq}>
-                              {sq}
-                            </option>
-                          )
-                        )}
-                      </select>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  {roster.length === 0 ? (
-                    <p className="muted">Nessun dato disponibile.</p>
-                  ) : (
-                    ["P", "D", "C", "A"].map((role) => {
-                      const roleLabel =
-                        role === "P"
-                          ? "Portieri"
-                          : role === "D"
-                          ? "Difensori"
-                          : role === "C"
-                          ? "Centrocampisti"
-                          : "Attaccanti";
-
-                      const filtered = roster
-                        .filter((it) => (roleFilter === "all" ? true : it.Ruolo === roleFilter))
-                        .filter((it) => it.Ruolo === role)
-                        .filter((it) => (squadraFilter === "all" ? true : it.Squadra === squadraFilter))
-                        .filter((it) =>
-                          rosterQuery.trim()
-                            ? String(it.Giocatore || "")
-                                .toLowerCase()
-                                .includes(rosterQuery.trim().toLowerCase())
-                            : true
-                        );
-
-                      if (!filtered.length) return null;
-
-                      const totalSpesa = filtered.reduce((sum, it) => {
-                        const v = Number(it.PrezzoAcquisto || 0);
-                        return Number.isNaN(v) ? sum : sum + v;
-                      }, 0);
-
-                      return (
-                        <details key={role} className="accordion" open>
-                          <summary>
-                            <span>{roleLabel}</span>
-                            <strong>Spesa: {formatInt(totalSpesa)}</strong>
-                          </summary>
-
-                          <div className="list">
-                            {filtered.map((it, idx) => (
-                              <div
-                                key={`${it.Giocatore}-${idx}`}
-                                className="list-item player-card"
-                                onClick={() => openPlayer(it.Giocatore)}
-                              >
-                                <div>
-                                  <p>
-                                    <button
-                                      type="button"
-                                      className="link-button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        openPlayer(it.Giocatore);
-                                      }}
-                                    >
-                                      {it.Giocatore}
-                                    </button>{" "}
-                                    <span className="muted">· {it.Squadra || "-"}</span>
-                                  </p>
-                                  <span className="muted">
-                                    Acquisto {formatInt(it.PrezzoAcquisto)} · Attuale{" "}
-                                    {formatInt(it.PrezzoAttuale)}
-                                  </span>
-                                </div>
-                                <strong>{it.Ruolo}</strong>
-                              </div>
-                            ))}
-                          </div>
-                        </details>
-                      );
-                    })
-                  )}
-                </div>
-              </section>
+              <RoseSection
+                teams={teams}
+                selectedTeam={selectedTeam}
+                setSelectedTeam={setSelectedTeam}
+                rosterQuery={rosterQuery}
+                setRosterQuery={setRosterQuery}
+                roleFilter={roleFilter}
+                setRoleFilter={setRoleFilter}
+                squadraFilter={squadraFilter}
+                setSquadraFilter={setSquadraFilter}
+                roster={roster}
+                formatInt={formatInt}
+                openPlayer={openPlayer}
+              />
             )}
 
             {/* ===========================
                 LISTONE
             =========================== */}
             {activeMenu === "listone" && (
-              <section className="dashboard">
-                <div className="dashboard-header left row">
-                  <div>
-                    <p className="eyebrow">Listone</p>
-                    <h2>Quotazioni giocatori</h2>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="filters inline">
-                    <label className="field">
-                      <span>Ruolo</span>
-                      <select
-                        className="select"
-                        value={quoteRole}
-                        onChange={(e) => setQuoteRole(e.target.value)}
-                      >
-                        <option value="P">Portieri</option>
-                        <option value="D">Difensori</option>
-                        <option value="C">Centrocampisti</option>
-                        <option value="A">Attaccanti</option>
-                      </select>
-                    </label>
-
-                    <label className="field">
-                      <span>Squadra</span>
-                      <select
-                        className="select"
-                        value={quoteTeam}
-                        onChange={(e) => setQuoteTeam(e.target.value)}
-                      >
-                        <option value="all">Tutte</option>
-                        {[...new Set(quoteList.map((q) => q.Squadra).filter(Boolean))].map((sq) => (
-                          <option key={sq} value={sq}>
-                            {sq}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-
-                    <label className="field">
-                      <span>Ordine</span>
-                      <select
-                        className="select"
-                        value={quoteOrder}
-                        onChange={(e) => setQuoteOrder(e.target.value)}
-                      >
-                        <option value="price_desc">Quotazione (decrescente)</option>
-                        <option value="price_asc">Quotazione (crescente)</option>
-                        <option value="alpha">Alfabetico (A-Z)</option>
-                        <option value="alpha_desc">Alfabetico (Z-A)</option>
-                      </select>
-                    </label>
-                  </div>
-
-                  <label className="field">
-                    <span>Cerca giocatore</span>
-                    <input
-                      placeholder="Es. Maignan, Barella..."
-                      value={listoneQuery}
-                      onChange={(e) => setListoneQuery(e.target.value)}
-                    />
-                  </label>
-
-                  <div className="list">
-                    {quoteList
-                      .filter((it) => (quoteTeam === "all" ? true : it.Squadra === quoteTeam))
-                      .filter((it) =>
-                        listoneQuery.trim()
-                          ? String(it.Giocatore || "")
-                              .toLowerCase()
-                              .includes(listoneQuery.trim().toLowerCase())
-                          : true
-                      )
-                      .map((it, idx) => {
-                        const itemSlug = slugify(it.Giocatore);
-                        return (
-                          <div
-                            key={`${it.Giocatore}-${idx}`}
-                            id={`listone-${itemSlug}`}
-                            className="list-item boxed player-card"
-                            onClick={() => openPlayer(it.Giocatore)}
-                          >
-                            <div>
-                              <p>
-                                <button
-                                  type="button"
-                                  className="link-button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openPlayer(it.Giocatore);
-                                  }}
-                                >
-                                  {it.Giocatore}
-                                </button>
-                              </p>
-                              <span className="muted">{it.Squadra || "-"}</span>
-                            </div>
-                            <strong>{formatInt(it.PrezzoAttuale)}</strong>
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
-              </section>
+              <ListoneSection
+                quoteRole={quoteRole}
+                setQuoteRole={setQuoteRole}
+                quoteTeam={quoteTeam}
+                setQuoteTeam={setQuoteTeam}
+                quoteOrder={quoteOrder}
+                setQuoteOrder={setQuoteOrder}
+                quoteList={quoteList}
+                listoneQuery={listoneQuery}
+                setListoneQuery={setListoneQuery}
+                formatInt={formatInt}
+                slugify={slugify}
+                openPlayer={openPlayer}
+              />
             )}
 
             {/* ===========================
                 TOP ACQUISTI
             =========================== */}
             {activeMenu === "top-acquisti" && (
-              <section className="dashboard">
-                <div className="dashboard-header">
-                  <div>
-                    <p className="eyebrow">Top Giocatori Acquistati</p>
-                    <h2>Per ruolo</h2>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="role-switch">
-                    {[
-                      { key: "P", label: "Portieri" },
-                      { key: "D", label: "Difensori" },
-                      { key: "C", label: "Centrocampisti" },
-                      { key: "A", label: "Attaccanti" },
-                    ].map((role) => (
-                      <button
-                        key={role.key}
-                        className={`role-pill ${activeTopRole === role.key ? "active" : ""}`}
-                        onClick={() => setActiveTopRole(role.key)}
-                      >
-                        {role.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  <div className="list">
-                    {aggregatesLoading ? (
-                      <p className="muted">Caricamento...</p>
-                    ) : (topPlayersByRole[activeTopRole] || []).length ? (
-                      (topPlayersByRole[activeTopRole] || []).map((p, idx) => (
-                        <div
-                          key={`${p.name}-${idx}`}
-                          className="list-item player-card"
-                          onClick={() => openPlayer(p.name)}
-                        >
-                          <div>
-                            <p className="rank-title">
-                              <span className="rank-badge">#{idx + 1}</span>
-                              <button
-                                type="button"
-                                className="link-button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openPlayer(p.name);
-                                }}
-                              >
-                                {p.name}
-                              </button>
-                            </p>
-                            <span className="muted">
-                              Squadra: {p.squadra || "-"} · Teams: {p.count}
-                            </span>
-                            <div className="team-tags">
-                              {(p.teams || []).map((t) => (
-                                <span key={`${p.name}-${t}`} className="team-tag">
-                                  {t}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                          <strong>{p.count}</strong>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="muted">Nessun dato disponibile.</p>
-                    )}
-                  </div>
-                </div>
-              </section>
+              <TopAcquistiSection
+                activeTopRole={activeTopRole}
+                setActiveTopRole={setActiveTopRole}
+                aggregatesLoading={aggregatesLoading}
+                topAcquistiQuery={topAcquistiQuery}
+                setTopAcquistiQuery={setTopAcquistiQuery}
+                filteredTopAcquisti={filteredTopAcquisti}
+                openPlayer={openPlayer}
+                formatInt={formatInt}
+              />
             )}
 
             {activeMenu === "mercato" && (
-              <section className="dashboard">
-                <div className="dashboard-header">
-                  <div>
-                    <p className="eyebrow">Mercato</p>
-                    <h2>Coming Soon</h2>
-                    <p className="muted">Apertura mercato: 3 Febbraio 2026, ore 08:00.</p>
-                  </div>
-                </div>
-
-                <div className="panel market-panel">
-                  <div className="market-warning">
-                    <div className="market-warning-badge">Coming Soon</div>
-                    <h3>Il mercato apre a breve</h3>
-                    <p className="muted">
-                      Stiamo preparando il pannello con tutte le operazioni quotidiane.
-                    </p>
-
-                    <div className="market-countdown-inline">
-                      <span>Start tra</span>
-                      <strong>{marketCountdown}</strong>
-                    </div>              
-                  </div>
-                </div>
-
-
-                {/* ===========================
-                    MOTORE CONSIGLI MERCATO
-                =========================== */}
-                <div className="panel">
-                  <div className="panel-header">
-                    <h3>Motore Consigli Mercato</h3>
-                  </div>
-
-                  <div className="admin-actions">
-                    <button
-                      className="primary"
-                      onClick={runSuggest}
-                      disabled={suggestLoading}
-                    >
-                      {suggestLoading ? "Calcolo..." : "Calcola Top 3"}
-                    </button>
-
-                    {suggestError ? <span className="muted">{suggestError}</span> : null}
-                  </div>
-
-                  <div className="list">
-                    {suggestions.length === 0 ? (
-                      <p className="muted">Nessuna soluzione disponibile.</p>
-                    ) : (
-                      suggestions.map((sol, idx) => (
-                        <div key={`sol-${idx}`} className="list-item player-card">
-                          <div>
-                            <p className="rank-title">
-                              <span className="rank-badge">#{idx + 1}</span>
-                              <span className="team-name">
-                                Total Gain {formatDecimal(sol.total_gain, 2)}
-                              </span>
-                            </p>
-
-                            <span className="muted">
-                              Budget iniziale {formatDecimal(sol.budget_initial, 2)} · Finale{" "}
-                              {formatDecimal(sol.budget_final, 2)}
-                            </span>
-
-                            <div className="team-tags">
-                              {(sol.warnings || []).map((w) => (
-                                <span key={w} className="team-tag">
-                                  {w}
-                                </span>
-                              ))}
-                            </div>
-
-                            <div className="list">
-                              {(sol.swaps || []).map((s, i) => (
-                                <div
-                                  key={`${idx}-${i}`}
-                                  className="list-item boxed player-card"
-                                >
-                                  <div>
-                                    <p>
-                                      <button
-                                        type="button"
-                                        className="link-button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          if (s.out) openPlayer(s.out);
-                                        }}
-                                      >
-                                        {s.out || "-"}
-                                      </button>{" "}
-                                      →{" "}
-                                      <button
-                                        type="button"
-                                        className="link-button"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          if (s.in) openPlayer(s.in);
-                                        }}
-                                      >
-                                        {s.in || "-"}
-                                      </button>
-                                    </p>
-                                    <span className="muted">
-                                      QA OUT {formatDecimal(s.qa_out, 2)} · QA IN{" "}
-                                      {formatDecimal(s.qa_in, 2)}
-                                    </span>
-                                  </div>
-                                  <strong>{formatDecimal(s.gain, 2)}</strong>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-
-                  {/* ===========================
-                      SOLUZIONE GUIDATA (OUT GUIDATI)
-                  =========================== */}
-                  <div className="panel" style={{ marginTop: 16 }}>
-                    <div className="panel-header">
-                      <div>
-                        <h3>Soluzione guidata (OUT guidati)</h3>
-                        <span className="muted">
-                          Seleziona gli OUT e calcola i migliori IN.
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="admin-actions">
-                      <button className="ghost" onClick={resetManual}>
-                        Reset selezione
-                      </button>
-                      <button
-                        className="primary"
-                        onClick={computeManualSuggestions}
-                        disabled={manualLoading}
-                      >
-                        {manualLoading ? "Calcolo..." : "Calcola IN"}
-                      </button>
-                      {manualError ? <span className="muted">{manualError}</span> : null}
-                    </div>
-
-                    <div className="list guided-list">
-                      {(manualOuts || []).map((value, i) => {
-                        const usedNames = new Set(
-                          manualOuts
-                            .filter((_, idx) => idx !== i)
-                            .map((name) => String(name || "").trim())
-                            .filter(Boolean)
-                        );
-
-                        const swap = manualSwapMap.get(normalizeName(value));
-
-                        return (
-                          <div
-                            key={`out-${i}`}
-                            className="list-item boxed player-card guided-row"
-                          >
-                            <div className="guided-out">
-                              <p>OUT #{i + 1}</p>
-                              <select
-                                className="select out-select"
-                                value={value}
-                                onChange={(e) => {
-                                  const next = [...manualOuts];
-                                  next[i] = e.target.value;
-                                  setManualOuts(next);
-                                }}
-                              >
-                                <option value="">(Nessuno)</option>
-                                {(suggestPayload?.user_squad || []).map((p) => {
-                                  const name = p.nome || p.Giocatore;
-                                  const disabled =
-                                    String(name || "").trim() !==
-                                      String(value || "").trim() &&
-                                    usedNames.has(String(name || "").trim());
-
-                                  return (
-                                    <option key={`${name}-${i}`} value={name} disabled={disabled}>
-                                      {name} ({p.Ruolo || p.ruolo_base || "-"})
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                              <span className="muted">Slot opzionale</span>
-                            </div>
-
-                            <div className="guided-in">
-                              {swap ? (
-                                <div>
-                                  <p className="guided-title">IN suggerito</p>
-                                  <p>
-                                    <button
-                                      type="button"
-                                      className="link-button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (swap.in) openPlayer(swap.in);
-                                      }}
-                                    >
-                                      {swap.in || "-"}
-                                    </button>
-                                  </p>
-                                  <span className="muted">
-                                    QA OUT {formatDecimal(swap.qa_out, 2)} · QA IN{" "}
-                                    {formatDecimal(swap.qa_in, 2)}
-                                  </span>
-                                </div>
-                              ) : (
-                                <p className="muted">Seleziona un OUT e calcola.</p>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </section>
+              <MercatoSection
+                marketUpdatedAt={marketUpdatedAt}
+                marketCountdown={marketCountdown}
+                isAdmin={isAdmin}
+                marketPreview={marketPreview}
+                setMarketPreview={setMarketPreview}
+                marketItems={marketItems}
+                formatInt={formatInt}
+                suggestions={suggestions}
+                formatDecimal={formatDecimal}
+                openPlayer={openPlayer}
+                runSuggest={runSuggest}
+                suggestLoading={suggestLoading}
+                suggestError={suggestError}
+                suggestHasRun={suggestHasRun}
+                manualOuts={manualOuts}
+                setManualOuts={setManualOuts}
+                suggestPayload={suggestPayload}
+                manualResult={manualResult}
+                manualBudgetSummary={manualBudgetSummary}
+                manualSwapMap={manualSwapMap}
+                manualDislikes={manualDislikes}
+                setManualDislikes={setManualDislikes}
+                computeManualSuggestions={computeManualSuggestions}
+                resetManual={resetManual}
+                manualLoading={manualLoading}
+                manualError={manualError}
+                normalizeName={normalizeName}
+              />
             )}
 
             {/* ===========================
@@ -2028,3 +1556,4 @@ useEffect(() => {
     </div>
   );
 }
+

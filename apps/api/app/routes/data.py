@@ -1,6 +1,5 @@
 import csv
 import re
-import random
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -8,7 +7,7 @@ from typing import Dict, List, Optional
 from fastapi import APIRouter, Query, Body, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
-from apps.api.app.engine.market_engine import suggest_transfers, Swap, Solution, value_season
+from apps.api.app.engine.market_engine import suggest_transfers
 from apps.api.app.deps import get_db
 from apps.api.app.models import Fixture, Player, PlayerStats, Team, TeamKey
 
@@ -18,6 +17,7 @@ router = APIRouter(prefix="/data", tags=["data"])
 DATA_DIR = Path(__file__).resolve().parents[4] / "data"
 ROSE_PATH = DATA_DIR / "rose_fantaportoscuso.csv"
 QUOT_PATH = DATA_DIR / "quotazioni.csv"
+RESIDUAL_CREDITS_PATH = DATA_DIR / "rose_nuovo_credits.csv"
 STATS_PATH = DATA_DIR / "statistiche_giocatori.csv"
 MARKET_PATH = DATA_DIR / "market_latest.json"
 MARKET_REPORT_GLOB = "rose_changes_*.csv"
@@ -25,6 +25,8 @@ STATS_DIR = DATA_DIR / "stats"
 PLAYER_CARDS_PATH = DATA_DIR / "db" / "quotazioni_master.csv"
 ROSE_XLSX_DIR = DATA_DIR / "archive" / "incoming" / "rose"
 _RESIDUAL_CREDITS_CACHE: Dict[str, object] = {}
+_NAME_LIST_CACHE: Dict[str, object] = {}
+_LISTONE_NAME_CACHE: Dict[str, object] = {}
 
 
 def _read_csv(path: Path) -> List[Dict[str, str]]:
@@ -33,6 +35,23 @@ def _read_csv(path: Path) -> List[Dict[str, str]]:
     with path.open("r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         return list(reader)
+
+
+def _load_name_list(path: Path) -> List[str]:
+    if not path.exists():
+        return []
+    mtime = path.stat().st_mtime
+    cached = _NAME_LIST_CACHE.get(str(path))
+    if cached and cached.get("mtime") == mtime:
+        return cached.get("data", [])
+    data = []
+    for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+        name = line.strip()
+        if not name or name.startswith("#"):
+            continue
+        data.append(name)
+    _NAME_LIST_CACHE[str(path)] = {"mtime": mtime, "data": data}
+    return data
 
 
 def _matches(text: str, query: str) -> bool:
@@ -47,6 +66,65 @@ def _normalize_name(value: str) -> str:
     value = "".join(ch for ch in value if not unicodedata.combining(ch))
     value = re.sub(r"[^a-z0-9]+", "", value)
     return value
+
+
+def _strip_leading_initial(value: str) -> str:
+    return re.sub(r"^[A-Za-z]\.?\s+", "", value or "")
+
+
+def _load_listone_name_map() -> Dict[str, str]:
+    if not QUOT_PATH.exists():
+        return {}
+    mtime = QUOT_PATH.stat().st_mtime
+    cached = _LISTONE_NAME_CACHE.get(str(QUOT_PATH))
+    if cached and cached.get("mtime") == mtime:
+        return cached.get("data", {})
+    mapping: Dict[str, str] = {}
+    for row in _read_csv(QUOT_PATH):
+        name = (row.get("Giocatore") or "").strip()
+        if not name:
+            continue
+        key = _normalize_name(name)
+        base_name = name.replace("*", "").strip()
+        base_key = _normalize_name(base_name)
+        # Prefer non-starred version if both exist
+        if "*" not in name:
+            mapping[key] = name
+            mapping[base_key] = name
+        else:
+            if key not in mapping:
+                mapping[key] = base_name
+            if base_key not in mapping:
+                mapping[base_key] = base_name
+    _LISTONE_NAME_CACHE[str(QUOT_PATH)] = {"mtime": mtime, "data": mapping}
+    return mapping
+
+
+def _canonicalize_name(value: str) -> str:
+    raw = (value or "").strip()
+    if not raw:
+        return raw
+    mapping = _load_listone_name_map()
+    direct = mapping.get(_normalize_name(raw))
+    if direct:
+        return direct
+    stripped = _strip_leading_initial(raw)
+    if stripped:
+        mapped = mapping.get(_normalize_name(stripped))
+        if mapped:
+            return mapped
+    return raw
+
+
+def _load_role_map() -> Dict[str, str]:
+    roles = {}
+    for row in _read_csv(ROSE_PATH):
+        name = row.get("Giocatore", "")
+        role = row.get("Ruolo", "")
+        if not name or not role:
+            continue
+        roles[_normalize_name(name)] = role.strip().upper()
+    return roles
 
 
 
@@ -80,6 +158,7 @@ def _load_old_quotazioni_map() -> Dict[str, Dict[str, str]]:
         "Nome": "Giocatore",
         "Squadra": "Squadra",
         "Qt.A": "PrezzoAttuale",
+        "R": "Ruolo",
     }
     df = df.rename(columns=col_map)
     out = {}
@@ -90,6 +169,7 @@ def _load_old_quotazioni_map() -> Dict[str, Dict[str, str]]:
         out[_normalize_name(name)] = {
             "Squadra": r.get("Squadra", ""),
             "PrezzoAttuale": r.get("PrezzoAttuale", 0),
+            "Ruolo": r.get("Ruolo", ""),
         }
     return out
 
@@ -104,6 +184,7 @@ def _load_player_cards_map() -> Dict[str, Dict[str, str]]:
         out[_normalize_name(name)] = {
             "Squadra": row.get("club", ""),
             "PrezzoAttuale": row.get("QA", 0),
+            "Ruolo": row.get("R", row.get("ruolo", "")),
         }
     return out
 
@@ -136,53 +217,133 @@ def _load_residual_credits_map() -> Dict[str, float]:
     cached_mtime = _RESIDUAL_CREDITS_CACHE.get("mtime")
     if cached_path == str(path) and cached_mtime == mtime:
         return _RESIDUAL_CREDITS_CACHE.get("data", {})
+    if RESIDUAL_CREDITS_PATH.exists():
+        try:
+            if RESIDUAL_CREDITS_PATH.stat().st_mtime >= mtime:
+                rows = _read_csv(RESIDUAL_CREDITS_PATH)
+                credits = {}
+                for row in rows:
+                    team = (row.get("Team") or "").strip()
+                    value = row.get("CreditiResidui")
+                    if not team:
+                        continue
+                    try:
+                        credits[_normalize_name(team)] = float(str(value).replace(",", "."))
+                    except Exception:
+                        continue
+                if credits:
+                    _RESIDUAL_CREDITS_CACHE["path"] = str(path)
+                    _RESIDUAL_CREDITS_CACHE["mtime"] = mtime
+                    _RESIDUAL_CREDITS_CACHE["data"] = credits
+                    return credits
+        except Exception:
+            pass
+
     try:
         import pandas as pd
     except Exception:
-        return {}
+        pd = None
 
-    df = pd.read_excel(path, header=None)
     credits: Dict[str, float] = {}
     left_team = ""
     right_team = ""
     pending_left: Optional[float] = None
     pending_right: Optional[float] = None
-    header_tokens = {"Ruolo", "Calciatore", "Squadra", "Costo"}
-    for _, row in df.iterrows():
-        left_cell = row.iloc[0]
-        right_cell = row.iloc[5] if len(row) > 5 else None
+    header_tokens = {"Ruolo", "Calciatore", "Squadra", "Costo", "P", "D", "C", "A"}
 
-        if isinstance(left_cell, str):
-            value = left_cell.strip()
-            if value and value not in header_tokens and "Crediti Residui" not in value:
-                left_team = value
-                if pending_left is not None:
-                    credits[_normalize_name(left_team)] = pending_left
-                    pending_left = None
-            elif "Crediti Residui" in value and left_team:
-                match = re.search(r"Crediti\\s+Residui:\\s*(\\d+(?:[\\.,]\\d+)?)", value)
-                if match:
-                    credits[_normalize_name(left_team)] = float(match.group(1).replace(",", "."))
-            elif "Crediti Residui" in value and not left_team:
-                match = re.search(r"Crediti\\s+Residui:\\s*(\\d+(?:[\\.,]\\d+)?)", value)
-                if match:
-                    pending_left = float(match.group(1).replace(",", "."))
+    def _extract_credit(text: str) -> Optional[float]:
+        match = re.search(r"Crediti\s+Residui:\s*(\d+(?:[.,]\d+)?)", text)
+        if not match:
+            return None
+        return float(match.group(1).replace(",", "."))
 
-        if isinstance(right_cell, str):
-            value = right_cell.strip()
-            if value and value not in header_tokens and "Crediti Residui" not in value:
-                right_team = value
-                if pending_right is not None:
-                    credits[_normalize_name(right_team)] = pending_right
-                    pending_right = None
-            elif "Crediti Residui" in value and right_team:
-                match = re.search(r"Crediti\\s+Residui:\\s*(\\d+(?:[\\.,]\\d+)?)", value)
-                if match:
-                    credits[_normalize_name(right_team)] = float(match.group(1).replace(",", "."))
-            elif "Crediti Residui" in value and not right_team:
-                match = re.search(r"Crediti\\s+Residui:\\s*(\\d+(?:[\\.,]\\d+)?)", value)
-                if match:
-                    pending_right = float(match.group(1).replace(",", "."))
+    if pd is not None:
+        df = pd.read_excel(path, header=None)
+        for _, row in df.iterrows():
+            left_cell = row.iloc[0]
+            right_cell = row.iloc[5] if len(row) > 5 else None
+
+            if isinstance(left_cell, str):
+                value = left_cell.strip()
+                if value and value not in header_tokens and "Crediti Residui" not in value:
+                    left_team = value
+                    if pending_left is not None:
+                        credits[_normalize_name(left_team)] = pending_left
+                        pending_left = None
+                elif "Crediti Residui" in value and left_team:
+                    credit = _extract_credit(value)
+                    if credit is not None:
+                        credits[_normalize_name(left_team)] = credit
+                elif "Crediti Residui" in value and not left_team:
+                    credit = _extract_credit(value)
+                    if credit is not None:
+                        pending_left = credit
+
+            if isinstance(right_cell, str):
+                value = right_cell.strip()
+                if value and value not in header_tokens and "Crediti Residui" not in value:
+                    right_team = value
+                    if pending_right is not None:
+                        credits[_normalize_name(right_team)] = pending_right
+                        pending_right = None
+                elif "Crediti Residui" in value and right_team:
+                    credit = _extract_credit(value)
+                    if credit is not None:
+                        credits[_normalize_name(right_team)] = credit
+                elif "Crediti Residui" in value and not right_team:
+                    credit = _extract_credit(value)
+                    if credit is not None:
+                        pending_right = credit
+    else:
+        try:
+            import openpyxl
+            wb = openpyxl.load_workbook(path, data_only=True)
+            ws = wb.active
+            for row in ws.iter_rows(values_only=True):
+                left_cell = row[0] if len(row) > 0 else None
+                right_cell = row[5] if len(row) > 5 else None
+
+                if isinstance(left_cell, str):
+                    value = left_cell.strip()
+                    if value and value not in header_tokens and "Crediti Residui" not in value:
+                        left_team = value
+                        if pending_left is not None:
+                            credits[_normalize_name(left_team)] = pending_left
+                            pending_left = None
+                    elif "Crediti Residui" in value and left_team:
+                        credit = _extract_credit(value)
+                        if credit is None and len(row) > 1 and isinstance(row[1], (int, float)):
+                            credit = float(row[1])
+                        if credit is not None:
+                            credits[_normalize_name(left_team)] = credit
+                    elif "Crediti Residui" in value and not left_team:
+                        credit = _extract_credit(value)
+                        if credit is None and len(row) > 1 and isinstance(row[1], (int, float)):
+                            credit = float(row[1])
+                        if credit is not None:
+                            pending_left = credit
+
+                if isinstance(right_cell, str):
+                    value = right_cell.strip()
+                    if value and value not in header_tokens and "Crediti Residui" not in value:
+                        right_team = value
+                        if pending_right is not None:
+                            credits[_normalize_name(right_team)] = pending_right
+                            pending_right = None
+                    elif "Crediti Residui" in value and right_team:
+                        credit = _extract_credit(value)
+                        if credit is None and len(row) > 6 and isinstance(row[6], (int, float)):
+                            credit = float(row[6])
+                        if credit is not None:
+                            credits[_normalize_name(right_team)] = credit
+                    elif "Crediti Residui" in value and not right_team:
+                        credit = _extract_credit(value)
+                        if credit is None and len(row) > 6 and isinstance(row[6], (int, float)):
+                            credit = float(row[6])
+                        if credit is not None:
+                            pending_right = credit
+        except Exception:
+            credits = {}
 
     _RESIDUAL_CREDITS_CACHE["path"] = str(path)
     _RESIDUAL_CREDITS_CACHE["mtime"] = mtime
@@ -206,6 +367,7 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
         quot_map[_normalize_name(name)] = {
             "Squadra": row.get("Squadra", ""),
             "PrezzoAttuale": row.get("PrezzoAttuale", 0),
+            "Ruolo": row.get("Ruolo", ""),
         }
     rose_team_map: Dict[str, Dict[str, Dict[str, str]]] = defaultdict(dict)
     for row in rose_rows:
@@ -216,6 +378,7 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
         rose_team_map[team.lower()][_normalize_name(name)] = {
             "Squadra": row.get("Squadra", ""),
             "PrezzoAttuale": row.get("PrezzoAttuale", 0),
+            "Ruolo": row.get("Ruolo", ""),
         }
     rows = _read_csv(report_path)
     stamp = report_path.stem.replace("rose_changes_", "").replace("_", "-")
@@ -266,10 +429,12 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
                     "out": out_name,
                     "out_missing": out_name.strip().endswith("*"),
                     "out_squadra": (out_info or {}).get("Squadra", ""),
+                    "out_ruolo": (out_info or {}).get("Ruolo", ""),
                     "out_value": out_value,
                     "in": in_name,
                     "in_missing": in_name.strip().endswith("*"),
                     "in_squadra": (in_info or {}).get("Squadra", ""),
+                    "in_ruolo": (in_info or {}).get("Ruolo", ""),
                     "in_value": in_value,
                     "delta": in_value - out_value,
                 }
@@ -394,6 +559,8 @@ def _build_market_suggest_payload(team_name: str, db: Session) -> Dict[str, obje
         "teams_data": teams_data,
         "fixtures": fixtures,
         "currentRound": current_round,
+        "injured_list": _load_name_list(DATA_DIR / "infortunati_clean.txt"),
+        "injured_whitelist": _load_name_list(DATA_DIR / "infortunati_whitelist.txt"),
         "params": {
             "max_changes": 5,
             "k_pool": 60,
@@ -557,6 +724,7 @@ def stats_players(limit: int = Query(default=20, ge=1, le=200)):
     stats = _read_csv(STATS_PATH)
     items = []
     for row in stats:
+        row_name = _canonicalize_name(row.get("Giocatore", ""))
         try:
             gol = float(row.get("Gol", 0) or 0)
             autogol = float(row.get("Autogol", 0) or 0)
@@ -581,7 +749,7 @@ def stats_players(limit: int = Query(default=20, ge=1, le=200)):
         )
         items.append(
             {
-                "Giocatore": row.get("Giocatore", ""),
+                "Giocatore": row_name,
                 "Squadra": row.get("Squadra", ""),
                 "Punteggio": round(score, 1),
             }
@@ -593,10 +761,13 @@ def stats_players(limit: int = Query(default=20, ge=1, le=200)):
 @router.get("/stats/player")
 def stats_player(name: str = Query(..., min_length=1)):
     stats = _read_csv(STATS_PATH)
-    target = name.strip().lower()
+    target = _normalize_name(_canonicalize_name(name))
     for row in stats:
-        if row.get("Giocatore", "").strip().lower() == target:
-            return {"item": row}
+        row_name = _canonicalize_name(row.get("Giocatore", ""))
+        if _normalize_name(row_name) == target:
+            updated = dict(row)
+            updated["Giocatore"] = row_name
+            return {"item": updated}
     return {"item": None}
 
 
@@ -619,6 +790,13 @@ def stats_by_stat(
         return {"items": []}
     path = STATS_DIR / filename
     items = _read_csv(path)
+    role_map = _load_role_map()
+    for item in items:
+        name = _canonicalize_name(item.get("Giocatore", ""))
+        item["Giocatore"] = name
+        role = role_map.get(_normalize_name(name))
+        if role:
+            item["Ruolo"] = role
     return {"items": items[:limit]}
 
 
@@ -656,197 +834,33 @@ def market_suggest(payload: dict = Body(default=None)):
     current_round = int(payload.get("currentRound") or payload.get("current_round") or 1)
     params = payload.get("params", {}) or {}
 
-    def _norm_name(name: str) -> str:
-        value = (name or "").lower()
-        value = re.sub(r"[^a-z0-9]+", "", value)
-        return value
+    k_pool = max(int(params.get("k_pool", 60)), 20)
+    m_out = max(int(params.get("m_out", 8)), 6)
+    beam_width = max(int(params.get("beam_width", 200)), 200)
 
-    def _swap_key(swap) -> tuple[str, str]:
-        return (
-            _norm_name(swap.out_player.get("nome") or swap.out_player.get("Giocatore") or ""),
-            _norm_name(swap.in_player.get("nome") or swap.in_player.get("Giocatore") or ""),
-        )
+    required_outs = params.get("required_outs") or []
+    exclude_ins = params.get("exclude_ins") or []
+    fixed_swaps = params.get("fixed_swaps") or []
+    include_outs_any = params.get("include_outs_any") or []
+    debug = bool(params.get("debug") or payload.get("debug"))
 
-    def _role_of(player: dict) -> str:
-        return str(player.get("ruolo_base") or player.get("Ruolo") or "").upper()
-
-    def _has_role_diversity(sol) -> bool:
-        roles = {_role_of(s.in_player) for s in sol.swaps}
-        return "C" in roles and "A" in roles
-
-    def _diff_swaps(a, b) -> int:
-        a_set = {_swap_key(s) for s in a.swaps}
-        b_set = {_swap_key(s) for s in b.swaps}
-        return len(a_set - b_set)
-
-    def _run_suggest(local_squad, local_pool, seed: int):
-        pool_copy = list(local_pool)
-        random.Random(seed).shuffle(pool_copy)
-        k_pool = max(int(params.get("k_pool", 60)), 120)
-        m_out = max(int(params.get("m_out", 8)), 15)
-        beam_width = max(int(params.get("beam_width", 200)), 500)
-        return suggest_transfers(
-            user_squad=local_squad,
-            credits_residui=credits,
-            players_pool=pool_copy,
-            teams_data=teams_data,
-            fixtures=fixtures,
-            current_round=current_round,
-            max_changes=int(params.get("max_changes", 5)),
-            k_pool=k_pool,
-            m_out=m_out,
-            beam_width=beam_width,
-            seed=seed,
-            allow_overbudget=True,
-            max_negative_gain=-5.0,
-            max_negative_swaps=3,
-            max_negative_sum=6.0,
-            require_roles={"C", "A"},
-        )
-
-    selected = []
-    exclude_outs = set()
-    exclude_ins = set()
-    for idx in range(3):
-        filtered_squad = [
-            p for p in user_squad
-            if _norm_name(p.get("nome") or p.get("Giocatore") or "") not in exclude_outs
-        ]
-        filtered_pool = [
-            p for p in players_pool
-            if _norm_name(p.get("nome") or p.get("Giocatore") or "") not in exclude_ins
-        ]
-        pool = _run_suggest(filtered_squad, filtered_pool, seed=idx + len(exclude_outs))
-        if not pool:
-            break
-        diverse_pool = [sol for sol in pool if _has_role_diversity(sol)]
-        if diverse_pool:
-            pool = diverse_pool
-        pick = None
-        for sol in pool:
-            if all(_diff_swaps(sol, prev) >= 3 for prev in selected):
-                pick = sol
-                break
-        if not pick:
-            break
-        selected.append(pick)
-        swaps_sorted = sorted(pick.swaps, key=lambda s: s.gain, reverse=True)
-        added = 0
-        for s in swaps_sorted:
-            out_name = s.out_player.get("nome") or s.out_player.get("Giocatore") or ""
-            if out_name.strip().endswith(" *"):
-                continue
-            in_name = s.in_player.get("nome") or s.in_player.get("Giocatore") or ""
-            exclude_outs.add(_norm_name(out_name))
-            exclude_ins.add(_norm_name(in_name))
-            added += 1
-            if added >= 3:
-                break
-
-    solutions = selected
-    if solutions:
-        base_sol = solutions[0]
-        base_outs = {
-            _norm_name(s.out_player.get("nome") or s.out_player.get("Giocatore") or "")
-            for s in base_sol.swaps
-        }
-        base_ins = {
-            _norm_name(s.in_player.get("nome") or s.in_player.get("Giocatore") or "")
-            for s in base_sol.swaps
-        }
-        squad_names = {
-            _norm_name(p.get("nome") or p.get("Giocatore") or "")
-            for p in user_squad
-            if p.get("nome") or p.get("Giocatore")
-        }
-
-        in_pool_by_role = {"P": [], "D": [], "C": [], "A": []}
-        for p in players_pool:
-            name = p.get("nome") or p.get("Giocatore")
-            if not name:
-                continue
-            if _norm_name(name) in squad_names:
-                continue
-            if str(name).strip().endswith(" *"):
-                continue
-            role = _role_of(p)
-            if role in in_pool_by_role:
-                in_pool_by_role[role].append(p)
-
-        def _alt_candidates(out_player: dict) -> list[dict]:
-            role = _role_of(out_player)
-            out_qa = float(out_player.get("QA") or out_player.get("PrezzoAttuale") or 0)
-            pool = []
-            for p in in_pool_by_role.get(role, []):
-                name = p.get("nome") or p.get("Giocatore")
-                if not name:
-                    continue
-                n = _norm_name(name)
-                if n in base_ins:
-                    continue
-                in_qa = float(p.get("QA") or p.get("PrezzoAttuale") or 0)
-                if in_qa > out_qa + 1:
-                    continue
-                pool.append(p)
-            pool.sort(
-                key=lambda x: value_season(x, players_pool, teams_data, fixtures, current_round),
-                reverse=True,
-            )
-            return pool
-
-        def _build_variant(offset: int) -> Solution | None:
-            swaps = list(base_sol.swaps)
-            replaced = 0
-            for idx, s in enumerate(base_sol.swaps):
-                if replaced >= 3:
-                    break
-                alts = _alt_candidates(s.out_player)
-                if len(alts) <= offset:
-                    continue
-                alt = alts[offset]
-                swaps[idx] = Swap(
-                    s.out_player,
-                    alt,
-                    s.gain,
-                    s.qa_out,
-                    float(alt.get("QA") or alt.get("PrezzoAttuale") or 0),
-                )
-                replaced += 1
-            if replaced < 3:
-                return None
-            return Solution(
-                swaps=swaps,
-                budget_initial=base_sol.budget_initial,
-                budget_final=base_sol.budget_final,
-                total_gain=base_sol.total_gain,
-                recommended_outs=base_sol.recommended_outs,
-                warnings=base_sol.warnings,
-            )
-
-        def _diff_swaps_min(sol_a, sol_b) -> int:
-            a_set = {_swap_key(s) for s in sol_a.swaps}
-            b_set = {_swap_key(s) for s in sol_b.swaps}
-            return len(a_set - b_set)
-
-        needs_variants = False
-        if len(solutions) >= 2 and _diff_swaps_min(solutions[0], solutions[1]) < 3:
-            needs_variants = True
-        if len(solutions) >= 3 and _diff_swaps_min(solutions[0], solutions[2]) < 3:
-            needs_variants = True
-
-        if len(solutions) < 3 or needs_variants:
-            variant1 = _build_variant(0)
-            variant2 = _build_variant(1)
-            if variant1:
-                if len(solutions) >= 2:
-                    solutions[1] = variant1
-                else:
-                    solutions.append(variant1)
-            if variant2:
-                if len(solutions) >= 3:
-                    solutions[2] = variant2
-                else:
-                    solutions.append(variant2)
+    solutions = suggest_transfers(
+        user_squad=user_squad,
+        credits_residui=credits,
+        players_pool=players_pool,
+        teams_data=teams_data,
+        fixtures=fixtures,
+        current_round=current_round,
+        max_changes=int(params.get("max_changes", 5)),
+        k_pool=k_pool,
+        m_out=m_out,
+        beam_width=beam_width,
+        required_outs=required_outs,
+        exclude_ins=exclude_ins,
+        fixed_swaps=fixed_swaps,
+        include_outs_any=include_outs_any,
+        debug=debug,
+    )
 
     out = []
     for sol in solutions:

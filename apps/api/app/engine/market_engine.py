@@ -1,10 +1,17 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 import re
 import math
 import random
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+_NAME_LIST_CACHE: Dict[str, dict] = {}
 
 
 def clamp(value: float, lo: float, hi: float) -> float:
@@ -94,6 +101,9 @@ def titolarita(player: dict, team_players: Iterable[dict], eps: float = 0.5, k: 
     comp_s = sigmoid(k * (share_s - 0.5))
     tit_final_s = 0.70 * tit_s + 0.30 * comp_s
 
+    if pv_r8 == 0 and min_r8 == 0 and pt_r8 == 0:
+        tit_final_r = tit_final_s
+
     return w * tit_final_r + (1.0 - w) * tit_final_s
 
 
@@ -109,33 +119,40 @@ def efp_player(player: dict, eps: float = 0.5, theta: float = 0.35) -> float:
     role = str(player.get("ruolo_base", "")).upper()
 
     pv_r8 = num(player.get("PV_R8"))
-    g_r8 = num(player.get("G_R8"))
-    a_r8 = num(player.get("A_R8"))
-    xg_r8 = num(player.get("xG_R8"))
-    xa_r8 = num(player.get("xA_R8"))
-    amm_r8 = num(player.get("AMM_R8"))
-    esp_r8 = num(player.get("ESP_R8"))
-    aut_r8 = num(player.get("AUTOGOL_R8"))
-    rigseg_r8 = num(player.get("RIGSEG_R8"))
+    pv_s = num(player.get("PV_S"))
+    use_season = pv_r8 == 0 and pv_s > 0
+    g_r8 = num(player.get("G_R8" if not use_season else "G_S"))
+    a_r8 = num(player.get("A_R8" if not use_season else "A_S"))
+    xg_r8 = num(player.get("xG_R8" if not use_season else "xG_S"))
+    xa_r8 = num(player.get("xA_R8" if not use_season else "xA_S"))
+    amm_r8 = num(player.get("AMM_R8" if not use_season else "AMM_S"))
+    esp_r8 = num(player.get("ESP_R8" if not use_season else "ESP_S"))
+    aut_r8 = num(player.get("AUTOGOL_R8" if not use_season else "AUTOGOL_S"))
+    rigseg_r8 = num(player.get("RIGSEG_R8" if not use_season else "RIGSEG_S"))
+    gdecwin_r8 = num(player.get("GDECWIN_R8" if not use_season else "GDECWIN_S"))
+    gdecpar_r8 = num(player.get("GDECPAR_R8" if not use_season else "GDECPAR_S"))
 
     pk_role = num(player.get("PKRole", 0))
 
-    rate_g = rate_recent(g_r8, pv_r8, eps)
-    rate_a = rate_recent(a_r8, pv_r8, eps)
-    rate_xg = rate_recent(xg_r8, pv_r8, eps)
-    rate_xa = rate_recent(xa_r8, pv_r8, eps)
-    rate_amm = rate_recent(amm_r8, pv_r8, eps)
-    rate_esp = rate_recent(esp_r8, pv_r8, eps)
-    rate_aut = rate_recent(aut_r8, pv_r8, eps)
-    rate_rigseg = rate_recent(rigseg_r8, pv_r8, eps)
+    pv_ref = pv_r8 if not use_season else pv_s
+    rate_g = rate_recent(g_r8, pv_ref, eps)
+    rate_a = rate_recent(a_r8, pv_ref, eps)
+    rate_xg = rate_recent(xg_r8, pv_ref, eps)
+    rate_xa = rate_recent(xa_r8, pv_ref, eps)
+    rate_amm = rate_recent(amm_r8, pv_ref, eps)
+    rate_esp = rate_recent(esp_r8, pv_ref, eps)
+    rate_aut = rate_recent(aut_r8, pv_ref, eps)
+    rate_rigseg = rate_recent(rigseg_r8, pv_ref, eps)
+    rate_gdecwin = rate_recent(gdecwin_r8, pv_ref, eps)
+    rate_gdecpar = rate_recent(gdecpar_r8, pv_ref, eps)
 
     if role == "P":
-        gols_r8 = num(player.get("GOLS_R8"))
-        rigpar_r8 = num(player.get("RIGPAR_R8"))
-        cs_r8 = num(player.get("CS_R8"))
-        rate_gols = rate_recent(gols_r8, pv_r8, eps)
-        rate_rigpar = rate_recent(rigpar_r8, pv_r8, eps)
-        rate_cs = rate_recent(cs_r8, pv_r8, eps)
+        gols_r8 = num(player.get("GOLS_R8" if not use_season else "GOLS_S"))
+        rigpar_r8 = num(player.get("RIGPAR_R8" if not use_season else "RIGPAR_S"))
+        cs_r8 = num(player.get("CS_R8" if not use_season else "CS_S"))
+        rate_gols = rate_recent(gols_r8, pv_ref, eps)
+        rate_rigpar = rate_recent(rigpar_r8, pv_ref, eps)
+        rate_cs = rate_recent(cs_r8, pv_ref, eps)
         return (-1.0) * rate_gols + 3.0 * rate_rigpar + theta * rate_cs
 
     if role == "A":
@@ -156,8 +173,9 @@ def efp_player(player: dict, eps: float = 0.5, theta: float = 0.35) -> float:
     pts_gol = 3.0 * g_eff
     pts_assist = 1.0 * a_eff
     pts_rig = 3.0 * rate_rigseg * (0.6 + 0.4 * pk_role)
+    pts_dec = 1.0 * rate_gdecwin + 0.5 * rate_gdecpar
     pts_malus = (-0.5) * rate_amm + (-1.0) * rate_esp + (-2.0) * rate_aut
-    return pts_gol + pts_assist + pts_rig + malus_mult * pts_malus
+    return pts_gol + pts_assist + pts_rig + pts_dec + malus_mult * pts_malus
 
 
 def team_context(team: dict, role: str, team_strength: float, team_momentum: float) -> float:
@@ -264,12 +282,25 @@ def games_remaining(teams: Dict[str, dict], fixtures: List[dict], current_round:
 def value_season(player: dict, players: Iterable[dict], teams: Dict[str, dict], fixtures: List[dict], current_round: int) -> float:
     club = str(player.get("club", "")).strip()
     role = str(player.get("ruolo_base", "")).upper()
+    strengths = compute_team_strengths(teams) if teams else {}
+    momentum = compute_team_momentum(teams) if teams else {}
+    sos_idx = compute_sos(teams, fixtures, current_round) if teams else {}
+    games_left = games_remaining(teams, fixtures, current_round) if teams else {}
     if club not in teams:
-        return 0.0
-    strengths = compute_team_strengths(teams)
-    momentum = compute_team_momentum(teams)
-    sos_idx = compute_sos(teams, fixtures, current_round)
-    games_left = games_remaining(teams, fixtures, current_round)
+        neutral_strength = 0.5
+        neutral_momentum = 0.5
+        neutral_sos = 0.5
+        if games_left:
+            avg_games = sum(games_left.values()) / max(len(games_left), 1)
+        else:
+            avg_games = 10
+        tit = titolarita(player, players)
+        pen = pen_tit(tit)
+        efp = efp_player(player)
+        ctx = team_context({}, role, neutral_strength, neutral_momentum)
+        sos_mult = sos_role_multiplier(role, neutral_sos)
+        efp_star = efp * ctx * sos_mult
+        return avg_games * tit * pen * efp_star
 
     tit = titolarita(player, players)
     pen = pen_tit(tit)
@@ -320,201 +351,355 @@ def suggest_transfers(
     max_negative_swaps: int = 2,
     max_negative_sum: float = 3.0,
     require_roles: set[str] | None = None,
+    required_outs: List[str] | None = None,
+    exclude_ins: List[str] | None = None,
+    fixed_swaps: List[Tuple[str, str]] | None = None,
+    include_outs_any: List[str] | None = None,
+    emergency_relax: bool = False,
+    debug: bool = False,
 ) -> List[Solution]:
-    rng = random.Random(seed) if seed is not None else None
-    def is_star(name: str) -> bool:
-        return str(name or "").strip().endswith(" *")
+    def log(msg: str):
+        if debug:
+            logger.info(msg)
+    def _load_name_list(path: Path) -> set[str]:
+        if not path.exists():
+            return set()
+        key = str(path)
+        mtime = path.stat().st_mtime
+        cached = _NAME_LIST_CACHE.get(key)
+        if cached and cached.get("mtime") == mtime:
+            return cached.get("data", set())
+        data = set()
+        for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            name = line.strip()
+            if not name or name.startswith("#"):
+                continue
+            data.add(norm_name(name))
+        _NAME_LIST_CACHE[key] = {"mtime": mtime, "data": data}
+        return data
+
+    def _load_injury_weights(path: Path) -> Dict[str, float]:
+        if not path.exists():
+            return {}
+        key = f"{path}::weights"
+        mtime = path.stat().st_mtime
+        cached = _NAME_LIST_CACHE.get(key)
+        if cached and cached.get("mtime") == mtime:
+            return cached.get("data", {})
+        data: Dict[str, float] = {}
+        try:
+            with path.open("r", encoding="utf-8") as f:
+                header = f.readline()
+                if header:
+                    pass
+                for line in f:
+                    parts = [p.strip() for p in line.split(",")]
+                    if len(parts) < 2:
+                        continue
+                    name = norm_name(parts[0])
+                    if not name:
+                        continue
+                    try:
+                        weight = float(parts[1].replace(",", "."))
+                    except ValueError:
+                        continue
+                    data[name] = weight
+        except OSError:
+            data = {}
+        _NAME_LIST_CACHE[key] = {"mtime": mtime, "data": data}
+        return data
+
+    def _load_weight_map(path: Path) -> Dict[str, float]:
+        if not path.exists():
+            return {}
+        key = f"{path}::weights_generic"
+        mtime = path.stat().st_mtime
+        cached = _NAME_LIST_CACHE.get(key)
+        if cached and cached.get("mtime") == mtime:
+            return cached.get("data", {})
+        data: Dict[str, float] = {}
+        try:
+            with path.open("r", encoding="utf-8") as f:
+                header = f.readline()
+                if header:
+                    pass
+                for line in f:
+                    parts = [p.strip() for p in line.split(",")]
+                    if len(parts) < 2:
+                        continue
+                    name = norm_name(parts[0])
+                    if not name:
+                        continue
+                    try:
+                        weight = float(parts[1].replace(",", "."))
+                    except ValueError:
+                        continue
+                    data[name] = weight
+        except OSError:
+            data = {}
+        _NAME_LIST_CACHE[key] = {"mtime": mtime, "data": data}
+        return data
 
     def norm_name(name: str) -> str:
         value = str(name or "").lower()
         value = re.sub(r"[^a-z0-9]+", "", value)
         return value
 
-    top_tokens = {
-        "calhanoglu",
-        "pulisic",
-        "mandragora",
-        "dimarco",
-        "maignan",
-        "svilar",
-        "martinezl",
-        "nicopaz",
-        "pazn",
-    }
+    def name_of(player: dict) -> str:
+        return str(player.get("nome") or player.get("Giocatore") or "").strip()
 
-    def is_top_absolute(name: str) -> bool:
-        key = norm_name(name)
-        return any(token in key for token in top_tokens)
+    def role_of(player: dict) -> str:
+        return str(player.get("ruolo_base") or player.get("Ruolo") or "").upper()
 
-    squad_names = {p.get("nome") or p.get("Giocatore") for p in user_squad}
-    squad_names = {n for n in squad_names if n}
+    def club_of(player: dict) -> str:
+        return str(player.get("club") or player.get("Squadra") or "").strip()
 
-    recommended_outs = [p for p in user_squad if is_star(p.get("nome") or p.get("Giocatore"))]
-    recommended_out_names = {p.get("nome") or p.get("Giocatore") for p in recommended_outs}
-    recommended_out_names = {n for n in recommended_out_names if n}
+    def qa_of(player: dict) -> float:
+        return num(player.get("QA", player.get("PrezzoAttuale", 0)))
 
-    # Precompute ValueSeason and custom logic scores
-    value_raw = {}
-    bonus_raw = {}
-    vote_raw = {}
-    cheap_raw = {}
-    defmod_raw = {}
-    tit_map = {}
-    for p in players_pool:
-        name = p.get("nome") or p.get("Giocatore")
-        if not name:
-            continue
-        value_raw[name] = value_season(p, players_pool, teams_data, fixtures, current_round)
-        bonus_raw[name] = efp_player(p)
-        vote_raw[name] = num(p.get("PV_S"))
-        qa = num(p.get("QA", p.get("PrezzoAttuale", 0)))
-        cheap_raw[name] = safe_div(1.0, qa + 1.0, 0.0)
-        if str(p.get("ruolo_base", "")).upper() == "D":
-            cs_s = num(p.get("CS_S"))
-            pv_s = num(p.get("PV_S"))
-            defmod_raw[name] = safe_div(cs_s, pv_s + 0.5, 0.0)
+    def is_star(name: str) -> bool:
+        return str(name or "").strip().endswith(" *")
+
+    root_dir = Path(__file__).resolve().parents[4]
+    data_dir = root_dir / "data"
+    injured_list = _load_name_list(data_dir / "infortunati_clean.txt")
+    injury_return_allow = _load_name_list(data_dir / "infortunati_whitelist.txt")
+    injury_weights = _load_injury_weights(data_dir / "infortunati_weights.csv")
+    newcomers_allow = _load_name_list(data_dir / "nuovi_arrivi.txt")
+    newcomers_weights = _load_weight_map(data_dir / "nuovi_arrivi_weights.csv")
+    if newcomers_weights:
+        newcomers_allow = newcomers_allow | set(newcomers_weights.keys())
+
+    def has_recent_minutes(player: dict) -> bool:
+        return num(player.get("PV_R8")) > 0 or num(player.get("MIN_R8")) > 0 or num(player.get("PT_R8")) > 0
+
+    def has_season_minutes(player: dict) -> bool:
+        return num(player.get("MIN_S")) >= 450 or num(player.get("PV_S")) >= 7
+
+    def has_strong_season(player: dict) -> bool:
+        return num(player.get("MIN_S")) >= 900 or num(player.get("PV_S")) >= 12 or num(player.get("PT_S")) >= 10
+
+    def is_new_arrival(player: dict) -> bool:
+        name_key = norm_name(name_of(player))
+        if name_key in newcomers_allow:
+            return True
+        pv_s = num(player.get("PV_S"))
+        min_s = num(player.get("MIN_S"))
+        qa = qa_of(player)
+        return pv_s <= 3 and min_s <= 180 and qa >= 12
+
+    def is_bench_profile(player: dict) -> bool:
+        pv_s = num(player.get("PV_S"))
+        min_s = num(player.get("MIN_S"))
+        return pv_s < 6 and min_s < 360
+
+    def injury_factor(name_key: str) -> float:
+        if name_key not in injured_list:
+            return 1.0
+        base = injury_weights.get(name_key, 0.55)
+        if name_key in injury_return_allow:
+            return max(base, 0.75)
+        return base
+
+    def new_arrival_factor(name_key: str) -> float:
+        if name_key not in newcomers_weights:
+            return 1.0
+        weight = max(0.0, min(1.0, newcomers_weights.get(name_key, 0.5)))
+        return 0.6 + 0.8 * weight
+
+    def new_arrival_floor(player: dict, games_left: int) -> float:
+        name_key = norm_name(name_of(player))
+        weight = newcomers_weights.get(name_key, 0.0)
+        if weight < 0.85:
+            return 0.0
+        if has_recent_minutes(player):
+            return 0.0
+        if num(player.get("MIN_S")) > 0 or num(player.get("PV_S")) > 0 or num(player.get("PT_S")) > 0:
+            return 0.0
+        role = role_of(player)
+        if role == "A":
+            per_match = 0.20
+        elif role == "C":
+            per_match = 0.18
+        elif role == "D":
+            per_match = 0.15
         else:
-            defmod_raw[name] = 0.0
-        tit_map[name] = titolarita(p, players_pool)
+            per_match = 0.12
+        return games_left * per_match
 
-    value_norm = normalize_map(value_raw)
-    bonus_norm = normalize_map(bonus_raw)
-    vote_norm = normalize_map(vote_raw)
-    cheap_norm = normalize_map(cheap_raw)
-    defmod_norm = normalize_map(defmod_raw)
+    def eligible_in_player(player: dict) -> bool:
+        name_key = norm_name(name_of(player))
+        if not name_key:
+            return False
+        if name_key in injured_list and name_key not in injury_return_allow:
+            if not has_strong_season(player):
+                return False
+            starter = titolarita(player, players_pool)
+            if starter < 0.60:
+                return False
+        if is_star(name_of(player)):
+            return False
+        if has_recent_minutes(player):
+            return True
+        if is_new_arrival(player):
+            return True
+        if is_bench_profile(player) and not has_strong_season(player):
+            return False
+        if has_strong_season(player):
+            starter = titolarita(player, players_pool)
+            if starter >= 0.55:
+                return True
+        return name_key in injury_return_allow and has_season_minutes(player)
 
-    value_map = {}
-    for p in players_pool:
-        name = p.get("nome") or p.get("Giocatore")
-        if not name:
+    required_outs_set = set()
+    if required_outs:
+        required_outs_set = {norm_name(n) for n in required_outs if str(n).strip()}
+
+    exclude_ins_set = set()
+    if exclude_ins:
+        exclude_ins_set = {norm_name(n) for n in exclude_ins if str(n).strip()}
+
+    include_outs_set = set()
+    if include_outs_any:
+        include_outs_set = {norm_name(n) for n in include_outs_any if str(n).strip()}
+
+    fixed_pairs: Dict[str, str] = {}
+    if fixed_swaps:
+        for out_name, in_name in fixed_swaps:
+            out_key = norm_name(out_name)
+            in_key = norm_name(in_name)
+            if out_key and in_key:
+                fixed_pairs[out_key] = in_key
+
+    if required_outs_set:
+        max_changes = len(required_outs_set)
+    else:
+        star_count = sum(1 for p in user_squad if is_star(name_of(p)))
+        max_changes = max(0, min(int(max_changes or 5) + star_count, 5 + star_count))
+    if max_changes == 0:
+        return []
+
+    log(
+        f"suggest_transfers: max_changes={max_changes} k_pool={k_pool} m_out={m_out} "
+        f"beam_width={beam_width} required_outs={len(required_outs_set)} "
+        f"exclude_ins={len(exclude_ins_set)} include_outs_any={len(include_outs_set)}"
+    )
+
+    squad_names = {norm_name(name_of(p)) for p in user_squad if name_of(p)}
+
+    value_map: Dict[str, float] = {}
+    games_left_map = games_remaining(teams_data, fixtures, current_round) if teams_data else {}
+    all_players = list(players_pool) + list(user_squad)
+    for p in all_players:
+        name = name_of(p)
+        if not name or name in value_map:
             continue
-        role = str(p.get("ruolo_base", "")).upper()
-        base_score = (
-            0.45 * value_norm.get(name, 0.5)
-            + 0.25 * bonus_norm.get(name, 0.5)
-            + 0.15 * vote_norm.get(name, 0.5)
-            + 0.10 * cheap_norm.get(name, 0.5)
-            + 0.05 * defmod_norm.get(name, 0.5)
-        )
-        if role == "D":
-            base_score += 0.03 * defmod_norm.get(name, 0.5)
-        if is_top_absolute(name):
-            base_score += 0.08
-        if cheap_norm.get(name, 0.0) > 0.75 and bonus_norm.get(name, 0.0) > 0.60:
-            base_score += 0.06
-        if rng:
-            base_score += rng.uniform(-0.02, 0.02)
-        value_map[name] = base_score
+        key = norm_name(name)
+        value = value_season(p, players_pool, teams_data, fixtures, current_round)
+        club = club_of(p)
+        games_left = games_left_map.get(club, 10)
+        floor = new_arrival_floor(p, games_left)
+        if floor > value:
+            value = floor
+        value = value * injury_factor(key) * new_arrival_factor(key)
+        value_map[name] = value
 
-    # Build pools per role
     in_pool = {r: [] for r in ["P", "D", "C", "A"]}
     out_pool = {r: [] for r in ["P", "D", "C", "A"]}
 
     for p in players_pool:
-        name = p.get("nome") or p.get("Giocatore")
-        role = str(p.get("ruolo_base", p.get("Ruolo"))).upper()
-        if role not in in_pool:
+        name = name_of(p)
+        role = role_of(p)
+        if not name or role not in in_pool:
             continue
-        if name in squad_names:
+        if norm_name(name) in squad_names:
             continue
-        if is_star(name):
+        if norm_name(name) in exclude_ins_set:
+            continue
+        if not eligible_in_player(p):
             continue
         in_pool[role].append(p)
 
     for p in user_squad:
-        name = p.get("nome") or p.get("Giocatore")
-        role = str(p.get("ruolo_base", p.get("Ruolo"))).upper()
-        if role not in out_pool:
+        name = name_of(p)
+        role = role_of(p)
+        if not name or role not in out_pool:
             continue
         out_pool[role].append(p)
 
     def top_k_by_value(players: List[dict]) -> List[dict]:
-        return sorted(players, key=lambda x: value_map.get(x.get("nome") or x.get("Giocatore"), 0), reverse=True)[:k_pool]
+        return sorted(players, key=lambda x: value_map.get(name_of(x), 0.0), reverse=True)[:k_pool]
 
     def top_k_by_eff(players: List[dict]) -> List[dict]:
         def eff(p):
-            name = p.get("nome") or p.get("Giocatore")
-            qa = num(p.get("QA", p.get("PrezzoAttuale", 0)))
-            return safe_div(value_map.get(name, 0), qa, 0.0)
+            return safe_div(value_map.get(name_of(p), 0.0), qa_of(p), 0.0)
         return sorted(players, key=eff, reverse=True)[:k_pool]
 
     for role in in_pool:
-        combined = {p.get("id") or (p.get("nome") or p.get("Giocatore")): p for p in top_k_by_value(in_pool[role])}
+        combined = {p.get("id") or name_of(p): p for p in top_k_by_value(in_pool[role])}
         for p in top_k_by_eff(in_pool[role]):
-            key = p.get("id") or (p.get("nome") or p.get("Giocatore"))
+            key = p.get("id") or name_of(p)
             combined[key] = p
         in_pool[role] = list(combined.values())
 
+    log(
+        "pool sizes: "
+        + ", ".join(f"{r}: in={len(in_pool[r])} out={len(out_pool[r])}" for r in ["P","D","C","A"])
+    )
+
+    # protect top performers in squad to avoid suggesting obvious keepers
+    keep_top_per_role = 2
+    protected_outs: set[str] = set()
+    if not emergency_relax:
+        for role in out_pool:
+            role_players = [p for p in out_pool[role] if name_of(p)]
+            role_players.sort(key=lambda x: value_map.get(name_of(x), 0.0), reverse=True)
+            for p in role_players[:keep_top_per_role]:
+                protected_outs.add(norm_name(name_of(p)))
+
     for role in out_pool:
-        out_pool[role] = sorted(
+        base = sorted(
             out_pool[role],
-            key=lambda x: value_map.get(x.get("nome") or x.get("Giocatore"), 0),
+            key=lambda x: value_map.get(name_of(x), 0.0),
         )[:m_out]
+        stars = [p for p in out_pool[role] if is_star(name_of(p))]
+        combined = {p.get("id") or name_of(p): p for p in base + stars if name_of(p)}
+        filtered = list(combined.values())
+        if required_outs_set:
+            filtered = [p for p in filtered if norm_name(name_of(p)) in required_outs_set]
+        else:
+            if include_outs_set:
+                filtered = [
+                    p
+                    for p in filtered
+                    if norm_name(name_of(p)) not in protected_outs
+                    or norm_name(name_of(p)) in include_outs_set
+                ]
+            else:
+                filtered = [p for p in filtered if norm_name(name_of(p)) not in protected_outs]
+        out_pool[role] = filtered
 
-    # Mandatory swaps for players with asterisk
-    star_outs = []
-    for p in user_squad:
-        name = p.get("nome") or p.get("Giocatore")
-        if is_star(name):
-            star_outs.append(p)
-
-    max_total_changes = 7 if star_outs else 5
-    max_changes = min(max_changes, max_total_changes - len(star_outs))
-    if max_changes < 0:
-        max_changes = 0
-
-    mandatory_swaps: List[Swap] = []
-    used_in = set()
-    used_out = set()
-    for out_p in star_outs:
-        name_out = out_p.get("nome") or out_p.get("Giocatore")
-        role = str(out_p.get("ruolo_base", out_p.get("Ruolo"))).upper()
-        candidates = [
-            p for p in in_pool.get(role, [])
-            if (p.get("nome") or p.get("Giocatore")) not in squad_names
-        ]
-        if not candidates:
-            continue
-        candidates.sort(
-            key=lambda x: value_map.get(x.get("nome") or x.get("Giocatore"), 0),
-            reverse=True,
-        )
-        best_in = candidates[0]
-        name_in = best_in.get("nome") or best_in.get("Giocatore")
-        if not name_in or name_in in used_in or name_out in used_out:
-            continue
-        qa_out = num(out_p.get("QA", out_p.get("PrezzoAttuale", 0)))
-        qa_in = num(best_in.get("QA", best_in.get("PrezzoAttuale", 0)))
-        gain = value_map.get(name_in, 0.0) - value_map.get(name_out, 0.0)
-        mandatory_swaps.append(Swap(out_p, best_in, gain, qa_out, qa_in))
-        used_in.add(name_in)
-        used_out.add(name_out)
-        in_pool[role] = [p for p in in_pool.get(role, []) if (p.get("nome") or p.get("Giocatore")) != name_in]
-        out_pool[role] = [p for p in out_pool.get(role, []) if (p.get("nome") or p.get("Giocatore")) != name_out]
-
-    # Candidate swaps
-    GK_MIN_TIT = 0.65
-    GK_MIN_GAIN = 4.0
     candidates: List[Swap] = []
     for role in ["P", "D", "C", "A"]:
         for out_p in out_pool[role]:
-            name_out = out_p.get("nome") or out_p.get("Giocatore")
-            qa_out = num(out_p.get("QA", out_p.get("PrezzoAttuale", 0)))
+            name_out = name_of(out_p)
+            if not name_out:
+                continue
+            if required_outs_set and norm_name(name_out) not in required_outs_set:
+                continue
+            if fixed_pairs and norm_name(name_out) in fixed_pairs:
+                continue
+            qa_out = qa_of(out_p)
             val_out = value_map.get(name_out, 0.0)
             for in_p in in_pool[role]:
-                name_in = in_p.get("nome") or in_p.get("Giocatore")
-                if not name_in or name_in in squad_names:
+                name_in = name_of(in_p)
+                if not name_in:
                     continue
-                qa_in = num(in_p.get("QA", in_p.get("PrezzoAttuale", 0)))
-                val_in = value_map.get(name_in, 0.0)
-                gain = val_in - val_out
-                if role == "P":
-                    tit_in = tit_map.get(name_in, 0.0)
-                    if tit_in < GK_MIN_TIT or gain < GK_MIN_GAIN:
-                        continue
-                candidates.append(Swap(out_p, in_p, gain, qa_out, qa_in))
+                gain = value_map.get(name_in, 0.0) - val_out
+                candidates.append(Swap(out_p, in_p, gain, qa_out, qa_of(in_p)))
 
-    # Beam search builder (supports excluding specific swap pairs)
+    log(f"candidates: {len(candidates)}")
+
     @dataclass
     class State:
         swaps: List[Swap]
@@ -526,121 +711,183 @@ def suggest_transfers(
         neg_count: int
         neg_sum: float
         best_gain: float
-
-    base_spent = sum(s.qa_in for s in mandatory_swaps)
-    base_earned = sum(s.qa_out for s in mandatory_swaps)
-    base_gain = sum(s.gain for s in mandatory_swaps)
-    base_out = {s.out_player.get("nome") or s.out_player.get("Giocatore") for s in mandatory_swaps}
-    base_in = {s.in_player.get("nome") or s.in_player.get("Giocatore") for s in mandatory_swaps}
-    base_neg = sum(1 for s in mandatory_swaps if s.gain < 0)
-    base_neg_sum = sum(abs(s.gain) for s in mandatory_swaps if s.gain < 0)
-    base_best = max([s.gain for s in mandatory_swaps], default=0.0)
-
-    def swap_key(swap: Swap) -> tuple[str, str]:
-        return (
-            norm_name(swap.out_player.get("nome") or swap.out_player.get("Giocatore") or ""),
-            norm_name(swap.in_player.get("nome") or swap.in_player.get("Giocatore") or ""),
-        )
+        big_gain_count: int
 
     def build_solutions(
-        exclude_swaps: set[tuple[str, str]] | None,
-        exclude_outs: set[str] | None,
+        extra_exclude_ins: set[str],
+        extra_exclude_outs: set[str],
+        relax_level: int = 0,
     ) -> List[Solution]:
-        exclude_swaps = exclude_swaps or set()
-        exclude_outs = exclude_outs or set()
-        filtered = []
-        for c in candidates:
-            out_name = norm_name(c.out_player.get("nome") or c.out_player.get("Giocatore") or "")
-            if out_name in exclude_outs:
-                continue
-            if swap_key(c) in exclude_swaps:
-                continue
-            filtered.append(c)
+        fixed_swaps_list: List[Swap] = []
+        spent_init = 0.0
+        earned_init = 0.0
+        gain_init = 0.0
+        neg_count_init = 0
+        neg_sum_init = 0.0
+        best_gain_init = 0.0
+        big_gain_init = 0
+        out_set_init = set()
+        in_set_init = set()
+
+        if fixed_pairs:
+            name_to_player = {norm_name(name_of(p)): p for p in players_pool if name_of(p)}
+            squad_map = {norm_name(name_of(p)): p for p in user_squad if name_of(p)}
+            for out_key, in_key in fixed_pairs.items():
+                out_p = squad_map.get(out_key)
+                in_p = name_to_player.get(in_key)
+                if not out_p or not in_p:
+                    continue
+                qa_out = qa_of(out_p)
+                qa_in = qa_of(in_p)
+                gain = value_map.get(name_of(in_p), 0.0) - value_map.get(name_of(out_p), 0.0)
+                fixed_swaps_list.append(Swap(out_p, in_p, gain, qa_out, qa_in))
+                out_set_init.add(out_key)
+                in_set_init.add(in_key)
+                spent_init += qa_in
+                earned_init += qa_out
+                gain_init += gain
+                if gain < 0:
+                    neg_count_init += 1
+                    neg_sum_init += abs(gain)
+                best_gain_init = max(best_gain_init, gain)
+                if gain >= 5.0:
+                    big_gain_init += 1
 
         beam = [
             State(
-                swaps=list(mandatory_swaps),
-                out_set=set(base_out),
-                in_set=set(base_in),
-                spent=base_spent,
-                earned=base_earned,
-                gain_total=base_gain,
-                neg_count=base_neg,
-                neg_sum=base_neg_sum,
-                best_gain=base_best,
-            ),
+                swaps=fixed_swaps_list,
+                out_set=out_set_init,
+                in_set=in_set_init,
+                spent=spent_init,
+                earned=earned_init,
+                gain_total=gain_init,
+                neg_count=neg_count_init,
+                neg_sum=neg_sum_init,
+                best_gain=best_gain_init,
+                big_gain_count=big_gain_init,
+            )
         ]
 
-        for _ in range(max_changes):
-            next_beam = []
-            for state in beam:
-                for cand in filtered:
-                    name_out = cand.out_player.get("nome") or cand.out_player.get("Giocatore")
-                    name_in = cand.in_player.get("nome") or cand.in_player.get("Giocatore")
-                    if name_out in state.out_set or name_in in state.in_set:
-                        continue
-                spent = state.spent + cand.qa_in
-                earned = state.earned + cand.qa_out
-                if not allow_overbudget and spent > credits_residui + earned:
+        if include_outs_set and not fixed_swaps_list:
+            seeded = []
+            for cand in candidates:
+                name_out = norm_name(name_of(cand.out_player))
+                name_in = norm_name(name_of(cand.in_player))
+                if not name_out or not name_in:
                     continue
-                neg_count = state.neg_count + (1 if cand.gain < 0 else 0)
+                if name_out not in include_outs_set:
+                    continue
+                if name_out in extra_exclude_outs:
+                    continue
+                if name_in in exclude_ins_set or name_in in extra_exclude_ins:
+                    continue
+                spent = cand.qa_in
+                earned = cand.qa_out
+                if spent > credits_residui + earned:
+                    continue
+                neg_count = 0
+                neg_sum = 0.0
+                best_gain = cand.gain
                 if cand.gain < 0:
-                    if cand.gain < max_negative_gain:
+                    if cand.gain < -1.0:
                         continue
-                    if neg_count > max_negative_swaps:
-                        continue
-                neg_sum = state.neg_sum + (abs(cand.gain) if cand.gain < 0 else 0.0)
-                if neg_sum > max_negative_sum:
-                    continue
-                best_gain = max(state.best_gain, cand.gain)
-                next_beam.append(
+                    neg_count = 1
+                    neg_sum = abs(cand.gain)
+                seeded.append(
                     State(
-                        swaps=state.swaps + [cand],
-                        out_set=state.out_set | {name_out},
-                        in_set=state.in_set | {name_in},
+                        swaps=[cand],
+                        out_set={name_out},
+                        in_set={name_in},
                         spent=spent,
                         earned=earned,
-                        gain_total=state.gain_total + cand.gain,
+                        gain_total=cand.gain,
                         neg_count=neg_count,
                         neg_sum=neg_sum,
                         best_gain=best_gain,
+                        big_gain_count=1 if cand.gain >= 5.0 else 0,
                     )
                 )
+            if seeded:
+                beam = seeded
+
+        remaining_changes = max_changes - len(beam[0].swaps)
+        for _ in range(remaining_changes):
+            next_beam = []
+            for state in beam:
+                for cand in candidates:
+                    name_out = norm_name(name_of(cand.out_player))
+                    name_in = norm_name(name_of(cand.in_player))
+                    if not name_out or not name_in:
+                        continue
+                    if name_out in state.out_set or name_in in state.in_set:
+                        continue
+                    if name_out in extra_exclude_outs:
+                        continue
+                    if name_in in exclude_ins_set or name_in in extra_exclude_ins:
+                        continue
+                    spent = state.spent + cand.qa_in
+                    earned = state.earned + cand.qa_out
+                    if spent > credits_residui + earned:
+                        continue
+                    neg_count = state.neg_count
+                    neg_sum = state.neg_sum
+                    if cand.gain < 0:
+                        max_neg_gain = (
+                            -1.0 if relax_level == 0 else (-2.0 if relax_level == 1 else -3.0)
+                        )
+                        max_neg_swaps = 1 if relax_level == 0 else (1 if relax_level == 1 else 2)
+                        if cand.gain < max_neg_gain:
+                            continue
+                        if neg_count + 1 > max_neg_swaps:
+                            continue
+                        neg_count += 1
+                        neg_sum += abs(cand.gain)
+                    best_gain = max(state.best_gain, cand.gain)
+                    big_gain_count = state.big_gain_count + (1 if cand.gain >= 5.0 else 0)
+                    next_beam.append(
+                        State(
+                            swaps=state.swaps + [cand],
+                            out_set=state.out_set | {name_out},
+                            in_set=state.in_set | {name_in},
+                            spent=spent,
+                            earned=earned,
+                            gain_total=state.gain_total + cand.gain,
+                            neg_count=neg_count,
+                            neg_sum=neg_sum,
+                            best_gain=best_gain,
+                            big_gain_count=big_gain_count,
+                        )
+                    )
             if not next_beam:
                 break
             next_beam.sort(key=lambda s: s.gain_total, reverse=True)
             beam = next_beam[:beam_width]
 
-        solutions = []
+        solutions: List[Solution] = []
         for state in beam:
             if not state.swaps:
                 continue
             if state.neg_count > 0:
-                if state.best_gain < 1.0:
-                    continue
-            if require_roles:
-                roles = {str(s.in_player.get("ruolo_base") or s.in_player.get("Ruolo") or "").upper() for s in state.swaps}
-                if not require_roles.issubset(roles):
-                    continue
-            # Role swap bounds: max 3 per role (including GK), min 1 per role excluding GK
-            role_counts = {"P": 0, "D": 0, "C": 0, "A": 0}
-            for s in state.swaps:
-                role = str(s.in_player.get("ruolo_base") or s.in_player.get("Ruolo") or "").upper()
-                if role in role_counts:
-                    role_counts[role] += 1
-            if any(count > 3 for count in role_counts.values()):
-                continue
-            if role_counts["D"] < 1 or role_counts["C"] < 1 or role_counts["A"] < 1:
-                continue
-            final_club_counts = {}
+                if relax_level == 0:
+                    if state.big_gain_count < 2:
+                        continue
+                    if state.gain_total < 6.0 * state.neg_sum:
+                        continue
+                elif relax_level == 1:
+                    if state.big_gain_count < 1:
+                        continue
+                    if state.gain_total < 4.0 * state.neg_sum:
+                        continue
+
+            final_club_counts: Dict[str, int] = {}
             for p in user_squad:
-                club = str(p.get("club") or p.get("Squadra", "")).strip()
+                club = club_of(p)
                 if not club:
                     continue
                 final_club_counts[club] = final_club_counts.get(club, 0) + 1
             for s in state.swaps:
-                club_out = str(s.out_player.get("club") or s.out_player.get("Squadra", "")).strip()
-                club_in = str(s.in_player.get("club") or s.in_player.get("Squadra", "")).strip()
+                club_out = club_of(s.out_player)
+                club_in = club_of(s.in_player)
                 if club_out:
                     final_club_counts[club_out] = final_club_counts.get(club_out, 0) - 1
                 if club_in:
@@ -654,7 +901,7 @@ def suggest_transfers(
             for s in state.swaps:
                 t = titolarita(s.in_player, players_pool)
                 if t < 0.55:
-                    warnings.append(f"Titolare incerto: {s.in_player.get('nome') or s.in_player.get('Giocatore')}")
+                    pass
             budget_final = credits_residui + state.earned - state.spent
             solutions.append(
                 Solution(
@@ -662,53 +909,241 @@ def suggest_transfers(
                     budget_initial=credits_residui,
                     budget_final=budget_final,
                     total_gain=state.gain_total,
-                    recommended_outs=[p.get("nome") or p.get("Giocatore") for p in recommended_outs],
                     warnings=sorted(set(warnings)),
                 )
             )
 
-        solutions.sort(key=lambda s: s.total_gain, reverse=True)
-        unique = []
-        seen = set()
-        for sol in solutions:
-            sig = tuple(sorted((s.out_player.get("nome") or s.out_player.get("Giocatore") or "",
-                                s.in_player.get("nome") or s.in_player.get("Giocatore") or "") for s in sol.swaps))
-            if sig in seen:
-                continue
-            seen.add(sig)
-            unique.append(sol)
-        return unique
+        if required_outs_set:
+            filtered_solutions = []
+            for sol in solutions:
+                out_set = {norm_name(name_of(s.out_player)) for s in sol.swaps}
+                if out_set == required_outs_set:
+                    filtered_solutions.append(sol)
+            solutions = filtered_solutions
+        elif include_outs_set:
+            filtered_solutions = []
+            for sol in solutions:
+                out_set = {norm_name(name_of(s.out_player)) for s in sol.swaps}
+                if out_set & include_outs_set:
+                    filtered_solutions.append(sol)
+            solutions = filtered_solutions
 
-    def diff_swaps(a: Solution, b: Solution) -> int:
-        a_set = set(swap_key(s) for s in a.swaps)
-        b_set = set(swap_key(s) for s in b.swaps)
-        return len(a_set - b_set)
+        solutions.sort(key=lambda s: s.total_gain, reverse=True)
+        return solutions
+
+    def top_in_names(sol: Solution, count: int = 4) -> List[str]:
+        swaps_sorted = sorted(sol.swaps, key=lambda s: s.gain, reverse=True)
+        names = []
+        for s in swaps_sorted:
+            name = norm_name(name_of(s.in_player))
+            if name and name not in names:
+                names.append(name)
+            if len(names) >= count:
+                break
+        return names
+
+    def top_out_names(sol: Solution, count: int = 3) -> List[str]:
+        swaps_sorted = sorted(sol.swaps, key=lambda s: s.gain, reverse=True)
+        names = []
+        for s in swaps_sorted:
+            name = norm_name(name_of(s.out_player))
+            if name and name not in names:
+                names.append(name)
+            if len(names) >= count:
+                break
+        return names
 
     selected: List[Solution] = []
-    exclude: set[tuple[str, str]] = set()
-    exclude_outs: set[str] = set()
-    for _ in range(3):
-        pool = build_solutions(exclude, exclude_outs)
-        if not pool:
-            break
-        pick = None
-        for sol in pool:
-            if all(diff_swaps(sol, prev) >= 3 for prev in selected):
-                pick = sol
-                break
-        if not pick:
-            break
-        selected.append(pick)
-        top_swaps = sorted(pick.swaps, key=lambda s: s.gain, reverse=True)
-        added = 0
-        for s in top_swaps:
-            raw_out_name = s.out_player.get("nome") or s.out_player.get("Giocatore") or ""
-            if is_star(raw_out_name):
-                continue
-            exclude.add(swap_key(s))
-            exclude_outs.add(norm_name(raw_out_name))
-            added += 1
-            if added >= 3:
-                break
+    base_exclude = set()
+    base_exclude_outs = set()
 
-    return selected
+    pool1 = build_solutions(base_exclude, base_exclude_outs, relax_level=0)
+    if pool1:
+        selected.append(pool1[0])
+    if len(selected) >= 3:
+        return selected[:3]
+    log(f"pool1={len(pool1)} selected={len(selected)}")
+
+    exclude2 = base_exclude | set(top_in_names(selected[0], 4)) if selected else base_exclude
+    exclude2_outs = base_exclude_outs | set(top_out_names(selected[0], 3)) if selected else base_exclude_outs
+    pool2 = build_solutions(exclude2, exclude2_outs, relax_level=0)
+    def out_overlap(a: Solution, b: Solution) -> int:
+        outs_a = {norm_name(name_of(s.out_player)) for s in a.swaps}
+        outs_b = {norm_name(name_of(s.out_player)) for s in b.swaps}
+        return len(outs_a & outs_b)
+
+    for sol in pool2:
+        if sol in selected:
+            continue
+        if out_overlap(sol, selected[0]) > 3:
+            continue
+        selected.append(sol)
+        break
+    if len(selected) >= 3:
+        return selected[:3]
+    log(f"pool2={len(pool2)} selected={len(selected)}")
+
+    exclude3 = exclude2
+    exclude3_outs = exclude2_outs
+    if len(selected) > 1:
+        exclude3 = exclude3 | set(top_in_names(selected[1], 4))
+        exclude3_outs = exclude3_outs | set(top_out_names(selected[1], 3))
+    pool3 = build_solutions(exclude3, exclude3_outs, relax_level=0)
+    for sol in pool3:
+        if sol in selected:
+            continue
+        if out_overlap(sol, selected[0]) > 3:
+            continue
+        if len(selected) > 1 and out_overlap(sol, selected[1]) > 3:
+            continue
+        selected.append(sol)
+        break
+
+    if len(selected) < 3:
+        # Relax step 1
+        pool = build_solutions(base_exclude, base_exclude_outs, relax_level=1)
+        for sol in pool:
+            if sol in selected:
+                continue
+            selected.append(sol)
+            if len(selected) >= 3:
+                break
+        log(f"relax1 pool={len(pool)} selected={len(selected)}")
+    if len(selected) < 3:
+        # Relax step 2
+        pool = build_solutions(base_exclude, base_exclude_outs, relax_level=2)
+        for sol in pool:
+            if sol in selected:
+                continue
+            selected.append(sol)
+            if len(selected) >= 3:
+                break
+        log(f"relax2 pool={len(pool)} selected={len(selected)}")
+
+    if not selected and not emergency_relax:
+        log("no solutions, triggering emergency_relax")
+        return suggest_transfers(
+            user_squad=user_squad,
+            credits_residui=credits_residui,
+            players_pool=players_pool,
+            teams_data=teams_data,
+            fixtures=fixtures,
+            current_round=current_round,
+            max_changes=max_changes,
+            k_pool=k_pool,
+            m_out=m_out,
+            beam_width=beam_width,
+            seed=seed,
+            allow_overbudget=allow_overbudget,
+            max_negative_gain=max_negative_gain,
+            max_negative_swaps=max_negative_swaps,
+            max_negative_sum=max_negative_sum,
+            require_roles=require_roles,
+            required_outs=required_outs,
+            exclude_ins=exclude_ins,
+            fixed_swaps=fixed_swaps,
+            include_outs_any=include_outs_any,
+            emergency_relax=True,
+            debug=debug,
+        )
+
+    if not selected:
+        log("no solutions after relax, using greedy fallback")
+        def greedy_solution(exclude_ins: set[str], exclude_outs: set[str]) -> Solution | None:
+            swaps: List[Swap] = []
+            used_out = set()
+            used_in = set()
+            spent = 0.0
+            earned = 0.0
+            neg_count = 0
+            neg_sum = 0.0
+            best_gain = 0.0
+
+            team_counts: Dict[str, int] = {}
+            for p in user_squad:
+                club = club_of(p)
+                if not club:
+                    continue
+                team_counts[club] = team_counts.get(club, 0) + 1
+
+            for cand in sorted(candidates, key=lambda s: s.gain, reverse=True):
+                name_out = norm_name(name_of(cand.out_player))
+                name_in = norm_name(name_of(cand.in_player))
+                if not name_out or not name_in:
+                    continue
+                if name_out in used_out or name_in in used_in:
+                    continue
+                if name_out in exclude_outs or name_in in exclude_ins:
+                    continue
+                if cand.gain < -3.0:
+                    continue
+                if cand.gain < 0 and neg_count + 1 > 2:
+                    continue
+                next_spent = spent + cand.qa_in
+                next_earned = earned + cand.qa_out
+                if next_spent > credits_residui + next_earned:
+                    continue
+
+                club_out = club_of(cand.out_player)
+                club_in = club_of(cand.in_player)
+                if club_out:
+                    team_counts[club_out] = team_counts.get(club_out, 0) - 1
+                if club_in:
+                    team_counts[club_in] = team_counts.get(club_in, 0) + 1
+                if any(v > 3 for v in team_counts.values()):
+                    # revert and skip
+                    if club_out:
+                        team_counts[club_out] = team_counts.get(club_out, 0) + 1
+                    if club_in:
+                        team_counts[club_in] = team_counts.get(club_in, 0) - 1
+                    continue
+
+                swaps.append(cand)
+                used_out.add(name_out)
+                used_in.add(name_in)
+                spent = next_spent
+                earned = next_earned
+                best_gain = max(best_gain, cand.gain)
+                if cand.gain < 0:
+                    neg_count += 1
+                    neg_sum += abs(cand.gain)
+                if len(swaps) >= max_changes:
+                    break
+
+            if not swaps:
+                return None
+
+            budget_final = credits_residui + earned - spent
+            total_gain = sum(s.gain for s in swaps)
+            warnings = []
+            if neg_count > 0:
+                warnings.append("Presente cambio negativo")
+            for s in swaps:
+                t = titolarita(s.in_player, players_pool)
+            return Solution(
+                swaps=swaps,
+                budget_initial=credits_residui,
+                budget_final=budget_final,
+                total_gain=total_gain,
+                warnings=sorted(set(warnings)),
+            )
+
+        greedy_selected: List[Solution] = []
+        exclude_ins = set()
+        exclude_outs = set()
+        sol1 = greedy_solution(exclude_ins, exclude_outs)
+        if sol1:
+            greedy_selected.append(sol1)
+            exclude_ins |= set(top_in_names(sol1, 4))
+            exclude_outs |= set(top_out_names(sol1, 3))
+        sol2 = greedy_solution(exclude_ins, exclude_outs)
+        if sol2:
+            greedy_selected.append(sol2)
+            exclude_ins |= set(top_in_names(sol2, 4))
+            exclude_outs |= set(top_out_names(sol2, 3))
+        sol3 = greedy_solution(exclude_ins, exclude_outs)
+        if sol3:
+            greedy_selected.append(sol3)
+        return greedy_selected[:3]
+
+    return selected[:3]
