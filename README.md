@@ -17,6 +17,16 @@ Avvia:
 - API su `http://0.0.0.0:8001`
 - Web su `http://localhost:5173`
 
+## Configurazione frontend
+Se serve, crea il file locale:
+```
+apps/web/.env
+```
+Con il contenuto (vedi `apps/web/.env.example`):
+```
+VITE_API_BASE=http://localhost:8001
+```
+
 ## Aggiornamento dati (un comando)
 ```
 powershell -ExecutionPolicy Bypass -File .\scripts\update-all.ps1 -SyncRose -ForceStats
