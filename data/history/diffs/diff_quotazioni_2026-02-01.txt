@@ -1,0 +1,1122 @@
+* Maignan prezzo  -> 20
+* Maignan squadra  -> Milan
+* Svilar prezzo  -> 19
+* Svilar squadra  -> Roma
+* Carnesecchi prezzo  -> 18
+* Carnesecchi squadra  -> Atalanta
+* Milinkovic-Savic V. prezzo  -> 18
+* Milinkovic-Savic V. squadra  -> Napoli
+* Butez prezzo  -> 17
+* Butez squadra  -> Como
+* Provedel prezzo  -> 17
+* Provedel squadra  -> Lazio
+* Di Gregorio prezzo  -> 16
+* Di Gregorio squadra  -> Juventus
+* Falcone prezzo  -> 16
+* Falcone squadra  -> Lecce
+* Audero prezzo  -> 15
+* Audero squadra  -> Cremonese
+* Sommer prezzo  -> 13
+* Sommer squadra  -> Inter
+* Caprile prezzo  -> 12
+* Caprile squadra  -> Cagliari
+* Muric prezzo  -> 12
+* Muric squadra  -> Sassuolo
+* De Gea prezzo  -> 11
+* De Gea squadra  -> Fiorentina
+* Corvi prezzo  -> 11
+* Corvi squadra  -> Parma
+* Okoye prezzo  -> 11
+* Okoye squadra  -> Udinese
+* Ravaglia F. prezzo  -> 10
+* Ravaglia F. squadra  -> Bologna
+* Skorupski prezzo  -> 10
+* Skorupski squadra  -> Bologna
+* Leali prezzo  -> 10
+* Leali squadra  -> Genoa
+* Bijlow prezzo  -> 10
+* Bijlow squadra  -> Genoa
+* Semper prezzo  -> 9
+* Semper squadra  -> Pisa
+* Montipò prezzo  -> 9
+* Montipò squadra  -> Verona
+* Meret prezzo  -> 8
+* Meret squadra  -> Napoli
+* Suzuki prezzo  -> 8
+* Suzuki squadra  -> Parma
+* Paleari prezzo  -> 8
+* Paleari squadra  -> Torino
+* Padelli prezzo  -> 4
+* Padelli squadra  -> Udinese
+* Perin prezzo  -> 3
+* Perin squadra  -> Juventus
+* Rinaldi prezzo  -> 3
+* Rinaldi squadra  -> Parma
+* Perilli prezzo  -> 3
+* Perilli squadra  -> Verona
+* Scuffet prezzo  -> 2
+* Scuffet squadra  -> Pisa
+* Israel prezzo  -> 2
+* Israel squadra  -> Torino
+* Rossi F. prezzo  -> 1
+* Rossi F. squadra  -> Atalanta
+* Sportiello prezzo  -> 1
+* Sportiello squadra  -> Atalanta
+* Pessina Mas. prezzo  -> 1
+* Pessina Mas. squadra  -> Bologna
+* Ciocci prezzo  -> 1
+* Ciocci squadra  -> Cagliari
+* Vigorito prezzo  -> 1
+* Vigorito squadra  -> Como
+* Nava prezzo  -> 1
+* Nava squadra  -> Cremonese
+* Christensen O. prezzo  -> 1
+* Christensen O. squadra  -> Fiorentina
+* Siegrist prezzo  -> 1
+* Siegrist squadra  -> Genoa
+* Sommariva prezzo  -> 1
+* Sommariva squadra  -> Genoa
+* Di Gennaro prezzo  -> 1
+* Di Gennaro squadra  -> Inter
+* Martinez Jo. prezzo  -> 1
+* Martinez Jo. squadra  -> Inter
+* Pinsoglio prezzo  -> 1
+* Pinsoglio squadra  -> Juventus
+* Furlanetto prezzo  -> 1
+* Furlanetto squadra  -> Lazio
+* Fruchtl prezzo  -> 1
+* Fruchtl squadra  -> Lecce
+* Samooja prezzo  -> 1
+* Samooja squadra  -> Lecce
+* Terracciano prezzo  -> 1
+* Terracciano squadra  -> Milan
+* Torriani prezzo  -> 1
+* Torriani squadra  -> Milan
+* Contini prezzo  -> 1
+* Contini squadra  -> Napoli
+* Nicolas prezzo  -> 1
+* Nicolas squadra  -> Pisa
+* Zelezny prezzo  -> 1
+* Zelezny squadra  -> Roma
+* Gollini prezzo  -> 1
+* Gollini squadra  -> Roma
+* Satalino prezzo  -> 1
+* Satalino squadra  -> Sassuolo
+* Turati prezzo  -> 1
+* Turati squadra  -> Sassuolo
+* Sava prezzo  -> 1
+* Sava squadra  -> Udinese
+* Vasquez D. prezzo  -> 1
+* Vasquez D. squadra  -> Roma
+* Nunziante prezzo  -> 1
+* Nunziante squadra  -> Udinese
+* Lezzerini prezzo  -> 1
+* Lezzerini squadra  -> Fiorentina
+* Silvestri prezzo  -> 1
+* Silvestri squadra  -> Cremonese
+* Toniolo prezzo  -> 1
+* Toniolo squadra  -> Verona
+* Cavlina prezzo  -> 1
+* Cavlina squadra  -> Como
+* Ferrante prezzo  -> 1
+* Ferrante squadra  -> Napoli
+* Calligaris prezzo  -> 1
+* Calligaris squadra  -> Inter
+* Tornqvist prezzo  -> 1
+* Tornqvist squadra  -> Como
+* Sherri prezzo  -> 1
+* Sherri squadra  -> Cagliari
++ Motta (Lazio)
+* Dimarco prezzo  -> 31
+* Dimarco squadra  -> Inter
+* Spinazzola prezzo  -> 20
+* Spinazzola squadra  -> Napoli
+* Palestra prezzo  -> 17
+* Palestra squadra  -> Cagliari
+* Bastoni prezzo  -> 17
+* Bastoni squadra  -> Inter
+* Kempf prezzo  -> 16
+* Kempf squadra  -> Como
+* Wesley prezzo  -> 16
+* Wesley squadra  -> Roma
+* Pavlovic prezzo  -> 15
+* Pavlovic squadra  -> Milan
+* Ostigard prezzo  -> 15
+* Ostigard squadra  -> Genoa
+* Martin prezzo  -> 14
+* Martin squadra  -> Genoa
+* Bremer prezzo  -> 14
+* Bremer squadra  -> Juventus
+* Celik prezzo  -> 14
+* Celik squadra  -> Roma
+* Scalvini prezzo  -> 13
+* Scalvini squadra  -> Atalanta
+* Holm prezzo  -> 13
+* Holm squadra  -> Bologna
+* Carlos Augusto prezzo  -> 13
+* Carlos Augusto squadra  -> Inter
+* Baschirotto prezzo  -> 13
+* Baschirotto squadra  -> Cremonese
+* Bartesaghi prezzo  -> 13
+* Bartesaghi squadra  -> Milan
+* Vojvoda prezzo  -> 12
+* Vojvoda squadra  -> Como
+* Bisseck prezzo  -> 12
+* Bisseck squadra  -> Inter
+* Kalulu prezzo  -> 12
+* Kalulu squadra  -> Juventus
+* Rrahmani prezzo  -> 12
+* Rrahmani squadra  -> Napoli
+* Di Lorenzo prezzo  -> 12
+* Di Lorenzo squadra  -> Napoli
+* Kabasele prezzo  -> 12
+* Kabasele squadra  -> Udinese
+* Ramon prezzo  -> 12
+* Ramon squadra  -> Como
+* Kelly L. prezzo  -> 11
+* Kelly L. squadra  -> Juventus
+* Terracciano F. prezzo  -> 11
+* Terracciano F. squadra  -> Cremonese
+* Zanoli prezzo  -> 11
+* Zanoli squadra  -> Udinese
+* Mancini prezzo  -> 11
+* Mancini squadra  -> Roma
+* Coco prezzo  -> 11
+* Coco squadra  -> Torino
+* Maripan prezzo  -> 11
+* Maripan squadra  -> Torino
+* Solet prezzo  -> 11
+* Solet squadra  -> Udinese
+* Akanji prezzo  -> 11
+* Akanji squadra  -> Inter
+* Miranda J. prezzo  -> 10
+* Miranda J. squadra  -> Bologna
+* Moreno Alb. prezzo  -> 10
+* Moreno Alb. squadra  -> Como
+* Gosens prezzo  -> 10
+* Gosens squadra  -> Fiorentina
+* Vasquez prezzo  -> 10
+* Vasquez squadra  -> Genoa
+* Dumfries prezzo  -> 10
+* Dumfries squadra  -> Inter
+* Cabal prezzo  -> 10
+* Cabal squadra  -> Juventus
+* Cambiaso prezzo  -> 10
+* Cambiaso squadra  -> Juventus
+* Buongiorno prezzo  -> 10
+* Buongiorno squadra  -> Napoli
+* Valeri prezzo  -> 10
+* Valeri squadra  -> Parma
+* Hermoso prezzo  -> 10
+* Hermoso squadra  -> Roma
+* Belghali prezzo  -> 10
+* Belghali squadra  -> Verona
+* Luperto prezzo  -> 9
+* Luperto squadra  -> Cagliari
+* Valle prezzo  -> 9
+* Valle squadra  -> Como
+* Barbieri prezzo  -> 9
+* Barbieri squadra  -> Cremonese
+* Romagnoli prezzo  -> 9
+* Romagnoli squadra  -> Lazio
+* Tiago Gabriel prezzo  -> 9
+* Tiago Gabriel squadra  -> Lecce
+* Circati prezzo  -> 9
+* Circati squadra  -> Parma
+* Delprato prezzo  -> 9
+* Delprato squadra  -> Parma
+* Angori prezzo  -> 9
+* Angori squadra  -> Pisa
+* Hien prezzo  -> 8
+* Hien squadra  -> Atalanta
+* Kossounou prezzo  -> 8
+* Kossounou squadra  -> Atalanta
+* Zappacosta prezzo  -> 8
+* Zappacosta squadra  -> Atalanta
+* Mina prezzo  -> 8
+* Mina squadra  -> Cagliari
+* Idrissi R. prezzo  -> 8
+* Idrissi R. squadra  -> Cagliari
+* Zortea prezzo  -> 8
+* Zortea squadra  -> Bologna
+* Norton-Cuffy prezzo  -> 8
+* Norton-Cuffy squadra  -> Genoa
+* Gila prezzo  -> 8
+* Gila squadra  -> Lazio
+* Gallo prezzo  -> 8
+* Gallo squadra  -> Lecce
+* Gabbia prezzo  -> 8
+* Gabbia squadra  -> Milan
+* Tomori prezzo  -> 8
+* Tomori squadra  -> Milan
+* Muharemovic prezzo  -> 8
+* Muharemovic squadra  -> Sassuolo
+* Cuadrado prezzo  -> 8
+* Cuadrado squadra  -> Pisa
+* Idzes prezzo  -> 8
+* Idzes squadra  -> Sassuolo
+* Heggem prezzo  -> 8
+* Heggem squadra  -> Bologna
+* Bernasconi prezzo  -> 8
+* Bernasconi squadra  -> Atalanta
+* Zappa prezzo  -> 7
+* Zappa squadra  -> Cagliari
+* Folino prezzo  -> 7
+* Folino squadra  -> Cremonese
+* Comuzzo prezzo  -> 7
+* Comuzzo squadra  -> Fiorentina
+* Dodò prezzo  -> 7
+* Dodò squadra  -> Fiorentina
+* Parisi prezzo  -> 7
+* Parisi squadra  -> Fiorentina
+* Marcandalli prezzo  -> 7
+* Marcandalli squadra  -> Genoa
+* Marusic prezzo  -> 7
+* Marusic squadra  -> Lazio
+* Beukema prezzo  -> 7
+* Beukema squadra  -> Napoli
+* N'Dicka prezzo  -> 7
+* N'Dicka squadra  -> Roma
+* Angelino prezzo  -> 7
+* Angelino squadra  -> Roma
+* Britschgi prezzo  -> 7
+* Britschgi squadra  -> Parma
+* Diego Carlos prezzo  -> 7
+* Diego Carlos squadra  -> Como
+* Djimsiti prezzo  -> 6
+* Djimsiti squadra  -> Atalanta
+* Ahanor prezzo  -> 6
+* Ahanor squadra  -> Atalanta
+* Bellanova prezzo  -> 6
+* Bellanova squadra  -> Atalanta
+* Lucumì prezzo  -> 6
+* Lucumì squadra  -> Bologna
+* Bianchetti prezzo  -> 6
+* Bianchetti squadra  -> Cremonese
+* Ranieri L. prezzo  -> 6
+* Ranieri L. squadra  -> Fiorentina
+* Fortini prezzo  -> 6
+* Fortini squadra  -> Fiorentina
+* De Winter prezzo  -> 6
+* De Winter squadra  -> Milan
+* Acerbi prezzo  -> 6
+* Acerbi squadra  -> Inter
+* Tavares N. prezzo  -> 6
+* Tavares N. squadra  -> Lazio
+* Valenti prezzo  -> 6
+* Valenti squadra  -> Parma
+* Caracciolo A. prezzo  -> 6
+* Caracciolo A. squadra  -> Pisa
+* Walukiewicz prezzo  -> 6
+* Walukiewicz squadra  -> Sassuolo
+* Doig prezzo  -> 6
+* Doig squadra  -> Sassuolo
+* Ismajli prezzo  -> 6
+* Ismajli squadra  -> Torino
+* Lazaro prezzo  -> 6
+* Lazaro squadra  -> Torino
+* Bertola prezzo  -> 6
+* Bertola squadra  -> Udinese
+* Kristensen T. prezzo  -> 6
+* Kristensen T. squadra  -> Udinese
+* Frese prezzo  -> 6
+* Frese squadra  -> Verona
+* Obrador prezzo  -> 6
+* Obrador squadra  -> Torino
+* Obert prezzo  -> 5
+* Obert squadra  -> Cagliari
+* Gatti prezzo  -> 5
+* Gatti squadra  -> Juventus
+* Pellegrini Lu. prezzo  -> 5
+* Pellegrini Lu. squadra  -> Lazio
+* Veiga D. prezzo  -> 5
+* Veiga D. squadra  -> Lecce
+* Canestrelli prezzo  -> 5
+* Canestrelli squadra  -> Pisa
+* Calabresi prezzo  -> 5
+* Calabresi squadra  -> Pisa
+* Rensch prezzo  -> 5
+* Rensch squadra  -> Roma
+* Kamara H. prezzo  -> 5
+* Kamara H. squadra  -> Udinese
+* Bradaric prezzo  -> 5
+* Bradaric squadra  -> Verona
+* Kolasinac prezzo  -> 4
+* Kolasinac squadra  -> Atalanta
+* Vitik prezzo  -> 4
+* Vitik squadra  -> Bologna
+* Smolcic I. prezzo  -> 4
+* Smolcic I. squadra  -> Como
+* Floriani Mussolini prezzo  -> 4
+* Floriani Mussolini squadra  -> Cremonese
+* Pezzella Giu. prezzo  -> 4
+* Pezzella Giu. squadra  -> Cremonese
+* Pongracic prezzo  -> 4
+* Pongracic squadra  -> Fiorentina
+* De Vrij prezzo  -> 4
+* De Vrij squadra  -> Inter
+* Lazzari prezzo  -> 4
+* Lazzari squadra  -> Lazio
+* Gaspar K. prezzo  -> 4
+* Gaspar K. squadra  -> Lecce
+* Pedersen prezzo  -> 4
+* Pedersen squadra  -> Torino
+* Ghilardi prezzo  -> 4
+* Ghilardi squadra  -> Roma
+* Slotsager prezzo  -> 4
+* Slotsager squadra  -> Verona
+* Nelsson prezzo  -> 4
+* Nelsson squadra  -> Verona
+* Bella-Kotchap prezzo  -> 4
+* Bella-Kotchap squadra  -> Verona
+* Ziolkowski prezzo  -> 4
+* Ziolkowski squadra  -> Roma
+* Tsimikas prezzo  -> 4
+* Tsimikas squadra  -> Roma
+* Lirola prezzo  -> 4
+* Lirola squadra  -> Verona
+* Zatterstrom prezzo  -> 4
+* Zatterstrom squadra  -> Genoa
+* Provstgaard prezzo  -> 3
+* Provstgaard squadra  -> Lazio
+* Ndaba prezzo  -> 3
+* Ndaba squadra  -> Lecce
+* Estupinan prezzo  -> 3
+* Estupinan squadra  -> Milan
+* Juan Jesus prezzo  -> 3
+* Juan Jesus squadra  -> Napoli
+* Olivera prezzo  -> 3
+* Olivera squadra  -> Napoli
+* Ehizibue prezzo  -> 3
+* Ehizibue squadra  -> Udinese
+* Zemura prezzo  -> 3
+* Zemura squadra  -> Udinese
+* Valentini N. prezzo  -> 3
+* Valentini N. squadra  -> Verona
+* Athekame prezzo  -> 3
+* Athekame squadra  -> Milan
+* Gutierrez prezzo  -> 3
+* Gutierrez squadra  -> Napoli
+* Siebert prezzo  -> 3
+* Siebert squadra  -> Lecce
+* Rodriguez Ju. prezzo  -> 3
+* Rodriguez Ju. squadra  -> Cagliari
+* Albiol prezzo  -> 3
+* Albiol squadra  -> Pisa
+* Helland prezzo  -> 3
+* Helland squadra  -> Bologna
+* Casale prezzo  -> 2
+* Casale squadra  -> Bologna
+* De Silvestri prezzo  -> 2
+* De Silvestri squadra  -> Bologna
+* Lykogiannis prezzo  -> 2
+* Lykogiannis squadra  -> Bologna
+* Van Der Brempt prezzo  -> 2
+* Van Der Brempt squadra  -> Como
+* Ceccherini prezzo  -> 2
+* Ceccherini squadra  -> Cremonese
+* Otoa prezzo  -> 2
+* Otoa squadra  -> Genoa
+* Sabelli prezzo  -> 2
+* Sabelli squadra  -> Genoa
+* Rugani prezzo  -> 2
+* Rugani squadra  -> Juventus
+* Joao Mario prezzo  -> 2
+* Joao Mario squadra  -> Juventus
+* Marianucci prezzo  -> 2
+* Marianucci squadra  -> Torino
+* Mazzocchi prezzo  -> 2
+* Mazzocchi squadra  -> Napoli
+* Coppola F. prezzo  -> 2
+* Coppola F. squadra  -> Pisa
+* Mateus Lusuardi prezzo  -> 2
+* Mateus Lusuardi squadra  -> Pisa
+* Masina prezzo  -> 2
+* Masina squadra  -> Torino
+* Biraghi prezzo  -> 2
+* Biraghi squadra  -> Torino
+* Ebosse prezzo  -> 2
+* Ebosse squadra  -> Verona
+* Goglichidze prezzo  -> 2
+* Goglichidze squadra  -> Udinese
+* Candè prezzo  -> 2
+* Candè squadra  -> Sassuolo
+* Cham prezzo  -> 2
+* Cham squadra  -> Verona
+* Troilo prezzo  -> 2
+* Troilo squadra  -> Parma
+* Nkounkou prezzo  -> 2
+* Nkounkou squadra  -> Torino
+* Faye prezzo  -> 2
+* Faye squadra  -> Cremonese
+* Zè Pedro prezzo  -> 2
+* Zè Pedro squadra  -> Cagliari
+* Bozhinov prezzo  -> 2
+* Bozhinov squadra  -> Pisa
++ Carboni F. (Parma)
+* Dossena prezzo  -> 1
+* Dossena squadra  -> Cagliari
+* Goldaniga prezzo  -> 1
+* Goldaniga squadra  -> Como
+* Darmian prezzo  -> 1
+* Darmian squadra  -> Inter
+* Gigot prezzo  -> 1
+* Gigot squadra  -> Lazio
+* Patric prezzo  -> 1
+* Patric squadra  -> Lazio
+* Hysaj prezzo  -> 1
+* Hysaj squadra  -> Lazio
+* Jean prezzo  -> 1
+* Jean squadra  -> Lecce
+* Perez M. prezzo  -> 1
+* Perez M. squadra  -> Lecce
+* Kouassi prezzo  -> 1
+* Kouassi squadra  -> Lecce
+* Odenthal prezzo  -> 1
+* Odenthal squadra  -> Sassuolo
+* Romagna prezzo  -> 1
+* Romagna squadra  -> Sassuolo
+* Paz Y. prezzo  -> 1
+* Paz Y. squadra  -> Sassuolo
+* Pieragnolo prezzo  -> 1
+* Pieragnolo squadra  -> Sassuolo
+* Schuurs prezzo  -> 1
+* Schuurs squadra  -> Torino
+* Dembelè A. prezzo  -> 1
+* Dembelè A. squadra  -> Torino
+* Rui Modesto prezzo  -> 1
+* Rui Modesto squadra  -> Udinese
+* Oyegoke prezzo  -> 1
+* Oyegoke squadra  -> Verona
+* Denoon prezzo  -> 1
+* Denoon squadra  -> Pisa
+* Ndiaye prezzo  -> 1
+* Ndiaye squadra  -> Parma
+* Kouadio prezzo  -> 1
+* Kouadio squadra  -> Fiorentina
+* Lamptey prezzo  -> 1
+* Lamptey squadra  -> Fiorentina
+* Odogu prezzo  -> 1
+* Odogu squadra  -> Milan
+* Coulibaly W. prezzo  -> 1
+* Coulibaly W. squadra  -> Sassuolo
+* Arizala prezzo  -> 1
+* Arizala squadra  -> Udinese
+* Pulisic prezzo  -> 31
+* Pulisic squadra  -> Milan
+* Paz N. prezzo  -> 30
+* Paz N. squadra  -> Como
+* Calhanoglu prezzo  -> 28
+* Calhanoglu squadra  -> Inter
+* McTominay prezzo  -> 24
+* McTominay squadra  -> Napoli
+* Rabiot prezzo  -> 24
+* Rabiot squadra  -> Milan
+* Orsolini prezzo  -> 23
+* Orsolini squadra  -> Bologna
+* Zielinski prezzo  -> 20
+* Zielinski squadra  -> Inter
+* Modric prezzo  -> 20
+* Modric squadra  -> Milan
+* De Bruyne prezzo  -> 20
+* De Bruyne squadra  -> Napoli
+* Zaniolo prezzo  -> 20
+* Zaniolo squadra  -> Udinese
+* Mandragora prezzo  -> 19
+* Mandragora squadra  -> Fiorentina
+* Saelemaekers prezzo  -> 19
+* Saelemaekers squadra  -> Milan
+* Odgaard prezzo  -> 18
+* Odgaard squadra  -> Bologna
+* Zambo Anguissa prezzo  -> 18
+* Zambo Anguissa squadra  -> Napoli
+* Atta prezzo  -> 18
+* Atta squadra  -> Udinese
+* Gudmundsson A. prezzo  -> 17
+* Gudmundsson A. squadra  -> Fiorentina
+* Konè M. prezzo  -> 17
+* Konè M. squadra  -> Roma
+* Vlasic prezzo  -> 17
+* Vlasic squadra  -> Torino
+* Perrone prezzo  -> 16
+* Perrone squadra  -> Como
+* Baturina prezzo  -> 16
+* Baturina squadra  -> Como
+* Zalewski prezzo  -> 16
+* Zalewski squadra  -> Atalanta
+* Barella prezzo  -> 16
+* Barella squadra  -> Inter
+* Neres prezzo  -> 16
+* Neres squadra  -> Napoli
+* Bernabè prezzo  -> 16
+* Bernabè squadra  -> Parma
+* Konè I. prezzo  -> 16
+* Konè I. squadra  -> Sassuolo
+* Pellegrini Lo. prezzo  -> 15
+* Pellegrini Lo. squadra  -> Roma
+* Gaetano prezzo  -> 14
+* Gaetano squadra  -> Cagliari
+* Malinovskyi prezzo  -> 14
+* Malinovskyi squadra  -> Genoa
+* Thorsby prezzo  -> 14
+* Thorsby squadra  -> Genoa
+* Locatelli prezzo  -> 14
+* Locatelli squadra  -> Juventus
+* McKennie prezzo  -> 14
+* McKennie squadra  -> Juventus
+* Thuram K. prezzo  -> 14
+* Thuram K. squadra  -> Juventus
+* Conceicao prezzo  -> 14
+* Conceicao squadra  -> Juventus
+* Isaksen prezzo  -> 14
+* Isaksen squadra  -> Lazio
+* Zaccagni prezzo  -> 14
+* Zaccagni squadra  -> Lazio
+* Pasalic prezzo  -> 13
+* Pasalic squadra  -> Atalanta
+* Caqueret prezzo  -> 13
+* Caqueret squadra  -> Como
+* Da Cunha prezzo  -> 13
+* Da Cunha squadra  -> Como
+* Vandeputte prezzo  -> 13
+* Vandeputte squadra  -> Cremonese
+* Kostic prezzo  -> 13
+* Kostic squadra  -> Juventus
+* Basic prezzo  -> 13
+* Basic squadra  -> Lazio
+* Coulibaly L. prezzo  -> 13
+* Coulibaly L. squadra  -> Lecce
+* Ricci S. prezzo  -> 13
+* Ricci S. squadra  -> Milan
+* Taylor K. prezzo  -> 13
+* Taylor K. squadra  -> Lazio
+* Felici prezzo  -> 12
+* Felici squadra  -> Cagliari
+* Cataldi prezzo  -> 12
+* Cataldi squadra  -> Lazio
+* Berisha M. prezzo  -> 12
+* Berisha M. squadra  -> Lecce
+* Loftus-Cheek prezzo  -> 12
+* Loftus-Cheek squadra  -> Milan
+* Cristante prezzo  -> 12
+* Cristante squadra  -> Roma
+* Thorstvedt prezzo  -> 12
+* Thorstvedt squadra  -> Sassuolo
+* Volpato prezzo  -> 12
+* Volpato squadra  -> Sassuolo
+* Ekkelenkamp prezzo  -> 12
+* Ekkelenkamp squadra  -> Udinese
+* Sottil prezzo  -> 12
+* Sottil squadra  -> Lecce
+* Pobega prezzo  -> 11
+* Pobega squadra  -> Bologna
+* Ellertsson prezzo  -> 11
+* Ellertsson squadra  -> Genoa
+* Sucic P. prezzo  -> 11
+* Sucic P. squadra  -> Inter
+* Leris prezzo  -> 11
+* Leris squadra  -> Pisa
+* Fadera prezzo  -> 11
+* Fadera squadra  -> Sassuolo
+* Serdar prezzo  -> 11
+* Serdar squadra  -> Verona
+* Mazzitelli prezzo  -> 11
+* Mazzitelli squadra  -> Cagliari
+* De Roon prezzo  -> 10
+* De Roon squadra  -> Atalanta
+* Ederson D.S. prezzo  -> 10
+* Ederson D.S. squadra  -> Atalanta
+* Brescianini prezzo  -> 10
+* Brescianini squadra  -> Fiorentina
+* Samardzic prezzo  -> 10
+* Samardzic squadra  -> Atalanta
+* Mkhitaryan prezzo  -> 10
+* Mkhitaryan squadra  -> Inter
+* Miretti prezzo  -> 10
+* Miretti squadra  -> Juventus
+* Fofana Y. prezzo  -> 10
+* Fofana Y. squadra  -> Milan
+* Lobotka prezzo  -> 10
+* Lobotka squadra  -> Napoli
+* Politano prezzo  -> 10
+* Politano squadra  -> Napoli
+* Tourè I. prezzo  -> 10
+* Tourè I. squadra  -> Pisa
+* Tramoni M. prezzo  -> 10
+* Tramoni M. squadra  -> Pisa
+* Karlstrom prezzo  -> 10
+* Karlstrom squadra  -> Udinese
+* Matic prezzo  -> 10
+* Matic squadra  -> Sassuolo
+* Harrison prezzo  -> 10
+* Harrison squadra  -> Fiorentina
+* Frendrup prezzo  -> 9
+* Frendrup squadra  -> Genoa
+* Bernede prezzo  -> 9
+* Bernede squadra  -> Verona
+* Zhegrova prezzo  -> 9
+* Zhegrova squadra  -> Juventus
+* Moro N. prezzo  -> 8
+* Moro N. squadra  -> Bologna
+* Fabbian prezzo  -> 8
+* Fabbian squadra  -> Fiorentina
+* Folorunsho prezzo  -> 8
+* Folorunsho squadra  -> Cagliari
+* Fagioli prezzo  -> 8
+* Fagioli squadra  -> Fiorentina
+* Keita M. prezzo  -> 8
+* Keita M. squadra  -> Parma
+* Piotrowski prezzo  -> 8
+* Piotrowski squadra  -> Udinese
+* Rowe prezzo  -> 8
+* Rowe squadra  -> Bologna
+* Gagliardini prezzo  -> 8
+* Gagliardini squadra  -> Verona
+* Adopo prezzo  -> 7
+* Adopo squadra  -> Cagliari
+* Bondo prezzo  -> 7
+* Bondo squadra  -> Cremonese
+* El Shaarawy prezzo  -> 7
+* El Shaarawy squadra  -> Roma
+* Casadei prezzo  -> 7
+* Casadei squadra  -> Torino
+* Payero prezzo  -> 7
+* Payero squadra  -> Cremonese
+* Lorran prezzo  -> 7
+* Lorran squadra  -> Pisa
+* Gandelman prezzo  -> 7
+* Gandelman squadra  -> Lecce
+* Loyola prezzo  -> 7
+* Loyola squadra  -> Pisa
+* Ferguson prezzo  -> 6
+* Ferguson squadra  -> Bologna
+* Deiola prezzo  -> 6
+* Deiola squadra  -> Cagliari
+* Prati prezzo  -> 6
+* Prati squadra  -> Torino
+* Ndour prezzo  -> 6
+* Ndour squadra  -> Fiorentina
+* Messias prezzo  -> 6
+* Messias squadra  -> Genoa
+* Luis Henrique prezzo  -> 6
+* Luis Henrique squadra  -> Inter
+* Vecino prezzo  -> 6
+* Vecino squadra  -> Lazio
+* Pierotti prezzo  -> 6
+* Pierotti squadra  -> Lecce
+* Zerbin prezzo  -> 6
+* Zerbin squadra  -> Cremonese
+* Gilmour prezzo  -> 6
+* Gilmour squadra  -> Napoli
+* Akinsanmiro prezzo  -> 6
+* Akinsanmiro squadra  -> Pisa
+* Pisilli prezzo  -> 6
+* Pisilli squadra  -> Roma
+* Baldanzi prezzo  -> 6
+* Baldanzi squadra  -> Genoa
+* Sorensen O. prezzo  -> 6
+* Sorensen O. squadra  -> Parma
+* Freuler prezzo  -> 5
+* Freuler squadra  -> Bologna
+* Aebischer prezzo  -> 5
+* Aebischer squadra  -> Pisa
+* Bernardeschi prezzo  -> 5
+* Bernardeschi squadra  -> Bologna
+* Grassi prezzo  -> 5
+* Grassi squadra  -> Cremonese
+* Masini prezzo  -> 5
+* Masini squadra  -> Genoa
+* Ramadani prezzo  -> 5
+* Ramadani squadra  -> Lecce
+* Musah prezzo  -> 5
+* Musah squadra  -> Atalanta
+* Estevez prezzo  -> 5
+* Estevez squadra  -> Parma
+* Ondrejka prezzo  -> 5
+* Ondrejka squadra  -> Parma
+* Piccinini G. prezzo  -> 5
+* Piccinini G. squadra  -> Pisa
+* Iannoni prezzo  -> 5
+* Iannoni squadra  -> Sassuolo
+* Niasse prezzo  -> 5
+* Niasse squadra  -> Verona
+* Oristanio prezzo  -> 5
+* Oristanio squadra  -> Parma
+* Elmas prezzo  -> 5
+* Elmas squadra  -> Napoli
++ Amorim (Genoa)
+* Koopmeiners prezzo  -> 4
+* Koopmeiners squadra  -> Juventus
+* Maleh prezzo  -> 4
+* Maleh squadra  -> Cremonese
+* Sohm prezzo  -> 4
+* Sohm squadra  -> Bologna
+* Marin M. prezzo  -> 4
+* Marin M. squadra  -> Pisa
+* El Aynaoui prezzo  -> 4
+* El Aynaoui squadra  -> Roma
+* Lipani prezzo  -> 4
+* Lipani squadra  -> Sassuolo
+* Tameze prezzo  -> 4
+* Tameze squadra  -> Torino
+* Gineitis prezzo  -> 4
+* Gineitis squadra  -> Torino
+* Maldini prezzo  -> 3
+* Maldini squadra  -> Lazio
+* Sergi Roberto prezzo  -> 3
+* Sergi Roberto squadra  -> Como
+* Frattesi prezzo  -> 3
+* Frattesi squadra  -> Inter
+* Belahyane prezzo  -> 3
+* Belahyane squadra  -> Lazio
+* Rovella prezzo  -> 3
+* Rovella squadra  -> Lazio
+* Dele-Bashiru prezzo  -> 3
+* Dele-Bashiru squadra  -> Lazio
+* Tete Morente prezzo  -> 3
+* Tete Morente squadra  -> Lecce
+* Ilic prezzo  -> 3
+* Ilic squadra  -> Torino
+* Lovric prezzo  -> 3
+* Lovric squadra  -> Verona
+* Harroui prezzo  -> 3
+* Harroui squadra  -> Verona
+* Jashari prezzo  -> 3
+* Jashari squadra  -> Milan
+* Miller L. prezzo  -> 3
+* Miller L. squadra  -> Udinese
+* Adzic prezzo  -> 3
+* Adzic squadra  -> Juventus
+* Al-Musrati prezzo  -> 3
+* Al-Musrati squadra  -> Verona
+* Nicolussi Caviglia prezzo  -> 3
+* Nicolussi Caviglia squadra  -> Parma
+* Sulemana I. prezzo  -> 2
+* Sulemana I. squadra  -> Cagliari
+* Collocolo prezzo  -> 2
+* Collocolo squadra  -> Cremonese
+* Fazzini prezzo  -> 2
+* Fazzini squadra  -> Fiorentina
+* Sabiri prezzo  -> 2
+* Sabiri squadra  -> Fiorentina
+* Helgason prezzo  -> 2
+* Helgason squadra  -> Lecce
+* Ordonez C. prezzo  -> 2
+* Ordonez C. squadra  -> Parma
+* Vural prezzo  -> 2
+* Vural squadra  -> Pisa
+* Boloca prezzo  -> 2
+* Boloca squadra  -> Sassuolo
+* Anjorin prezzo  -> 2
+* Anjorin squadra  -> Torino
+* Zarraga prezzo  -> 2
+* Zarraga squadra  -> Udinese
+* Ilkhan prezzo  -> 2
+* Ilkhan squadra  -> Torino
+* Vergara prezzo  -> 2
+* Vergara squadra  -> Napoli
+* Diouf prezzo  -> 2
+* Diouf squadra  -> Inter
+* Vranckx prezzo  -> 2
+* Vranckx squadra  -> Sassuolo
+* Gorter prezzo  -> 2
+* Gorter squadra  -> Lecce
+* Onana J. prezzo  -> 2
+* Onana J. squadra  -> Genoa
+* Cornet prezzo  -> 2
+* Cornet squadra  -> Genoa
+* Akpa Akpro prezzo  -> 2
+* Akpa Akpro squadra  -> Verona
++ Przyborek (Lazio)
+* Liteta prezzo  -> 1
+* Liteta squadra  -> Cagliari
+* Venturino prezzo  -> 1
+* Venturino squadra  -> Roma
+* Marchwinski prezzo  -> 1
+* Marchwinski squadra  -> Lecce
+* Hojholt prezzo  -> 1
+* Hojholt squadra  -> Pisa
+* Kastanos prezzo  -> 1
+* Kastanos squadra  -> Verona
+* Suslov prezzo  -> 1
+* Suslov squadra  -> Verona
+* Cuenca H. prezzo  -> 1
+* Cuenca H. squadra  -> Genoa
+* Sala A. prezzo  -> 1
+* Sala A. squadra  -> Lecce
+* Stengs prezzo  -> 1
+* Stengs squadra  -> Pisa
+* Cremaschi prezzo  -> 1
+* Cremaschi squadra  -> Parma
+* Fofana Sa. prezzo  -> 1
+* Fofana Sa. squadra  -> Lecce
+* Ngom prezzo  -> 1
+* Ngom squadra  -> Lecce
+* Martinez L. prezzo  -> 35
+* Martinez L. squadra  -> Inter
+* Yildiz prezzo  -> 31
+* Yildiz squadra  -> Juventus
+* Thuram prezzo  -> 30
+* Thuram squadra  -> Inter
+* Leao prezzo  -> 29
+* Leao squadra  -> Milan
+* Soulè prezzo  -> 25
+* Soulè squadra  -> Roma
+* Davis K. prezzo  -> 25
+* Davis K. squadra  -> Udinese
+* Hojlund prezzo  -> 25
+* Hojlund squadra  -> Napoli
+* Douvikas prezzo  -> 24
+* Douvikas squadra  -> Como
+* Scamacca prezzo  -> 23
+* Scamacca squadra  -> Atalanta
+* Castro S. prezzo  -> 23
+* Castro S. squadra  -> Bologna
+* Krstovic prezzo  -> 22
+* Krstovic squadra  -> Atalanta
+* Berardi prezzo  -> 22
+* Berardi squadra  -> Sassuolo
+* Orban G. prezzo  -> 22
+* Orban G. squadra  -> Verona
+* Bonazzoli prezzo  -> 20
+* Bonazzoli squadra  -> Cremonese
+* Pellegrino M. prezzo  -> 20
+* Pellegrino M. squadra  -> Parma
+* Esposito F.P. prezzo  -> 19
+* Esposito F.P. squadra  -> Inter
+* Simeone prezzo  -> 19
+* Simeone squadra  -> Torino
+* Laurientè prezzo  -> 19
+* Laurientè squadra  -> Sassuolo
+* Vardy prezzo  -> 19
+* Vardy squadra  -> Cremonese
+* Moreo prezzo  -> 18
+* Moreo squadra  -> Pisa
+* De Ketelaere prezzo  -> 17
+* De Ketelaere squadra  -> Atalanta
+* Cambiaghi prezzo  -> 17
+* Cambiaghi squadra  -> Bologna
+* Kean prezzo  -> 17
+* Kean squadra  -> Fiorentina
+* Esposito Se. prezzo  -> 17
+* Esposito Se. squadra  -> Cagliari
+* Nkunku prezzo  -> 17
+* Nkunku squadra  -> Milan
+* Bonny prezzo  -> 16
+* Bonny squadra  -> Inter
+* Raspadori prezzo  -> 16
+* Raspadori squadra  -> Atalanta
+* Ferguson E. prezzo  -> 16
+* Ferguson E. squadra  -> Roma
+* Adams C. prezzo  -> 16
+* Adams C. squadra  -> Torino
+* Giovane prezzo  -> 16
+* Giovane squadra  -> Napoli
+* Lukaku prezzo  -> 15
+* Lukaku squadra  -> Napoli
+* Durosinmi prezzo  -> 15
+* Durosinmi squadra  -> Pisa
+* Malen prezzo  -> 15
+* Malen squadra  -> Roma
+* Lookman prezzo  -> 14
+* Lookman squadra  -> Atalanta
+* Colombo prezzo  -> 14
+* Colombo squadra  -> Genoa
+* Vlahovic prezzo  -> 14
+* Vlahovic squadra  -> Juventus
+* Cancellieri prezzo  -> 14
+* Cancellieri squadra  -> Lazio
+* Dovbyk prezzo  -> 14
+* Dovbyk squadra  -> Roma
+* Pinamonti prezzo  -> 14
+* Pinamonti squadra  -> Sassuolo
+* Kilicsoy prezzo  -> 14
+* Kilicsoy squadra  -> Cagliari
+* Fullkrug prezzo  -> 14
+* Fullkrug squadra  -> Milan
+* Ratkov prezzo  -> 14
+* Ratkov squadra  -> Lazio
+* Borrelli prezzo  -> 13
+* Borrelli squadra  -> Cagliari
+* David prezzo  -> 13
+* David squadra  -> Juventus
+* Dybala prezzo  -> 13
+* Dybala squadra  -> Roma
+* Rodriguez Je. prezzo  -> 12
+* Rodriguez Je. squadra  -> Como
+* Vitinha O. prezzo  -> 12
+* Vitinha O. squadra  -> Genoa
+* Gimenez prezzo  -> 12
+* Gimenez squadra  -> Milan
+* Sulemana K. prezzo  -> 11
+* Sulemana K. squadra  -> Atalanta
+* Addai prezzo  -> 11
+* Addai squadra  -> Como
+* Ekuban prezzo  -> 11
+* Ekuban squadra  -> Genoa
+* Noslin prezzo  -> 11
+* Noslin squadra  -> Lazio
+* Banda prezzo  -> 11
+* Banda squadra  -> Lecce
+* Nzola prezzo  -> 11
+* Nzola squadra  -> Sassuolo
+* Ekhator prezzo  -> 10
+* Ekhator squadra  -> Genoa
+* N'Dri prezzo  -> 10
+* N'Dri squadra  -> Lecce
+* Vaz prezzo  -> 10
+* Vaz squadra  -> Roma
+* Openda prezzo  -> 9
+* Openda squadra  -> Juventus
+* Dallinga prezzo  -> 8
+* Dallinga squadra  -> Bologna
+* Piccoli prezzo  -> 8
+* Piccoli squadra  -> Fiorentina
+* Benedyczak prezzo  -> 8
+* Benedyczak squadra  -> Parma
+* Meister prezzo  -> 8
+* Meister squadra  -> Pisa
+* Buksa prezzo  -> 8
+* Buksa squadra  -> Udinese
+* Belotti prezzo  -> 8
+* Belotti squadra  -> Cagliari
+* Johnsen prezzo  -> 7
+* Johnsen squadra  -> Cremonese
+* Pedro prezzo  -> 7
+* Pedro squadra  -> Lazio
+* Mosquera prezzo  -> 7
+* Mosquera squadra  -> Verona
+* Cheddira prezzo  -> 7
+* Cheddira squadra  -> Lecce
+* Stulic prezzo  -> 7
+* Stulic squadra  -> Lecce
+* Solomon prezzo  -> 7
+* Solomon squadra  -> Fiorentina
+* Kuhn prezzo  -> 6
+* Kuhn squadra  -> Como
+* Njie prezzo  -> 6
+* Njie squadra  -> Torino
+* Sanabria prezzo  -> 6
+* Sanabria squadra  -> Cremonese
+* Zapata D. prezzo  -> 6
+* Zapata D. squadra  -> Torino
+* Sarr A. prezzo  -> 6
+* Sarr A. squadra  -> Verona
++ Bowie (Verona)
+* Dominguez B. prezzo  -> 5
+* Dominguez B. squadra  -> Bologna
+* Dia prezzo  -> 5
+* Dia squadra  -> Lazio
++ Kulenovic (Torino)
+* Immobile prezzo  -> 4
+* Immobile squadra  -> Bologna
+* Diao prezzo  -> 4
+* Diao squadra  -> Como
+* Camarda prezzo  -> 4
+* Camarda squadra  -> Lecce
++ Stojilkovic (Pisa)
+* Luvumbo prezzo  -> 3
+* Luvumbo squadra  -> Cagliari
+* Almqvist prezzo  -> 3
+* Almqvist squadra  -> Parma
+* Bayo V. prezzo  -> 3
+* Bayo V. squadra  -> Udinese
+* Aboukhlal prezzo  -> 3
+* Aboukhlal squadra  -> Torino
+* Morata prezzo  -> 3
+* Morata squadra  -> Como
+* Djuric prezzo  -> 2
+* Djuric squadra  -> Cremonese
+* Pierini prezzo  -> 2
+* Pierini squadra  -> Sassuolo
+* Moro L. prezzo  -> 2
+* Moro L. squadra  -> Sassuolo
+* Ambrosino prezzo  -> 2
+* Ambrosino squadra  -> Napoli
+* Moumbagna prezzo  -> 2
+* Moumbagna squadra  -> Cremonese
+* Gueye prezzo  -> 2
+* Gueye squadra  -> Udinese
+* Isaac prezzo  -> 2
+* Isaac squadra  -> Verona
+* Pavoletti prezzo  -> 1
+* Pavoletti squadra  -> Cagliari
+* Okereke prezzo  -> 1
+* Okereke squadra  -> Cremonese
+* Milik prezzo  -> 1
+* Milik squadra  -> Juventus
+* Buffon L. prezzo  -> 1
+* Buffon L. squadra  -> Pisa
+* Skjellerup prezzo  -> 1
+* Skjellerup squadra  -> Sassuolo
+* Frigan prezzo  -> 1
+* Frigan squadra  -> Parma
+* Kouamè prezzo  -> 1
+* Kouamè squadra  -> Fiorentina
+* Balentien prezzo  -> 1
+* Balentien squadra  -> Milan
+* Arena A. prezzo  -> 1
+* Arena A. squadra  -> Roma
+* Trepy prezzo  -> 1
+* Trepy squadra  -> Cagliari
++ Albarracin (Cagliari)
++ Elphege (Parma)
+- Ajayi * ()
+- Aramu * ()
+- Asllani ()
+- Bailey * ()
+- Bakker * ()
+- Bayeye * ()
+- Bonfanti ()
+- Bonifazi * ()
+- Carboni V. * ()
+- Castellanos * ()
+- Cerri * ()
+- Cutrone ()
+- Di Pardo ()
+- Dzeko * ()
+- Esteves T. * ()
+- Fernandes S.* * ()
+- Fini ()
+- Gronbaek ()
+- Guaita * ()
+- Guilbert * ()
+- Hernani * ()
+- Kaba ()
+- Kovac * ()
+- Kovacik * ()
+- Lang * ()
+- Lordkipanidze * ()
+- Lovik * ()
+- Lucca * ()
+- Mandas ()
+- Martinelli T. * ()
+- Mbambi * ()
+- Mckennie * ()
+- Mctominay * ()
+- Munoz * ()
+- Ngonge ()
+- Pafundi * ()
+- Palacios T. ()
+- Palma * ()
+- Penev * ()
+- Perciun * ()
+- Pierret ()
+- Pintus * ()
+- Popa * ()
+- Posch * ()
+- Radunovic * ()
+- Razi * ()
+- Richardson * ()
+- Rog * ()
+- Rouhi ()
+- Sangare * ()
+- Sarmiento J. * ()
+- Savva * ()
+- Sazonov * ()
+- Sernicola * ()
+- Stanciu * ()
+- Unai Nunez * ()
+- Vazquez ()
+- Vinciguerra * ()
+- Zacchi * ()

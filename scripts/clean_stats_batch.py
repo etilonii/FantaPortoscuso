@@ -506,6 +506,8 @@ def update_statistiche_giocatori() -> None:
 
     base_df["Giocatore"] = base_df["Giocatore"].astype(str).str.strip()
     base_df["Squadra"] = base_df["Squadra"].astype(str).str.strip()
+    if not base_df.empty:
+        base_df = base_df.drop_duplicates(subset=["Giocatore"], keep="last")
 
     players = set(base_players) | set(base_df["Giocatore"].tolist())
     for stat_file in STAT_FILES.values():
@@ -553,8 +555,9 @@ def update_statistiche_giocatori() -> None:
     # Preserve rigori columns from existing file if present
     for col in ["RigoriParati", "RigoriSbagliati", "GolVittoria", "GolPareggio"]:
         if col in base_df.columns:
+            base_col = base_df[["Giocatore", col]].drop_duplicates(subset=["Giocatore"], keep="last")
             merged = merged.merge(
-                base_df[["Giocatore", col]],
+                base_col,
                 on="Giocatore",
                 how="left",
                 suffixes=("", "_old"),

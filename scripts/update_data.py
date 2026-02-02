@@ -1,6 +1,7 @@
 import argparse
 import hashlib
 import json
+import re
 from datetime import date
 from pathlib import Path
 from typing import List, Tuple
@@ -132,9 +133,16 @@ def _diff_quotazioni(prev: pd.DataFrame, curr: pd.DataFrame) -> list[str]:
 
 
 def _diff_rose(prev: pd.DataFrame, curr: pd.DataFrame) -> list[str]:
+    def _norm_player(name: str) -> str:
+        base = str(name or "").strip()
+        if not base:
+            return ""
+        base = re.sub(r"\s*\*\s*$", "", base)
+        return base.strip().lower()
+
     changes = []
-    prev_keys = {(str(r.get("Team", "")).strip().lower(), str(r.get("Giocatore", "")).strip().lower()): r for _, r in prev.iterrows()}
-    curr_keys = {(str(r.get("Team", "")).strip().lower(), str(r.get("Giocatore", "")).strip().lower()): r for _, r in curr.iterrows()}
+    prev_keys = {(str(r.get("Team", "")).strip().lower(), _norm_player(r.get("Giocatore", ""))): r for _, r in prev.iterrows()}
+    curr_keys = {(str(r.get("Team", "")).strip().lower(), _norm_player(r.get("Giocatore", ""))): r for _, r in curr.iterrows()}
 
     for key, row in curr_keys.items():
         team, name = key
@@ -171,6 +179,13 @@ def _write_diff(lines: list[str], stamp: str, label: str) -> None:
 
 
 def _build_market_diff(prev: pd.DataFrame, curr: pd.DataFrame, stamp: str) -> list[dict]:
+    def _norm_player(name: str) -> str:
+        base = str(name or "").strip()
+        if not base:
+            return ""
+        base = re.sub(r"\s*\*\s*$", "", base)
+        return base.strip().lower()
+
     def _row_map(df: pd.DataFrame) -> dict:
         out = {}
         for _, row in df.iterrows():
@@ -178,7 +193,10 @@ def _build_market_diff(prev: pd.DataFrame, curr: pd.DataFrame, stamp: str) -> li
             name = str(row.get("Giocatore", "")).strip()
             if not team or not name:
                 continue
-            out.setdefault(team, {})[name.lower()] = row
+            key = _norm_player(name)
+            if not key:
+                continue
+            out.setdefault(team, {})[key] = row
         return out
 
     prev_map = _row_map(prev)
@@ -201,17 +219,23 @@ def _build_market_diff(prev: pd.DataFrame, curr: pd.DataFrame, stamp: str) -> li
             out_val = float(out_row.get("PrezzoAttuale", 0) or 0) if out_row is not None else 0
             in_val = float(in_row.get("PrezzoAttuale", 0) or 0) if in_row is not None else 0
 
+            out_name = out_row.get("Giocatore", "") if out_row is not None else ""
+            in_name = in_row.get("Giocatore", "") if in_row is not None else ""
+            # Ignore changes that are only asterisk changes (same player)
+            if _norm_player(out_name) and _norm_player(out_name) == _norm_player(in_name):
+                continue
+
             changes.append(
                 {
                     "team": team,
                     "date": stamp,
-                    "out": out_row.get("Giocatore", "") if out_row is not None else "",
+                    "out": out_name,
                     "out_squadra": out_row.get("Squadra", "") if out_row is not None else "",
                     "out_value": out_val,
-                    "in": in_row.get("Giocatore", "") if in_row is not None else "",
+                    "in": in_name,
                     "in_squadra": in_row.get("Squadra", "") if in_row is not None else "",
                     "in_value": in_val,
-                    "delta": in_val - out_val,
+                    "delta": out_val - in_val,
                 }
             )
     return changes
@@ -225,10 +249,53 @@ def _load_market_history() -> list[dict]:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
             if isinstance(data, list):
-                items.extend(data)
+                for item in data:
+                    out_name = str(item.get("out", "")).strip()
+                    in_name = str(item.get("in", "")).strip()
+                    if out_name and in_name:
+                        out_key = re.sub(r"\s*\*\s*$", "", out_name).strip().lower()
+                        in_key = re.sub(r"\s*\*\s*$", "", in_name).strip().lower()
+                        if out_key and out_key == in_key:
+                            continue
+                    items.append(item)
         except json.JSONDecodeError:
             continue
     return items
+
+
+def _latest_history_file(folder: Path, prefix: str) -> Path | None:
+    if not folder.exists():
+        return None
+    files = sorted(folder.glob(f"{prefix}_*.csv"), key=lambda p: p.name)
+    return files[-1] if files else None
+
+
+def _rebuild_market_from_history(stamp: str) -> None:
+    if not ROSE_PATH.exists():
+        print("Rose correnti mancanti, impossibile ricostruire il mercato.")
+        return
+    prev_path = _latest_history_file(HIST_ROSE, "rose_fantaportoscuso")
+    if prev_path is None:
+        print("Nessun storico rose trovato per ricostruire il mercato.")
+        return
+    prev_rose = pd.read_csv(prev_path)
+    curr_rose = pd.read_csv(ROSE_PATH)
+    market_changes = _build_market_diff(prev_rose, curr_rose, stamp)
+    HIST_MARKET.mkdir(parents=True, exist_ok=True)
+    market_path = HIST_MARKET / f"market_{stamp}.json"
+    market_path.write_text(json.dumps(market_changes, indent=2), encoding="utf-8")
+    all_items = _load_market_history()
+    MARKET_LATEST.write_text(
+        json.dumps(
+            {
+                "items": all_items,
+                "teams": _market_team_summary(all_items),
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    print("Mercato ricostruito da storico rose.")
 
 
 def _market_team_summary(items: list[dict]) -> list[dict]:
@@ -464,7 +531,12 @@ def main() -> None:
     parser.add_argument("--keep", type=int, default=5, help="How many history files to keep")
     parser.add_argument("--sync-rose", action="store_true", help="Update rose PrezzoAttuale/Squadra from quotazioni")
     parser.add_argument("--auto", action="store_true", help="Auto-pick newest incoming files")
+    parser.add_argument("--rebuild-market", action="store_true", help="Rebuild market using latest rose history")
     args = parser.parse_args()
+
+    if args.rebuild_market:
+        _rebuild_market_from_history(args.date)
+        return
 
     if args.auto:
         args.rose = args.rose or (str(_latest_incoming(INCOMING_ROSE)) if _latest_incoming(INCOMING_ROSE) else None)

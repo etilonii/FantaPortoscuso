@@ -7,6 +7,13 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = "C:\Users\Kekko\PycharmProjects\FantaPortoscuso"
+$reportDir = "$root\data\reports"
+$logPath = "$reportDir\update_all_log.txt"
+if (-not (Test-Path $reportDir)) {
+  New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
+}
+$startStamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+Add-Content -Path $logPath -Value "$startStamp | update-all start"
 
 if (-not $DateStamp) {
   $DateStamp = (Get-Date).ToString("yyyy-MM-dd")
@@ -26,4 +33,6 @@ if ($ForceStats) {
 }
 python "$root\scripts\clean_stats_batch.py" @statsArgs
 
+$endStamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+Add-Content -Path $logPath -Value "$endStamp | update-all done"
 Write-Host "==> Fatto."

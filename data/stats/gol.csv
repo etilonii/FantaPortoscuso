@@ -21,8 +21,8 @@ Dimarco,D,Inter,5
 Douvikas,A,Como,5
 Kean,A,Fiorentina,5
 Krstovic,A,Atalanta,5
+McTominay,C,Napoli,5
 Moreo,A,Pisa,5
-S. McTominay,C,Napoli,5
 Scamacca,A,Atalanta,5
 Simeone,A,Torino,5
 Vardy,A,Cremonese,5
@@ -82,6 +82,7 @@ Konè M.,C,Roma,2
 Kostic,C,Juventus,2
 Lookman,A,Atalanta,2
 Malinovskyi,C,Genoa,2
+McKennie,C,Juventus,2
 Meister,A,Pisa,2
 N'Dri,A,Lecce,2
 Noslin,A,Lazio,2
@@ -102,7 +103,6 @@ Thorsby,C,Genoa,2
 Thorstvedt,C,Sassuolo,2
 Tramoni M.,C,Pisa,2
 Vitinha O.,A,Genoa,2
-W. McKennie,C,Juventus,2
 Adopo,C,Cagliari,1
 Adzic,C,Juventus,1
 Athekame,D,Milan,1
@@ -119,6 +119,7 @@ Bisseck,D,Inter,1
 Bremer,D,Juventus,1
 Brescianini,C,Fiorentina,1
 Buksa,A,Udinese,1
+C. Ngonge,A,Torino,1
 Camarda,A,Lecce,1
 Cambiaso,D,Juventus,1
 Carlos Augusto,D,Inter,1
@@ -129,7 +130,6 @@ Coco,D,Torino,1
 Comuzzo,D,Fiorentina,1
 Cristante,C,Roma,1
 Cuadrado,D,Pisa,1
-Cutrone,A,Parma,1
 Da Cunha,C,Como,1
 Dallinga,A,Bologna,1
 Delprato,D,Parma,1
@@ -139,6 +139,7 @@ Dumfries,D,Inter,1
 Durosinmi,A,Pisa,1
 Ekuban,A,Genoa,1
 Ellertsson,C,Genoa,1
+F. Vazquez,C,Cremonese,1
 Fabbian,C,Fiorentina,1
 Fadera,A,Sassuolo,1
 Fofana Y.,C,Milan,1
@@ -161,12 +162,11 @@ Kelly L.,D,Juventus,1
 Kilicsoy,A,Cagliari,1
 Kossounou,D,Atalanta,1
 Kristensen T.,D,Udinese,1
-Lang *,A,Napoli,1
+L. Lucca,A,Napoli,1
 Leris,C,Pisa,1
 Lobotka,C,Napoli,1
 Loftus-Cheek,C,Milan,1
 Lorran,C,Pisa,1
-Lucca *,A,Napoli,1
 Lucumì,D,Bologna,1
 Luperto,D,Cagliari,1
 Malen,A,Roma,1
@@ -182,19 +182,20 @@ Modric,C,Milan,1
 Moreno Alb.,D,Como,1
 Moro N.,C,Bologna,1
 Muharemovic,D,Sassuolo,1
+N. Lang,A,Napoli,1
 Ndour,C,Fiorentina,1
-Ngonge,A,Torino,1
 Njie,A,Torino,1
 Norton-Cuffy,D,Genoa,1
 Openda,A,Juventus,1
+P. Cutrone,A,Parma,1
 Payero,C,Cremonese,1
 Pedro,A,Lazio,1
 Piotrowski,C,Udinese,1
-Posch *,D,Como,1
 Ramon,D,Como,1
 Ranieri L.,D,Fiorentina,1
 Ricci S.,C,Milan,1
 Rrahmani,D,Napoli,1
+S. Posch,D,Como,1
 Samardzic,C,Atalanta,1
 Sanabria,A,Cremonese,1
 Solet,D,Udinese,1
@@ -205,7 +206,6 @@ Thuram K.,C,Juventus,1
 Tiago Gabriel,D,Lecce,1
 Tourè I.,C,Pisa,1
 Trepy,A,Cagliari,1
-Vazquez,C,Cremonese,1
 Vojvoda,D,Como,1
 Volpato,C,Sassuolo,1
 Zalewski,C,Atalanta,1

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useMarketPlaceholder } from "./hooks/useMarketPlaceholder";
 import ListoneSection from "./components/sections/ListoneSection";
 import HomeSection from "./components/sections/HomeSection";
 import MercatoSection from "./components/sections/MercatoSection";
@@ -191,12 +192,16 @@ export default function App() {
   const [newKey, setNewKey] = useState("");
 
   /* ===== MERCATO + SUGGEST ===== */
-const [marketCountdown, setMarketCountdown] = useState("");
-const [marketItems, setMarketItems] = useState([]);
-const [marketTeams, setMarketTeams] = useState([]);
-const [marketView, setMarketView] = useState("players");
-const [marketPreview, setMarketPreview] = useState(false);
-const [marketUpdatedAt, setMarketUpdatedAt] = useState("");
+  const [marketView, setMarketView] = useState("players");
+
+  const {
+    marketCountdown,
+    marketItems,
+    marketTeams,
+    marketPreview,
+    setMarketPreview,
+    marketUpdatedAt,
+  } = useMarketPlaceholder(API_BASE, loggedIn);
 
 const [suggestPayload, setSuggestPayload] = useState(null);
 const [suggestTeam, setSuggestTeam] = useState("");
@@ -662,39 +667,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   }, [topPlayersByRole, activeTopRole, topAcquistiQuery]);
 
   /* ===========================
-     MERCATO: countdown
+     MERCATO: placeholder
   =========================== */
-  const getMarketCountdown = () => {
-    const target = new Date("2026-02-03T08:00:00");
-    const now = new Date();
-    const diff = target.getTime() - now.getTime();
-    if (Number.isNaN(diff) || diff <= 0) return "Apertura imminente";
-    const totalSeconds = Math.floor(diff / 1000);
-    const days = Math.floor(totalSeconds / (24 * 3600));
-    const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    return `${days}g ${hours}h ${minutes}m ${seconds}s`;
-  };
-
-  /* ===========================
-     MERCATO: load placeholder
-  =========================== */
-  const loadMarket = async () => {
-    try {
-      const res = await fetch(`${API_BASE}/data/market`);
-      if (!res.ok) return;
-      const data = await res.json();
-      setMarketItems(data.items || []);
-      setMarketTeams(data.teams || []);
-      const allDates = [
-        ...(data.items || []).map((it) => it.date).filter(Boolean),
-        ...(data.teams || []).map((t) => t.last_date).filter(Boolean),
-      ];
-      const latest = allDates.sort().slice(-1)[0] || "";
-      setMarketUpdatedAt(latest);
-    } catch {}
-  };
 
   /* ===========================
      SUGGEST: payload
@@ -1032,13 +1006,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   =========================== */
   const playerSlug = slugify(selectedPlayer);
 
-  useEffect(() => {
-  const update = () => setMarketCountdown(getMarketCountdown());
-  update();
-  const timer = setInterval(update, 1000);
-  return () => clearInterval(timer);
-}, []);
-
 useEffect(() => {
   if (!loggedIn) {
     setSuggestPayload(null);
@@ -1048,7 +1015,6 @@ useEffect(() => {
     setSuggestHasRun(false);
     return;
   }
-  loadMarket();
   loadSuggestPayload();
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [loggedIn]);

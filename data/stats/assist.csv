@@ -24,12 +24,12 @@ Gudmundsson A.,A,Fiorentina,3
 Krstovic,A,Atalanta,3
 Leris,C,Pisa,3
 Malinovskyi,C,Genoa,3
+McTominay,C,Napoli,3
 Neres,A,Napoli,3
 Palestra,D,Cagliari,3
 Perrone,C,Como,3
 Politano,A,Napoli,3
 Rabiot,C,Milan,3
-S. McTominay,C,Napoli,3
 Saelemaekers,C,Milan,3
 Thuram,A,Inter,3
 Atta,C,Udinese,2
@@ -56,13 +56,14 @@ Ferguson E.,A,Roma,2
 Fofana Y.,C,Milan,2
 Hojlund,A,Napoli,2
 Kalulu,D,Juventus,2
-Lang *,A,Napoli,2
 Laurientè,A,Sassuolo,2
 Lazaro,D,Torino,2
 Leao,A,Milan,2
+McKennie,C,Juventus,2
 Modric,C,Milan,2
 Mosquera,A,Verona,2
 Muharemovic,D,Sassuolo,2
+N. Lang,A,Napoli,2
 Nkunku,A,Milan,2
 Pasalic,C,Atalanta,2
 Pinamonti,A,Sassuolo,2
@@ -75,7 +76,6 @@ Tomori,D,Milan,2
 Tramoni M.,C,Pisa,2
 Valle,D,Como,2
 Vlasic,C,Torino,2
-W. McKennie,C,Juventus,2
 Zalewski,C,Atalanta,2
 Zanoli,D,Udinese,2
 Zappa,D,Cagliari,2
@@ -98,6 +98,7 @@ Bertola,D,Udinese,1
 Bonazzoli,A,Cremonese,1
 Borrelli,A,Cagliari,1
 Buongiorno,D,Napoli,1
+C. Ngonge,A,Torino,1
 Carlos Augusto,D,Inter,1
 Celik,D,Roma,1
 Coco,D,Torino,1
@@ -112,6 +113,7 @@ El Aynaoui,C,Roma,1
 Ellertsson,C,Genoa,1
 Elmas,C,Napoli,1
 Estupinan,D,Milan,1
+F. Vazquez,C,Cremonese,1
 Fadera,A,Sassuolo,1
 Felici,C,Cagliari,1
 Freuler,C,Bologna,1
@@ -134,7 +136,6 @@ Mazzitelli,C,Cagliari,1
 Miretti,C,Juventus,1
 Morata,A,Como,1
 Moreo,A,Pisa,1
-Ngonge,A,Torino,1
 Niasse,C,Verona,1
 Nicolussi Caviglia,C,Fiorentina,1
 Njie,A,Torino,1
@@ -170,7 +171,6 @@ Thorsby,C,Genoa,1
 Thorstvedt,C,Sassuolo,1
 Valeri,D,Parma,1
 Vardy,A,Cremonese,1
-Vazquez,C,Cremonese,1
 Vecino,C,Lazio,1
 Veiga D.,D,Lecce,1
 Vitinha O.,A,Genoa,1

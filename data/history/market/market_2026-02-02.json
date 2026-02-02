@@ -1,0 +1,46 @@
+[
+  {
+    "team": "Ipa Bali",
+    "date": "2026-02-02",
+    "out": "Kaba",
+    "out_squadra": "Lecce",
+    "out_value": 3.0,
+    "in": "Vergara",
+    "in_squadra": "Napoli",
+    "in_value": 2.0,
+    "delta": 1.0
+  },
+  {
+    "team": "PEAKY BLINDERS",
+    "date": "2026-02-02",
+    "out": "Kaba",
+    "out_squadra": "Lecce",
+    "out_value": 3.0,
+    "in": "Maldini",
+    "in_squadra": "Lazio",
+    "in_value": 3.0,
+    "delta": 0.0
+  },
+  {
+    "team": "PEAKY BLINDERS",
+    "date": "2026-02-02",
+    "out": "Radunovic *",
+    "out_squadra": "Cagliari",
+    "out_value": 1.0,
+    "in": "Turati",
+    "in_squadra": "Sassuolo",
+    "in_value": 1.0,
+    "delta": 0.0
+  },
+  {
+    "team": "TomMat-iga",
+    "date": "2026-02-02",
+    "out": "Kaba",
+    "out_squadra": "Lecce",
+    "out_value": 3.0,
+    "in": "Vergara",
+    "in_squadra": "Napoli",
+    "in_value": 2.0,
+    "delta": 1.0
+  }
+]

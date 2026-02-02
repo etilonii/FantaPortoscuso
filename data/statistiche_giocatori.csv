@@ -11,7 +11,7 @@ Furlanetto,Lazio,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Gollini,Roma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Lezzerini,Fiorentina,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Maignan,Milan,0,0,2,0,0,3,0,8,0.0,0.0,17.0
-Martinelli T. *,Fiorentina,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Martinelli T. *,Fio,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Martinez Jo.,Inter,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Meret,Napoli,0,0,0,0,0,0,0,2,0.0,0.0,7.0
 Milinkovic-Savic V.,Napoli,0,0,2,0,0,0,0,7,0.0,0.0,13.0
@@ -22,7 +22,7 @@ Perin,Juventus,0,0,0,0,0,0,0,0,0.0,0.0,3.0
 Pessina Mas.,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Pinsoglio,Juventus,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Provedel,Lazio,0,0,1,0,0,0,0,11,0.0,0.0,19.0
-Radunovic *,Cagliari,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Radunovic *,Cag,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Ravaglia F.,Bologna,0,0,0,0,0,1,0,2,0.0,0.0,19.0
 Rossi F.,Atalanta,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Satalino,Sassuolo,0,0,0,0,0,0,0,0,0.0,0.0,0.0
@@ -30,43 +30,14 @@ Sava,Udinese,0,0,0,0,0,1,0,1,0.0,0.0,14.0
 Scuffet,Pisa,0,0,0,0,0,0,0,0,0.0,0.0,12.0
 Semper,Pisa,0,0,0,0,0,0,0,4,0.0,0.0,25.0
 Siegrist,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Silvestri,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,7.0
 Skorupski,Bologna,0,0,0,0,0,1,1,3,0.0,0.0,8.0
 Sommer,Inter,0,0,0,0,0,0,0,10,0.0,0.0,18.0
 Sportiello,Atalanta,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Svilar,Roma,0,0,0,0,0,0,0,10,0.0,0.0,13.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Terracciano,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Terracciano,Milan,0,0,0,0,0,0,0,1,0.0,0.0,0.0
 Torriani,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Turati,Sassuolo,0,0,0,0,0,0,0,0,0.0,0.0,2.0
 Vasquez D.,Roma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Zelezny,Roma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Akanji,Inter,0,0,0,0,0,3,0,0,0.0,0.0,0.0
@@ -105,7 +76,7 @@ Doig,Sassuolo,0,0,0,0,0,4,0,0,0.0,0.0,0.0
 Dumfries,Inter,1,0,0,0,0,1,0,0,0.0,0.0,0.0
 Ebosse,Verona,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Ehizibue,Udinese,0,0,0,0,0,2,0,0,0.0,0.0,0.0
-Esteves T. *,Pisa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Esteves T. *,Pis,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Estupinan,Milan,0,0,0,0,1,2,1,0,0.0,0.0,0.0
 Frese,Verona,1,1,0,0,0,5,0,0,0.0,0.0,0.0
 Gabbia,Milan,0,0,0,0,0,3,0,0,0.0,0.0,0.0
@@ -129,7 +100,7 @@ Kossounou,Atalanta,1,0,0,0,0,0,0,0,1.0,0.0,0.0
 Kristensen T.,Udinese,1,0,0,0,0,1,0,0,0.0,0.0,0.0
 Lazaro,Torino,0,0,0,0,2,2,0,0,0.0,0.0,0.0
 Lazzari,Lazio,0,0,0,0,0,2,0,0,0.0,0.0,0.0
-Lovik *,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Lovik *,Par,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Lucumì,Bologna,1,0,0,0,0,2,0,0,0.0,0.0,0.0
 Luperto,Cagliari,1,0,0,0,0,3,0,0,0.0,1.0,0.0
 Lykogiannis,Bologna,0,0,0,0,1,3,0,0,0.0,0.0,0.0
@@ -137,7 +108,7 @@ Mancini,Roma,0,0,0,0,1,6,0,0,0.0,0.0,0.0
 Marcandalli,Genoa,0,0,0,0,0,3,0,0,0.0,0.0,0.0
 Martin,Genoa,1,0,0,0,4,2,0,0,0.0,1.0,0.0
 Marusic,Lazio,0,0,0,0,1,1,1,0,0.0,0.0,0.0
-Mbambi *,Pisa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Mbambi *,Pis,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Mina,Cagliari,1,0,0,0,0,3,0,0,0.0,0.0,0.0
 Miranda J.,Bologna,1,0,0,0,0,5,0,0,0.0,0.0,0.0
 Muharemovic,Sassuolo,1,2,0,0,2,4,0,0,1.0,1.0,0.0
@@ -151,61 +122,31 @@ Olivera,Napoli,0,0,0,0,0,2,0,0,0.0,0.0,0.0
 Ostigard,Genoa,4,0,0,0,1,5,0,0,1.0,0.0,0.0
 Oyegoke,Verona,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Palestra,Cagliari,0,0,0,0,3,1,0,0,1.0,0.0,0.0
-Palma *,Udinese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Palma *,Udi,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Pavlovic,Milan,2,0,0,0,1,2,0,0,1.0,0.0,0.0
 Paz Y.,Sassuolo,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Pezzella Giu.,Cremonese,0,0,0,0,1,6,0,0,0.0,0.0,0.0
 Pongracic,Fiorentina,0,0,0,0,0,8,0,0,0.0,0.0,0.0
-Posch *,Como,1,0,0,0,0,1,0,0,1.0,0.0,0.0
+Posch *,Com,0,0,0,0,0,0,0,0,1.0,0.0,0.0
 Provstgaard,Lazio,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Ramon,Como,1,0,0,0,0,6,1,0,0.0,0.0,0.0
 Ranieri L.,Fiorentina,1,0,0,0,0,5,0,0,0.0,0.0,0.0
-Rodriguez Ju.,Cagliari,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Rodriguez Ju.,Cagliari,0,0,0,0,0,2,0,0,0.0,0.0,0.0
 Rrahmani,Napoli,1,0,0,0,0,1,0,0,0.0,0.0,0.0
 Scalvini,Atalanta,2,0,0,0,0,1,0,0,1.0,0.0,0.0
-Sernicola *,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Sernicola *,Cre,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Smolcic I.,Como,0,0,0,0,0,6,0,0,0.0,0.0,0.0
 Solet,Udinese,1,1,0,0,1,0,0,0,0.0,0.0,0.0
 Tavares N.,Lazio,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Terracciano F.,Cremonese,2,1,0,0,0,3,0,0,0.0,0.0,0.0
 Tiago Gabriel,Lecce,1,1,0,0,0,2,0,0,0.0,0.0,0.0
 Tomori,Milan,0,0,0,0,2,4,0,0,0.0,0.0,0.0
-Unai Nunez *,Verona,0,1,0,0,0,6,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Valenti,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Unai Nunez *,Ver,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Valenti,Parma,0,0,0,0,0,3,0,0,0.0,0.0,0.0
 Valeri,Parma,0,0,0,0,1,2,0,0,0.0,0.0,0.0
 Valle,Como,0,0,0,0,2,2,0,0,0.0,0.0,0.0
 Van Der Brempt,Como,0,0,0,0,0,2,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vasquez,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Vasquez,Genoa,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Veiga D.,Lecce,0,0,0,0,1,6,0,0,0.0,0.0,0.0
 Vitik,Bologna,0,0,0,0,0,3,0,0,0.0,0.0,0.0
 Vojvoda,Como,1,0,0,0,0,1,0,0,0.0,0.0,0.0
@@ -221,7 +162,6 @@ Adzic,Juventus,1,0,0,0,0,0,0,0,1.0,0.0,0.0
 Aebischer,Pisa,0,0,0,0,1,4,0,0,0.0,0.0,0.0
 Akinsanmiro,Pisa,0,0,0,0,1,2,0,0,0.0,0.0,0.0
 Akpa Akpro,Verona,0,0,0,0,0,4,0,0,0.0,0.0,0.0
-Asllani,Torino,0,0,0,0,0,3,0,0,0.0,0.0,0.0
 Atta,Udinese,1,0,0,0,2,2,0,0,1.0,0.0,0.0
 Barella,Inter,1,0,0,0,5,4,0,0,0.0,0.0,0.0
 Basic,Lazio,1,0,0,0,2,0,1,0,1.0,0.0,0.0
@@ -232,7 +172,7 @@ Bernardeschi,Bologna,1,0,0,0,0,2,0,0,0.0,0.0,0.0
 Boloca,Sassuolo,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Bondo,Cremonese,0,0,0,0,0,4,0,0,0.0,0.0,0.0
 Calhanoglu,Inter,7,0,0,0,2,4,0,0,1.0,0.0,0.0
-Carboni V. *,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Carboni V. *,Gen,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Collocolo,Cremonese,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Conceicao,Juventus,2,0,0,0,0,1,0,0,0.0,0.0,0.0
 Coulibaly L.,Lecce,2,0,0,0,0,3,0,0,0.0,0.0,0.0
@@ -250,30 +190,13 @@ Fofana Y.,Milan,1,0,0,0,2,4,0,0,0.0,0.0,0.0
 Folorunsho,Cagliari,1,0,0,0,0,3,0,0,0.0,0.0,0.0
 Gineitis,Torino,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Grassi,Cremonese,0,0,0,0,0,3,0,0,0.0,0.0,0.0
-Gronbaek,Genoa,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Gudmundsson A.,Fiorentina,4,0,0,0,3,3,0,0,1.0,0.0,0.0
 Harroui,Verona,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Hernani *,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Hernani *,Par,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Hojholt,Pisa,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Iannoni,Sassuolo,1,0,0,0,0,3,0,0,0.0,0.0,0.0
 Ilkhan,Torino,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Isaksen,Lazio,2,0,0,0,0,0,0,0,1.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Karlstrom,Udinese,1,0,0,0,0,3,0,0,0.0,0.0,0.0
 Kastanos,Verona,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Keita M.,Parma,0,0,0,0,0,1,0,0,0.0,0.0,0.0
@@ -285,43 +208,13 @@ Lipani,Sassuolo,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Liteta,Cagliari,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Lobotka,Napoli,1,0,0,0,1,1,0,0,1.0,0.0,0.0
 Loftus-Cheek,Milan,1,0,0,0,1,1,0,0,1.0,0.0,0.0
-Lovric,Udinese,0,0,0,0,1,1,0,0,0.0,0.0,0.0
-Maldini,Atalanta,0,0,0,0,0,1,0,0,0.0,0.0,0.0
+Lovric,Verona,0,0,0,0,1,1,0,0,0.0,0.0,0.0
+Maldini,Lazio,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Malinovskyi,Genoa,2,0,0,0,3,7,0,0,0.0,0.0,0.0
 Marchwinski,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Marin M.,Pisa,0,0,0,0,0,4,0,0,0.0,0.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McKennie,Juventus,0,0,0,0,0,0,0,0,0.0,1.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-McTominay,Napoli,0,0,0,0,0,0,0,0,1.0,0.0,0.0
+McKennie,Juventus,2,0,0,0,2,3,0,0,0.0,1.0,0.0
+McTominay,Napoli,5,0,0,0,3,1,0,0,1.0,0.0,0.0
 Messias,Genoa,0,0,0,0,0,0,0,0,1.0,0.0,0.0
 Miretti,Juventus,1,0,0,0,1,1,0,0,0.0,0.0,0.0
 Mkhitaryan,Inter,1,0,0,0,0,2,0,0,0.0,0.0,0.0
@@ -333,24 +226,23 @@ Neres,Napoli,3,0,0,0,3,3,0,0,2.0,0.0,0.0
 Niasse,Verona,0,0,0,0,1,1,0,0,0.0,0.0,0.0
 Odgaard,Bologna,4,0,0,0,1,1,0,0,0.0,1.0,0.0
 Orsolini,Bologna,7,0,0,0,1,2,0,0,0.0,0.0,0.0
-Pafundi *,Udinese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Pafundi *,Udi,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Pasalic,Atalanta,2,0,0,0,2,2,0,0,0.0,0.0,0.0
 Paz N.,Como,7,0,0,0,5,4,0,0,0.0,0.0,0.0
 Pellegrini Lo.,Roma,2,0,0,0,0,3,0,0,1.0,1.0,0.0
-Pierret,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Piotrowski,Udinese,1,0,0,0,1,2,0,0,0.0,0.0,0.0
 Pisilli,Roma,0,0,0,0,1,0,0,0,0.0,0.0,0.0
 Pobega,Bologna,2,0,0,0,1,1,0,0,1.0,0.0,0.0
 Politano,Napoli,0,0,0,0,3,1,0,0,0.0,0.0,0.0
-Prati,Cagliari,0,0,0,0,0,4,0,0,0.0,0.0,0.0
+Prati,Torino,0,0,0,0,0,4,0,0,0.0,0.0,0.0
 Pulisic,Milan,8,0,0,0,2,0,0,0,4.0,0.0,0.0
 Ricci S.,Milan,1,0,0,0,2,1,0,0,0.0,0.0,0.0
-Rog *,Cagliari,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Rog *,Cag,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Rovella,Lazio,0,0,0,0,1,1,0,0,0.0,0.0,0.0
 Saelemaekers,Milan,2,0,0,0,3,2,0,0,0.0,0.0,0.0
 Sergi Roberto,Como,0,0,0,0,0,2,0,0,0.0,0.0,0.0
 Sorensen O.,Parma,1,0,0,0,0,2,0,0,1.0,0.0,0.0
-Stanciu *,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Stanciu *,Gen,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Sucic P.,Inter,1,0,0,0,2,3,0,0,0.0,0.0,0.0
 Sulemana I.,Cagliari,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Tete Morente,Lecce,0,0,0,0,0,2,0,0,0.0,0.0,0.0
@@ -360,6 +252,7 @@ Tourè I.,Pisa,1,0,0,0,0,1,1,0,1.0,0.0,0.0
 Tramoni M.,Pisa,2,0,0,0,2,1,0,0,0.0,0.0,0.0
 Vandeputte,Cremonese,0,0,0,0,4,2,0,0,0.0,0.0,0.0
 Venturino,Roma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Vergara,Napoli,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Vlasic,Torino,4,0,0,0,2,3,0,0,2.0,0.0,0.0
 Vranckx,Sassuolo,0,0,0,0,0,2,0,0,0.0,0.0,0.0
 Zaccagni,Lazio,3,0,0,0,0,6,1,0,0.0,0.0,0.0
@@ -382,11 +275,10 @@ Bonny,Inter,5,0,0,0,3,0,0,0,2.0,0.0,0.0
 Buffon L.,Pisa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Camarda,Lecce,1,0,0,0,0,1,0,0,0.0,1.0,0.0
 Cancellieri,Lazio,3,0,0,0,0,3,0,0,1.0,0.0,0.0
-Castellanos *,Lazio,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Castellanos *,Laz,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Castro S.,Bologna,6,0,0,0,2,1,0,0,2.0,0.0,0.0
 Cheddira,Lecce,1,0,0,0,0,1,0,0,0.0,0.0,0.0
 Colombo,Genoa,5,0,0,0,1,1,0,0,0.0,0.0,0.0
-Cutrone,Parma,1,0,0,0,0,0,0,0,0.0,1.0,0.0
 Dallinga,Bologna,1,0,0,0,2,1,0,0,1.0,0.0,0.0
 David,Juventus,3,0,0,0,2,0,0,0,2.0,0.0,0.0
 Davis K.,Udinese,5,0,0,0,3,3,0,0,0.0,1.0,0.0
@@ -408,13 +300,12 @@ Kilicsoy,Cagliari,1,0,0,0,0,1,0,0,1.0,0.0,0.0
 Krstovic,Atalanta,5,0,0,0,3,1,0,0,0.0,0.0,0.0
 Leao,Milan,7,0,0,0,2,1,0,0,2.0,1.0,0.0
 Lookman,Atalanta,2,0,0,0,0,0,0,0,0.0,1.0,0.0
-Lucca *,Napoli,1,0,0,0,0,1,0,0,1.0,0.0,0.0
+Lucca *,Nap,0,0,0,0,0,0,0,0,1.0,0.0,0.0
 Lukaku,Napoli,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Martinez L.,Inter,11,0,0,0,4,3,0,0,7.0,0.0,0.0
 Meister,Pisa,2,0,0,0,0,1,0,0,0.0,1.0,0.0
 Morata,Como,0,0,0,0,1,1,0,0,0.0,0.0,0.0
 Moro L.,Sassuolo,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ngonge,Torino,1,0,0,0,1,2,0,0,0.0,0.0,0.0
 Njie,Torino,1,0,0,0,1,1,0,0,0.0,0.0,0.0
 Pavoletti,Cagliari,0,0,0,0,1,1,0,0,0.0,0.0,0.0
 Pellegrino M.,Parma,6,0,0,0,1,3,0,0,3.0,1.0,0.0
@@ -431,15 +322,19 @@ Vardy,Cremonese,5,0,0,0,1,3,0,0,1.0,0.0,0.0
 Vlahovic,Juventus,3,0,0,0,1,0,0,0,1.0,0.0,0.0
 Yildiz,Juventus,6,0,0,0,4,2,0,0,1.0,0.0,0.0
 Zapata D.,Torino,1,0,0,0,1,0,0,0,0.0,0.0,0.0
+A. Gronbaek,nan,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Acerbi,Inter,0,0,0,0,1,1,0,0,0.0,0.0,0.0
 Adams C.,Torino,3,0,0,0,0,0,0,0,0.0,1.0,0.0
 Ahanor,Atalanta,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Ajayi *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Al-Musrati,Verona,0,0,0,0,1,3,0,0,0.0,0.0,0.0
+Albarracin,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Albiol,Pisa,0,0,0,0,0,1,0,0,0.0,0.0,0.0
+Amorim,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Anjorin,Torino,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Aramu *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Arena A.,Roma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Asllani,Torino,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Athekame,Milan,1,0,0,0,0,3,0,0,0.0,0.0,0.0
 Audero,Cremonese,0,0,1,0,0,0,0,6,0.0,0.0,22.0
 Bailey *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
@@ -454,18 +349,22 @@ Belotti,Cagliari,2,0,0,0,0,0,0,0,1.0,0.0,0.0
 Bernasconi,Atalanta,0,0,0,0,1,1,0,0,0.0,0.0,0.0
 Bernede,Verona,1,0,0,0,2,1,0,0,0.0,0.0,0.0
 Bijlow,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,2.0
-Bonfanti,Pisa,0,0,0,0,0,1,0,0,0.0,0.0,0.0
+Bonfanti,Pisa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Bonifazi *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Borrelli,Cagliari,3,0,0,0,1,3,0,0,0.0,0.0,0.0
+Bowie,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Bozhinov,Pisa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Brescianini,Fiorentina,1,0,0,0,0,1,0,0,0.0,1.0,0.0
 Buksa,Udinese,1,0,0,0,0,1,0,0,1.0,0.0,0.0
 Butez,Como,0,0,1,0,0,0,0,11,0.0,0.0,16.0
+C. Mandas,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+C. Ngonge,nan,1,0,0,0,1,2,0,0,0.0,0.0,0.0
 Calabresi,Pisa,0,0,0,0,0,5,0,0,0.0,0.0,0.0
 Calligaris,Inter,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Cambiaghi,Bologna,3,0,0,0,4,3,1,0,1.0,0.0,0.0
 Candè,Sassuolo,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Caqueret,Como,0,0,0,0,3,1,0,0,0.0,0.0,0.0
+Carboni F.,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Carlos Augusto,Inter,1,0,0,0,1,3,0,0,0.0,0.0,0.0
 Casadei,Torino,2,0,0,0,0,5,0,0,0.0,0.0,0.0
 Cataldi,Lazio,2,0,0,0,2,4,0,0,0.0,1.0,0.0
@@ -480,6 +379,7 @@ Coco,Torino,1,0,0,0,1,2,0,0,0.0,0.0,0.0
 Cornet,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Coulibaly W.,Sassuolo,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Cuenca H.,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Cutrone,Parma,0,0,0,0,0,0,0,0,0.0,1.0,0.0
 Darmian,Inter,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 De Bruyne,Napoli,4,0,0,0,0,1,0,0,0.0,0.0,0.0
 De Luca,nan,0,0,0,0,0,0,0,0,1.0,0.0,0.0
@@ -498,8 +398,11 @@ Dominguez B.,Bologna,0,0,0,0,2,0,0,0,0.0,0.0,0.0
 Dossena,Cagliari,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Dovbyk,Roma,3,0,0,0,1,0,0,0,2.0,0.0,0.0
 Durosinmi,Pisa,1,0,0,0,0,0,0,0,0.0,1.0,0.0
-Dzeko *,Fiorentina,0,0,0,0,0,1,0,0,0.0,0.0,0.0
+Dzeko *,Fiorentina,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+E. Dzeko,nan,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Ellertsson,Genoa,1,0,0,0,1,1,0,0,0.0,0.0,0.0
+Elphege,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+F. Vazquez,nan,1,0,0,0,1,1,0,0,0.0,0.0,0.0
 Fabbian,Fiorentina,1,0,0,0,0,0,0,0,0.0,0.0,0.0
 Fadera,Sassuolo,1,0,0,0,1,2,0,0,2.0,0.0,0.0
 Fagioli,Fiorentina,0,0,0,0,3,4,0,0,0.0,0.0,0.0
@@ -507,22 +410,7 @@ Falcone,Lecce,0,0,2,0,0,2,0,7,0.0,0.0,29.0
 Faye,Cremonese,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Fazzini,Fiorentina,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Felici,Cagliari,2,0,0,0,1,3,0,0,0.0,1.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Ferguson,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Ferguson,Bologna,0,0,0,0,0,3,0,0,0.0,0.0,0.0
 Fernandes S.* *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Ferrante,Napoli,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Fini,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
@@ -536,6 +424,8 @@ Freuler,Bologna,0,1,0,0,1,3,0,0,0.0,0.0,0.0
 Frigan,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Fruchtl,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Fullkrug,Milan,1,0,0,0,0,0,0,0,1.0,0.0,0.0
+G. Bonfanti,nan,0,0,0,0,0,1,0,0,0.0,0.0,0.0
+G. Zacchi,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Gaetano,Cagliari,2,0,0,0,3,3,0,0,1.0,0.0,0.0
 Gagliardini,Verona,1,0,0,0,0,4,0,0,0.0,0.0,0.0
 Gandelman,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
@@ -545,6 +435,7 @@ Gimenez,Milan,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Goglichidze,Udinese,0,0,0,0,0,2,0,0,0.0,0.0,0.0
 Goldaniga,Como,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Gorter,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Gronbaek,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Guaita *,Parma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Guendouzi *,nan,0,0,0,0,0,0,0,0,2.0,0.0,0.0
 Guilbert *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
@@ -554,31 +445,18 @@ Helland,Bologna,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Hien,Atalanta,1,1,0,0,0,3,0,0,0.0,0.0,0.0
 Idzes,Sassuolo,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
-Iker B.,Bologna,0,0,0,0,0,0,0,0,1.0,0.0,0.0
 Ilic,Torino,0,0,0,0,0,2,0,0,0.0,0.0,0.0
 Isaac,Verona,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Ismajli,Torino,0,0,0,0,1,3,0,0,0.0,0.0,0.0
 Israel,Torino,0,0,0,0,0,1,0,3,0.0,0.0,18.0
-J. Rodriguez,nan,0,0,0,0,0,2,0,0,0.0,0.0,0.0
-J. Vasquez,,0,0,0,0,0,1,0,0,0.0,0.0,0.0
+J. Rodriguez,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+J. Vasquez,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Jashari,Milan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Jean,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Johnsen,Cremonese,1,0,0,0,1,0,0,0,0.0,0.0,0.0
 Josep Martinez,nan,0,0,0,0,0,0,0,1,0.0,0.0,1.0
+K. Asllani,nan,0,0,0,0,0,3,0,0,0.0,0.0,0.0
+Kaba,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Kabasele,Udinese,2,0,0,0,0,2,0,0,0.0,1.0,0.0
 Kamara H.,Udinese,0,0,0,0,1,3,0,0,0.0,0.0,0.0
 Kelly L.,Juventus,1,0,0,0,0,3,0,0,0.0,0.0,0.0
@@ -590,10 +468,12 @@ Kouassi,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Kovac *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Kovacik *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Kuhn,Como,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-L. Ferguson,,0,0,0,0,0,3,0,0,0.0,0.0,0.0
-L. Valenti,,0,0,0,0,0,3,0,0,0.0,0.0,0.0
+Kulenovic,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+L. Ferguson,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+L. Lucca,nan,1,0,0,0,0,1,0,0,0.0,0.0,0.0
+L. Valenti,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Lamptey,Fiorentina,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Lang *,Napoli,1,0,0,0,2,2,0,0,0.0,0.0,0.0
+Lang *,Napoli,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Laurientè,Sassuolo,3,0,0,0,2,1,0,0,0.0,1.0,0.0
 Leali,Genoa,0,0,0,0,0,2,1,4,0.0,0.0,25.0
 Lirola,Verona,0,0,0,0,0,0,0,0,0.0,0.0,0.0
@@ -601,10 +481,12 @@ Locatelli,Juventus,0,0,0,0,0,3,0,0,0.0,0.0,0.0
 Lordkipanidze *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Lorran,Pisa,1,0,0,0,0,0,0,0,0.0,0.0,0.0
 Loyola,Pisa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Lucca,nan,0,0,0,0,0,0,0,0,1.0,0.0,0.0
 Luis Henrique,Inter,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Luvumbo,Cagliari,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-M. Kaba,,0,0,0,0,0,1,0,0,0.0,0.0,0.0
-M. Silvestri,,0,0,0,0,0,0,0,0,0.0,0.0,7.0
+M. Kaba,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+M. Popa,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+M. Silvestri,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Maleh,Lecce,0,0,0,0,0,2,0,0,0.0,0.0,0.0
 Malen,Roma,1,0,0,0,0,0,0,0,1.0,0.0,0.0
 Mandas,Lazio,0,0,0,0,0,0,0,0,0.0,0.0,0.0
@@ -625,12 +507,15 @@ Montipò,Verona,0,0,1,0,0,0,0,3,0.0,0.0,34.0
 Moreno Alb.,Como,1,0,0,0,0,1,0,0,0.0,0.0,0.0
 Moreo,Pisa,5,0,0,0,1,1,0,0,0.0,1.0,0.0
 Mosquera,Verona,0,0,0,0,2,1,0,0,0.0,0.0,0.0
+Motta,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Moumbagna,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Munoz *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Muric,Sassuolo,0,0,0,0,0,4,0,5,0.0,0.0,26.0
 N'Dicka,Roma,0,0,0,0,0,3,0,0,0.0,0.0,0.0
 N'Dri,Lecce,2,0,0,0,0,2,0,0,0.0,0.0,0.0
+N. Lang,nan,1,0,0,0,2,2,0,0,0.0,0.0,0.0
 Ngom,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Ngonge,Torino,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Nicolas,Pisa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Nicolussi Caviglia,Fiorentina,0,0,0,0,1,4,0,0,0.0,0.0,0.0
 Nkunku,Milan,4,0,0,0,2,0,0,0,0.0,1.0,0.0
@@ -648,7 +533,9 @@ Orban G.,Verona,6,0,0,0,1,4,0,0,1.0,1.0,0.0
 Ordonez C.,Parma,0,0,0,0,0,2,1,0,0.0,0.0,0.0
 Oristanio,Parma,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Otoa,Genoa,0,1,0,0,0,1,0,0,0.0,0.0,0.0
-P. Terracciano,,0,0,0,0,0,0,0,1,0.0,0.0,0.0
+P. Cutrone,nan,1,0,0,0,0,0,0,0,0.0,0.0,0.0
+P. Penev,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+P. Terracciano,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Palacios T.,Inter,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Paleari,Torino,0,0,0,0,0,1,0,5,0.0,0.0,22.0
 Parisi,Fiorentina,0,0,0,0,1,4,0,0,0.0,0.0,0.0
@@ -666,8 +553,11 @@ Piccinini G.,Pisa,0,0,0,0,0,2,0,0,0.0,0.0,0.0
 Pieragnolo,Sassuolo,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Pierini,Sassuolo,0,0,0,0,0,1,0,0,0.0,0.0,0.0
 Pierotti,Lecce,0,0,0,0,0,1,0,0,0.0,0.0,0.0
+Pierret,Lecce,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Pintus *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Popa *,Torino,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Posch,nan,0,0,0,0,0,0,0,0,1.0,0.0,0.0
+Przyborek,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Rabiot,Milan,3,0,0,0,3,3,0,0,0.0,0.0,0.0
 Ramadani,Lecce,0,0,0,0,0,5,0,0,0.0,0.0,0.0
 Raspadori,Atalanta,0,0,0,0,0,0,0,0,0.0,0.0,0.0
@@ -682,7 +572,8 @@ Rouhi,Juventus,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Rowe,Bologna,0,0,0,0,1,2,0,0,0.0,0.0,0.0
 Rugani,Juventus,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Rui Modesto,Udinese,0,0,0,0,1,0,0,0,0.0,0.0,0.0
-S. McTominay,,5,0,0,0,3,1,0,0,0.0,0.0,0.0
+S. McTominay,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+S. Posch,nan,1,0,0,0,0,1,0,0,0.0,0.0,0.0
 Sabelli,Genoa,0,1,0,0,0,1,0,0,0.0,0.0,0.0
 Sabiri,Fiorentina,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Sala A.,Lecce,0,0,0,0,1,0,0,0,0.0,0.0,0.0
@@ -705,6 +596,7 @@ Sommariva,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,4.0
 Sottil,Lecce,1,0,0,0,1,0,0,0,1.0,0.0,0.0
 Spinazzola,Napoli,2,0,0,0,2,1,0,0,1.0,0.0,0.0
 Stengs,Pisa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
+Stojilkovic,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Sulemana K.,Atalanta,2,0,0,0,1,2,0,0,0.0,0.0,0.0
 Suslov,Verona,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Suzuki,Parma,0,0,1,0,0,1,0,3,0.0,0.0,14.0
@@ -716,18 +608,18 @@ Tornqvist,Como,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Trepy,Cagliari,1,0,0,0,0,0,0,0,0.0,1.0,0.0
 Troilo,Parma,0,0,0,0,0,3,1,0,0.0,0.0,0.0
 Tsimikas,Roma,0,0,0,0,0,1,0,0,0.0,0.0,0.0
-Turati,Sassuolo,0,0,0,0,0,0,0,0,0.0,0.0,2.0
+Unai Nunez,nan,0,1,0,0,0,6,0,0,0.0,0.0,0.0
 Valentini N.,Verona,0,0,0,0,0,2,0,0,0.0,0.0,0.0
 Vaz,Roma,0,0,0,0,0,0,0,0,0.0,0.0,0.0
-Vazquez,Cremonese,1,0,0,0,1,1,0,0,0.0,0.0,0.0
+Vazquez,Cremonese,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Vecino,Lazio,0,0,0,0,1,0,0,0,0.0,0.0,0.0
-Vergara,Napoli,0,0,0,0,0,1,0,0,0.0,0.0,0.0
+Vicente Guaita,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Vigorito,Como,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Vinciguerra *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Vitinha O.,Genoa,2,0,0,0,1,3,0,0,0.0,0.0,0.0
 Volpato,Sassuolo,1,0,0,0,4,2,0,0,0.0,0.0,0.0
 Vural,Pisa,0,0,0,0,0,2,0,0,0.0,0.0,0.0
-W. McKennie,,2,0,0,0,2,3,0,0,0.0,0.0,0.0
+W. McKennie,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Zacchi *,nan,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Zatterstrom,Genoa,0,0,0,0,0,0,0,0,0.0,0.0,0.0
 Zielinski,Inter,3,0,0,0,1,0,0,0,0.0,0.0,0.0

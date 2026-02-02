@@ -10,7 +10,7 @@ Payero,C,Cremonese,6
 Pezzella Giu.,D,Cremonese,6
 Ramon,D,Como,6
 Smolcic I.,D,Como,6
-Unai Nunez *,D,Verona,6
+Unai Nunez,D,Verona,6
 Veiga D.,D,Lecce,6
 Zaccagni,A,Lazio,6
 Barbieri,D,Cremonese,5
@@ -59,7 +59,6 @@ Zaniolo,C,Udinese,4
 Addai,A,Como,3
 Akanji,D,Inter,3
 Al-Musrati,C,Verona,3
-Asllani,C,Torino,3
 Athekame,D,Milan,3
 Bella-Kotchap,D,Verona,3
 Borrelli,A,Cagliari,3
@@ -77,6 +76,7 @@ Delprato,D,Parma,3
 Dodò,D,Fiorentina,3
 Ekhator,A,Genoa,3
 Felici,C,Cagliari,3
+Ferguson,C,Bologna,3
 Folorunsho,C,Cagliari,3
 Frendrup,C,Genoa,3
 Freuler,C,Bologna,3
@@ -89,12 +89,11 @@ Gudmundsson A.,A,Fiorentina,3
 Hien,D,Atalanta,3
 Iannoni,C,Sassuolo,3
 Ismajli,D,Torino,3
+K. Asllani,C,Torino,3
 Kamara H.,D,Udinese,3
 Karlstrom,C,Udinese,3
 Kean,A,Fiorentina,3
 Kelly L.,D,Juventus,3
-L. Ferguson,C,Bologna,3
-L. Valenti,D,Parma,3
 Locatelli,C,Juventus,3
 Luperto,D,Cagliari,3
 Lykogiannis,D,Bologna,3
@@ -102,6 +101,7 @@ Maignan,P,Milan,3
 Marcandalli,D,Genoa,3
 Martinez L.,A,Inter,3
 Mazzitelli,C,Cagliari,3
+McKennie,C,Juventus,3
 Mina,D,Cagliari,3
 Modric,C,Milan,3
 N'Dicka,D,Roma,3
@@ -114,11 +114,11 @@ Rabiot,C,Milan,3
 Sucic P.,C,Inter,3
 Terracciano F.,D,Cremonese,3
 Troilo,D,Parma,3
+Valenti,D,Parma,3
 Vardy,A,Cremonese,3
 Vitik,D,Bologna,3
 Vitinha O.,A,Genoa,3
 Vlasic,C,Torino,3
-W. McKennie,C,Juventus,3
 Aboukhlal,A,Torino,2
 Adopo,C,Cagliari,2
 Akinsanmiro,C,Pisa,2
@@ -133,6 +133,7 @@ Bianchetti,D,Cremonese,2
 Bisseck,D,Inter,2
 Bonazzoli,A,Cremonese,2
 Bradaric,D,Verona,2
+C. Ngonge,A,Torino,2
 Canestrelli,D,Pisa,2
 Caprile,P,Cagliari,2
 Coco,D,Torino,2
@@ -153,10 +154,8 @@ Goglichidze,D,Udinese,2
 Gosens,D,Fiorentina,2
 Idrissi R.,D,Cagliari,2
 Ilic,C,Torino,2
-J. Rodriguez,D,Cagliari,2
 Kabasele,D,Udinese,2
 Konè M.,C,Roma,2
-Lang *,A,Napoli,2
 Lazaro,D,Torino,2
 Lazzari,D,Lazio,2
 Leali,P,Genoa,2
@@ -165,8 +164,8 @@ Maleh,C,Lecce,2
 Martin,D,Genoa,2
 Mkhitaryan,C,Inter,2
 N'Dri,A,Lecce,2
+N. Lang,A,Napoli,2
 Ndiaye,D,Parma,2
-Ngonge,A,Torino,2
 Norton-Cuffy,D,Genoa,2
 Olivera,D,Napoli,2
 Ordonez C.,C,Parma,2
@@ -176,6 +175,7 @@ Pavlovic,D,Milan,2
 Pedro,A,Lazio,2
 Piccinini G.,C,Pisa,2
 Piotrowski,C,Udinese,2
+Rodriguez Ju.,D,Cagliari,2
 Rowe,A,Bologna,2
 Saelemaekers,C,Milan,2
 Sanabria,A,Cremonese,2
@@ -202,6 +202,7 @@ Yildiz,A,Juventus,2
 Zappa,D,Cagliari,2
 Zappacosta,D,Atalanta,2
 Ziolkowski,D,Roma,2
+A. Gronbaek,C,Genoa,1
 Acerbi,D,Inter,1
 Albiol,D,Pisa,1
 Angelino,D,Roma,1
@@ -212,7 +213,6 @@ Belahyane,C,Lazio,1
 Benedyczak,A,Parma,1
 Bernasconi,D,Atalanta,1
 Bernede,C,Verona,1
-Bonfanti,D,Pisa,1
 Brescianini,C,Fiorentina,1
 Buksa,A,Udinese,1
 Buongiorno,D,Napoli,1
@@ -238,17 +238,18 @@ Di Lorenzo,D,Napoli,1
 Dimarco,D,Inter,1
 Djimsiti,D,Atalanta,1
 Dumfries,D,Inter,1
-Dzeko *,A,Fiorentina,1
+E. Dzeko,A,Fiorentina,1
 Ebosse,D,Verona,1
 Ederson D.S.,C,Atalanta,1
 Ellertsson,C,Genoa,1
 Elmas,C,Napoli,1
 Esposito F.P.,A,Inter,1
+F. Vazquez,C,Cremonese,1
 Faye,D,Cremonese,1
 Ferguson E.,A,Roma,1
+G. Bonfanti,D,Pisa,1
 Gilmour,C,Napoli,1
 Gimenez,A,Milan,1
-Gronbaek,C,Genoa,1
 Hojholt,C,Pisa,1
 Hojlund,A,Napoli,1
 Holm,D,Bologna,1
@@ -256,8 +257,8 @@ Idzes,D,Sassuolo,1
 Ilkhan,C,Torino,1
 Immobile,A,Bologna,1
 Israel,P,Torino,1
-J. Vasquez,D,Genoa,1
 Joao Mario,D,Juventus,1
+Kabasele,C,Lecce,1
 Kalulu,D,Juventus,1
 Keita M.,C,Parma,1
 Kempf,D,Como,1
@@ -265,18 +266,18 @@ Kilicsoy,A,Cagliari,1
 Konè I.,C,Sassuolo,1
 Kristensen T.,D,Udinese,1
 Krstovic,A,Atalanta,1
+L. Lucca,A,Napoli,1
 Laurientè,A,Sassuolo,1
 Leao,A,Milan,1
 Leris,C,Pisa,1
 Lobotka,C,Napoli,1
 Loftus-Cheek,C,Milan,1
 Lovric,C,Udinese,1
-Lucca *,A,Napoli,1
-M. Kaba,C,Lecce,1
 Maldini,C,Atalanta,1
 Maripan,D,Torino,1
 Marusic,D,Lazio,1
 Mateus Lusuardi,D,Pisa,1
+McTominay,C,Napoli,1
 Meister,A,Pisa,1
 Miller L.,C,Udinese,1
 Miretti,C,Juventus,1
@@ -304,7 +305,6 @@ Pierotti,A,Lecce,1
 Pinamonti,A,Sassuolo,1
 Pobega,C,Bologna,1
 Politano,A,Napoli,1
-Posch *,D,Como,1
 Provstgaard,D,Lazio,1
 Ravaglia F.,P,Bologna,1
 Ricci S.,C,Milan,1
@@ -312,7 +312,7 @@ Rinaldi,P,Parma,1
 Rodriguez Je.,A,Como,1
 Rovella,C,Lazio,1
 Rrahmani,D,Napoli,1
-S. McTominay,C,Napoli,1
+S. Posch,D,Como,1
 Sabelli,D,Genoa,1
 Samardzic,C,Atalanta,1
 Sava,P,Udinese,1
@@ -327,7 +327,7 @@ Tavares N.,D,Lazio,1
 Tourè I.,C,Pisa,1
 Tramoni M.,C,Pisa,1
 Tsimikas,D,Roma,1
-Vazquez,C,Cremonese,1
+Vasquez,D,Genoa,1
 Vergara,C,Napoli,1
 Vojvoda,D,Como,1
 Zalewski,C,Atalanta,1

@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from apps.api.app.engine.market_engine import suggest_transfers
 from apps.api.app.deps import get_db
 from apps.api.app.models import Fixture, Player, PlayerStats, Team, TeamKey
+from apps.api.app.utils.names import normalize_name, strip_star, is_starred
 
 
 router = APIRouter(prefix="/data", tags=["data"])
@@ -58,16 +59,6 @@ def _matches(text: str, query: str) -> bool:
     return query.lower() in text.lower()
 
 
-def _normalize_name(value: str) -> str:
-    import unicodedata
-
-    value = (value or "").replace("*", "").strip().lower()
-    value = unicodedata.normalize("NFKD", value)
-    value = "".join(ch for ch in value if not unicodedata.combining(ch))
-    value = re.sub(r"[^a-z0-9]+", "", value)
-    return value
-
-
 def _strip_leading_initial(value: str) -> str:
     return re.sub(r"^[A-Za-z]\.?\s+", "", value or "")
 
@@ -84,9 +75,9 @@ def _load_listone_name_map() -> Dict[str, str]:
         name = (row.get("Giocatore") or "").strip()
         if not name:
             continue
-        key = _normalize_name(name)
-        base_name = name.replace("*", "").strip()
-        base_key = _normalize_name(base_name)
+        key = normalize_name(name)
+        base_name = strip_star(name)
+        base_key = normalize_name(base_name)
         # Prefer non-starred version if both exist
         if "*" not in name:
             mapping[key] = name
@@ -105,12 +96,12 @@ def _canonicalize_name(value: str) -> str:
     if not raw:
         return raw
     mapping = _load_listone_name_map()
-    direct = mapping.get(_normalize_name(raw))
+    direct = mapping.get(normalize_name(raw))
     if direct:
         return direct
     stripped = _strip_leading_initial(raw)
     if stripped:
-        mapped = mapping.get(_normalize_name(stripped))
+        mapped = mapping.get(normalize_name(stripped))
         if mapped:
             return mapped
     return raw
@@ -123,7 +114,7 @@ def _load_role_map() -> Dict[str, str]:
         role = row.get("Ruolo", "")
         if not name or not role:
             continue
-        roles[_normalize_name(name)] = role.strip().upper()
+        roles[normalize_name(name)] = role.strip().upper()
     return roles
 
 
@@ -166,7 +157,7 @@ def _load_old_quotazioni_map() -> Dict[str, Dict[str, str]]:
         name = str(r.get("Giocatore", "")).strip()
         if not name:
             continue
-        out[_normalize_name(name)] = {
+        out[normalize_name(name)] = {
             "Squadra": r.get("Squadra", ""),
             "PrezzoAttuale": r.get("PrezzoAttuale", 0),
             "Ruolo": r.get("Ruolo", ""),
@@ -181,7 +172,7 @@ def _load_player_cards_map() -> Dict[str, Dict[str, str]]:
         name = (row.get("nome") or "").strip()
         if not name:
             continue
-        out[_normalize_name(name)] = {
+        out[normalize_name(name)] = {
             "Squadra": row.get("club", ""),
             "PrezzoAttuale": row.get("QA", 0),
             "Ruolo": row.get("R", row.get("ruolo", "")),
@@ -228,7 +219,7 @@ def _load_residual_credits_map() -> Dict[str, float]:
                     if not team:
                         continue
                     try:
-                        credits[_normalize_name(team)] = float(str(value).replace(",", "."))
+                        credits[normalize_name(team)] = float(str(value).replace(",", "."))
                     except Exception:
                         continue
                 if credits:
@@ -268,12 +259,12 @@ def _load_residual_credits_map() -> Dict[str, float]:
                 if value and value not in header_tokens and "Crediti Residui" not in value:
                     left_team = value
                     if pending_left is not None:
-                        credits[_normalize_name(left_team)] = pending_left
+                        credits[normalize_name(left_team)] = pending_left
                         pending_left = None
                 elif "Crediti Residui" in value and left_team:
                     credit = _extract_credit(value)
                     if credit is not None:
-                        credits[_normalize_name(left_team)] = credit
+                        credits[normalize_name(left_team)] = credit
                 elif "Crediti Residui" in value and not left_team:
                     credit = _extract_credit(value)
                     if credit is not None:
@@ -284,12 +275,12 @@ def _load_residual_credits_map() -> Dict[str, float]:
                 if value and value not in header_tokens and "Crediti Residui" not in value:
                     right_team = value
                     if pending_right is not None:
-                        credits[_normalize_name(right_team)] = pending_right
+                        credits[normalize_name(right_team)] = pending_right
                         pending_right = None
                 elif "Crediti Residui" in value and right_team:
                     credit = _extract_credit(value)
                     if credit is not None:
-                        credits[_normalize_name(right_team)] = credit
+                        credits[normalize_name(right_team)] = credit
                 elif "Crediti Residui" in value and not right_team:
                     credit = _extract_credit(value)
                     if credit is not None:
@@ -308,14 +299,14 @@ def _load_residual_credits_map() -> Dict[str, float]:
                     if value and value not in header_tokens and "Crediti Residui" not in value:
                         left_team = value
                         if pending_left is not None:
-                            credits[_normalize_name(left_team)] = pending_left
+                            credits[normalize_name(left_team)] = pending_left
                             pending_left = None
                     elif "Crediti Residui" in value and left_team:
                         credit = _extract_credit(value)
                         if credit is None and len(row) > 1 and isinstance(row[1], (int, float)):
                             credit = float(row[1])
                         if credit is not None:
-                            credits[_normalize_name(left_team)] = credit
+                            credits[normalize_name(left_team)] = credit
                     elif "Crediti Residui" in value and not left_team:
                         credit = _extract_credit(value)
                         if credit is None and len(row) > 1 and isinstance(row[1], (int, float)):
@@ -328,14 +319,14 @@ def _load_residual_credits_map() -> Dict[str, float]:
                     if value and value not in header_tokens and "Crediti Residui" not in value:
                         right_team = value
                         if pending_right is not None:
-                            credits[_normalize_name(right_team)] = pending_right
+                            credits[normalize_name(right_team)] = pending_right
                             pending_right = None
                     elif "Crediti Residui" in value and right_team:
                         credit = _extract_credit(value)
                         if credit is None and len(row) > 6 and isinstance(row[6], (int, float)):
                             credit = float(row[6])
                         if credit is not None:
-                            credits[_normalize_name(right_team)] = credit
+                            credits[normalize_name(right_team)] = credit
                     elif "Crediti Residui" in value and not right_team:
                         credit = _extract_credit(value)
                         if credit is None and len(row) > 6 and isinstance(row[6], (int, float)):
@@ -364,7 +355,7 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
         name = (row.get("Giocatore") or "").strip()
         if not name:
             continue
-        quot_map[_normalize_name(name)] = {
+        quot_map[normalize_name(name)] = {
             "Squadra": row.get("Squadra", ""),
             "PrezzoAttuale": row.get("PrezzoAttuale", 0),
             "Ruolo": row.get("Ruolo", ""),
@@ -375,7 +366,8 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
         name = (row.get("Giocatore") or "").strip()
         if not team or not name:
             continue
-        rose_team_map[team.lower()][_normalize_name(name)] = {
+        rose_team_map[team.lower()][normalize_name(name)] = {
+            "Nome": name,
             "Squadra": row.get("Squadra", ""),
             "PrezzoAttuale": row.get("PrezzoAttuale", 0),
             "Ruolo": row.get("Ruolo", ""),
@@ -406,8 +398,10 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
         for i in range(pairs):
             out_name = removed[i] if i < len(removed) else ""
             in_name = added[i] if i < len(added) else ""
-            out_key = _normalize_name(out_name)
-            in_key = _normalize_name(in_name)
+            out_key = normalize_name(out_name)
+            in_key = normalize_name(in_name)
+            if out_key and out_key == in_key:
+                continue
             out_info = (
                 (player_cards_map.get(out_key) if out_name.strip().endswith("*") else None)
                 or (old_quot_map.get(out_key) if out_name.strip().endswith("*") else None)
@@ -420,36 +414,159 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
                 or team_map.get(in_key)
                 or quot_map.get(in_key)
             )
+            if not out_name.strip().endswith("*"):
+                alt_out = team_map.get(out_key, {}).get("Nome")
+                if alt_out and alt_out.strip().endswith("*"):
+                    out_name = alt_out
+            if not in_name.strip().endswith("*"):
+                alt_in = team_map.get(in_key, {}).get("Nome")
+                if alt_in and alt_in.strip().endswith("*"):
+                    in_name = alt_in
             out_value = float((out_info or {}).get("PrezzoAttuale", 0) or 0)
             in_value = float((in_info or {}).get("PrezzoAttuale", 0) or 0)
+            out_role = (
+                (out_info or {}).get("Ruolo")
+                or (team_map.get(out_key) or {}).get("Ruolo")
+                or (quot_map.get(out_key) or {}).get("Ruolo")
+                or ""
+            )
+            in_role = (
+                (in_info or {}).get("Ruolo")
+                or (team_map.get(in_key) or {}).get("Ruolo")
+                or (quot_map.get(in_key) or {}).get("Ruolo")
+                or ""
+            )
+            out_team = (
+                (out_info or {}).get("Squadra")
+                or (team_map.get(out_key) or {}).get("Squadra")
+                or (quot_map.get(out_key) or {}).get("Squadra")
+                or ""
+            )
+            in_team = (
+                (in_info or {}).get("Squadra")
+                or (team_map.get(in_key) or {}).get("Squadra")
+                or (quot_map.get(in_key) or {}).get("Squadra")
+                or ""
+            )
             items.append(
                 {
                     "team": team,
                     "date": stamp,
                     "out": out_name,
                     "out_missing": out_name.strip().endswith("*"),
-                    "out_squadra": (out_info or {}).get("Squadra", ""),
-                    "out_ruolo": (out_info or {}).get("Ruolo", ""),
+                    "out_squadra": out_team,
+                    "out_ruolo": out_role,
                     "out_value": out_value,
                     "in": in_name,
                     "in_missing": in_name.strip().endswith("*"),
-                    "in_squadra": (in_info or {}).get("Squadra", ""),
-                    "in_ruolo": (in_info or {}).get("Ruolo", ""),
+                    "in_squadra": in_team,
+                    "in_ruolo": in_role,
                     "in_value": in_value,
-                    "delta": in_value - out_value,
+                    "delta": out_value - in_value,
                 }
             )
     return {"items": items, "teams": teams}
 
 
+def _enrich_market_items(items: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    if not items:
+        return items
+    rose_rows = _read_csv(ROSE_PATH)
+    quot_rows = _read_csv(QUOT_PATH)
+    old_quot_map = _load_old_quotazioni_map()
+    player_cards_map = _load_player_cards_map()
+
+    quot_map = {}
+    for row in quot_rows:
+        name = (row.get("Giocatore") or "").strip()
+        if not name:
+            continue
+        quot_map[normalize_name(name)] = {
+            "Squadra": row.get("Squadra", ""),
+            "PrezzoAttuale": row.get("PrezzoAttuale", 0),
+            "Ruolo": row.get("Ruolo", ""),
+        }
+
+    rose_team_map: Dict[str, Dict[str, Dict[str, str]]] = defaultdict(dict)
+    starred_players = set()
+    for row in rose_rows:
+        team = (row.get("Team") or "").strip()
+        name = (row.get("Giocatore") or "").strip()
+        if not team or not name:
+            continue
+        key = normalize_name(name)
+        rose_team_map[team.lower()][key] = {
+            "Nome": name,
+            "Squadra": row.get("Squadra", ""),
+            "PrezzoAttuale": row.get("PrezzoAttuale", 0),
+            "Ruolo": row.get("Ruolo", ""),
+        }
+        if name.strip().endswith("*"):
+            starred_players.add(key)
+
+    def _lookup_info(name: str, team: str) -> Dict[str, str]:
+        key = normalize_name(name)
+        if not key:
+            return {}
+        if name.strip().endswith("*"):
+            return (
+                player_cards_map.get(key)
+                or old_quot_map.get(key)
+                or rose_team_map.get(team.lower(), {}).get(key, {})
+                or quot_map.get(key, {})
+            )
+        return (
+            rose_team_map.get(team.lower(), {}).get(key, {})
+            or quot_map.get(key, {})
+            or player_cards_map.get(key)
+            or old_quot_map.get(key)
+            or {}
+        )
+
+    enriched = []
+    for item in items:
+        out_name = (item.get("out") or "").strip()
+        in_name = (item.get("in") or "").strip()
+        team = (item.get("team") or "").strip()
+        out_key = normalize_name(out_name)
+        in_key = normalize_name(in_name)
+
+        out_info = _lookup_info(out_name, team)
+        in_info = _lookup_info(in_name, team)
+
+        if out_key and out_key in starred_players and not out_name.endswith("*"):
+            out_name = f"{out_name} *"
+        if in_key and in_key in starred_players and not in_name.endswith("*"):
+            in_name = f"{in_name} *"
+
+        item = dict(item)
+        item["out"] = out_name
+        item["in"] = in_name
+        item["out_ruolo"] = item.get("out_ruolo") or out_info.get("Ruolo", "")
+        item["in_ruolo"] = item.get("in_ruolo") or in_info.get("Ruolo", "")
+        item["out_squadra"] = out_info.get("Squadra", "") or item.get("out_squadra", "")
+        item["in_squadra"] = in_info.get("Squadra", "") or item.get("in_squadra", "")
+        out_val = item.get("out_value")
+        in_val = item.get("in_value")
+        if out_val in ("", None):
+            out_val = out_info.get("PrezzoAttuale", 0)
+        if in_val in ("", None):
+            in_val = in_info.get("PrezzoAttuale", 0)
+        item["out_value"] = float(out_val or 0)
+        item["in_value"] = float(in_val or 0)
+        item["delta"] = item["out_value"] - item["in_value"]
+        enriched.append(item)
+    return enriched
+
+
 def _build_market_suggest_payload(team_name: str, db: Session) -> Dict[str, object]:
     rose_rows = _read_csv(ROSE_PATH)
-    team_key = _normalize_name(team_name)
+    team_key = normalize_name(team_name)
     residual_map = _load_residual_credits_map()
     credits_residui = float(residual_map.get(team_key, 0) or 0)
     user_squad = []
     for row in rose_rows:
-        if _normalize_name(row.get("Team", "")) != team_key:
+        if normalize_name(row.get("Team", "")) != team_key:
             continue
         user_squad.append(
             {
@@ -672,8 +789,8 @@ def teams():
 @router.get("/team/{team_name}")
 def team_roster(team_name: str):
     rose = _read_csv(ROSE_PATH)
-    team_key = _normalize_name(team_name)
-    items = [row for row in rose if _normalize_name(row.get("Team", "")) == team_key]
+    team_key = normalize_name(team_name)
+    items = [row for row in rose if normalize_name(row.get("Team", "")) == team_key]
     return {"items": items}
 
 
@@ -761,10 +878,10 @@ def stats_players(limit: int = Query(default=20, ge=1, le=200)):
 @router.get("/stats/player")
 def stats_player(name: str = Query(..., min_length=1)):
     stats = _read_csv(STATS_PATH)
-    target = _normalize_name(_canonicalize_name(name))
+    target = normalize_name(_canonicalize_name(name))
     for row in stats:
         row_name = _canonicalize_name(row.get("Giocatore", ""))
-        if _normalize_name(row_name) == target:
+        if normalize_name(row_name) == target:
             updated = dict(row)
             updated["Giocatore"] = row_name
             return {"item": updated}
@@ -794,7 +911,7 @@ def stats_by_stat(
     for item in items:
         name = _canonicalize_name(item.get("Giocatore", ""))
         item["Giocatore"] = name
-        role = role_map.get(_normalize_name(name))
+        role = role_map.get(normalize_name(name))
         if role:
             item["Ruolo"] = role
     return {"items": items[:limit]}
@@ -803,7 +920,9 @@ def stats_by_stat(
 @router.get("/market")
 def market():
     if not MARKET_PATH.exists():
-        return _build_market_placeholder()
+        data = _build_market_placeholder()
+        data["items"] = _enrich_market_items(data.get("items", []))
+        return data
     try:
         import json
 
@@ -812,15 +931,23 @@ def market():
             items = data.get("items", [])
             teams = data.get("teams", [])
             if not items:
-                return _build_market_placeholder()
-            return {"items": items, "teams": teams}
+                data = _build_market_placeholder()
+                data["items"] = _enrich_market_items(data.get("items", []))
+                return data
+            return {"items": _enrich_market_items(items), "teams": teams}
         if isinstance(data, list):
             if not data:
-                return _build_market_placeholder()
-            return {"items": data, "teams": []}
-        return _build_market_placeholder()
+                data = _build_market_placeholder()
+                data["items"] = _enrich_market_items(data.get("items", []))
+                return data
+            return {"items": _enrich_market_items(data), "teams": []}
+        data = _build_market_placeholder()
+        data["items"] = _enrich_market_items(data.get("items", []))
+        return data
     except json.JSONDecodeError:
-        return _build_market_placeholder()
+        data = _build_market_placeholder()
+        data["items"] = _enrich_market_items(data.get("items", []))
+        return data
 
 
 @router.post("/market/suggest")
