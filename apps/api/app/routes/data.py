@@ -27,6 +27,7 @@ PLAYER_CARDS_PATH = DATA_DIR / "db" / "quotazioni_master.csv"
 PLAYER_STATS_PATH = DATA_DIR / "db" / "player_stats.csv"
 TEAMS_PATH = DATA_DIR / "db" / "teams.csv"
 FIXTURES_PATH = DATA_DIR / "db" / "fixtures.csv"
+SEED_DB_DIR = Path("/app/seed/db")
 ROSE_XLSX_DIR = DATA_DIR / "archive" / "incoming" / "rose"
 _RESIDUAL_CREDITS_CACHE: Dict[str, object] = {}
 _NAME_LIST_CACHE: Dict[str, object] = {}
@@ -39,6 +40,15 @@ def _read_csv(path: Path) -> List[Dict[str, str]]:
     with path.open("r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         return list(reader)
+
+
+def _read_csv_fallback(path: Path, fallback: Path) -> List[Dict[str, str]]:
+    rows = _read_csv(path)
+    if rows:
+        return rows
+    if fallback.exists():
+        return _read_csv(fallback)
+    return []
 
 
 def _load_name_list(path: Path) -> List[str]:
@@ -184,7 +194,7 @@ def _load_player_cards_map() -> Dict[str, Dict[str, str]]:
 
 
 def _load_stats_map() -> Dict[str, Dict[str, str]]:
-    rows = _read_csv(PLAYER_STATS_PATH)
+    rows = _read_csv_fallback(PLAYER_STATS_PATH, SEED_DB_DIR / "player_stats.csv")
     out = {}
     for row in rows:
         name = (row.get("Giocatore") or "").strip()
@@ -195,7 +205,7 @@ def _load_stats_map() -> Dict[str, Dict[str, str]]:
 
 
 def _build_players_pool_from_csv() -> List[Dict[str, object]]:
-    cards = _read_csv(PLAYER_CARDS_PATH)
+    cards = _read_csv_fallback(PLAYER_CARDS_PATH, SEED_DB_DIR / "quotazioni_master.csv")
     stats_map = _load_stats_map()
     players_pool = []
     for row in cards:
@@ -257,7 +267,7 @@ def _build_players_pool_from_csv() -> List[Dict[str, object]]:
 
 
 def _build_teams_data_from_csv() -> Dict[str, Dict[str, object]]:
-    rows = _read_csv(TEAMS_PATH)
+    rows = _read_csv_fallback(TEAMS_PATH, SEED_DB_DIR / "teams.csv")
     out = {}
     for row in rows:
         name = (row.get("name") or "").strip()
@@ -338,7 +348,7 @@ def _build_teams_data_from_user_squad(user_squad: List[Dict[str, object]]) -> Di
 
 
 def _build_fixtures_from_csv(teams_data: Dict[str, Dict[str, object]]) -> List[Dict[str, object]]:
-    rows = _read_csv(FIXTURES_PATH)
+    rows = _read_csv_fallback(FIXTURES_PATH, SEED_DB_DIR / "fixtures.csv")
     team_map = {name.lower(): name for name in teams_data.keys()}
     fixtures = []
     rounds = []
