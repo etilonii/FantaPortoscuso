@@ -41,7 +41,18 @@ def _read_csv(path: Path) -> List[Dict[str, str]]:
         return []
     with path.open("r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        return list(reader)
+        rows = []
+        for row in reader:
+            if not row:
+                continue
+            cleaned = {}
+            for key, value in row.items():
+                if key is None:
+                    continue
+                clean_key = key.strip().lstrip("\ufeff")
+                cleaned[clean_key] = value
+            rows.append(cleaned)
+        return rows
 
 
 def _count_lines(path: Path) -> int:
