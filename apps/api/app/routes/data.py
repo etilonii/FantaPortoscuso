@@ -24,6 +24,9 @@ MARKET_PATH = DATA_DIR / "market_latest.json"
 MARKET_REPORT_GLOB = "rose_changes_*.csv"
 STATS_DIR = DATA_DIR / "stats"
 PLAYER_CARDS_PATH = DATA_DIR / "db" / "quotazioni_master.csv"
+PLAYER_STATS_PATH = DATA_DIR / "db" / "player_stats.csv"
+TEAMS_PATH = DATA_DIR / "db" / "teams.csv"
+FIXTURES_PATH = DATA_DIR / "db" / "fixtures.csv"
 ROSE_XLSX_DIR = DATA_DIR / "archive" / "incoming" / "rose"
 _RESIDUAL_CREDITS_CACHE: Dict[str, object] = {}
 _NAME_LIST_CACHE: Dict[str, object] = {}
@@ -178,6 +181,132 @@ def _load_player_cards_map() -> Dict[str, Dict[str, str]]:
             "Ruolo": row.get("R", row.get("ruolo", "")),
         }
     return out
+
+
+def _load_stats_map() -> Dict[str, Dict[str, str]]:
+    rows = _read_csv(PLAYER_STATS_PATH)
+    out = {}
+    for row in rows:
+        name = (row.get("Giocatore") or "").strip()
+        if not name:
+            continue
+        out[normalize_name(name)] = row
+    return out
+
+
+def _build_players_pool_from_csv() -> List[Dict[str, object]]:
+    cards = _read_csv(PLAYER_CARDS_PATH)
+    stats_map = _load_stats_map()
+    players_pool = []
+    for row in cards:
+        name = (row.get("nome") or "").strip()
+        if not name:
+            continue
+        key = normalize_name(name)
+        stats = stats_map.get(key, {})
+        try:
+            qa = float(row.get("QA", 0) or 0)
+        except Exception:
+            qa = 0.0
+        try:
+            pk_role = float(stats.get("PKRole", 0) or 0)
+        except Exception:
+            pk_role = 0.0
+        players_pool.append(
+            {
+                "nome": name,
+                "ruolo_base": (row.get("R") or "").strip(),
+                "club": (row.get("club") or "").strip(),
+                "QA": qa,
+                "PV_S": float(stats.get("PV_S", 0) or 0),
+                "PV_R8": float(stats.get("PV_R8", 0) or 0),
+                "PT_S": float(stats.get("PT_S", 0) or 0),
+                "PT_R8": float(stats.get("PT_R8", 0) or 0),
+                "MIN_S": float(stats.get("MIN_S", 0) or 0),
+                "MIN_R8": float(stats.get("MIN_R8", 0) or 0),
+                "G_S": float(stats.get("G_S", 0) or 0),
+                "G_R8": float(stats.get("G_R8", 0) or 0),
+                "A_S": float(stats.get("A_S", 0) or 0),
+                "A_R8": float(stats.get("A_R8", 0) or 0),
+                "xG_S": float(stats.get("xG_S", 0) or 0),
+                "xG_R8": float(stats.get("xG_R8", 0) or 0),
+                "xA_S": float(stats.get("xA_S", 0) or 0),
+                "xA_R8": float(stats.get("xA_R8", 0) or 0),
+                "AMM_S": float(stats.get("AMM_S", 0) or 0),
+                "AMM_R8": float(stats.get("AMM_R8", 0) or 0),
+                "ESP_S": float(stats.get("ESP_S", 0) or 0),
+                "ESP_R8": float(stats.get("ESP_R8", 0) or 0),
+                "AUTOGOL_S": float(stats.get("AUTOGOL_S", 0) or 0),
+                "AUTOGOL_R8": float(stats.get("AUTOGOL_R8", 0) or 0),
+                "RIGSEG_S": float(stats.get("RIGSEG_S", 0) or 0),
+                "RIGSEG_R8": float(stats.get("RIGSEG_R8", 0) or 0),
+                "RIGSBAGL_S": float(stats.get("RIGSBAGL_S", 0) or 0),
+                "RIGSBAGL_R8": float(stats.get("RIGSBAGL_R8", 0) or 0),
+                "GDECWIN_S": float(stats.get("GDECWIN_S", 0) or 0),
+                "GDECPAR_S": float(stats.get("GDECPAR_S", 0) or 0),
+                "GOLS_S": float(stats.get("GOLS_S", 0) or 0),
+                "GOLS_R8": float(stats.get("GOLS_R8", 0) or 0),
+                "RIGPAR_S": float(stats.get("RIGPAR_S", 0) or 0),
+                "RIGPAR_R8": float(stats.get("RIGPAR_R8", 0) or 0),
+                "CS_S": float(stats.get("CS_S", 0) or 0),
+                "CS_R8": float(stats.get("CS_R8", 0) or 0),
+                "PKRole": pk_role,
+            }
+        )
+    return players_pool
+
+
+def _build_teams_data_from_csv() -> Dict[str, Dict[str, object]]:
+    rows = _read_csv(TEAMS_PATH)
+    out = {}
+    for row in rows:
+        name = (row.get("name") or "").strip()
+        if not name:
+            continue
+        out[name] = {
+            "PPG_S": float(row.get("PPG_S", 0) or 0),
+            "PPG_R8": float(row.get("PPG_R8", 0) or 0),
+            "GFpg_S": float(row.get("GFpg_S", 0) or 0),
+            "GFpg_R8": float(row.get("GFpg_R8", 0) or 0),
+            "GApg_S": float(row.get("GApg_S", 0) or 0),
+            "GApg_R8": float(row.get("GApg_R8", 0) or 0),
+            "MoodTeam": float(row.get("MoodTeam", 0.5) or 0.5),
+            "CoachStyle_P": float(row.get("CoachStyle_P", 0.5) or 0.5),
+            "CoachStyle_D": float(row.get("CoachStyle_D", 0.5) or 0.5),
+            "CoachStyle_C": float(row.get("CoachStyle_C", 0.5) or 0.5),
+            "CoachStyle_A": float(row.get("CoachStyle_A", 0.5) or 0.5),
+            "CoachStability": float(row.get("CoachStability", 0.5) or 0.5),
+            "CoachBoost": float(row.get("CoachBoost", 0.5) or 0.5),
+            "GamesRemaining": int(float(row.get("GamesRemaining", 0) or 0)),
+        }
+    return out
+
+
+def _build_fixtures_from_csv(teams_data: Dict[str, Dict[str, object]]) -> List[Dict[str, object]]:
+    rows = _read_csv(FIXTURES_PATH)
+    team_map = {name.lower(): name for name in teams_data.keys()}
+    fixtures = []
+    rounds = []
+    for row in rows:
+        team = (row.get("team") or "").strip()
+        opponent = (row.get("opponent") or "").strip()
+        if not team or not opponent:
+            continue
+        team = team_map.get(team.lower(), team)
+        opponent = team_map.get(opponent.lower(), opponent)
+        fixtures.append(
+            {
+                "round": int(float(row.get("round", 0) or 0)),
+                "team": team,
+                "opponent": opponent,
+                "home_away": row.get("home_away") or row.get("home_away".upper()),
+            }
+        )
+        try:
+            rounds.append(int(float(row.get("round", 0) or 0)))
+        except Exception:
+            pass
+    return fixtures
 
 
 def _latest_market_report() -> Optional[Path]:
@@ -623,6 +752,8 @@ def _build_market_suggest_payload(team_name: str, db: Session) -> Dict[str, obje
                 "PKRole": player.pk_role,
             }
         )
+    if not players_pool:
+        players_pool = _build_players_pool_from_csv()
 
     teams_data = {}
     teams = db.query(Team).all()
@@ -646,6 +777,9 @@ def _build_market_suggest_payload(team_name: str, db: Session) -> Dict[str, obje
             "CoachBoost": team.coach_boost,
             "GamesRemaining": team.games_remaining,
         }
+    if not teams_data:
+        teams_data = _build_teams_data_from_csv()
+        team_map = {name.lower(): name for name in teams_data.keys()}
 
     fixtures = []
     fixture_rows = db.query(Fixture).all()
@@ -666,6 +800,9 @@ def _build_market_suggest_payload(team_name: str, db: Session) -> Dict[str, obje
             }
         )
         rounds.append(row.round)
+    if not fixtures:
+        fixtures = _build_fixtures_from_csv(teams_data)
+        rounds = [f.get("round") for f in fixtures if f.get("round")]
 
     current_round = min(rounds) if rounds else 1
 
