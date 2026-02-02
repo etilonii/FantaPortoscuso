@@ -1,4 +1,5 @@
 import hashlib
+import os
 import secrets
 from datetime import datetime
 
@@ -8,7 +9,14 @@ from sqlalchemy.orm import Session
 from ..config import KEY_LENGTH
 from ..deps import get_db
 from ..models import AccessKey, DeviceSession
-from ..schemas import AdminKeyResponse, AdminKeyItem, KeyCreateResponse, LoginRequest, LoginResponse
+from ..schemas import (
+    AdminKeyResponse,
+    AdminKeyItem,
+    ImportKeysRequest,
+    KeyCreateResponse,
+    LoginRequest,
+    LoginResponse,
+)
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -97,6 +105,30 @@ def create_key_admin(
             db.commit()
             return KeyCreateResponse(key=key)
     raise HTTPException(status_code=500, detail="Failed to generate key")
+
+
+@router.post("/admin/import-keys")
+def import_keys(
+    payload: ImportKeysRequest,
+    x_import_secret: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    secret = os.getenv("IMPORT_SECRET", "")
+    if not secret or not x_import_secret or x_import_secret != secret:
+        raise HTTPException(status_code=403, detail="Import secret non valido")
+    inserted = 0
+    for raw_key in payload.keys:
+        key_value = raw_key.strip().lower()
+        if not key_value:
+            continue
+        exists = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+        if exists:
+            continue
+        record = AccessKey(key=key_value, used=False, is_admin=payload.is_admin)
+        db.add(record)
+        inserted += 1
+    db.commit()
+    return {"imported": inserted}
 
 
 @router.post("/login", response_model=LoginResponse)

@@ -27,3 +27,8 @@ class AdminKeyItem(BaseModel):
     device_id: str | None = None
     created_at: str | None = None
     used_at: str | None = None
+
+
+class ImportKeysRequest(BaseModel):
+    keys: list[str] = Field(min_length=1)
+    is_admin: bool = False
