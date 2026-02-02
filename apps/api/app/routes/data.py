@@ -1,4 +1,5 @@
 import csv
+import os
 import re
 from collections import defaultdict
 from pathlib import Path
@@ -28,6 +29,7 @@ PLAYER_STATS_PATH = DATA_DIR / "db" / "player_stats.csv"
 TEAMS_PATH = DATA_DIR / "db" / "teams.csv"
 FIXTURES_PATH = DATA_DIR / "db" / "fixtures.csv"
 SEED_DB_DIR = Path("/app/seed/db")
+IMPORT_SECRET = os.getenv("IMPORT_SECRET", "")
 ROSE_XLSX_DIR = DATA_DIR / "archive" / "incoming" / "rose"
 _RESIDUAL_CREDITS_CACHE: Dict[str, object] = {}
 _NAME_LIST_CACHE: Dict[str, object] = {}
@@ -40,6 +42,16 @@ def _read_csv(path: Path) -> List[Dict[str, str]]:
     with path.open("r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         return list(reader)
+
+
+def _count_lines(path: Path) -> int:
+    if not path.exists():
+        return 0
+    try:
+        with path.open("r", encoding="utf-8", errors="ignore") as handle:
+            return sum(1 for _ in handle)
+    except Exception:
+        return 0
 
 
 def _read_csv_fallback(path: Path, fallback: Path) -> List[Dict[str, str]]:
@@ -891,6 +903,30 @@ def _build_market_suggest_payload(team_name: str, db: Session) -> Dict[str, obje
             "k_pool": 60,
             "m_out": 8,
             "beam_width": 200,
+        },
+    }
+
+
+@router.get("/admin/seed-info")
+def seed_info(x_import_secret: str | None = Header(default=None)):
+    if not IMPORT_SECRET or not x_import_secret or x_import_secret != IMPORT_SECRET:
+        raise HTTPException(status_code=403, detail="Import secret non valido")
+    seed_teams = SEED_DB_DIR / "teams.csv"
+    vol_teams = TEAMS_PATH
+    seed_stats = SEED_DB_DIR / "player_stats.csv"
+    seed_cards = SEED_DB_DIR / "quotazioni_master.csv"
+    return {
+        "seed": {
+            "teams_exists": seed_teams.exists(),
+            "teams_lines": _count_lines(seed_teams),
+            "stats_exists": seed_stats.exists(),
+            "stats_lines": _count_lines(seed_stats),
+            "cards_exists": seed_cards.exists(),
+            "cards_lines": _count_lines(seed_cards),
+        },
+        "volume": {
+            "teams_exists": vol_teams.exists(),
+            "teams_lines": _count_lines(vol_teams),
         },
     }
 
