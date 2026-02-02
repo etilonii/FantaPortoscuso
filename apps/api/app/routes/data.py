@@ -1231,6 +1231,9 @@ def market_suggest(payload: dict = Body(default=None)):
     current_round = int(payload.get("currentRound") or payload.get("current_round") or 1)
     params = payload.get("params", {}) or {}
 
+    if not teams_data:
+        teams_data = _build_teams_data_from_user_squad(user_squad)
+
     k_pool = max(int(params.get("k_pool", 60)), 20)
     m_out = max(int(params.get("m_out", 8)), 6)
     beam_width = max(int(params.get("beam_width", 200)), 200)
