@@ -165,6 +165,8 @@ def import_keys(
             continue
         exists = db.query(AccessKey).filter(AccessKey.key == key_value).first()
         if exists:
+            exists.is_admin = bool(payload.is_admin)
+            db.add(exists)
             continue
         record = AccessKey(key=key_value, used=False, is_admin=payload.is_admin)
         db.add(record)
