@@ -282,6 +282,34 @@ def _build_teams_data_from_csv() -> Dict[str, Dict[str, object]]:
     return out
 
 
+def _build_teams_data_from_roster() -> Dict[str, Dict[str, object]]:
+    rose_rows = _read_csv(ROSE_PATH)
+    clubs = set()
+    for row in rose_rows:
+        club = (row.get("Squadra") or "").strip()
+        if club:
+            clubs.add(club)
+    out = {}
+    for club in sorted(clubs):
+        out[club] = {
+            "PPG_S": 0.0,
+            "PPG_R8": 0.0,
+            "GFpg_S": 0.0,
+            "GFpg_R8": 0.0,
+            "GApg_S": 0.0,
+            "GApg_R8": 0.0,
+            "MoodTeam": 0.5,
+            "CoachStyle_P": 0.5,
+            "CoachStyle_D": 0.5,
+            "CoachStyle_C": 0.5,
+            "CoachStyle_A": 0.5,
+            "CoachStability": 0.5,
+            "CoachBoost": 0.5,
+            "GamesRemaining": 0,
+        }
+    return out
+
+
 def _build_fixtures_from_csv(teams_data: Dict[str, Dict[str, object]]) -> List[Dict[str, object]]:
     rows = _read_csv(FIXTURES_PATH)
     team_map = {name.lower(): name for name in teams_data.keys()}
@@ -779,6 +807,9 @@ def _build_market_suggest_payload(team_name: str, db: Session) -> Dict[str, obje
         }
     if not teams_data:
         teams_data = _build_teams_data_from_csv()
+        team_map = {name.lower(): name for name in teams_data.keys()}
+    if not teams_data:
+        teams_data = _build_teams_data_from_roster()
         team_map = {name.lower(): name for name in teams_data.keys()}
 
     fixtures = []

@@ -15,7 +15,7 @@ if [ -d "$SEED_DB_DIR" ]; then
   for seed_file in "$SEED_DB_DIR"/*.csv; do
     [ -f "$seed_file" ] || continue
     target="/app/data/db/$(basename "$seed_file")"
-    if [ ! -f "$target" ]; then
+    if [ ! -s "$target" ]; then
       cp "$seed_file" "$target"
     fi
   done
