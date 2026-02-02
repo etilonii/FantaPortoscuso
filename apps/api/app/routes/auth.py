@@ -8,11 +8,12 @@ from sqlalchemy.orm import Session
 
 from ..config import KEY_LENGTH
 from ..deps import get_db
-from ..models import AccessKey, DeviceSession
+from ..models import AccessKey, DeviceSession, TeamKey
 from ..schemas import (
     AdminKeyResponse,
     AdminKeyItem,
     ImportKeysRequest,
+    ImportTeamKeysRequest,
     KeyCreateResponse,
     LoginRequest,
     LoginResponse,
@@ -126,6 +127,32 @@ def import_keys(
             continue
         record = AccessKey(key=key_value, used=False, is_admin=payload.is_admin)
         db.add(record)
+        inserted += 1
+    db.commit()
+    return {"imported": inserted}
+
+
+@router.post("/admin/import-team-keys")
+def import_team_keys(
+    payload: ImportTeamKeysRequest,
+    x_import_secret: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    secret = os.getenv("IMPORT_SECRET", "")
+    if not secret or not x_import_secret or x_import_secret != secret:
+        raise HTTPException(status_code=403, detail="Import secret non valido")
+    inserted = 0
+    for item in payload.items:
+        key_value = item.key.strip().lower()
+        team_value = item.team.strip()
+        if not key_value or not team_value:
+            continue
+        record = db.query(TeamKey).filter(TeamKey.key == key_value).first()
+        if record:
+            record.team = team_value
+            db.add(record)
+            continue
+        db.add(TeamKey(key=key_value, team=team_value))
         inserted += 1
     db.commit()
     return {"imported": inserted}

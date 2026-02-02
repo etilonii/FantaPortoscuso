@@ -32,3 +32,12 @@ class AdminKeyItem(BaseModel):
 class ImportKeysRequest(BaseModel):
     keys: list[str] = Field(min_length=1)
     is_admin: bool = False
+
+
+class ImportTeamKeyItem(BaseModel):
+    key: str = Field(min_length=1)
+    team: str = Field(min_length=1)
+
+
+class ImportTeamKeysRequest(BaseModel):
+    items: list[ImportTeamKeyItem] = Field(min_length=1)
