@@ -45,3 +45,13 @@ class ImportTeamKeysRequest(BaseModel):
 
 class ResetKeyRequest(BaseModel):
     key: str = Field(min_length=1)
+
+
+class SetAdminRequest(BaseModel):
+    key: str = Field(min_length=1)
+    is_admin: bool = True
+
+
+class TeamKeyRequest(BaseModel):
+    key: str = Field(min_length=1)
+    team: str = Field(min_length=1)

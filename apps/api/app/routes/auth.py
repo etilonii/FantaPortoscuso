@@ -18,6 +18,8 @@ from ..schemas import (
     LoginRequest,
     LoginResponse,
     ResetKeyRequest,
+    SetAdminRequest,
+    TeamKeyRequest,
 )
 
 
@@ -109,6 +111,44 @@ def create_key_admin(
     raise HTTPException(status_code=500, detail="Failed to generate key")
 
 
+@router.post("/admin/set-admin")
+def set_admin_flag(
+    payload: SetAdminRequest,
+    x_admin_key: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db)
+    key_value = payload.key.strip().lower()
+    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Key non trovata")
+    record.is_admin = bool(payload.is_admin)
+    db.add(record)
+    db.commit()
+    return {"status": "ok", "key": key_value, "is_admin": record.is_admin}
+
+
+@router.post("/admin/team-key")
+def set_team_key(
+    payload: TeamKeyRequest,
+    x_admin_key: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db)
+    key_value = payload.key.strip().lower()
+    team_value = payload.team.strip()
+    if not key_value or not team_value:
+        raise HTTPException(status_code=400, detail="Key o team non validi")
+    record = db.query(TeamKey).filter(TeamKey.key == key_value).first()
+    if record:
+        record.team = team_value
+        db.add(record)
+    else:
+        db.add(TeamKey(key=key_value, team=team_value))
+    db.commit()
+    return {"status": "ok", "key": key_value, "team": team_value}
+
+
 @router.post("/admin/import-keys")
 def import_keys(
     payload: ImportKeysRequest,
@@ -159,7 +199,7 @@ def import_team_keys(
     return {"imported": inserted}
 
 
-@router.post("/admin/reset-key")
+@router.post("/admin/reset-key-import")
 def reset_key(
     payload: ResetKeyRequest,
     x_import_secret: str | None = Header(default=None),
@@ -168,6 +208,29 @@ def reset_key(
     secret = os.getenv("IMPORT_SECRET", "")
     if not secret or not x_import_secret or x_import_secret != secret:
         raise HTTPException(status_code=403, detail="Import secret non valido")
+    key_value = payload.key.strip().lower()
+    if not key_value:
+        raise HTTPException(status_code=400, detail="Key non valida")
+    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Key non trovata")
+    record.used = False
+    record.device_id = None
+    record.user_agent_hash = None
+    record.ip_address = None
+    record.used_at = None
+    db.add(record)
+    db.commit()
+    return {"status": "ok"}
+
+
+@router.post("/admin/reset-key")
+def reset_key_admin(
+    payload: ResetKeyRequest,
+    x_admin_key: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db)
     key_value = payload.key.strip().lower()
     if not key_value:
         raise HTTPException(status_code=400, detail="Key non valida")

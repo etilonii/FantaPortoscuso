@@ -190,6 +190,11 @@ export default function App() {
   /* ===== ADMIN ===== */
   const [adminKeys, setAdminKeys] = useState([]);
   const [newKey, setNewKey] = useState("");
+  const [adminNotice, setAdminNotice] = useState("");
+  const [adminSetAdminKey, setAdminSetAdminKey] = useState("");
+  const [adminTeamKey, setAdminTeamKey] = useState("");
+  const [adminTeamName, setAdminTeamName] = useState("");
+  const [adminResetKey, setAdminResetKey] = useState("");
 
   /* ===== MERCATO + SUGGEST ===== */
   const [marketView, setMarketView] = useState("players");
@@ -930,6 +935,68 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setNewKey(data.key || "");
+      setAdminNotice("Key creata.");
+      loadAdminKeys();
+    } catch {}
+  };
+
+  const setAdminForKey = async () => {
+    if (!isAdmin) return;
+    const key = adminSetAdminKey.trim().toLowerCase();
+    if (!key) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/admin/set-admin`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Key": accessKey.trim().toLowerCase(),
+        },
+        body: JSON.stringify({ key, is_admin: true }),
+      });
+      if (!res.ok) return;
+      setAdminNotice(`Key ${key.toUpperCase()} promossa ad admin.`);
+      setAdminSetAdminKey("");
+      loadAdminKeys();
+    } catch {}
+  };
+
+  const assignTeamKey = async () => {
+    if (!isAdmin) return;
+    const key = adminTeamKey.trim().toLowerCase();
+    const team = adminTeamName.trim();
+    if (!key || !team) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/admin/team-key`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Key": accessKey.trim().toLowerCase(),
+        },
+        body: JSON.stringify({ key, team }),
+      });
+      if (!res.ok) return;
+      setAdminNotice(`Key ${key.toUpperCase()} associata a ${team}.`);
+      setAdminTeamKey("");
+      setAdminTeamName("");
+    } catch {}
+  };
+
+  const resetKeyAdmin = async () => {
+    if (!isAdmin) return;
+    const key = adminResetKey.trim().toLowerCase();
+    if (!key) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/admin/reset-key`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Key": accessKey.trim().toLowerCase(),
+        },
+        body: JSON.stringify({ key }),
+      });
+      if (!res.ok) return;
+      setAdminNotice(`Key ${key.toUpperCase()} resettata.`);
+      setAdminResetKey("");
       loadAdminKeys();
     } catch {}
   };
@@ -1513,6 +1580,56 @@ useEffect(() => {
                         <strong>{String(newKey || "").toUpperCase()}</strong>
                       </div>
                     ) : null}
+                    {adminNotice ? <div className="new-key">{adminNotice}</div> : null}
+                  </div>
+                </div>
+
+                <div className="panel">
+                  <div className="panel-header">
+                    <h3>Operazioni Admin</h3>
+                  </div>
+                  <div className="admin-actions">
+                    <div className="admin-row">
+                      <input
+                        className="input"
+                        placeholder="Key da rendere ADMIN"
+                        value={adminSetAdminKey}
+                        onChange={(e) => setAdminSetAdminKey(e.target.value)}
+                      />
+                      <button className="ghost" onClick={setAdminForKey}>
+                        Rendi admin
+                      </button>
+                    </div>
+
+                    <div className="admin-row">
+                      <input
+                        className="input"
+                        placeholder="Key da associare"
+                        value={adminTeamKey}
+                        onChange={(e) => setAdminTeamKey(e.target.value)}
+                      />
+                      <input
+                        className="input"
+                        placeholder="Team (es. Pi-Ciaccio)"
+                        value={adminTeamName}
+                        onChange={(e) => setAdminTeamName(e.target.value)}
+                      />
+                      <button className="ghost" onClick={assignTeamKey}>
+                        Associa team
+                      </button>
+                    </div>
+
+                    <div className="admin-row">
+                      <input
+                        className="input"
+                        placeholder="Key da resettare"
+                        value={adminResetKey}
+                        onChange={(e) => setAdminResetKey(e.target.value)}
+                      />
+                      <button className="ghost" onClick={resetKeyAdmin}>
+                        Reset key
+                      </button>
+                    </div>
                   </div>
                 </div>
 

@@ -2174,6 +2174,18 @@ body.menu-open .menu-overlay {
   gap: 12px;
 }
 
+.admin-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-row .input {
+  flex: 1;
+  min-width: 220px;
+}
+
 .new-key {
   display: flex;
   gap: 12px;
