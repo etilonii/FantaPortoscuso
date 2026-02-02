@@ -711,11 +711,40 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
     setSuggestLoading(true);
 
+    const payloadToSend = { ...suggestPayload };
+    if (!payloadToSend.teams_data || !Object.keys(payloadToSend.teams_data).length) {
+      const clubs = new Set(
+        (payloadToSend.user_squad || [])
+          .map((p) => String(p.Squadra || "").trim())
+          .filter(Boolean)
+      );
+      const fallbackTeams = {};
+      clubs.forEach((club) => {
+        fallbackTeams[club] = {
+          PPG_S: 0,
+          PPG_R8: 0,
+          GFpg_S: 0,
+          GFpg_R8: 0,
+          GApg_S: 0,
+          GApg_R8: 0,
+          MoodTeam: 0.5,
+          CoachStyle_P: 0.5,
+          CoachStyle_D: 0.5,
+          CoachStyle_C: 0.5,
+          CoachStyle_A: 0.5,
+          CoachStability: 0.5,
+          CoachBoost: 0.5,
+          GamesRemaining: 0,
+        };
+      });
+      payloadToSend.teams_data = fallbackTeams;
+    }
+
     try {
       const res = await fetch(`${API_BASE}/data/market/suggest`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(suggestPayload),
+        body: JSON.stringify(payloadToSend),
       });
 
       if (!res.ok) {
