@@ -942,6 +942,21 @@ def seed_info(x_import_secret: str | None = Header(default=None)):
     }
 
 
+@router.get("/admin/teams-preview")
+def teams_preview(x_import_secret: str | None = Header(default=None)):
+    if not IMPORT_SECRET or not x_import_secret or x_import_secret != IMPORT_SECRET:
+        raise HTTPException(status_code=403, detail="Import secret non valido")
+    rows = _read_csv_fallback(TEAMS_PATH, SEED_DB_DIR / "teams.csv")
+    if not rows:
+        return {"items": [], "paths": {"volume": str(TEAMS_PATH), "seed": str(SEED_DB_DIR / "teams.csv")}}
+    first = rows[0]
+    return {
+        "items": rows[:3],
+        "keys": sorted(first.keys()),
+        "paths": {"volume": str(TEAMS_PATH), "seed": str(SEED_DB_DIR / "teams.csv")},
+    }
+
+
 @router.get("/summary")
 def summary():
     rose = _read_csv(ROSE_PATH)
