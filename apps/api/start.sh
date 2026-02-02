@@ -3,9 +3,22 @@ set -e
 
 DB_PATH="/app/data/db/app.db"
 SEED_PATH="/app/seed/app.db.seed"
+SEED_DB_DIR="/app/seed/db"
+
+mkdir -p /app/data/db
 
 if [ ! -f "$DB_PATH" ] && [ -f "$SEED_PATH" ]; then
   cp "$SEED_PATH" "$DB_PATH"
+fi
+
+if [ -d "$SEED_DB_DIR" ]; then
+  for seed_file in "$SEED_DB_DIR"/*.csv; do
+    [ -f "$seed_file" ] || continue
+    target="/app/data/db/$(basename "$seed_file")"
+    if [ ! -f "$target" ]; then
+      cp "$seed_file" "$target"
+    fi
+  done
 fi
 
 PORT="${PORT:-8001}"
