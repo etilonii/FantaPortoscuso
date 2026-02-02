@@ -41,3 +41,7 @@ class ImportTeamKeyItem(BaseModel):
 
 class ImportTeamKeysRequest(BaseModel):
     items: list[ImportTeamKeyItem] = Field(min_length=1)
+
+
+class ResetKeyRequest(BaseModel):
+    key: str = Field(min_length=1)

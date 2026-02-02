@@ -17,6 +17,7 @@ from ..schemas import (
     KeyCreateResponse,
     LoginRequest,
     LoginResponse,
+    ResetKeyRequest,
 )
 
 
@@ -156,6 +157,31 @@ def import_team_keys(
         inserted += 1
     db.commit()
     return {"imported": inserted}
+
+
+@router.post("/admin/reset-key")
+def reset_key(
+    payload: ResetKeyRequest,
+    x_import_secret: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    secret = os.getenv("IMPORT_SECRET", "")
+    if not secret or not x_import_secret or x_import_secret != secret:
+        raise HTTPException(status_code=403, detail="Import secret non valido")
+    key_value = payload.key.strip().lower()
+    if not key_value:
+        raise HTTPException(status_code=400, detail="Key non valida")
+    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Key non trovata")
+    record.used = False
+    record.device_id = None
+    record.user_agent_hash = None
+    record.ip_address = None
+    record.used_at = None
+    db.add(record)
+    db.commit()
+    return {"status": "ok"}
 
 
 @router.post("/login", response_model=LoginResponse)
