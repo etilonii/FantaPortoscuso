@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir -r /app/apps/api/requirements.txt
 COPY apps/api /app/apps/api
 COPY data /app/data
 
-RUN mkdir -p /app/seed && cp /app/data/db/app.db /app/seed/app.db.seed
+RUN mkdir -p /app/seed && if [ -f /app/data/db/app.db ]; then cp /app/data/db/app.db /app/seed/app.db.seed; fi
 
 RUN chmod +x /app/apps/api/start.sh
 
