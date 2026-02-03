@@ -96,6 +96,7 @@ def list_keys(
     last_seen_map = {}
     online_keys = set()
     device_count_map = {}
+    team_map = {item.key: item.team for item in db.query(TeamKey).all()}
     for s in sessions:
         if not s.key:
             continue
@@ -114,6 +115,7 @@ def list_keys(
             is_admin=k.is_admin,
             device_id=k.device_id,
             device_count=device_count_map.get(k.key, 0),
+            team=team_map.get(k.key),
             created_at=k.created_at.isoformat() if k.created_at else None,
             used_at=k.used_at.isoformat() if k.used_at else None,
             last_seen_at=last_seen_map.get(k.key).isoformat() if last_seen_map.get(k.key) else None,

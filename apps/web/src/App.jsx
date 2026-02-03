@@ -1876,6 +1876,9 @@ useEffect(() => {
                               {item.is_admin ? "ADMIN" : "USER"} - {item.used ? "Attivata" : "Non usata"}
                             </span>
                             <span className="muted">
+                              Team: {item.team || "-"}
+                            </span>
+                            <span className="muted">
                               Dispositivi: {item.device_count ?? 0}
                             </span>
                             <span className="muted">

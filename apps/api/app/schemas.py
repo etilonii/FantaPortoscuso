@@ -26,6 +26,7 @@ class AdminKeyItem(BaseModel):
     is_admin: bool
     device_id: str | None = None
     device_count: int = 0
+    team: str | None = None
     created_at: str | None = None
     used_at: str | None = None
     last_seen_at: str | None = None
