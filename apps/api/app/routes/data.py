@@ -618,16 +618,19 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
             "PrezzoAttuale": row.get("PrezzoAttuale", 0),
             "Ruolo": row.get("Ruolo", ""),
         }
+    qa_map = _load_qa_map()
     rose_team_map: Dict[str, Dict[str, Dict[str, str]]] = defaultdict(dict)
     for row in rose_rows:
         team = (row.get("Team") or "").strip()
         name = (row.get("Giocatore") or "").strip()
         if not team or not name:
             continue
+        name_key = normalize_name(name)
+        qa = qa_map.get(name_key, row.get("PrezzoAttuale", 0))
         rose_team_map[team.lower()][normalize_name(name)] = {
             "Nome": name,
             "Squadra": row.get("Squadra", ""),
-            "PrezzoAttuale": row.get("PrezzoAttuale", 0),
+            "PrezzoAttuale": qa,
             "Ruolo": row.get("Ruolo", ""),
         }
     rows = _read_csv(report_path)
@@ -682,6 +685,10 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
                     in_name = alt_in
             out_value = float((out_info or {}).get("PrezzoAttuale", 0) or 0)
             in_value = float((in_info or {}).get("PrezzoAttuale", 0) or 0)
+            if out_key in qa_map:
+                out_value = float(qa_map.get(out_key) or 0)
+            if in_key in qa_map:
+                in_value = float(qa_map.get(in_key) or 0)
             out_role = (
                 (out_info or {}).get("Ruolo")
                 or (team_map.get(out_key) or {}).get("Ruolo")
@@ -745,6 +752,7 @@ def _enrich_market_items(items: List[Dict[str, str]]) -> List[Dict[str, str]]:
             "Ruolo": row.get("Ruolo", ""),
         }
 
+    qa_map = _load_qa_map()
     rose_team_map: Dict[str, Dict[str, Dict[str, str]]] = defaultdict(dict)
     starred_players = set()
     for row in rose_rows:
@@ -753,10 +761,11 @@ def _enrich_market_items(items: List[Dict[str, str]]) -> List[Dict[str, str]]:
         if not team or not name:
             continue
         key = normalize_name(name)
+        qa = qa_map.get(key, row.get("PrezzoAttuale", 0))
         rose_team_map[team.lower()][key] = {
             "Nome": name,
             "Squadra": row.get("Squadra", ""),
-            "PrezzoAttuale": row.get("PrezzoAttuale", 0),
+            "PrezzoAttuale": qa,
             "Ruolo": row.get("Ruolo", ""),
         }
         if name.strip().endswith("*"):
@@ -810,6 +819,10 @@ def _enrich_market_items(items: List[Dict[str, str]]) -> List[Dict[str, str]]:
             out_val = out_info.get("PrezzoAttuale", 0)
         if in_val in ("", None):
             in_val = in_info.get("PrezzoAttuale", 0)
+        if out_key in qa_map:
+            out_val = qa_map.get(out_key)
+        if in_key in qa_map:
+            in_val = qa_map.get(in_key)
         item["out_value"] = float(out_val or 0)
         item["in_value"] = float(in_val or 0)
         item["delta"] = item["out_value"] - item["in_value"]
@@ -819,6 +832,7 @@ def _enrich_market_items(items: List[Dict[str, str]]) -> List[Dict[str, str]]:
 
 def _build_market_suggest_payload(team_name: str, db: Session) -> Dict[str, object]:
     rose_rows = _read_csv(ROSE_PATH)
+    qa_map = _load_qa_map()
     team_key = normalize_name(team_name)
     residual_map = _load_residual_credits_map()
     credits_residui = float(residual_map.get(team_key, 0) or 0)
@@ -826,12 +840,14 @@ def _build_market_suggest_payload(team_name: str, db: Session) -> Dict[str, obje
     for row in rose_rows:
         if normalize_name(row.get("Team", "")) != team_key:
             continue
+        name_key = normalize_name(row.get("Giocatore", ""))
+        qa = qa_map.get(name_key, row.get("PrezzoAttuale", 0))
         user_squad.append(
             {
                 "Giocatore": row.get("Giocatore", ""),
                 "Ruolo": row.get("Ruolo", ""),
                 "Squadra": row.get("Squadra", ""),
-                "PrezzoAttuale": row.get("PrezzoAttuale", 0),
+                "PrezzoAttuale": qa,
             }
         )
 
