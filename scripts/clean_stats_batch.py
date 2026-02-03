@@ -51,6 +51,7 @@ STATS_PLAYERS_PATH = DATA_DIR / "statistiche_giocatori.csv"
 ROSE_PATH = DATA_DIR / "rose_fantaportoscuso.csv"
 QUOT_PATH = DATA_DIR / "quotazioni.csv"
 QUOT_MASTER_PATH = DATA_DIR / "db" / "quotazioni_master.csv"
+HIST_QUOT_DIR = DATA_DIR / "history" / "quotazioni"
 RIGORISTI_TEMPLATE_PATH = DATA_DIR / "templates" / "rigoristi_template.csv"
 PLAYER_STATS_PATH = DATA_DIR / "db" / "player_stats.csv"
 RIGORISTI_REPORT_PATH = DATA_DIR / "reports" / "rigoristi_missing_report.txt"
@@ -66,6 +67,7 @@ NAME_FIXES = {
     "l pellegrini": "Pellegrini Lo.",
     "m thuram": "Thuram",
     "m lautaro": "Martinez L.",
+    "lautaro m": "Martinez L.",
     "jesus rodriguez": "Rodriguez Je.",
     "g zappa": "Zappa",
     "a obert": "Obert",
@@ -73,6 +75,30 @@ NAME_FIXES = {
     "soule": "Soulè",
     "h calhanoglu": "Calhanoglu",
     "milinkovic savic v": "Milinkovic-Savic V.",
+}
+
+ABBR_MAP = {
+    "ATA": "Atalanta",
+    "BOL": "Bologna",
+    "CAG": "Cagliari",
+    "COM": "Como",
+    "CRE": "Cremonese",
+    "EMP": "Empoli",
+    "FIO": "Fiorentina",
+    "GEN": "Genoa",
+    "INT": "Inter",
+    "JUV": "Juventus",
+    "LAZ": "Lazio",
+    "LEC": "Lecce",
+    "MIL": "Milan",
+    "NAP": "Napoli",
+    "PAR": "Parma",
+    "PIS": "Pisa",
+    "ROM": "Roma",
+    "SAS": "Sassuolo",
+    "TOR": "Torino",
+    "UDI": "Udinese",
+    "VER": "Verona",
 }
 
 
@@ -87,23 +113,71 @@ def norm(text: str) -> str:
     return text
 
 
-def load_canon() -> tuple[list[tuple[str, str]], dict[str, str]]:
-    path = QUOT_PATH if QUOT_PATH.exists() else QUOT_MASTER_PATH
-    if not path.exists():
-        return [], {}
-    canon_list: list[tuple[str, str]] = []
-    name_to_team: dict[str, str] = {}
-    with path.open("r", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
+def norm_team(raw: str) -> str:
+    team = str(raw or "").strip()
+    if not team:
+        return ""
+    key = re.sub(r"[^A-Za-z]", "", team).upper()
+    if key in ABBR_MAP:
+        return ABBR_MAP[key]
+    return team.title()
+
+
+def _iter_quotazioni_files() -> list[Path]:
+    files: list[Path] = []
+    if HIST_QUOT_DIR.exists():
+        files.extend(sorted(HIST_QUOT_DIR.glob("quotazioni_*.csv"), key=lambda p: p.stat().st_mtime))
+    if QUOT_PATH.exists():
+        files.append(QUOT_PATH)
+    if not files and QUOT_MASTER_PATH.exists():
+        files.append(QUOT_MASTER_PATH)
+    return files
+
+
+def load_canon() -> tuple[list[tuple[str, str]], dict[str, str], dict[str, str], dict[str, str]]:
+    files = _iter_quotazioni_files()
+    if not files:
+        return [], {}, {}, {}
+    latest_path = QUOT_PATH if QUOT_PATH.exists() else files[-1]
+    latest_names: set[str] = set()
+    try:
+        latest_df = pd.read_csv(latest_path)
+        for _, row in latest_df.iterrows():
             name = str(row.get("Giocatore") or row.get("nome") or "").strip()
-            if not name:
+            if name:
+                latest_names.add(norm(name))
+    except Exception:
+        latest_names = set()
+
+    name_map: dict[str, str] = {}
+    team_map: dict[str, str] = {}
+    role_map: dict[str, str] = {}
+    for path in reversed(files):
+        try:
+            df = pd.read_csv(path)
+        except Exception:
+            continue
+        for _, row in df.iterrows():
+            base = str(row.get("Giocatore") or row.get("nome") or "").strip()
+            if not base:
                 continue
-            canon_list.append((norm(name), name))
-            team = str(row.get("Squadra") or row.get("club") or "").strip()
-            if team and name not in name_to_team:
-                name_to_team[name] = team
-    return canon_list, name_to_team
+            key = norm(re.sub(r"\s*\*\s*$", "", base))
+            if key not in name_map:
+                name_map[key] = re.sub(r"\s*\*\s*$", "", base).strip()
+            team = norm_team(str(row.get("Squadra") or row.get("club") or "").strip())
+            role = str(row.get("Ruolo") or row.get("ruolo") or "").strip()
+            if team and key not in team_map:
+                team_map[key] = team
+            if role and key not in role_map:
+                role_map[key] = role
+
+    canon_list: list[tuple[str, str]] = []
+    display_map: dict[str, str] = {}
+    for key, base in name_map.items():
+        display = f"{base} *" if key not in latest_names else base
+        canon_list.append((key, display))
+        display_map[key] = display
+    return canon_list, team_map, role_map, display_map
 
 
 def canon_initial(name: str) -> str:
@@ -111,19 +185,23 @@ def canon_initial(name: str) -> str:
     return last[0].upper() if last else ""
 
 
-def resolve_name(raw: str, team: str, canon_list, name_to_team) -> tuple[str, bool]:
+def resolve_name(raw: str, team: str, canon_list, team_map) -> tuple[str, bool]:
     raw = str(raw).strip()
     if not raw:
         return raw, False
     fixed = NAME_FIXES.get(norm(raw))
     if fixed:
+        fixed_key = norm(fixed)
+        for k, display in canon_list:
+            if k == fixed_key:
+                return display, True
         return fixed, True
     key = norm(raw)
     exact = [name for k, name in canon_list if k == key]
     if exact:
         return exact[0], True
 
-    team = str(team or "").strip()
+    team = norm_team(team)
 
     m = re.match(r"^(?P<init>[A-Z])\.?\s+(?P<rest>.*)$", raw)
     init = None
@@ -132,25 +210,29 @@ def resolve_name(raw: str, team: str, canon_list, name_to_team) -> tuple[str, bo
         init = m.group("init").upper()
         base = m.group("rest").strip()
         key2 = norm(base)
-        candidates = [name for k, name in canon_list if k.startswith(key2) or key2 in k]
+        candidates = [(k, name) for k, name in canon_list if k.startswith(key2) or key2 in k]
         if team:
-            filtered = [n for n in candidates if name_to_team.get(n, "") == team]
+            filtered = [
+                pair for pair in candidates if norm_team(team_map.get(pair[0], "")) == team
+            ]
             candidates = filtered or candidates
         if len(candidates) == 1:
-            return candidates[0], True
+            return candidates[0][1], True
         if len(candidates) > 1 and init:
-            init_matches = [n for n in candidates if canon_initial(n) == init]
+            init_matches = [n for _, n in candidates if canon_initial(n) == init]
             if len(init_matches) == 1:
                 return init_matches[0], True
 
     parts = key.split()
     last = parts[-1] if parts else key
-    candidates = [name for k, name in canon_list if k.startswith(last) or k.endswith(last) or last in k]
+    candidates = [(k, name) for k, name in canon_list if k.startswith(last) or k.endswith(last) or last in k]
     if team:
-        filtered = [n for n in candidates if name_to_team.get(n, "") == team]
+        filtered = [
+            pair for pair in candidates if norm_team(team_map.get(pair[0], "")) == team
+        ]
         candidates = filtered or candidates
     if len(candidates) == 1:
-        return candidates[0], True
+        return candidates[0][1], True
 
     return raw, False
 
@@ -168,7 +250,7 @@ def update_rigoristi_from_template() -> None:
     if not raw:
         return
 
-    canon_list, name_to_team = load_canon()
+    canon_list, team_map, _, _ = load_canon()
     lines = [line.strip().lstrip("\ufeff") for line in raw.splitlines()]
     lines = [line for line in lines if line]
 
@@ -194,7 +276,7 @@ def update_rigoristi_from_template() -> None:
         team = parts[2] if len(parts) > 2 else ""
         rig_seg = parts[3] if len(parts) > 3 else "0"
         rig_sbagl = parts[4] if len(parts) > 4 else "0"
-        name, ok = resolve_name(name_raw, team, canon_list, name_to_team)
+        name, ok = resolve_name(name_raw, team, canon_list, team_map)
         if not ok:
             missing_penalty.append(name_raw)
         try:
@@ -229,7 +311,7 @@ def update_rigoristi_from_template() -> None:
                 player_raw = parts[col_idx].strip()
                 if not player_raw:
                     continue
-                name, ok = resolve_name(player_raw, team, canon_list, name_to_team)
+                name, ok = resolve_name(player_raw, team, canon_list, team_map)
                 if not ok:
                     missing_pk.append(player_raw)
                 current = pk_role_map.get(name, 0)
@@ -287,7 +369,7 @@ def update_r8_disordinati_template() -> list[str]:
     if not raw:
         return []
 
-    canon_list, name_to_team = load_canon()
+    canon_list, team_map, _, _ = load_canon()
     current_col = None
     rows: list[tuple[str, str, float, str]] = []
 
@@ -336,7 +418,7 @@ def update_r8_disordinati_template() -> list[str]:
 
     missing: list[str] = []
     for name_raw, team, value, col in rows:
-        name, ok = resolve_name(name_raw, team, canon_list, name_to_team)
+        name, ok = resolve_name(name_raw, team, canon_list, team_map)
         if not ok:
             missing.append(name_raw)
         mask = df["Giocatore"] == name
@@ -352,7 +434,7 @@ def update_r8_disordinati_template() -> list[str]:
 
 
 def clean_simple_stat(template_path: Path, out_path: Path, stat_col: str, report_path: Path) -> None:
-    canon_list, name_to_team = load_canon()
+    canon_list, team_map, _, _ = load_canon()
     df = pd.read_csv(template_path)
     col_map = {
         "GolVittoria": ["GolVittoria", "Gol Vittoria"],
@@ -373,7 +455,7 @@ def clean_simple_stat(template_path: Path, out_path: Path, stat_col: str, report
         raw_name = str(row.get("Giocatore", "")).strip()
         if not raw_name:
             continue
-        resolved, ok = resolve_name(raw_name, "", canon_list, name_to_team)
+        resolved, ok = resolve_name(raw_name, "", canon_list, team_map)
         if not ok:
             missing.append(raw_name)
         value = pd.to_numeric(row.get(stat_source, 0), errors="coerce")
@@ -480,53 +562,41 @@ def load_role_map() -> tuple[dict, dict]:
 def update_statistiche_giocatori() -> None:
     role_map, team_map = load_role_map()
 
-    # Base from listone (prefer quotazioni.csv, fallback to quotazioni_master.csv)
-    base_players = []
-    listone_team_map = {}
-    if QUOT_PATH.exists():
-        df_q = pd.read_csv(QUOT_PATH)
-        if "Giocatore" in df_q.columns:
-            base_players = df_q["Giocatore"].astype(str).str.strip().tolist()
-    if QUOT_MASTER_PATH.exists():
-        df_qm = pd.read_csv(QUOT_MASTER_PATH)
-        if "nome" in df_qm.columns:
-            if not base_players:
-                base_players = df_qm["nome"].astype(str).str.strip().tolist()
-            if "club" in df_qm.columns:
-                for _, row in df_qm.iterrows():
-                    name = str(row.get("nome", "")).strip()
-                    team = str(row.get("club", "")).strip()
-                    if name and team and name not in listone_team_map:
-                        listone_team_map[name] = team
+    canon_list, listone_team_map, listone_role_map, display_map = load_canon()
+    base_players = [name for _, name in canon_list]
+    if listone_role_map:
+        for key, role in listone_role_map.items():
+            if role and key not in role_map:
+                role_map[display_map.get(key, key)] = role
 
     if STATS_PLAYERS_PATH.exists():
         base_df = pd.read_csv(STATS_PLAYERS_PATH)
     else:
         base_df = pd.DataFrame(columns=["Giocatore", "Squadra"])
 
-    base_df["Giocatore"] = base_df["Giocatore"].astype(str).str.strip()
+    def _canon_key(name: str) -> str:
+        base = str(name or "").strip()
+        base = re.sub(r"\s*\*\s*$", "", base)
+        return norm(base)
+
+    def _to_canon(name: str) -> str:
+        key = _canon_key(name)
+        return display_map.get(key, str(name or "").strip())
+
+    base_df["Giocatore"] = base_df["Giocatore"].astype(str).str.strip().apply(_to_canon)
     base_df["Squadra"] = base_df["Squadra"].astype(str).str.strip()
     if not base_df.empty:
         base_df = base_df.drop_duplicates(subset=["Giocatore"], keep="last")
 
-    players = set(base_players) | set(base_df["Giocatore"].tolist())
-    for stat_file in STAT_FILES.values():
-        path = OUT_DIR / stat_file
-        if not path.exists():
-            continue
-        try:
-            df_stat = pd.read_csv(path)
-        except pd.errors.EmptyDataError:
-            continue
-        if "Giocatore" in df_stat.columns:
-            players.update(df_stat["Giocatore"].astype(str).str.strip().tolist())
+    players = set(base_players)
 
     if not players:
         return
 
     rows = []
     for name in sorted(players):
-        team = team_map.get(name, "") or listone_team_map.get(name, "")
+        key = _canon_key(name)
+        team = listone_team_map.get(key, "")
         if not team:
             if not base_df.empty:
                 match = base_df.loc[base_df["Giocatore"] == name, "Squadra"].head(1).tolist()
@@ -577,7 +647,12 @@ def update_statistiche_giocatori() -> None:
         if stat_name not in df_stat.columns:
             continue
         df_stat = df_stat[["Giocatore", stat_name]].copy()
-        df_stat["Giocatore"] = df_stat["Giocatore"].astype(str).str.strip()
+        df_stat["Giocatore"] = (
+            df_stat["Giocatore"]
+            .astype(str)
+            .str.strip()
+            .apply(_to_canon)
+        )
         # Deduplicate any repeated players in stat files (use max to avoid inflation)
         df_stat[stat_name] = pd.to_numeric(df_stat[stat_name], errors="coerce").fillna(0)
         df_stat = df_stat.groupby("Giocatore", as_index=False)[stat_name].max()

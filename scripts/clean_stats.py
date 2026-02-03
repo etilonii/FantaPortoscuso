@@ -9,6 +9,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 QUOT_PATH = DATA_DIR / "quotazioni.csv"
+HIST_QUOT_DIR = DATA_DIR / "history" / "quotazioni"
+QUOT_MASTER_PATH = DATA_DIR / "db" / "quotazioni_master.csv"
 
 ABBR_MAP = {
     "ATA": "Atalanta",
@@ -51,6 +53,7 @@ NAME_FIXES = {
     "l pellegrini": "Pellegrini Lo.",
     "m thuram": "Thuram",
     "m lautaro": "Martinez L.",
+    "lautaro m": "Martinez L.",
     "jesus rodriguez": "Rodriguez Je.",
     "g zappa": "Zappa",
     "a obert": "Obert",
@@ -71,20 +74,71 @@ def norm(text: str) -> str:
     return text
 
 
+def norm_team(raw: str) -> str:
+    team = str(raw or "").strip()
+    if not team:
+        return ""
+    key = re.sub(r"[^A-Za-z]", "", team).upper()
+    if key in ABBR_MAP:
+        return ABBR_MAP[key]
+    # Already full name (case-insensitive)
+    return team.title()
+
+
+def _iter_quotazioni_files():
+    files = []
+    if HIST_QUOT_DIR.exists():
+        files.extend(sorted(HIST_QUOT_DIR.glob("quotazioni_*.csv"), key=lambda p: p.stat().st_mtime))
+    if QUOT_PATH.exists():
+        files.append(QUOT_PATH)
+    if not files and QUOT_MASTER_PATH.exists():
+        files.append(QUOT_MASTER_PATH)
+    return files
+
+
 def load_canon():
-    if not QUOT_PATH.exists():
-        return [], {}
-    quot = pd.read_csv(QUOT_PATH)
-    canon_list = []
-    name_to_team = {}
-    for _, row in quot.iterrows():
-        name = str(row.get("Giocatore", "")).strip()
-        if not name:
+    files = _iter_quotazioni_files()
+    if not files:
+        return [], {}, {}
+    latest_path = QUOT_PATH if QUOT_PATH.exists() else files[-1]
+    latest_names = set()
+    try:
+        latest_df = pd.read_csv(latest_path)
+        for _, row in latest_df.iterrows():
+            name = str(row.get("Giocatore") or row.get("nome") or "").strip()
+            if name:
+                latest_names.add(norm(name))
+    except Exception:
+        latest_names = set()
+
+    name_map = {}
+    team_map = {}
+    role_map = {}
+    # Iterate newest first so we keep latest team/role
+    for path in reversed(files):
+        try:
+            df = pd.read_csv(path)
+        except Exception:
             continue
-        canon_list.append((norm(name), name))
-        if name not in name_to_team and row.get("Squadra", ""):
-            name_to_team[name] = str(row.get("Squadra", "")).strip()
-    return canon_list, name_to_team
+        for _, row in df.iterrows():
+            base = str(row.get("Giocatore") or row.get("nome") or "").strip()
+            if not base:
+                continue
+            key = norm(re.sub(r"\s*\*\s*$", "", base))
+            if key not in name_map:
+                name_map[key] = re.sub(r"\s*\*\s*$", "", base).strip()
+            team = norm_team(str(row.get("Squadra") or row.get("club") or "").strip())
+            role = str(row.get("Ruolo") or row.get("ruolo") or "").strip()
+            if team and key not in team_map:
+                team_map[key] = team
+            if role and key not in role_map:
+                role_map[key] = role
+
+    canon_list = []
+    for key, base in name_map.items():
+        display = f"{base} *" if key not in latest_names else base
+        canon_list.append((key, display))
+    return canon_list, team_map, role_map
 
 
 def canon_initial(name: str) -> str:
@@ -92,26 +146,34 @@ def canon_initial(name: str) -> str:
     return last[0].upper() if last else ""
 
 
-def filter_by_team(candidates, team_full, name_to_team):
+def filter_by_team(candidates, team_full, team_map):
     if not team_full:
         return candidates
-    filtered = [n for n in candidates if name_to_team.get(n, "") == team_full]
+    filtered = [
+        n for n in candidates if norm_team(team_map.get(norm(n), "")) == team_full
+    ]
     return filtered if filtered else candidates
 
 
-def resolve_name(raw, squadra_abbr, canon_list, name_to_team):
+def resolve_name(raw, squadra_abbr, pos_short, canon_list, team_map, role_map):
     raw = str(raw).strip()
     if not raw or raw.lower() == "nan":
         return raw, False, "missing", []
     fixed = NAME_FIXES.get(norm(raw))
     if fixed:
+        fixed_key = norm(fixed)
+        for k, display in canon_list:
+            if k == fixed_key:
+                return display, True, "fixed", [display]
         return fixed, True, "fixed", [fixed]
+
     key = norm(raw)
     exact = [name for k, name in canon_list if k == key]
     if exact:
         return exact[0], True, "exact", exact
 
-    team_full = ABBR_MAP.get(squadra_abbr.upper(), "") if squadra_abbr else ""
+    team_full = norm_team(squadra_abbr)
+    pos_short = (pos_short or "").strip().upper()
 
     m = re.match(r"^(?P<init>[A-Z])\.?\s+(?P<rest>.*)$", raw)
     init = None
@@ -121,7 +183,11 @@ def resolve_name(raw, squadra_abbr, canon_list, name_to_team):
         base = m.group("rest").strip()
         key2 = norm(base)
         candidates = [name for k, name in canon_list if k.startswith(key2) or key2 in k]
-        candidates = filter_by_team(candidates, team_full, name_to_team)
+        candidates = filter_by_team(candidates, team_full, team_map)
+        if pos_short:
+            candidates = [
+                n for n in candidates if role_map.get(norm(n), "") == pos_short
+            ] or candidates
         if len(candidates) == 1:
             return candidates[0], True, "initial", candidates
         if len(candidates) > 1 and init:
@@ -133,7 +199,11 @@ def resolve_name(raw, squadra_abbr, canon_list, name_to_team):
     parts = key.split()
     last = parts[-1] if parts else key
     candidates = [name for k, name in canon_list if k.startswith(last) or k.endswith(last) or last in k]
-    candidates = filter_by_team(candidates, team_full, name_to_team)
+    candidates = filter_by_team(candidates, team_full, team_map)
+    if pos_short:
+        candidates = [
+            n for n in candidates if role_map.get(norm(n), "") == pos_short
+        ] or candidates
     if len(candidates) == 1:
         return candidates[0], True, "suffix", candidates
     if len(candidates) > 1 and init:
@@ -141,6 +211,22 @@ def resolve_name(raw, squadra_abbr, canon_list, name_to_team):
         if len(init_matches) == 1:
             return init_matches[0], True, "suffix-init", init_matches
         return raw, False, "ambiguous", candidates
+
+    # Fallback: use team + role, then initial of first name if available
+    if team_full:
+        pool = [name for k, name in canon_list if team_map.get(k, "") == team_full]
+        if pos_short:
+            pool = [n for n in pool if role_map.get(norm(n), "") == pos_short] or pool
+        if len(pool) == 1:
+            return pool[0], True, "team-role", pool
+        raw_first = parts[0] if parts else ""
+        if raw_first:
+            raw_init = raw_first[0].upper()
+            init_matches = [n for n in pool if canon_initial(n) == raw_init]
+            if len(init_matches) == 1:
+                return init_matches[0], True, "team-role-initial", init_matches
+            if len(init_matches) > 1:
+                return raw, False, "ambiguous", init_matches
 
     return raw, False, "missing", candidates
 
@@ -174,7 +260,7 @@ def main():
     parser.add_argument("--report", dest="report_path", help="Write missing/ambiguous report")
     args = parser.parse_args()
 
-    canon_list, name_to_team = load_canon()
+    canon_list, team_map, role_map = load_canon()
     rows = parse_lines(Path(args.in_path))
 
     clean_rows = []
@@ -185,7 +271,7 @@ def main():
         if not giocatore:
             continue
         resolved, ok, reason, candidates = resolve_name(
-            giocatore, squadra, canon_list, name_to_team
+            giocatore, squadra, POS_MAP.get(posizione.lower(), posizione[:1].upper()), canon_list, team_map, role_map
         )
         if not ok:
             if reason == "ambiguous":

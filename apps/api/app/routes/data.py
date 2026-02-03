@@ -985,11 +985,11 @@ def listone(
     order: str = Query(default="price_desc"),
     limit: int = Query(default=200, ge=1, le=1000),
 ):
-    rose = _read_csv(ROSE_PATH)
+    quot = _read_csv(QUOT_PATH)
     ruolo = ruolo.upper()
     order = order.strip().lower()
     items_map: Dict[str, Dict[str, str]] = {}
-    for row in rose:
+    for row in quot:
         if row.get("Ruolo", "").upper() != ruolo:
             continue
         name = row.get("Giocatore", "")
@@ -1000,7 +1000,7 @@ def listone(
         except ValueError:
             price = 0.0
         current = items_map.get(name)
-        if not current or price > float(current.get("PrezzoAttuale", 0) or 0):
+        if not current:
             items_map[name] = {
                 "Giocatore": name,
                 "Squadra": row.get("Squadra", ""),
