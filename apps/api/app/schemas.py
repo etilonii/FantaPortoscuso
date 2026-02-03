@@ -60,6 +60,15 @@ class TeamKeyRequest(BaseModel):
     team: str = Field(min_length=1)
 
 
+class TeamKeyItem(BaseModel):
+    key: str
+    team: str
+
+
+class TeamKeyDeleteRequest(BaseModel):
+    key: str = Field(min_length=1)
+
+
 class PingRequest(BaseModel):
     key: str = Field(min_length=8, max_length=32)
     device_id: str = Field(min_length=6, max_length=128)

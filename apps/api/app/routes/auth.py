@@ -23,6 +23,8 @@ from ..schemas import (
     ResetKeyRequest,
     SetAdminRequest,
     TeamKeyRequest,
+    TeamKeyItem,
+    TeamKeyDeleteRequest,
 )
 
 
@@ -173,6 +175,34 @@ def set_team_key(
         db.add(TeamKey(key=key_value, team=team_value))
     db.commit()
     return {"status": "ok", "key": key_value, "team": team_value}
+
+
+@router.get("/admin/team-keys", response_model=list[TeamKeyItem])
+def list_team_keys(
+    x_admin_key: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db)
+    items = db.query(TeamKey).order_by(TeamKey.team.asc()).all()
+    return [TeamKeyItem(key=item.key, team=item.team) for item in items]
+
+
+@router.delete("/admin/team-key")
+def delete_team_key(
+    payload: TeamKeyDeleteRequest,
+    x_admin_key: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db)
+    key_value = payload.key.strip().lower()
+    if not key_value:
+        raise HTTPException(status_code=400, detail="Key non valida")
+    record = db.query(TeamKey).filter(TeamKey.key == key_value).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Associazione non trovata")
+    db.delete(record)
+    db.commit()
+    return {"status": "ok", "key": key_value}
 
 
 @router.get("/admin/status")

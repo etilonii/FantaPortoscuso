@@ -199,6 +199,7 @@ export default function App() {
   const [adminImportIsAdmin, setAdminImportIsAdmin] = useState(false);
   const [adminImportTeamKeys, setAdminImportTeamKeys] = useState("");
   const [adminStatus, setAdminStatus] = useState(null);
+  const [adminTeamKeys, setAdminTeamKeys] = useState([]);
 
   /* ===== MERCATO + SUGGEST ===== */
   const [marketView, setMarketView] = useState("players");
@@ -957,6 +958,18 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     } catch {}
   };
 
+  const loadAdminTeamKeys = async () => {
+    if (!isAdmin) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/admin/team-keys`, {
+        headers: { "X-Admin-Key": accessKey.trim().toLowerCase() },
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      setAdminTeamKeys(data || []);
+    } catch {}
+  };
+
   const refreshMarketAdmin = async () => {
     if (!isAdmin) return;
     try {
@@ -1009,6 +1022,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setAdminNotice(`Key ${key.toUpperCase()} associata a ${team}.`);
       setAdminTeamKey("");
       setAdminTeamName("");
+      loadAdminTeamKeys();
     } catch {}
   };
 
@@ -1080,6 +1094,26 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       setAdminNotice(`Importate ${items.length} associazioni team.`);
       setAdminImportTeamKeys("");
+      loadAdminTeamKeys();
+    } catch {}
+  };
+
+  const deleteTeamKeyAdmin = async (keyValue) => {
+    if (!isAdmin) return;
+    const key = String(keyValue || "").trim().toLowerCase();
+    if (!key) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/admin/team-key`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Key": accessKey.trim().toLowerCase(),
+        },
+        body: JSON.stringify({ key }),
+      });
+      if (!res.ok) return;
+      setAdminNotice(`Associazione rimossa: ${key.toUpperCase()}.`);
+      loadAdminTeamKeys();
     } catch {}
   };
 
@@ -1125,6 +1159,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
     loadAdminKeys();
     loadAdminStatus();
+    loadAdminTeamKeys();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
 
@@ -1853,6 +1888,36 @@ useEffect(() => {
                           <strong>
                             {item.online ? "Online" : item.device_id ? "1+ device" : "-"}
                           </strong>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+                <div className="panel">
+                  <div className="panel-header">
+                    <h3>Key → Team</h3>
+                    <button className="ghost" onClick={loadAdminTeamKeys}>
+                      Aggiorna
+                    </button>
+                  </div>
+
+                  <div className="list">
+                    {adminTeamKeys.length === 0 ? (
+                      <p className="muted">Nessuna associazione disponibile.</p>
+                    ) : (
+                      adminTeamKeys.map((item) => (
+                        <div key={item.key} className="list-item player-card">
+                          <div>
+                            <p>{String(item.key || "").toUpperCase()}</p>
+                            <span className="muted">{item.team}</span>
+                          </div>
+                          <button
+                            className="ghost"
+                            onClick={() => deleteTeamKeyAdmin(item.key)}
+                          >
+                            Elimina
+                          </button>
                         </div>
                       ))
                     )}
