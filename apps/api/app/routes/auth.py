@@ -93,9 +93,11 @@ def list_keys(
     sessions = db.query(DeviceSession).all()
     last_seen_map = {}
     online_keys = set()
+    device_count_map = {}
     for s in sessions:
         if not s.key:
             continue
+        device_count_map[s.key] = device_count_map.get(s.key, 0) + 1
         last_seen = s.last_seen_at
         if last_seen:
             current = last_seen_map.get(s.key)
@@ -109,6 +111,7 @@ def list_keys(
             used=k.used,
             is_admin=k.is_admin,
             device_id=k.device_id,
+            device_count=device_count_map.get(k.key, 0),
             created_at=k.created_at.isoformat() if k.created_at else None,
             used_at=k.used_at.isoformat() if k.used_at else None,
             last_seen_at=last_seen_map.get(k.key).isoformat() if last_seen_map.get(k.key) else None,
@@ -178,7 +181,7 @@ def admin_status(
     db: Session = Depends(get_db),
 ):
     _require_admin_key(x_admin_key, db)
-    status = {"data": {}, "market": {}}
+    status = {"data": {}, "market": {}, "auth": {}}
 
     if LAST_UPDATE_PATH.exists():
         try:
@@ -230,6 +233,21 @@ def admin_status(
         }
     else:
         status["market"] = {"items": 0, "teams": 0, "latest_date": None}
+
+    now = datetime.utcnow()
+    sessions = db.query(DeviceSession).all()
+    last_seen = None
+    online_count = 0
+    for s in sessions:
+        if s.last_seen_at:
+            if not last_seen or s.last_seen_at > last_seen:
+                last_seen = s.last_seen_at
+            if s.last_seen_at >= now - timedelta(minutes=5):
+                online_count += 1
+    status["auth"] = {
+        "last_seen_at": last_seen.isoformat() if last_seen else None,
+        "online_devices": online_count,
+    }
 
     return status
 

@@ -210,6 +210,7 @@ export default function App() {
     marketPreview,
     setMarketPreview,
     marketUpdatedAt,
+    loadMarket,
   } = useMarketPlaceholder(API_BASE, loggedIn);
 
 const [suggestPayload, setSuggestPayload] = useState(null);
@@ -953,6 +954,20 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setAdminStatus(data || null);
+    } catch {}
+  };
+
+  const refreshMarketAdmin = async () => {
+    if (!isAdmin) return;
+    try {
+      const res = await fetch(`${API_BASE}/data/admin/market/refresh`, {
+        method: "POST",
+        headers: { "X-Admin-Key": accessKey.trim().toLowerCase() },
+      });
+      if (!res.ok) return;
+      setAdminNotice("Mercato aggiornato.");
+      loadAdminStatus();
+      loadMarket();
     } catch {}
   };
 
@@ -1701,6 +1716,25 @@ useEffect(() => {
                       </div>
                       <strong>{adminStatus?.market?.latest_date || "-"}</strong>
                     </div>
+                    <div className="list-item player-card">
+                      <div>
+                        <p>Ultimo accesso</p>
+                        <span className="muted">Login piu recente</span>
+                      </div>
+                      <strong>{adminStatus?.auth?.last_seen_at || "-"}</strong>
+                    </div>
+                    <div className="list-item player-card">
+                      <div>
+                        <p>Device online</p>
+                        <span className="muted">Ultimi 5 minuti</span>
+                      </div>
+                      <strong>{adminStatus?.auth?.online_devices ?? 0}</strong>
+                    </div>
+                  </div>
+                  <div className="admin-actions">
+                    <button className="ghost" onClick={refreshMarketAdmin}>
+                      Force refresh mercato
+                    </button>
                   </div>
                 </div>
 
@@ -1804,8 +1838,13 @@ useEffect(() => {
                           <div>
                             <p>{String(item.key || "").toUpperCase()}</p>
                             <span className="muted">
-                              {item.is_admin ? "ADMIN" : "USER"} ·{" "}
-                              {item.used ? "Attivata" : "Non usata"}
+                              {item.is_admin ? "ADMIN" : "USER"} - {item.used ? "Attivata" : "Non usata"}
+                            </span>
+                            <span className="muted">
+                              Dispositivi: {item.device_count ?? 0}
+                            </span>
+                            <span className="muted">
+                              Device: {item.device_id || "-"}
                             </span>
                             <span className="muted">
                               Ultimo accesso: {item.last_seen_at || item.used_at || "-"}

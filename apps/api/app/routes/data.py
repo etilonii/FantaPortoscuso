@@ -1,4 +1,5 @@
 import csv
+import json
 import re
 from collections import defaultdict
 from pathlib import Path
@@ -9,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from apps.api.app.engine.market_engine import suggest_transfers
 from apps.api.app.deps import get_db
-from apps.api.app.models import Fixture, Player, PlayerStats, Team, TeamKey
+from apps.api.app.models import AccessKey, Fixture, Player, PlayerStats, Team, TeamKey
 from apps.api.app.utils.names import normalize_name, strip_star, is_starred
 
 
@@ -91,6 +92,17 @@ def _load_name_list(path: Path) -> List[str]:
 
 def _matches(text: str, query: str) -> bool:
     return query.lower() in text.lower()
+
+
+def _require_admin_key(x_admin_key: str | None, db: Session) -> None:
+    if not x_admin_key:
+        raise HTTPException(status_code=401, detail="Admin key richiesta")
+    key_value = x_admin_key.strip().lower()
+    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not record or not record.is_admin:
+        raise HTTPException(status_code=403, detail="Admin key non valida")
+    if not record.used:
+        raise HTTPException(status_code=403, detail="Admin key non ancora attivata")
 
 
 def _strip_leading_initial(value: str) -> str:
@@ -1179,6 +1191,32 @@ def market():
         data = _build_market_placeholder()
         data["items"] = _enrich_market_items(data.get("items", []))
         return data
+
+
+@router.post("/admin/market/refresh")
+def refresh_market(
+    x_admin_key: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db)
+    data = _build_market_placeholder()
+    data["items"] = _enrich_market_items(data.get("items", []))
+    try:
+        MARKET_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception:
+        raise HTTPException(status_code=500, detail="Impossibile aggiornare il mercato")
+    return {
+        "items": len(data.get("items", [])),
+        "teams": len(data.get("teams", [])),
+        "latest_date": sorted(
+            [
+                *(item.get("date") for item in data.get("items", []) if item.get("date")),
+                *(team.get("last_date") for team in data.get("teams", []) if team.get("last_date")),
+            ]
+        )[-1]
+        if data.get("items") or data.get("teams")
+        else None,
+    }
 
 
 @router.post("/market/suggest")

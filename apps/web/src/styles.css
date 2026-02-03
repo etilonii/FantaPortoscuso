@@ -2188,19 +2188,25 @@ body.menu-open .menu-overlay {
 
 .admin-actions .input,
 .admin-actions textarea {
-  background: #0f1b2b;
-  border: 1px solid #2b4160;
+  background: #13263d;
+  border: 1px solid #314b6e;
   color: #e6edf7;
-  padding: 10px 12px;
-  border-radius: 10px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 12px 14px;
+  border-radius: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.admin-actions .input:hover,
+.admin-actions textarea:hover {
+  background: #162a45;
+  border-color: #3a5a86;
 }
 
 .admin-actions .input:focus,
 .admin-actions textarea:focus {
   outline: none;
-  border-color: #4a7bbd;
-  box-shadow: 0 0 0 2px rgba(74, 123, 189, 0.25);
+  border-color: #5a89cc;
+  box-shadow: 0 0 0 3px rgba(74, 123, 189, 0.25);
 }
 
 .admin-row-stacked {
