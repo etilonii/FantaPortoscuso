@@ -66,6 +66,24 @@ const formatDecimal = (value, digits = 2) => {
   return n.toFixed(digits).replace(".", ",");
 };
 
+const formatLastAccess = (value) => {
+  if (!value) return "-";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "-";
+  const time = d.toLocaleTimeString("it-IT", {
+    timeZone: "Europe/Rome",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const date = d.toLocaleDateString("it-IT", {
+    timeZone: "Europe/Rome",
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+  });
+  return `${time} ${date}`;
+};
+
 /* ===========================
    CONFIG
 =========================== */
