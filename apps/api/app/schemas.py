@@ -27,6 +27,8 @@ class AdminKeyItem(BaseModel):
     device_id: str | None = None
     created_at: str | None = None
     used_at: str | None = None
+    last_seen_at: str | None = None
+    online: bool = False
 
 
 class ImportKeysRequest(BaseModel):
@@ -55,3 +57,8 @@ class SetAdminRequest(BaseModel):
 class TeamKeyRequest(BaseModel):
     key: str = Field(min_length=1)
     team: str = Field(min_length=1)
+
+
+class PingRequest(BaseModel):
+    key: str = Field(min_length=8, max_length=32)
+    device_id: str = Field(min_length=6, max_length=128)

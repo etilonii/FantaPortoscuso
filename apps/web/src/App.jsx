@@ -198,6 +198,7 @@ export default function App() {
   const [adminImportKeys, setAdminImportKeys] = useState("");
   const [adminImportIsAdmin, setAdminImportIsAdmin] = useState(false);
   const [adminImportTeamKeys, setAdminImportTeamKeys] = useState("");
+  const [adminStatus, setAdminStatus] = useState(null);
 
   /* ===== MERCATO + SUGGEST ===== */
   const [marketView, setMarketView] = useState("players");
@@ -943,6 +944,18 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     } catch {}
   };
 
+  const loadAdminStatus = async () => {
+    if (!isAdmin) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/admin/status`, {
+        headers: { "X-Admin-Key": accessKey.trim().toLowerCase() },
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      setAdminStatus(data || null);
+    } catch {}
+  };
+
   const setAdminForKey = async () => {
     if (!isAdmin) return;
     const key = adminSetAdminKey.trim().toLowerCase();
@@ -1096,8 +1109,25 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     if (!loggedIn) return;
 
     loadAdminKeys();
+    loadAdminStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
+
+  useEffect(() => {
+    if (!loggedIn || !accessKey.trim()) return;
+    const ping = async () => {
+      try {
+        await fetch(`${API_BASE}/auth/ping`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key: accessKey.trim(), device_id: deviceId }),
+        });
+      } catch {}
+    };
+    ping();
+    const timer = setInterval(ping, 60000);
+    return () => clearInterval(timer);
+  }, [loggedIn, accessKey, deviceId]);
 
   useEffect(() => {
     if (!loggedIn || !teams.length) return;
@@ -1640,6 +1670,42 @@ useEffect(() => {
 
                 <div className="panel">
                   <div className="panel-header">
+                    <h3>Stato dati</h3>
+                    <button className="ghost" onClick={loadAdminStatus}>
+                      Aggiorna
+                    </button>
+                  </div>
+                  <div className="list">
+                    <div className="list-item player-card">
+                      <div>
+                        <p>Rose &amp; Quotazioni</p>
+                        <span className="muted">Ultimo update</span>
+                      </div>
+                      <strong>
+                        {adminStatus?.data?.last_update?.last_signature ? "OK" : "N/A"}
+                      </strong>
+                    </div>
+                    <div className="list-item player-card">
+                      <div>
+                        <p>Statistiche</p>
+                        <span className="muted">Ultimo update</span>
+                      </div>
+                      <strong>
+                        {adminStatus?.data?.last_stats_update?.last_signature ? "OK" : "N/A"}
+                      </strong>
+                    </div>
+                    <div className="list-item player-card">
+                      <div>
+                        <p>Mercato</p>
+                        <span className="muted">Ultima data</span>
+                      </div>
+                      <strong>{adminStatus?.market?.latest_date || "-"}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="panel">
+                  <div className="panel-header">
                     <h3>Operazioni Admin</h3>
                   </div>
                   <div className="admin-actions">
@@ -1741,8 +1807,13 @@ useEffect(() => {
                               {item.is_admin ? "ADMIN" : "USER"} ·{" "}
                               {item.used ? "Attivata" : "Non usata"}
                             </span>
+                            <span className="muted">
+                              Ultimo accesso: {item.last_seen_at || item.used_at || "-"}
+                            </span>
                           </div>
-                          <strong>{item.device_id ? "1+ device" : "-"}</strong>
+                          <strong>
+                            {item.online ? "Online" : item.device_id ? "1+ device" : "-"}
+                          </strong>
                         </div>
                       ))
                     )}

@@ -1,5 +1,8 @@
 import hashlib
+import json
 import secrets
+from datetime import timedelta
+from pathlib import Path
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request
@@ -16,6 +19,7 @@ from ..schemas import (
     KeyCreateResponse,
     LoginRequest,
     LoginResponse,
+    PingRequest,
     ResetKeyRequest,
     SetAdminRequest,
     TeamKeyRequest,
@@ -23,6 +27,10 @@ from ..schemas import (
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+DATA_DIR = Path(__file__).resolve().parents[4] / "data"
+LAST_UPDATE_PATH = DATA_DIR / "history" / "last_update.json"
+LAST_STATS_UPDATE_PATH = DATA_DIR / "history" / "last_stats_update.json"
+MARKET_LATEST_PATH = DATA_DIR / "market_latest.json"
 
 
 def _generate_key() -> str:
@@ -81,6 +89,20 @@ def list_keys(
 ):
     _require_admin_key(x_admin_key, db)
     keys = db.query(AccessKey).order_by(AccessKey.created_at.desc()).all()
+    now = datetime.utcnow()
+    sessions = db.query(DeviceSession).all()
+    last_seen_map = {}
+    online_keys = set()
+    for s in sessions:
+        if not s.key:
+            continue
+        last_seen = s.last_seen_at
+        if last_seen:
+            current = last_seen_map.get(s.key)
+            if not current or last_seen > current:
+                last_seen_map[s.key] = last_seen
+            if last_seen >= now - timedelta(minutes=5):
+                online_keys.add(s.key)
     return [
         AdminKeyItem(
             key=k.key,
@@ -89,6 +111,8 @@ def list_keys(
             device_id=k.device_id,
             created_at=k.created_at.isoformat() if k.created_at else None,
             used_at=k.used_at.isoformat() if k.used_at else None,
+            last_seen_at=last_seen_map.get(k.key).isoformat() if last_seen_map.get(k.key) else None,
+            online=k.key in online_keys,
         )
         for k in keys
     ]
@@ -146,6 +170,68 @@ def set_team_key(
         db.add(TeamKey(key=key_value, team=team_value))
     db.commit()
     return {"status": "ok", "key": key_value, "team": team_value}
+
+
+@router.get("/admin/status")
+def admin_status(
+    x_admin_key: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db)
+    status = {"data": {}, "market": {}}
+
+    if LAST_UPDATE_PATH.exists():
+        try:
+            status["data"]["last_update"] = json.loads(
+                LAST_UPDATE_PATH.read_text(encoding="utf-8")
+            )
+        except Exception:
+            status["data"]["last_update"] = {}
+    else:
+        status["data"]["last_update"] = {}
+
+    if LAST_STATS_UPDATE_PATH.exists():
+        try:
+            status["data"]["last_stats_update"] = json.loads(
+                LAST_STATS_UPDATE_PATH.read_text(encoding="utf-8")
+            )
+        except Exception:
+            status["data"]["last_stats_update"] = {}
+    else:
+        status["data"]["last_stats_update"] = {}
+
+    if MARKET_LATEST_PATH.exists():
+        try:
+            market = json.loads(MARKET_LATEST_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            market = {}
+        if isinstance(market, dict):
+            items = market.get("items", [])
+            teams = market.get("teams", [])
+        elif isinstance(market, list):
+            items = market
+            teams = []
+        else:
+            items = []
+            teams = []
+        dates = []
+        for item in items:
+            date = (item or {}).get("date")
+            if date:
+                dates.append(date)
+        for team in teams:
+            date = (team or {}).get("last_date")
+            if date:
+                dates.append(date)
+        status["market"] = {
+            "items": len(items),
+            "teams": len(teams),
+            "latest_date": sorted(dates)[-1] if dates else None,
+        }
+    else:
+        status["market"] = {"items": 0, "teams": 0, "latest_date": None}
+
+    return status
 
 
 @router.post("/admin/import-keys")
@@ -216,6 +302,22 @@ def reset_key_admin(
     record.used_at = None
     db.add(record)
     db.commit()
+    return {"status": "ok"}
+
+
+@router.post("/ping")
+def ping(payload: PingRequest, request: Request, db: Session = Depends(get_db)):
+    key_value = payload.key.strip().lower()
+    device_id = payload.device_id.strip()
+    access_key = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not access_key:
+        raise HTTPException(status_code=401, detail="Key non valida")
+    session = db.query(DeviceSession).filter(DeviceSession.device_id == device_id).first()
+    if session:
+        session.last_seen_at = datetime.utcnow()
+        session.ip_address = request.client.host if request.client else None
+        db.add(session)
+        db.commit()
     return {"status": "ok"}
 
 
