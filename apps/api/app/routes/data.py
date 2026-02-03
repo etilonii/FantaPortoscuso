@@ -1288,6 +1288,16 @@ def market_suggest(payload: dict = Body(default=None)):
     beam_width = max(int(params.get("beam_width", 200)), 200)
 
     required_outs = params.get("required_outs") or []
+    if not required_outs:
+        starred = []
+        for p in user_squad:
+            name = (p.get("Giocatore") or p.get("nome") or "").strip()
+            if name.endswith("*"):
+                cleaned = name[:-1].strip()
+                if cleaned:
+                    starred.append(cleaned)
+        if starred:
+            required_outs = starred
     exclude_ins = params.get("exclude_ins") or []
     fixed_swaps = params.get("fixed_swaps") or []
     include_outs_any = params.get("include_outs_any") or []
@@ -1300,7 +1310,7 @@ def market_suggest(payload: dict = Body(default=None)):
         teams_data=teams_data,
         fixtures=fixtures,
         current_round=current_round,
-        max_changes=int(params.get("max_changes", 5)),
+        max_changes=max(int(params.get("max_changes", 5)), len(required_outs)),
         k_pool=k_pool,
         m_out=m_out,
         beam_width=beam_width,
