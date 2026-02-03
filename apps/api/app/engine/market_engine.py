@@ -957,27 +957,20 @@ def suggest_transfers(
         solutions.sort(key=lambda s: s.total_gain, reverse=True)
         return solutions
 
-    def top_in_names(sol: Solution, count: int = 4) -> List[str]:
-        swaps_sorted = sorted(sol.swaps, key=lambda s: s.gain, reverse=True)
-        names = []
-        for s in swaps_sorted:
-            name = norm_name(name_of(s.in_player))
-            if name and name not in names:
-                names.append(name)
-            if len(names) >= count:
-                break
-        return names
+    def solution_outs(sol: Solution) -> set[str]:
+        return {norm_name(name_of(s.out_player)) for s in sol.swaps if name_of(s.out_player)}
 
-    def top_out_names(sol: Solution, count: int = 3) -> List[str]:
-        swaps_sorted = sorted(sol.swaps, key=lambda s: s.gain, reverse=True)
-        names = []
-        for s in swaps_sorted:
-            name = norm_name(name_of(s.out_player))
-            if name and name not in names:
-                names.append(name)
-            if len(names) >= count:
-                break
-        return names
+    def solution_ins(sol: Solution) -> set[str]:
+        return {norm_name(name_of(s.in_player)) for s in sol.swaps if name_of(s.in_player)}
+
+    def solution_swaps(sol: Solution) -> set[str]:
+        keys = set()
+        for s in sol.swaps:
+            out_n = norm_name(name_of(s.out_player))
+            in_n = norm_name(name_of(s.in_player))
+            if out_n and in_n:
+                keys.add(f"{out_n}->{in_n}")
+        return keys
 
     selected: List[Solution] = []
     base_exclude = set()
@@ -985,69 +978,87 @@ def suggest_transfers(
 
     pool1 = build_solutions(base_exclude, base_exclude_outs, relax_level=0)
     if pool1:
-        selected.append(pool1[0])
+        for sol in pool1:
+            if sol.total_gain >= 0:
+                selected.append(sol)
+                break
     if len(selected) >= 3:
         return selected[:3]
     log(f"pool1={len(pool1)} selected={len(selected)}")
 
-    def min_gain_threshold(best_gain: float, relax: float = 0.0) -> float:
-        if best_gain <= 0:
-            return 0.0
-        base = max(4.0, best_gain * 0.4)
-        if relax > 0:
-            base = max(2.5, best_gain * 0.25)
-        return base
+    def overlaps_ok(sol: Solution, picked: List[Solution]) -> bool:
+        sol_outs = solution_outs(sol)
+        sol_ins = solution_ins(sol)
+        sol_swaps = solution_swaps(sol)
+        for other in picked:
+            if len(sol_outs & solution_outs(other)) > 2:
+                return False
+            if len(sol_ins & solution_ins(other)) > 2:
+                return False
+            if sol_swaps & solution_swaps(other):
+                return False
+        return True
 
-    best_gain = selected[0].total_gain if selected else 0.0
-    min_gain = min_gain_threshold(best_gain)
+    def diversity_score(sol: Solution, picked: List[Solution]) -> int:
+        if not picked:
+            return 0
+        outs = solution_outs(sol)
+        ins = solution_ins(sol)
+        swaps = solution_swaps(sol)
+        existing_outs = set().union(*(solution_outs(s) for s in picked))
+        existing_ins = set().union(*(solution_ins(s) for s in picked))
+        existing_swaps = set().union(*(solution_swaps(s) for s in picked))
+        new_outs = len(outs - existing_outs)
+        new_ins = len(ins - existing_ins)
+        new_swaps = len(swaps - existing_swaps)
+        return new_outs + new_ins + (2 * new_swaps)
 
-    exclude2 = base_exclude | set(top_in_names(selected[0], 4)) if selected else base_exclude
-    exclude2_outs = base_exclude_outs | set(top_out_names(selected[0], 3)) if selected else base_exclude_outs
-    pool2 = build_solutions(exclude2, exclude2_outs, relax_level=0)
-    def out_overlap(a: Solution, b: Solution) -> int:
-        outs_a = {norm_name(name_of(s.out_player)) for s in a.swaps}
-        outs_b = {norm_name(name_of(s.out_player)) for s in b.swaps}
-        return len(outs_a & outs_b)
-
+    pool2 = build_solutions(base_exclude, base_exclude_outs, relax_level=0)
+    best_sol = None
+    best_key = None
     for sol in pool2:
         if sol in selected:
             continue
-        if out_overlap(sol, selected[0]) > 3:
+        if sol.total_gain < 0:
             continue
-        if sol.total_gain < min_gain:
+        if not overlaps_ok(sol, selected):
             continue
-        selected.append(sol)
-        break
+        key = (diversity_score(sol, selected), sol.total_gain)
+        if best_key is None or key > best_key:
+            best_key = key
+            best_sol = sol
+    if best_sol:
+        selected.append(best_sol)
     if len(selected) >= 3:
         return selected[:3]
     log(f"pool2={len(pool2)} selected={len(selected)}")
 
-    exclude3 = exclude2
-    exclude3_outs = exclude2_outs
-    if len(selected) > 1:
-        exclude3 = exclude3 | set(top_in_names(selected[1], 4))
-        exclude3_outs = exclude3_outs | set(top_out_names(selected[1], 3))
-    pool3 = build_solutions(exclude3, exclude3_outs, relax_level=0)
+    pool3 = build_solutions(base_exclude, base_exclude_outs, relax_level=0)
+    best_sol = None
+    best_key = None
     for sol in pool3:
         if sol in selected:
             continue
-        if out_overlap(sol, selected[0]) > 3:
+        if sol.total_gain < 0:
             continue
-        if len(selected) > 1 and out_overlap(sol, selected[1]) > 3:
+        if not overlaps_ok(sol, selected):
             continue
-        if sol.total_gain < min_gain:
-            continue
-        selected.append(sol)
-        break
+        key = (diversity_score(sol, selected), sol.total_gain)
+        if best_key is None or key > best_key:
+            best_key = key
+            best_sol = sol
+    if best_sol:
+        selected.append(best_sol)
 
     if len(selected) < 3:
         # Relax step 1
         pool = build_solutions(base_exclude, base_exclude_outs, relax_level=1)
-        min_gain_relax = min_gain_threshold(best_gain, relax=1.0)
         for sol in pool:
             if sol in selected:
                 continue
-            if sol.total_gain < min_gain_relax:
+            if sol.total_gain < 0:
+                continue
+            if not overlaps_ok(sol, selected):
                 continue
             selected.append(sol)
             if len(selected) >= 3:
@@ -1056,11 +1067,12 @@ def suggest_transfers(
     if len(selected) < 3:
         # Relax step 2
         pool = build_solutions(base_exclude, base_exclude_outs, relax_level=2)
-        min_gain_relax = min_gain_threshold(best_gain, relax=1.0)
         for sol in pool:
             if sol in selected:
                 continue
-            if sol.total_gain < min_gain_relax:
+            if sol.total_gain < 0:
+                continue
+            if not overlaps_ok(sol, selected):
                 continue
             selected.append(sol)
             if len(selected) >= 3:
