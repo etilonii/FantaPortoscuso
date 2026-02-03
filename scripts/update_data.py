@@ -600,12 +600,16 @@ def main() -> None:
     updated_quot = False
     updated_rose = False
     updated_teams = False
+    archive_quot = False
+    archive_rose = False
+    archive_teams = False
 
     if args.quotazioni:
         quot_path = Path(args.quotazioni)
         current_sig["quotazioni"] = _file_signature(quot_path)
         if last_sig.get("quotazioni") == current_sig["quotazioni"]:
             print("Update già eseguito (quotazioni).")
+            archive_quot = True
         else:
             prev_quot = pd.read_csv(QUOT_PATH) if QUOT_PATH.exists() else pd.DataFrame()
             new_quot = _read_input(quot_path)
@@ -619,12 +623,14 @@ def main() -> None:
                 _write_diff(diff_lines, stamp, "quotazioni")
             updated_quot = True
             state.setdefault("last_signature", {})["quotazioni"] = current_sig["quotazioni"]
+            archive_quot = True
 
     if args.rose:
         rose_path = Path(args.rose)
         current_sig["rose"] = _file_signature(rose_path)
         if last_sig.get("rose") == current_sig["rose"]:
             print("Update già eseguito (rose).")
+            archive_rose = True
         else:
             prev_rose = pd.read_csv(ROSE_PATH) if ROSE_PATH.exists() else pd.DataFrame()
             new_rose = _read_input(rose_path)
@@ -661,12 +667,14 @@ def main() -> None:
                 )
             updated_rose = True
             state.setdefault("last_signature", {})["rose"] = current_sig["rose"]
+            archive_rose = True
 
     if args.teams:
         teams_path = Path(args.teams)
         current_sig["teams"] = _file_signature(teams_path)
         if last_sig.get("teams") == current_sig["teams"]:
             print("Update già eseguito (teams).")
+            archive_teams = True
         else:
             prev_teams = pd.read_csv(TEAMS_PATH) if TEAMS_PATH.exists() else pd.DataFrame()
             new_teams = _read_input(teams_path)
@@ -693,6 +701,7 @@ def main() -> None:
             _write_csv(new_teams, TEAMS_PATH)
             updated_teams = True
             state.setdefault("last_signature", {})["teams"] = current_sig["teams"]
+            archive_teams = True
 
     if args.sync_rose and QUOT_PATH.exists() and ROSE_PATH.exists():
         rose_df = pd.read_csv(ROSE_PATH)
@@ -700,11 +709,11 @@ def main() -> None:
         updated = _sync_rose_with_quotazioni(rose_df, quot_df)
         _write_csv(updated, ROSE_PATH)
 
-    if updated_quot and args.quotazioni:
+    if archive_quot and args.quotazioni:
         _archive_incoming(Path(args.quotazioni), stamp, args.keep)
-    if updated_rose and args.rose:
+    if archive_rose and args.rose:
         _archive_incoming(Path(args.rose), stamp, args.keep)
-    if updated_teams and args.teams:
+    if archive_teams and args.teams:
         _archive_incoming(Path(args.teams), stamp, args.keep)
 
     if current_sig:
