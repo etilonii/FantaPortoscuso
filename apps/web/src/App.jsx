@@ -53,6 +53,27 @@ const slugify = (value) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
+const expandTeamName = (value, teamSet) => {
+  const raw = String(value || "").trim();
+  if (!raw || !teamSet || teamSet.size === 0) return raw;
+  const rawNorm = normalizeName(raw);
+  if (!rawNorm) return raw;
+
+  for (const team of teamSet) {
+    if (normalizeName(team) === rawNorm) return team;
+  }
+
+  if (rawNorm.length <= 4) {
+    const matches = [];
+    for (const team of teamSet) {
+      if (normalizeName(team).startsWith(rawNorm)) matches.push(team);
+    }
+    if (matches.length === 1) return matches[0];
+  }
+
+  return raw;
+};
+
 const formatInt = (value) => {
   if (value === undefined || value === null || value === "") return "-";
   const n = Number(value);
@@ -377,6 +398,25 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setTopQuotesAll(items);
     } catch {}
   };
+
+  const teamNameSet = useMemo(() => {
+    const set = new Set();
+    const source = topQuotesAll.length ? topQuotesAll : quoteList;
+    source.forEach((item) => {
+      const team = String(item?.Squadra || "").trim();
+      if (team) set.add(team);
+    });
+    return set;
+  }, [topQuotesAll, quoteList]);
+
+  const rosterDisplay = useMemo(
+    () =>
+      (roster || []).map((it) => ({
+        ...it,
+        Squadra: expandTeamName(it.Squadra, teamNameSet),
+      })),
+    [roster, teamNameSet]
+  );
 
   const loadPlusvalenze = async () => {
     try {
@@ -1560,7 +1600,7 @@ useEffect(() => {
                 setRoleFilter={setRoleFilter}
                 squadraFilter={squadraFilter}
                 setSquadraFilter={setSquadraFilter}
-                roster={roster}
+                roster={rosterDisplay}
                 formatInt={formatInt}
                 openPlayer={openPlayer}
               />
