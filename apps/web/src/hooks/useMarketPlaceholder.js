@@ -8,7 +8,7 @@ export function useMarketPlaceholder(apiBase, loggedIn) {
   const [marketUpdatedAt, setMarketUpdatedAt] = useState("");
 
   const getMarketCountdown = useCallback(() => {
-    const target = new Date("2026-02-03T08:00:00");
+    const target = new Date("2026-02-04T08:00:00");
     const now = new Date();
     const diff = target.getTime() - now.getTime();
     if (Number.isNaN(diff) || diff <= 0) return "Apertura imminente";

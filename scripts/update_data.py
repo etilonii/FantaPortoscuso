@@ -12,13 +12,16 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 ROSE_PATH = DATA_DIR / "rose_fantaportoscuso.csv"
 QUOT_PATH = DATA_DIR / "quotazioni.csv"
+TEAMS_PATH = DATA_DIR / "db" / "teams.csv"
 
 HIST_ROSE = DATA_DIR / "history" / "rose"
 HIST_QUOT = DATA_DIR / "history" / "quotazioni"
+HIST_TEAMS = DATA_DIR / "history" / "teams"
 HIST_DIFFS = DATA_DIR / "history" / "diffs"
 HIST_MARKET = DATA_DIR / "history" / "market"
 INCOMING_ROSE = DATA_DIR / "incoming" / "rose"
 INCOMING_QUOT = DATA_DIR / "incoming" / "quotazioni"
+INCOMING_TEAMS = DATA_DIR / "incoming" / "teams"
 ARCHIVE_INCOMING = DATA_DIR / "archive" / "incoming"
 STATE_PATH = DATA_DIR / "history" / "last_update.json"
 MARKET_LATEST = DATA_DIR / "market_latest.json"
@@ -83,6 +86,43 @@ def _validate_columns(df: pd.DataFrame, required: List[str], label: str) -> None
     missing = [c for c in required if c not in df.columns]
     if missing:
         raise ValueError(f"{label} missing columns: {missing}")
+
+
+def _normalize_teams_columns(df: pd.DataFrame) -> pd.DataFrame:
+    col_map = {
+        "team": "name",
+        "nome": "name",
+        "squadra": "name",
+        "ppg_s": "PPG_S",
+        "ppg r8": "PPG_R8",
+        "ppg_r8": "PPG_R8",
+        "gfpg_s": "GFpg_S",
+        "gfpg r8": "GFpg_R8",
+        "gfpg_r8": "GFpg_R8",
+        "gapg_s": "GApg_S",
+        "gapg r8": "GApg_R8",
+        "gapg_r8": "GApg_R8",
+        "mood": "MoodTeam",
+        "moodteam": "MoodTeam",
+        "coachstyle_p": "CoachStyle_P",
+        "coachstyle_d": "CoachStyle_D",
+        "coachstyle_c": "CoachStyle_C",
+        "coachstyle_a": "CoachStyle_A",
+        "coachstability": "CoachStability",
+        "coachboost": "CoachBoost",
+        "gamesremaining": "GamesRemaining",
+        "giornaterimanenti": "GamesRemaining",
+    }
+    renamed = {}
+    for col in df.columns:
+        key = str(col).strip().lower()
+        key = key.replace("-", "_").replace(" ", "")
+        mapped = col_map.get(key)
+        if mapped:
+            renamed[col] = mapped
+    if renamed:
+        df = df.rename(columns=renamed)
+    return df
 
 
 def _archive_current(current_path: Path, history_dir: Path, stamp: str, prefix: str, keep: int) -> None:
@@ -527,6 +567,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Update rose/quotazioni data with history rotation.")
     parser.add_argument("--rose", type=str, help="Path to new rose file (CSV or XLSX)")
     parser.add_argument("--quotazioni", type=str, help="Path to new quotazioni file (CSV or XLSX)")
+    parser.add_argument("--teams", type=str, help="Path to new teams file (CSV or XLSX)")
     parser.add_argument("--date", type=str, default=_today_stamp(), help="Date stamp YYYY-MM-DD")
     parser.add_argument("--keep", type=int, default=5, help="How many history files to keep")
     parser.add_argument("--sync-rose", action="store_true", help="Update rose PrezzoAttuale/Squadra from quotazioni")
@@ -543,8 +584,11 @@ def main() -> None:
         args.quotazioni = args.quotazioni or (
             str(_latest_incoming(INCOMING_QUOT)) if _latest_incoming(INCOMING_QUOT) else None
         )
+        args.teams = args.teams or (
+            str(_latest_incoming(INCOMING_TEAMS)) if _latest_incoming(INCOMING_TEAMS) else None
+        )
 
-    if not args.rose and not args.quotazioni:
+    if not args.rose and not args.quotazioni and not args.teams:
         print("Nessun nuovo file da aggiornare.")
         return
 
@@ -555,6 +599,7 @@ def main() -> None:
 
     updated_quot = False
     updated_rose = False
+    updated_teams = False
 
     if args.quotazioni:
         quot_path = Path(args.quotazioni)
@@ -617,6 +662,38 @@ def main() -> None:
             updated_rose = True
             state.setdefault("last_signature", {})["rose"] = current_sig["rose"]
 
+    if args.teams:
+        teams_path = Path(args.teams)
+        current_sig["teams"] = _file_signature(teams_path)
+        if last_sig.get("teams") == current_sig["teams"]:
+            print("Update già eseguito (teams).")
+        else:
+            prev_teams = pd.read_csv(TEAMS_PATH) if TEAMS_PATH.exists() else pd.DataFrame()
+            new_teams = _read_input(teams_path)
+            new_teams = _normalize_teams_columns(new_teams)
+            required_cols = [
+                "name",
+                "PPG_S",
+                "PPG_R8",
+                "GFpg_S",
+                "GFpg_R8",
+                "GApg_S",
+                "GApg_R8",
+                "MoodTeam",
+                "CoachStyle_P",
+                "CoachStyle_D",
+                "CoachStyle_C",
+                "CoachStyle_A",
+                "CoachStability",
+                "CoachBoost",
+                "GamesRemaining",
+            ]
+            _validate_columns(new_teams, required_cols, "Teams")
+            _archive_current(TEAMS_PATH, HIST_TEAMS, stamp, "teams", args.keep)
+            _write_csv(new_teams, TEAMS_PATH)
+            updated_teams = True
+            state.setdefault("last_signature", {})["teams"] = current_sig["teams"]
+
     if args.sync_rose and QUOT_PATH.exists() and ROSE_PATH.exists():
         rose_df = pd.read_csv(ROSE_PATH)
         quot_df = pd.read_csv(QUOT_PATH)
@@ -627,6 +704,8 @@ def main() -> None:
         _archive_incoming(Path(args.quotazioni), stamp, args.keep)
     if updated_rose and args.rose:
         _archive_incoming(Path(args.rose), stamp, args.keep)
+    if updated_teams and args.teams:
+        _archive_incoming(Path(args.teams), stamp, args.keep)
 
     if current_sig:
         _save_state(state)

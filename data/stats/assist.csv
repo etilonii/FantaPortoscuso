@@ -56,6 +56,7 @@ Ferguson E.,A,Roma,2
 Fofana Y.,C,Milan,2
 Hojlund,A,Napoli,2
 Kalulu,D,Juventus,2
+Lang *,A,Napoli,2
 Laurientè,A,Sassuolo,2
 Lazaro,D,Torino,2
 Leao,A,Milan,2
@@ -63,7 +64,6 @@ McKennie,C,Juventus,2
 Modric,C,Milan,2
 Mosquera,A,Verona,2
 Muharemovic,D,Sassuolo,2
-N. Lang,A,Napoli,2
 Nkunku,A,Milan,2
 Pasalic,C,Atalanta,2
 Pinamonti,A,Sassuolo,2
@@ -98,7 +98,6 @@ Bertola,D,Udinese,1
 Bonazzoli,A,Cremonese,1
 Borrelli,A,Cagliari,1
 Buongiorno,D,Napoli,1
-C. Ngonge,A,Torino,1
 Carlos Augusto,D,Inter,1
 Celik,D,Roma,1
 Coco,D,Torino,1
@@ -113,7 +112,6 @@ El Aynaoui,C,Roma,1
 Ellertsson,C,Genoa,1
 Elmas,C,Napoli,1
 Estupinan,D,Milan,1
-F. Vazquez,C,Cremonese,1
 Fadera,A,Sassuolo,1
 Felici,C,Cagliari,1
 Freuler,C,Bologna,1
@@ -136,6 +134,7 @@ Mazzitelli,C,Cagliari,1
 Miretti,C,Juventus,1
 Morata,A,Como,1
 Moreo,A,Pisa,1
+Ngonge *,A,Torino,1
 Niasse,C,Verona,1
 Nicolussi Caviglia,C,Fiorentina,1
 Njie,A,Torino,1
@@ -171,6 +170,7 @@ Thorsby,C,Genoa,1
 Thorstvedt,C,Sassuolo,1
 Valeri,D,Parma,1
 Vardy,A,Cremonese,1
+Vazquez *,C,Cremonese,1
 Vecino,C,Lazio,1
 Veiga D.,D,Lecce,1
 Vitinha O.,A,Genoa,1

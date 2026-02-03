@@ -33,7 +33,7 @@ export default function MercatoSection({
         <div>
           <p className="eyebrow">Mercato</p>
           <h2>Coming Soon</h2>
-          <p className="muted">Apertura mercato: 3 Febbraio 2026, ore 08:00.</p>
+          <p className="muted">Apertura mercato: 4 Febbraio 2026, ore 08:00.</p>
           {marketUpdatedAt ? (
             <div className="market-update-badge">
               Aggiornamento mercato: {marketUpdatedAt}
