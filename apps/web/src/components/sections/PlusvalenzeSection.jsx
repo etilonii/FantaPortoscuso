@@ -54,7 +54,7 @@ export default function PlusvalenzeSection({
               >
                 <div>
                   <p className="rank-title">
-                    <span className="rank-badge">#{index + 1}</span>
+                    <span className="rank-badge">#{item.rank ?? index + 1}</span>
                     <span className="team-name">{item.team}</span>
                   </p>
                   <span className="muted">

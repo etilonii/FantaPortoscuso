@@ -52,17 +52,19 @@ export default function StatsSection({
           ) : (
             filteredStatsItems.map((item, index) => {
               const itemSlug = slugify(item.Giocatore);
+              const rank = item.rank ?? index + 1;
+              const podioClass = rank <= 3 ? `podio-${rank}` : "";
               return (
                 <div
                   key={`${item.Giocatore}-${index}`}
                   id={`stat-${statsTab}-${itemSlug}`}
-                  className={`list-item player-card stats-item podio-row podio-${index + 1}`}
+                  className={`list-item player-card stats-item podio-row ${podioClass}`}
                   onClick={() => openPlayer(item.Giocatore)}
                 >
                   <div>
                     <p className="rank-title">
-                      <span className={`rank-badge rank-${index + 1}`}>
-                        #{index + 1}
+                      <span className={`rank-badge rank-${rank}`}>
+                        #{rank}
                       </span>
                       <button
                         type="button"

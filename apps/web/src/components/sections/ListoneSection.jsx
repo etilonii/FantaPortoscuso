@@ -78,16 +78,19 @@ export default function ListoneSection({
         </label>
 
         <div className="list">
-          {quoteList
-            .filter((it) => (quoteTeam === "all" ? true : it.Squadra === quoteTeam))
-            .filter((it) =>
-              listoneQuery.trim()
-                ? String(it.Giocatore || "")
+          {(() => {
+            const baseList = quoteList
+              .filter((it) => (quoteTeam === "all" ? true : it.Squadra === quoteTeam))
+              .map((it, index) => ({ ...it, rank: index + 1 }));
+            const filtered = listoneQuery.trim()
+              ? baseList.filter((it) =>
+                  String(it.Giocatore || "")
                     .toLowerCase()
                     .includes(listoneQuery.trim().toLowerCase())
-                : true
-            )
-            .map((it, idx) => {
+                )
+              : baseList;
+
+            return filtered.map((it, idx) => {
               const itemSlug = slugify(it.Giocatore);
               return (
                 <div
@@ -97,7 +100,8 @@ export default function ListoneSection({
                   onClick={() => openPlayer(it.Giocatore)}
                 >
                   <div>
-                    <p>
+                    <p className="rank-title">
+                      <span className="rank-badge">#{it.rank ?? idx + 1}</span>
                       <button
                         type="button"
                         className="link-button"
@@ -115,7 +119,8 @@ export default function ListoneSection({
                   <strong>{formatInt(it.PrezzoAttuale)}</strong>
                 </div>
               );
-            })}
+            });
+          })()}
         </div>
       </div>
     </section>

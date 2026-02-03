@@ -59,7 +59,7 @@ export default function TopAcquistiSection({
                   >
                     <div>
                       <p className="rank-title">
-                        <span className="rank-badge">#{idx + 1}</span>
+                        <span className="rank-badge">#{p.rank ?? idx + 1}</span>
                         <button
                           type="button"
                           className="link-button"

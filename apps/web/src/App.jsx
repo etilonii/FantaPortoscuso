@@ -399,15 +399,24 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const statColumn = useMemo(() => tabToColumn(statsTab), [statsTab]);
 
+  const rankedStatsItems = useMemo(
+    () =>
+      (statsItems || []).map((item, index) => ({
+        ...item,
+        rank: index + 1,
+      })),
+    [statsItems]
+  );
+
   const filteredStatsItems = useMemo(() => {
     const q = String(statsQuery || "").trim().toLowerCase();
-    if (!q) return statsItems;
-    return (statsItems || []).filter((item) =>
+    if (!q) return rankedStatsItems;
+    return (rankedStatsItems || []).filter((item) =>
       String(item.Giocatore || "")
         .toLowerCase()
         .includes(q)
     );
-  }, [statsItems, statsQuery]);
+  }, [rankedStatsItems, statsQuery]);
 
   const loadStatList = async (tab) => {
     try {
@@ -656,19 +665,31 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const topPlusvalenze = useMemo(() => (plusvalenze || []).slice(0, 5), [plusvalenze]);
   const topStats = useMemo(() => (statsItems || []).slice(0, 5), [statsItems]);
 
+  const rankedPlusvalenze = useMemo(
+    () =>
+      (allPlusvalenze || []).map((item, index) => ({
+        ...item,
+        rank: index + 1,
+      })),
+    [allPlusvalenze]
+  );
+
   const filteredPlusvalenze = useMemo(() => {
     const q = String(plusvalenzeQuery || "").trim().toLowerCase();
-    if (!q) return allPlusvalenze || [];
-    return (allPlusvalenze || []).filter((item) =>
+    if (!q) return rankedPlusvalenze || [];
+    return (rankedPlusvalenze || []).filter((item) =>
       String(item.team || "")
         .toLowerCase()
         .includes(q)
     );
-  }, [allPlusvalenze, plusvalenzeQuery]);
+  }, [rankedPlusvalenze, plusvalenzeQuery]);
 
   const filteredTopAcquisti = useMemo(() => {
     const q = String(topAcquistiQuery || "").trim().toLowerCase();
-    const list = topPlayersByRole[activeTopRole] || [];
+    const list = (topPlayersByRole[activeTopRole] || []).map((item, index) => ({
+      ...item,
+      rank: index + 1,
+    }));
     if (!q) return list;
     return list.filter((p) =>
       String(p.name || "")
