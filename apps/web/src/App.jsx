@@ -195,6 +195,9 @@ export default function App() {
   const [adminTeamKey, setAdminTeamKey] = useState("");
   const [adminTeamName, setAdminTeamName] = useState("");
   const [adminResetKey, setAdminResetKey] = useState("");
+  const [adminImportKeys, setAdminImportKeys] = useState("");
+  const [adminImportIsAdmin, setAdminImportIsAdmin] = useState(false);
+  const [adminImportTeamKeys, setAdminImportTeamKeys] = useState("");
 
   /* ===== MERCATO + SUGGEST ===== */
   const [marketView, setMarketView] = useState("players");
@@ -1001,6 +1004,57 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     } catch {}
   };
 
+  const importKeysAdmin = async () => {
+    if (!isAdmin) return;
+    const raw = adminImportKeys
+      .split(/[\s,;]+/)
+      .map((k) => k.trim())
+      .filter(Boolean);
+    if (!raw.length) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/admin/import-keys`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Key": accessKey.trim().toLowerCase(),
+        },
+        body: JSON.stringify({ keys: raw, is_admin: adminImportIsAdmin }),
+      });
+      if (!res.ok) return;
+      setAdminNotice(`Importate ${raw.length} key.`);
+      setAdminImportKeys("");
+      loadAdminKeys();
+    } catch {}
+  };
+
+  const importTeamKeysAdmin = async () => {
+    if (!isAdmin) return;
+    const items = adminImportTeamKeys
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => {
+        const [key, ...teamParts] = line.split(/[;,]/).map((p) => p.trim());
+        const team = teamParts.join(" ").trim();
+        return key && team ? { key, team } : null;
+      })
+      .filter(Boolean);
+    if (!items.length) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/admin/import-team-keys`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Key": accessKey.trim().toLowerCase(),
+        },
+        body: JSON.stringify({ items }),
+      });
+      if (!res.ok) return;
+      setAdminNotice(`Importate ${items.length} associazioni team.`);
+      setAdminImportTeamKeys("");
+    } catch {}
+  };
+
   /* ===========================
      EFFECTS
   =========================== */
@@ -1628,6 +1682,40 @@ useEffect(() => {
                       />
                       <button className="ghost" onClick={resetKeyAdmin}>
                         Reset key
+                      </button>
+                    </div>
+
+                    <div className="admin-row admin-row-stacked">
+                      <textarea
+                        className="input admin-textarea"
+                        rows={3}
+                        placeholder="Import key (separate da virgola/spazio)"
+                        value={adminImportKeys}
+                        onChange={(e) => setAdminImportKeys(e.target.value)}
+                      />
+                      <label className="admin-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={adminImportIsAdmin}
+                          onChange={(e) => setAdminImportIsAdmin(e.target.checked)}
+                        />
+                        Importa come admin
+                      </label>
+                      <button className="ghost" onClick={importKeysAdmin}>
+                        Importa key
+                      </button>
+                    </div>
+
+                    <div className="admin-row admin-row-stacked">
+                      <textarea
+                        className="input admin-textarea"
+                        rows={3}
+                        placeholder="Import key-team (una riga: KEY;Team)"
+                        value={adminImportTeamKeys}
+                        onChange={(e) => setAdminImportTeamKeys(e.target.value)}
+                      />
+                      <button className="ghost" onClick={importTeamKeysAdmin}>
+                        Importa key-team
                       </button>
                     </div>
                   </div>

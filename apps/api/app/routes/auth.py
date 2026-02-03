@@ -1,5 +1,4 @@
 import hashlib
-import os
 import secrets
 from datetime import datetime
 
@@ -152,12 +151,10 @@ def set_team_key(
 @router.post("/admin/import-keys")
 def import_keys(
     payload: ImportKeysRequest,
-    x_import_secret: str | None = Header(default=None),
+    x_admin_key: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    secret = os.getenv("IMPORT_SECRET", "")
-    if not secret or not x_import_secret or x_import_secret != secret:
-        raise HTTPException(status_code=403, detail="Import secret non valido")
+    _require_admin_key(x_admin_key, db)
     inserted = 0
     for raw_key in payload.keys:
         key_value = raw_key.strip().lower()
@@ -178,12 +175,10 @@ def import_keys(
 @router.post("/admin/import-team-keys")
 def import_team_keys(
     payload: ImportTeamKeysRequest,
-    x_import_secret: str | None = Header(default=None),
+    x_admin_key: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    secret = os.getenv("IMPORT_SECRET", "")
-    if not secret or not x_import_secret or x_import_secret != secret:
-        raise HTTPException(status_code=403, detail="Import secret non valido")
+    _require_admin_key(x_admin_key, db)
     inserted = 0
     for item in payload.items:
         key_value = item.key.strip().lower()
@@ -199,31 +194,6 @@ def import_team_keys(
         inserted += 1
     db.commit()
     return {"imported": inserted}
-
-
-@router.post("/admin/reset-key-import")
-def reset_key(
-    payload: ResetKeyRequest,
-    x_import_secret: str | None = Header(default=None),
-    db: Session = Depends(get_db),
-):
-    secret = os.getenv("IMPORT_SECRET", "")
-    if not secret or not x_import_secret or x_import_secret != secret:
-        raise HTTPException(status_code=403, detail="Import secret non valido")
-    key_value = payload.key.strip().lower()
-    if not key_value:
-        raise HTTPException(status_code=400, detail="Key non valida")
-    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
-    if not record:
-        raise HTTPException(status_code=404, detail="Key non trovata")
-    record.used = False
-    record.device_id = None
-    record.user_agent_hash = None
-    record.ip_address = None
-    record.used_at = None
-    db.add(record)
-    db.commit()
-    return {"status": "ok"}
 
 
 @router.post("/admin/reset-key")
