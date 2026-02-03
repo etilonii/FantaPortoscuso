@@ -846,8 +846,10 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       const rawSolutions = data.solutions || [];
       setSuggestions(rawSolutions);
 
-      if (rawSolutions.length < 3) {
+      if (rawSolutions.length === 0) {
         setSuggestError("Nessuna soluzione disponibile.");
+      } else if (rawSolutions.length < 3) {
+        setSuggestError(`Solo ${rawSolutions.length} soluzioni disponibili.`);
       }
     } catch {
       setSuggestError("Errore di connessione al motore consigli.");

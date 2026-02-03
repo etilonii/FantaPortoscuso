@@ -986,14 +986,14 @@ def suggest_transfers(
         return selected[:3]
     log(f"pool1={len(pool1)} selected={len(selected)}")
 
-    def overlaps_ok(sol: Solution, picked: List[Solution]) -> bool:
+    def overlaps_ok(sol: Solution, picked: List[Solution], max_overlap: int = 2) -> bool:
         sol_outs = solution_outs(sol)
         sol_ins = solution_ins(sol)
         sol_swaps = solution_swaps(sol)
         for other in picked:
-            if len(sol_outs & solution_outs(other)) > 2:
+            if len(sol_outs & solution_outs(other)) > max_overlap:
                 return False
-            if len(sol_ins & solution_ins(other)) > 2:
+            if len(sol_ins & solution_ins(other)) > max_overlap:
                 return False
             if sol_swaps & solution_swaps(other):
                 return False
@@ -1013,20 +1013,28 @@ def suggest_transfers(
         new_swaps = len(swaps - existing_swaps)
         return new_outs + new_ins + (2 * new_swaps)
 
+    def pick_best(pool: List[Solution], picked: List[Solution], max_overlap: int) -> Solution | None:
+        best_sol = None
+        best_key = None
+        for sol in pool:
+            if sol in picked:
+                continue
+            if sol.total_gain < 0:
+                continue
+            if not overlaps_ok(sol, picked, max_overlap=max_overlap):
+                continue
+            key = (diversity_score(sol, picked), sol.total_gain)
+            if best_key is None or key > best_key:
+                best_key = key
+                best_sol = sol
+        return best_sol
+
     pool2 = build_solutions(base_exclude, base_exclude_outs, relax_level=0)
     best_sol = None
-    best_key = None
-    for sol in pool2:
-        if sol in selected:
-            continue
-        if sol.total_gain < 0:
-            continue
-        if not overlaps_ok(sol, selected):
-            continue
-        key = (diversity_score(sol, selected), sol.total_gain)
-        if best_key is None or key > best_key:
-            best_key = key
-            best_sol = sol
+    for max_overlap in (2, 3, 4):
+        best_sol = pick_best(pool2, selected, max_overlap=max_overlap)
+        if best_sol:
+            break
     if best_sol:
         selected.append(best_sol)
     if len(selected) >= 3:
@@ -1035,46 +1043,44 @@ def suggest_transfers(
 
     pool3 = build_solutions(base_exclude, base_exclude_outs, relax_level=0)
     best_sol = None
-    best_key = None
-    for sol in pool3:
-        if sol in selected:
-            continue
-        if sol.total_gain < 0:
-            continue
-        if not overlaps_ok(sol, selected):
-            continue
-        key = (diversity_score(sol, selected), sol.total_gain)
-        if best_key is None or key > best_key:
-            best_key = key
-            best_sol = sol
+    for max_overlap in (2, 3, 4):
+        best_sol = pick_best(pool3, selected, max_overlap=max_overlap)
+        if best_sol:
+            break
     if best_sol:
         selected.append(best_sol)
 
     if len(selected) < 3:
         # Relax step 1
         pool = build_solutions(base_exclude, base_exclude_outs, relax_level=1)
-        for sol in pool:
-            if sol in selected:
-                continue
-            if sol.total_gain < 0:
-                continue
-            if not overlaps_ok(sol, selected):
-                continue
-            selected.append(sol)
+        for max_overlap in (3, 4):
+            for sol in pool:
+                if sol in selected:
+                    continue
+                if sol.total_gain < 0:
+                    continue
+                if not overlaps_ok(sol, selected, max_overlap=max_overlap):
+                    continue
+                selected.append(sol)
+                if len(selected) >= 3:
+                    break
             if len(selected) >= 3:
                 break
         log(f"relax1 pool={len(pool)} selected={len(selected)}")
     if len(selected) < 3:
         # Relax step 2
         pool = build_solutions(base_exclude, base_exclude_outs, relax_level=2)
-        for sol in pool:
-            if sol in selected:
-                continue
-            if sol.total_gain < 0:
-                continue
-            if not overlaps_ok(sol, selected):
-                continue
-            selected.append(sol)
+        for max_overlap in (3, 4):
+            for sol in pool:
+                if sol in selected:
+                    continue
+                if sol.total_gain < 0:
+                    continue
+                if not overlaps_ok(sol, selected, max_overlap=max_overlap):
+                    continue
+                selected.append(sol)
+                if len(selected) >= 3:
+                    break
             if len(selected) >= 3:
                 break
         log(f"relax2 pool={len(pool)} selected={len(selected)}")
