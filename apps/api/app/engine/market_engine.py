@@ -501,6 +501,26 @@ def suggest_transfers(
             return max(base, 0.75)
         return base
 
+    def is_long_injury(name_key: str) -> bool:
+        if name_key not in injured_list:
+            return False
+        if name_key in injury_return_allow:
+            return False
+        return injury_weights.get(name_key, 0.55) <= 0.55
+
+    def is_dead_profile(player: dict) -> bool:
+        if is_new_arrival(player):
+            return False
+        pv_s = num(player.get("PV_S"))
+        min_s = num(player.get("MIN_S"))
+        g_s = num(player.get("G_S"))
+        a_s = num(player.get("A_S"))
+        g_r8 = num(player.get("G_R8"))
+        a_r8 = num(player.get("A_R8"))
+        if pv_s < 3 and min_s < 180 and (g_s + a_s + g_r8 + a_r8) == 0:
+            return True
+        return False
+
     def new_arrival_factor(name_key: str) -> float:
         if name_key not in newcomers_weights:
             return 1.0
@@ -531,6 +551,8 @@ def suggest_transfers(
         name_key = norm_name(name_of(player))
         if not name_key:
             return False
+        if is_long_injury(name_key):
+            return False
         if name_key in injured_list and name_key not in injury_return_allow:
             if not has_strong_season(player):
                 return False
@@ -543,8 +565,10 @@ def suggest_transfers(
             return True
         if is_new_arrival(player):
             return True
-        if is_bench_profile(player) and not has_strong_season(player):
+        if is_dead_profile(player):
             return False
+        if is_bench_profile(player) and not has_strong_season(player):
+            return True
         if has_strong_season(player):
             starter = titolarita(player, players_pool)
             if starter >= 0.55:
@@ -602,6 +626,8 @@ def suggest_transfers(
         if floor > value:
             value = floor
         value = value * injury_factor(key) * new_arrival_factor(key)
+        if is_bench_profile(p) and not has_strong_season(p):
+            value *= 0.65
         value_map[name] = value
 
     in_pool = {r: [] for r in ["P", "D", "C", "A"]}
@@ -964,6 +990,17 @@ def suggest_transfers(
         return selected[:3]
     log(f"pool1={len(pool1)} selected={len(selected)}")
 
+    def min_gain_threshold(best_gain: float, relax: float = 0.0) -> float:
+        if best_gain <= 0:
+            return 0.0
+        base = max(4.0, best_gain * 0.4)
+        if relax > 0:
+            base = max(2.5, best_gain * 0.25)
+        return base
+
+    best_gain = selected[0].total_gain if selected else 0.0
+    min_gain = min_gain_threshold(best_gain)
+
     exclude2 = base_exclude | set(top_in_names(selected[0], 4)) if selected else base_exclude
     exclude2_outs = base_exclude_outs | set(top_out_names(selected[0], 3)) if selected else base_exclude_outs
     pool2 = build_solutions(exclude2, exclude2_outs, relax_level=0)
@@ -976,6 +1013,8 @@ def suggest_transfers(
         if sol in selected:
             continue
         if out_overlap(sol, selected[0]) > 3:
+            continue
+        if sol.total_gain < min_gain:
             continue
         selected.append(sol)
         break
@@ -996,14 +1035,19 @@ def suggest_transfers(
             continue
         if len(selected) > 1 and out_overlap(sol, selected[1]) > 3:
             continue
+        if sol.total_gain < min_gain:
+            continue
         selected.append(sol)
         break
 
     if len(selected) < 3:
         # Relax step 1
         pool = build_solutions(base_exclude, base_exclude_outs, relax_level=1)
+        min_gain_relax = min_gain_threshold(best_gain, relax=1.0)
         for sol in pool:
             if sol in selected:
+                continue
+            if sol.total_gain < min_gain_relax:
                 continue
             selected.append(sol)
             if len(selected) >= 3:
@@ -1012,8 +1056,11 @@ def suggest_transfers(
     if len(selected) < 3:
         # Relax step 2
         pool = build_solutions(base_exclude, base_exclude_outs, relax_level=2)
+        min_gain_relax = min_gain_threshold(best_gain, relax=1.0)
         for sol in pool:
             if sol in selected:
+                continue
+            if sol.total_gain < min_gain_relax:
                 continue
             selected.append(sol)
             if len(selected) >= 3:
