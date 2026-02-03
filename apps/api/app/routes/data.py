@@ -164,6 +164,37 @@ def _load_role_map() -> Dict[str, str]:
     return roles
 
 
+def _load_qa_map() -> Dict[str, float]:
+    qa_map: Dict[str, float] = {}
+    for row in _read_csv(QUOT_PATH):
+        name = (row.get("Giocatore") or "").strip()
+        if not name:
+            continue
+        try:
+            qa = float(row.get("PrezzoAttuale", 0) or 0)
+        except ValueError:
+            qa = 0.0
+        if qa <= 0:
+            continue
+        qa_map[normalize_name(name)] = qa
+    return qa_map
+
+
+def _apply_qa_from_quot(rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    qa_map = _load_qa_map()
+    if not qa_map:
+        return rows
+    out = []
+    for row in rows:
+        name_key = normalize_name(row.get("Giocatore", ""))
+        qa = qa_map.get(name_key)
+        if qa is not None:
+            row = dict(row)
+            row["PrezzoAttuale"] = qa
+        out.append(row)
+    return out
+
+
 
 def _latest_old_quotazioni_file() -> Optional[Path]:
     quot_dir = DATA_DIR / "Quotazioni"
@@ -949,7 +980,7 @@ def players(
     squadra: Optional[str] = Query(default=None),
     limit: int = Query(default=50, ge=1, le=200),
 ):
-    rose = _read_csv(ROSE_PATH)
+    rose = _apply_qa_from_quot(_read_csv(ROSE_PATH))
     results = []
     for row in rose:
         if q and not _matches(row.get("Giocatore", ""), q):
@@ -1031,7 +1062,7 @@ def teams():
 
 @router.get("/team/{team_name}")
 def team_roster(team_name: str):
-    rose = _read_csv(ROSE_PATH)
+    rose = _apply_qa_from_quot(_read_csv(ROSE_PATH))
     team_key = normalize_name(team_name)
     items = [row for row in rose if normalize_name(row.get("Team", "")) == team_key]
     return {"items": items}
@@ -1044,16 +1075,7 @@ def stats_plusvalenze(
     period: str = Query(default="december"),
 ):
     rose = _read_csv(ROSE_PATH)
-    quot_map = {}
-    for row in _read_csv(QUOT_PATH):
-        name = (row.get("Giocatore") or "").strip()
-        if not name:
-            continue
-        try:
-            qa = float(row.get("PrezzoAttuale", 0) or 0)
-        except ValueError:
-            qa = 0.0
-        quot_map[normalize_name(name)] = qa
+    quot_map = _load_qa_map()
     team_totals = defaultdict(lambda: {"acquisto": 0.0, "attuale": 0.0})
     for row in rose:
         team = row.get("Team", "")
@@ -1063,9 +1085,8 @@ def stats_plusvalenze(
         except ValueError:
             acquisto = 0.0
             attuale = 0.0
-        if attuale == 0:
-            name_key = normalize_name(row.get("Giocatore", ""))
-            attuale = quot_map.get(name_key, attuale)
+        name_key = normalize_name(row.get("Giocatore", ""))
+        attuale = quot_map.get(name_key, attuale)
         team_totals[team]["acquisto"] += acquisto
         team_totals[team]["attuale"] += attuale
 
