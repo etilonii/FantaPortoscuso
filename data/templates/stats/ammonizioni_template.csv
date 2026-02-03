@@ -1,340 +1,364 @@
-Giocatore,Posizione,Squadra,Ammonizioni
-1	M. Pongracic	Dif	FIO	8
-2	R. Malinovskyi	Cen	GEN	7
-3	A. Obert	Dif	CAG	7
-4	G. Mancini	Dif	ROM	6
-5	J. Jesus	Dif	NAP	6
-6	M. Zaccagni	Att	LAZ	6
-7	G. Pezzella	Dif	CRE	6
-8	M. Payero	Cen	CRE	6
-9	Kialonda Gaspar	Dif	LEC	6
-10	Hermoso	Dif	ROM	6
-11	Danilo Veiga	Dif	LEC	6
-12	I. Smolcic	Dif	COM	6
-13	Jacobo Ramon	Dif	COM	6
-14	Unai Nunez	Dif	VER	6
-15	A. Romagnoli	Dif	LAZ	5
-16	L. Ranieri	Dif	FIO	5
-17	B. Cristante	Cen	ROM	5
-18	A. Calabresi	Dif	PIS	5
-19	L. Ostigard	Dif	GEN	5
-20	T. Koopmeiners	Cen	JUV	5
-21	C. Casadei	Cen	TOR	5
-22	T. Barbieri	Dif	CRE	5
-23	K. Thorstvedt	Cen	SAS	5
-24	Y. Ramadani	Cen	LEC	5
-25	Juan Miranda	Dif	BOL	5
-26	M. Frese	Dif	VER	5
-27	M. Perrone	Cen	COM	5
-28	R. Belghali	Dif	VER	5
-29	H. Calhanoglu	Cen	INT	4
-30	N. Zaniolo	Cen	UDI	4
-31	M. de Roon	Cen	ATA	4
-32	S. Walukiewicz	Dif	SAS	4
-33	N. Barella	Cen	INT	4
-34	S. Esposito	Att	CAG	4
-35	R. Gagliardini	Cen	VER	4
-36	D. Cataldi	Cen	LAZ	4
-37	R. Mandragora	Cen	FIO	4
-38	F. Tomori	Dif	MIL	4
-39	N. Matic	Cen	SAS	4
-40	J. Akpa Akpro	Cen	VER	4
-41	H. Nicolussi	Cen	FIO	4
-42	A. Muric	Por	SAS	4
-43	N. Fagioli	Cen	FIO	4
-44	F. Parisi	Dif	FIO	4
-45	M. Aebischer	Cen	PIS	4
-46	W. Bondo	Cen	CRE	4
-47	J. Doig	Dif	SAS	4
-48	L. Banda	Att	LEC	4
-49	M. Prati	Cen	CAG	4
-50	T. Muharemovic	Dif	SAS	4
-51	P. Masini	Cen	GEN	4
-52	Y. Fofana	Cen	MIL	4
-53	N. Paz	Cen	COM	4
-54	A. Caracciolo	Dif	PIS	4
-55	M. Marin	Cen	PIS	4
-56	G. Orban	Att	VER	4
-57	Diego Carlos	Dif	COM	4
-58	M. Gabbia	Dif	MIL	3
-59	R. Freuler	Cen	BOL	3
-60	C. Lykogiannis	Dif	BOL	3
-61	A. Deiola	Cen	CAG	3
-62	L. Pellegrini	Dif	LAZ	3
-63	M. Lautaro	Att	INT	3
-64	A. Rabiot	Cen	MIL	3
-65	A. Grassi	Cen	CRE	3
-66	G. Gaetano	Cen	CAG	3
-67	S. Luperto	Dif	CAG	3
-68	M. Felici	Cen	CAG	3
-69	M. Locatelli	Cen	JUV	3
-70	L. Mazzitelli	Cen	CAG	3
-71	L. Kelly	Dif	JUV	3
-72	K. Davis	Att	UDI	3
-73	M. Kean	Att	FIO	3
-74	Y. Mina	Dif	CAG	3
-75	J. Vardy	Att	CRE	3
-76	E. Delprato	Dif	PAR	3
-77	F. Terracciano	Dif	CRE	3
-78	W. McKennie	Cen	JUV	3
-79	A. Ismajli	Dif	TOR	3
-80	L. Valenti	Dif	PAR	3
-81	M. Cancellieri	Att	LAZ	3
-82	M. Maignan	Por	MIL	3
-83	K. Asllani	Cen	TOR	3
-84	M. Folorunsho	Cen	CAG	3
-85	L. Coulibaly	Cen	LEC	3
-86	N. Vlasic	Cen	TOR	3
-87	H. Kamara	Dif	UDI	3
-88	M. Frendrup	Cen	GEN	3
-89	A. Gudmundsson	Att	FIO	3
-90	F. Gatti	Dif	JUV	3
-91	Carlos Augusto	Dif	INT	3
-92	Dodo	Dif	FIO	3
-93	L. Ferguson	Cen	BOL	3
-94	Mario Gila	Dif	LAZ	3
-95	N. Cambiaghi	Att	BOL	3
-96	I. Hien	Dif	ATA	3
-97	E. Ndicka	Dif	ROM	3
-98	G. Borrelli	Att	CAG	3
-99	M. Pedersen	Dif	TOR	3
-100	Vitinha	Att	GEN	3
-101	L. da Cunha	Cen	COM	3
-102	A. Circati	Dif	PAR	3
-103	J. Karlstrom	Cen	UDI	3
-104	A. Marcandalli	Dif	GEN	3
-105	J. Ekhator	Att	GEN	3
-106	David Neres	Att	NAP	3
-107	V. Nelsson	Dif	VER	3
-108	M. Pellegrino	Att	PAR	3
-109	L. Modric	Cen	MIL	3
-110	M. Vitik	Dif	BOL	3
-111	J. Addai	Att	COM	3
-112	P. Sucic	Cen	INT	3
-113	F. Coppola	Dif	PIS	3
-114	E. Iannoni	Cen	SAS	3
-115	Z. Athekame	Dif	MIL	3
-116	M. Troilo	Dif	PAR	3
-117	S. Britschgi	Dif	PAR	3
-118	A. Bella-Kotchap	Dif	VER	3
-119	Al Musrati	Cen	VER	3
-120	M. Akanji	Dif	INT	3
-121	H. Mkhitaryan	Cen	INT	2
-122	D. Zappacosta	Dif	ATA	2
-123	M. Pasalic	Cen	ATA	2
-124	R. Gosens	Dif	FIO	2
-125	R. Orsolini	Att	BOL	2
-126	Lazaro	Dif	TOR	2
-127	A. Bastoni	Dif	INT	2
-128	A. Sanabria	Att	CRE	2
-129	F. Bernardeschi	Cen	BOL	2
-130	J. Cuadrado	Dif	PIS	2
-131	M. Lazzari	Dif	LAZ	2
-132	L. De Silvestri	Dif	BOL	2
-133	F. Bonazzoli	Att	CRE	2
-134	W. Falcone	Por	LEC	2
-135	M. Thorsby	Cen	GEN	2
-136	A. Gallo	Dif	LEC	2
-137	D. Berardi	Att	SAS	2
-138	Pedro	Att	LAZ	2
-139	C. Kabasele	Dif	UDI	2
-140	M. Adopo	Cen	CAG	2
-141	A. Tameze	Cen	TOR	2
-142	A. Saelemaekers	Cen	MIL	2
-143	G. Scamacca	Att	ATA	2
-144	E. Caprile	Por	CAG	2
-145	G. Zappa	Dif	CAG	2
-146	I. Ilic	Cen	TOR	2
-147	N. Estevez	Cen	PAR	2
-148	S. Sohm	Cen	BOL	2
-149	Y. Maleh	Cen	LEC	2
-150	S. El Shaarawy	Att	ROM	2
-151	N. Bertola	Dif	UDI	2
-152	T. Baldanzi	Cen	ROM	2
-153	S. Canestrelli	Dif	PIS	2
-154	R. Floriani Mussolini	Dif	CRE	2
-155	C. Volpato	Cen	SAS	2
-156	J. Rowe	Att	BOL	2
-157	M. Olivera	Dif	NAP	2
-158	M. Bianchetti	Dif	CRE	2
-159	E. Valeri	Dif	PAR	2
-160	D. Bradaric	Dif	VER	2
-161	C. De Ketelaere	Att	ATA	2
-162	J. Lucumi	Dif	BOL	2
-163	K. Ehizibue	Dif	UDI	2
-164	A. Vranckx	Cen	SAS	2
-165	C. Ngonge	Att	TOR	2
-166	E. Akinsanmiro	Cen	PIS	2
-167	S. Beukema	Dif	NAP	2
-168	Y. Bisseck	Dif	INT	2
-169	M. Thuram	Att	INT	2
-170	N. Leali	Por	GEN	2
-171	Aaron Martin	Dif	GEN	2
-172	S. Serdar	Cen	VER	2
-173	K. Yildiz	Att	JUV	2
-174	S. Goglichidze	Dif	UDI	2
-175	I. Vural	Cen	PIS	2
-176	S. Pavlovic	Dif	MIL	2
-177	Saul Coco	Dif	TOR	2
-178	Tete Morente	Att	LEC	2
-179	B. Norton-Cuffy	Dif	GEN	2
-180	A. Fadera	Att	SAS	2
-181	Sergi Roberto	Cen	COM	2
-182	I. Van der Brempt	Dif	COM	2
-183	M. Kone	Cen	ROM	2
-184	A. Atta	Cen	UDI	2
-185	N. Valentini	Dif	VER	2
-186	Tiago Gabriel	Dif	LEC	2
-187	Alex Valle	Dif	COM	2
-188	K. N’Dri	Att	LEC	2
-189	P. Estupinan	Dif	MIL	2
-190	N. El Aynaoui	Cen	ROM	2
-191	K. Sulemana	Att	ATA	2
-192	R. Idrissi	Dif	CAG	2
-193	Giovane	Att	VER	2
-194	A. Ndiaye	Dif	PAR	2
-195	C. Ordonez	Cen	PAR	2
-196	G. Piccinini	Cen	PIS	2
-197	N. Lang	Att	NAP	2
-198	Z. Aboukhlal	Att	TOR	2
-199	J. Vandeputte	Cen	CRE	2
-200	J. Piotrowski	Cen	UDI	2
-201	O. Sorensen	Cen	PAR	2
-202	J. Ziolkowski	Dif	ROM	2
-203	J. Rodriguez	Dif	CAG	2
-204	R. Leao	Att	MIL	1
-205	M. Brescianini	Cen	FIO	1
-206	D. Maldini	Cen	ATA	1
-207	L. Pellegrini	Cen	ROM	1
-208	L. Spinazzola	Dif	NAP	1
-209	E. Dzeko	Att	FIO	1
-210	B. Djimsiti	Dif	ATA	1
-211	L. Skorupski	Por	BOL	1
-212	S. Sabelli	Dif	GEN	1
-213	L. Pavoletti	Att	CAG	1
-214	F. Dimarco	Dif	INT	1
-215	M. Politano	Att	NAP	1
-216	A. Pinamonti	Att	SAS	1
-217	N. Rovella	Cen	LAZ	1
-218	A. Rrahmani	Dif	NAP	1
-219	C. Immobile	Att	BOL	1
-220	A. Marusic	Dif	LAZ	1
-221	F. Acerbi	Dif	INT	1
-222	G. Di Lorenzo	Dif	NAP	1
-223	E. Elmas	Cen	NAP	1
-224	M. Leris	Cen	PIS	1
-225	B. Gilmour	Cen	NAP	1
-226	R. Loftus-Cheek	Cen	MIL	1
-227	Angelino	Dif	ROM	1
-228	K. De Bruyne	Cen	NAP	1
-229	S. McTominay	Cen	NAP	1
-230	T. Anjorin	Cen	TOR	1
-231	A. Buongiorno	Dif	NAP	1
-232	E. Corvi	Por	PAR	1
-233	S. Lobotka	Cen	NAP	1
-234	R. Sava	Por	UDI	1
-235	L. Colombo	Att	GEN	1
-236	J. Odgaard	Att	BOL	1
-237	N. Pierini	Att	SAS	1
-238	P. Kalulu	Dif	JUV	1
-239	N. Nkounkou	Dif	TOR	1
-240	F. Anguissa	Cen	NAP	1
-241	K. Tsimikas	Dif	ROM	1
-242	T. Pobega	Cen	BOL	1
-243	M. Vojvoda	Dif	COM	1
-244	F. Ravaglia	Por	BOL	1
-245	N. Zalewski	Cen	ATA	1
-246	F. Rinaldi	Por	PAR	1
-247	A. Cambiaso	Dif	JUV	1
-248	M. Tramoni	Cen	PIS	1
-249	Alvaro Morata	Att	COM	1
-250	A. Zanoli	Dif	UDI	1
-251	A. Paleari	Por	TOR	1
-252	M'Bala Nzola	Att	PIS	1
-253	G. Oristanio	Att	PAR	1
-254	K. De Winter	Dif	MIL	1
-255	G. Scalvini	Dif	ATA	1
-256	F. Israel	Por	TOR	1
-257	S. Moreo	Att	PIS	1
-258	S. Ricci	Cen	MIL	1
-259	F. Miretti	Cen	JUV	1
-260	M. Soule	Att	ROM	1
-261	N. Zortea	Dif	BOL	1
-262	L. Samardzic	Cen	ATA	1
-263	Nuno Tavares	Dif	LAZ	1
-264	D. Dumfries	Dif	INT	1
-265	J. Vasquez	Dif	GEN	1
-266	E. Ferguson	Att	ROM	1
-267	E. Holm	Dif	BOL	1
-268	M. Ellertsson	Cen	GEN	1
-269	A. Vergara	Cen	NAP	1
-270	Ederson	Cen	ATA	1
-271	G. Bonfanti	Dif	PIS	1
-272	D. Bartesaghi	Dif	MIL	1
-273	Z. Celik	Dif	ROM	1
-274	A. Zerbin	Cen	CRE	1
-275	F. Baschirotto	Dif	CRE	1
-276	S. Lovric	Cen	UDI	1
-277	E. Ebosse	Dif	VER	1
-278	M. Di Gregorio	Por	JUV	1
-279	I. Sulemana	Cen	CAG	1
-280	E. Ilkhan	Cen	TOR	1
-281	J. Cabal	Dif	JUV	1
-282	R. Hojlund	Att	NAP	1
-283	N. Moro	Cen	BOL	1
-284	A. Lauriente	Att	SAS	1
-285	S. Posch	Dif	COM	1
-286	L. Bernasconi	Dif	ATA	1
-287	M. Palestra	Dif	CAG	1
-288	Y. Musah	Cen	ATA	1
-289	P. Comuzzo	Dif	FIO	1
-290	W. Cheddira	Att	LEC	1
-291	A. Njie	Att	TOR	1
-292	N. Krstovic	Att	ATA	1
-293	M. Kaba	Cen	LEC	1
-294	Oier Zarraga	Cen	UDI	1
-295	L. Lucca	Att	NAP	1
-296	J. Zemura	Dif	UDI	1
-297	Mateus Lusuardi	Dif	PIS	1
-298	T. Kristensen	Dif	UDI	1
-299	F. Camarda	Att	LEC	1
-300	S. Pierotti	Att	LEC	1
-301	R. Belahyane	Cen	LAZ	1
-302	S. Castro	Att	BOL	1
-303	T. Dallinga	Att	BOL	1
-304	Alberto Moreno	Dif	COM	1
-305	D. Mosquera	Att	VER	1
-306	A. Benedyczak	Att	PAR	1
-307	Z. Suzuki	Por	PAR	1
-308	J. Idzes	Dif	SAS	1
-309	Francisco Conceicao	Att	JUV	1
-310	M. Kempf	Dif	COM	1
-311	G. Maripan	Dif	TOR	1
-312	M. Keita	Cen	PAR	1
-313	M. Caqueret	Cen	COM	1
-314	S. Otoa	Dif	GEN	1
-315	Fali Cande	Dif	SAS	1
-316	J. Ondrejka	Cen	PAR	1
-317	C. Niasse	Cen	VER	1
-318	S. Gimenez	Att	MIL	1
-319	C. Ndour	Cen	FIO	1
-320	A. Bernede	Cen	VER	1
-321	O. Provstgaard	Dif	LAZ	1
-322	S. Kilicsoy	Att	CAG	1
-323	Jesus Rodriguez	Att	COM	1
-324	F. Esposito	Att	INT	1
-325	A. Gronbaek	Cen	GEN	1
-326	Joao Mario	Dif	JUV	1
-327	H. Meister	Att	PIS	1
-328	I. Toure	Cen	PIS	1
-329	D. Denoon	Dif	PIS	1
-330	M. Hojholt	Cen	PIS	1
-331	M. Collocolo	Cen	CRE	1
-332	F. Vazquez	Cen	CRE	1
-333	I. Kone	Cen	SAS	1
-334	L. Miller	Cen	UDI	1
-335	A. Buksa	Att	UDI	1
-336	N. Stulic	Att	LEC	1
-337	M. Faye	Dif	CRE	1
-338	Ze Pedro	Dif	CAG	1
-339	Raul Albiol	Dif	PIS	1
+ID,Giocatore,Posizione,Squadra,Ammonizioni
+4312,Maignan,P,Milan,3
+6966,Butez,P,Como,2
+2814,Provedel,P,Lazio,1
+5876,Di Gregorio,P,Juventus,1
+2134,Falcone,P,Lecce,2
+4360,Caprile,P,Cagliari,2
+4236,Muric,P,Sassuolo,4
+6662,Corvi,P,Parma,1
+2722,Ravaglia F.,P,Bologna,2
+133,Skorupski,P,Bologna,1
+188,Leali,P,Genoa,2
+6641,Suzuki,P,Parma,1
+5320,Paleari,P,Torino,1
+5338,Rinaldi,P,Parma,1
+7179,Israel,P,Torino,1
+6842,Sava,P,Udinese,1
+254,Dimarco,D,Inter,1
+1852,Spinazzola,D,Napoli,1
+6832,Palestra,D,Cagliari,1
+2120,Bastoni,D,Inter,3
+6893,Kempf,D,Como,1
+7181,Wesley,D,Roma,4
+5022,Pavlovic,D,Milan,2
+5750,Ostigard,D,Genoa,6
+2593,Martin,D,Genoa,2
+2788,Bremer,D,Juventus,1
+4657,Celik,D,Roma,1
+5526,Scalvini,D,Atalanta,1
+5678,Holm,D,Juventus,1
+5877,Carlos Augusto,D,Inter,3
+5835,Baschirotto,D,Cremonese,2
+6496,Bartesaghi,D,Milan,1
+4994,Vojvoda,D,Como,2
+6217,Bisseck,D,Inter,2
+4976,Kalulu,D,Juventus,1
+4409,Rrahmani,D,Napoli,2
+2816,Di Lorenzo,D,Napoli,1
+4263,Kabasele,D,Udinese,3
+6869,Ramon,D,Como,6
+6766,Kelly L.,D,Juventus,3
+5812,Terracciano F.,D,Cremonese,3
+5527,Zanoli,D,Udinese,1
+2296,Mancini,D,Roma,7
+6642,Coco,D,Torino,2
+4665,Maripan,D,Torino,1
+4159,Akanji,D,Inter,3
+4734,Miranda J.,D,Bologna,5
+5435,Moreno Alb.,D,Como,1
+2160,Gosens,D,Fiorentina,2
+5514,Vasquez,D,Genoa,1
+5513,Dumfries,D,Inter,1
+6039,Cabal,D,Juventus,1
+5520,Cambiaso,D,Juventus,1
+2724,Buongiorno,D,Napoli,2
+5862,Valeri,D,Parma,2
+4807,Hermoso,D,Roma,6
+7220,Belghali,D,Verona,5
+6066,Posch,D,Como,1
+393,Luperto,D,Cremonese,3
+6867,Valle,D,Como,2
+6013,Barbieri,D,Cremonese,5
+460,Romagnoli,D,Lazio,4
+6989,Tiago Gabriel,D,Lecce,3
+6663,Circati,D,Parma,4
+6664,Delprato,D,Parma,4
+7143,Angori,D,Pisa,1
+6046,Hien,D,Atalanta,3
+554,Zappacosta,D,Atalanta,2
+4210,Mina,D,Cagliari,3
+7125,Idrissi R.,D,Cagliari,2
+4433,Zortea,D,Bologna,1
+6814,Norton-Cuffy,D,Genoa,3
+5833,Gila,D,Lazio,2
+4502,Gallo,D,Lecce,2
+4401,Gabbia,D,Milan,3
+4751,Tomori,D,Milan,4
+7155,Muharemovic,D,Sassuolo,4
+697,Cuadrado,D,Pisa,2
+6672,Idzes,D,Sassuolo,1
+7219,Bernasconi,D,Atalanta,1
+4461,Zappa,D,Cagliari,2
+6495,Comuzzo,D,Fiorentina,1
+5885,Dodò,D,Fiorentina,3
+5449,Parisi,D,Fiorentina,4
+6660,Marcandalli,D,Genoa,3
+2188,Marusic,D,Lazio,1
+6202,Beukema,D,Napoli,2
+4317,N'Dicka,D,Roma,4
+4772,Angelino,D,Roma,1
+7255,Britschgi,D,Parma,3
+4137,Diego Carlos,D,Como,5
+787,Djimsiti,D,Atalanta,1
+4887,Bellanova,D,Atalanta,1
+6042,Lucumì,D,Bologna,2
+612,Bianchetti,D,Cremonese,2
+4378,Ranieri L.,D,Fiorentina,5
+5739,De Winter,D,Milan,1
+513,Acerbi,D,Inter,2
+5620,Tavares N.,D,Lazio,1
+5307,Valenti,D,Parma,3
+2273,Caracciolo A.,D,Pisa,5
+4374,Walukiewicz,D,Sassuolo,4
+5851,Doig,D,Sassuolo,4
+5010,Ismajli,D,Torino,3
+4385,Lazaro,D,Torino,2
+5820,Bertola,D,Udinese,2
+6485,Kristensen T.,D,Udinese,2
+6639,Frese,D,Verona,5
+5701,Obert,D,Cagliari,7
+5831,Gatti,D,Juventus,3
+2728,Pellegrini Lu.,D,Lazio,5
+6990,Veiga D.,D,Lecce,6
+6531,Jimenez A.,D,Milan,1
+7139,Canestrelli,D,Pisa,2
+2745,Calabresi,D,Pisa,5
+5555,Kamara H.,D,Udinese,3
+5532,Bradaric,D,Verona,2
+2640,Kolasinac,D,Atalanta,1
+7068,Vitik,D,Bologna,3
+7014,Smolcic I.,D,Como,7
+7131,Floriani Mussolini,D,Cremonese,2
+770,Pezzella Giu.,D,Cremonese,6
+5603,Pongracic,D,Fiorentina,8
+2263,Lazzari,D,Lazio,2
+6632,Gaspar K.,D,Lecce,6
+6426,Pedersen,D,Torino,3
+6894,Unai Nunez,D,Verona,5
+7018,Nelsson,D,Verona,3
+7253,Bella-Kotchap,D,Verona,3
+7260,Ziolkowski,D,Roma,2
+5168,Tsimikas,D,Roma,1
+2006,Lirola,D,Verona,1
+7012,Provstgaard,D,Lazio,1
+5273,Estupinan,D,Milan,2
+256,Juan Jesus,D,Napoli,6
+5840,Olivera,D,Napoli,2
+6047,Ehizibue,D,Udinese,2
+6211,Zemura,D,Udinese,2
+6957,Valentini N.,D,Verona,2
+7211,Athekame,D,Milan,3
+7268,Rodriguez Ju.,D,Cagliari,2
+388,Albiol,D,Pisa,1
+6444,Bonfanti,D,Pisa,1
+487,De Silvestri,D,Bologna,2
+2653,Lykogiannis,D,Bologna,3
+6896,Van Der Brempt,D,Como,2
+1891,Ceccherini,D,Cremonese,1
+4904,Marì,D,Fiorentina,3
+5718,Viti,D,Fiorentina,1
+6977,Otoa,D,Genoa,1
+7175,Joao Mario,D,Bologna,1
+7140,Coppola F.,D,Pisa,3
+6411,Mateus Lusuardi,D,Pisa,1
+5994,Ebosse,D,Torino,1
+6537,Goglichidze,D,Udinese,2
+6985,Candè,D,Sassuolo,2
+7235,Troilo,D,Parma,2
+5156,Nkounkou,D,Torino,2
+6870,Faye,D,Cremonese,1
+7274,Zè Pedro,D,Cagliari,1
+7325,Bozhinov,D,Pisa,1
+7196,Denoon,D,Pisa,1
+7202,Ndiaye,D,Parma,2
+6875,Paz N.,C,Como,4
+2194,Calhanoglu,C,Inter,4
+4777,McTominay,C,Napoli,1
+2379,Rabiot,C,Milan,3
+2167,Orsolini,C,Bologna,2
+2606,Modric,C,Milan,3
+2517,De Bruyne,C,Napoli,1
+2766,Zaniolo,C,Udinese,5
+1933,Mandragora,C,Fiorentina,4
+4892,Saelemaekers,C,Milan,2
+2765,Odgaard,C,Bologna,1
+4220,Zambo Anguissa,C,Napoli,1
+6908,Atta,C,Udinese,2
+5800,Gudmundsson A.,C,Fiorentina,3
+5589,Konè M.,C,Roma,2
+5687,Vlasic,C,Torino,5
+6151,Perrone,C,Como,7
+5422,Zalewski,C,Atalanta,1
+1870,Barella,C,Inter,4
+6831,Neres,C,Napoli,3
+6717,Konè I.,C,Sassuolo,2
+530,Pellegrini Lo.,C,Roma,2
+4364,Gaetano,C,Cagliari,3
+4427,Malinovskyi,C,Genoa,8
+4404,Thorsby,C,Cremonese,2
+827,Locatelli,C,Juventus,4
+4973,McKennie,C,Juventus,4
+6884,Conceicao,C,Juventus,2
+632,Zaccagni,C,Lazio,6
+2077,Pasalic,C,Atalanta,2
+5036,Caqueret,C,Como,1
+5559,Da Cunha,C,Como,4
+7133,Vandeputte,C,Cremonese,2
+449,Vazquez,C,Cremonese,1
+4186,Guendouzi,C,Lazio,5
+5504,Coulibaly L.,C,Lecce,3
+5453,Ricci S.,C,Milan,1
+6640,Felici,C,Cagliari,3
+333,Cataldi,C,Lazio,5
+4199,Loftus-Cheek,C,Milan,1
+779,Cristante,C,Roma,5
+5844,Thorstvedt,C,Sassuolo,6
+5735,Volpato,C,Sassuolo,2
+2839,Sottil,C,Lecce,1
+5298,Pobega,C,Bologna,1
+6020,Ellertsson,C,Genoa,1
+7070,Sucic P.,C,Inter,3
+2334,Leris,C,Pisa,1
+6815,Fadera,C,Sassuolo,3
+6458,Serdar,C,Verona,2
+1976,Mazzitelli,C,Cagliari,3
+22,De Roon,C,Atalanta,5
+5792,Ederson D.S.,C,Atalanta,1
+4947,Brescianini,C,Fiorentina,1
+5119,Samardzic,C,Atalanta,1
+2529,Mkhitaryan,C,Inter,2
+5813,Miretti,C,Juventus,1
+4686,Fofana Y.,C,Milan,4
+4287,Lobotka,C,Napoli,1
+536,Politano,C,Napoli,1
+7146,Tourè I.,C,Pisa,2
+5318,Tramoni M.,C,Pisa,3
+6680,Karlstrom,C,Udinese,4
+2528,Matic,C,Sassuolo,4
+5791,Frendrup,C,Genoa,3
+7028,Bernede,C,Verona,1
+6054,Moro N.,C,Bologna,1
+6206,Fabbian,C,Fiorentina,1
+6252,Folorunsho,C,Cagliari,3
+4465,Fagioli,C,Fiorentina,4
+6898,Keita M.,C,Parma,1
+7198,Piotrowski,C,Udinese,2
+6844,Rowe,C,Bologna,2
+801,Gagliardini,C,Verona,6
+4870,Adopo,C,Cagliari,2
+5992,Bondo,C,Cremonese,4
+795,El Shaarawy,C,Roma,2
+5888,Casadei,C,Torino,5
+6481,Payero,C,Cremonese,6
+5858,Ferguson,C,Bologna,3
+1871,Deiola,C,Cagliari,3
+6424,Prati,C,Torino,5
+6294,Ndour,C,Fiorentina,1
+5301,Luis Henrique,C,Inter,1
+181,Vecino,C,Lazio,1
+6549,Pierotti,C,Lecce,1
+5998,Zerbin,C,Cremonese,1
+5131,Gilmour,C,Napoli,1
+6593,Akinsanmiro,C,Pisa,2
+5823,Baldanzi,C,Genoa,2
+7209,Sorensen O.,C,Parma,2
+788,Freuler,C,Bologna,3
+5784,Aebischer,C,Pisa,4
+184,Bernardeschi,C,Bologna,2
+27,Grassi,C,Cremonese,2
+6917,Masini,C,Genoa,4
+6394,Ramadani,C,Lecce,7
+5295,Musah,C,Atalanta,1
+5290,Estevez,C,Parma,2
+6984,Ondrejka,C,Parma,1
+7145,Piccinini G.,C,Pisa,2
+7157,Iannoni,C,Sassuolo,3
+5540,Niasse,C,Verona,1
+6218,Oristanio,C,Parma,1
+4479,Elmas,C,Napoli,1
+6106,Carboni V.,C,Genoa,2
+5685,Koopmeiners,C,Juventus,5
+5457,Maleh,C,Cremonese,2
+5319,Sohm,C,Bologna,2
+7149,Marin M.,C,Pisa,4
+6271,El Aynaoui,C,Roma,3
+4890,Tameze,C,Torino,2
+4896,Maldini,C,Lazio,1
+4284,Sergi Roberto,C,Como,2
+6191,Belahyane,C,Lazio,1
+4459,Rovella,C,Lazio,2
+6410,Kaba,C,Lecce,1
+6634,Tete Morente,C,Lecce,2
+5007,Ilic,C,Torino,2
+5850,Lovric,C,Verona,1
+7208,Miller L.,C,Udinese,2
+7010,Al-Musrati,C,Verona,3
+4349,Nicolussi Caviglia,C,Parma,4
+6024,Sulemana I.,C,Cagliari,1
+7132,Collocolo,C,Cremonese,1
+6722,Gronbaek,C,Genoa,1
+5719,Asllani,C,Torino,3
+7138,Ordonez C.,C,Parma,2
+7150,Vural,C,Pisa,3
+6889,Anjorin,C,Torino,1
+6212,Zarraga,C,Udinese,1
+6005,Ilkhan,C,Torino,1
+7223,Vergara,C,Napoli,1
+5610,Vranckx,C,Sassuolo,2
+5286,Akpa Akpro,C,Verona,4
+7147,Hojholt,C,Pisa,1
+2764,Martinez L.,A,Inter,3
+6434,Yildiz,A,Juventus,2
+4871,Thuram,A,Inter,2
+4510,Leao,A,Milan,1
+5734,Soulè,A,Roma,1
+5637,Davis K.,A,Udinese,4
+6052,Hojlund,A,Napoli,1
+2137,Scamacca,A,Atalanta,2
+6572,Castro S.,A,Bologna,1
+6435,Krstovic,A,Atalanta,2
+531,Berardi,A,Sassuolo,2
+6552,Orban G.,A,Verona,4
+505,Bonazzoli,A,Cremonese,3
+7023,Pellegrino M.,A,Parma,3
+7071,Esposito F.P.,A,Inter,1
+6060,Laurientè,A,Sassuolo,2
+2499,Vardy,A,Cremonese,4
+6226,Castellanos,A,Lazio,2
+5455,Moreo,A,Pisa,1
+5995,De Ketelaere,A,Atalanta,2
+4436,Cambiaghi,A,Bologna,3
+2097,Kean,A,Fiorentina,3
+4463,Esposito Se.,A,Cagliari,4
+6365,Ferguson E.,A,Roma,1
+7162,Giovane,A,Napoli,2
+4923,Colombo,A,Genoa,1
+5500,Cancellieri,A,Lazio,4
+2038,Pinamonti,A,Sassuolo,1
+7199,Kilicsoy,A,Cagliari,1
+6243,Borrelli,A,Cagliari,3
+7120,Lang,A,Napoli,2
+7129,Rodriguez Je.,A,Como,1
+6164,Vitinha O.,A,Genoa,3
+7008,Gimenez,A,Milan,1
+5918,Sulemana K.,A,Atalanta,3
+7127,Addai,A,Como,4
+6001,Banda,A,Lecce,4
+5336,Nzola,A,Sassuolo,1
+6822,Ekhator,A,Genoa,3
+7001,N'Dri,A,Lecce,2
+6145,Ngonge,A,Torino,2
+6643,Dallinga,A,Bologna,1
+6667,Benedyczak,A,Parma,1
+6836,Meister,A,Pisa,1
+7249,Buksa,A,Udinese,1
+2489,Pedro,A,Lazio,2
+6630,Mosquera,A,Verona,1
+6439,Cheddira,A,Lecce,1
+7252,Stulic,A,Lecce,1
+6827,Njie,A,Torino,1
+479,Sanabria,A,Cremonese,2
+6895,Dominguez B.,A,Bologna,1
+6215,Lucca,A,Napoli,1
+785,Immobile,A,Bologna,1
+6519,Camarda,A,Lecce,1
+6653,Bravo,A,Udinese,1
+647,Dzeko,A,Fiorentina,1
+7183,Aboukhlal,A,Torino,3
+313,Morata,A,Como,1
+5471,Djuric,A,Cremonese,1
+1842,Pierini,A,Sassuolo,1
+7158,Moro L.,A,Sassuolo,1
+7272,Gueye,A,Udinese,1
+247,Pavoletti,A,Cagliari,1

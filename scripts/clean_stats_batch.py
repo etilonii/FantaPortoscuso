@@ -29,7 +29,12 @@ STATS = [
     ("espulsioni_template.csv", "espulsioni.csv", "Espulsioni"),
     ("autogol_template.csv", "autogol.csv", "Autogol"),
     ("rigoriparati_template.csv", "rigoriparati.csv", "RigoriParati"),
+    ("rigorisegnati_template.csv", "rigorisegnati.csv", "RigoriSegnati"),
+    ("rigorisbagliati_template.csv", "rigorisbagliati.csv", "RigoriSbagliati"),
     ("gol_subiti_template.csv", "gol_subiti.csv", "GolSubiti"),
+    ("partite_template.csv", "partite.csv", "Partite"),
+    ("mediavoto_template.csv", "mediavoto.csv", "Mediavoto"),
+    ("fantamedia_template.csv", "fantamedia.csv", "Fantamedia"),
     ("gwin_template.csv", "gwin.csv", "GolVittoria"),
     ("gpar_template.csv", "gpar.csv", "GolPareggio"),
 ]
@@ -42,7 +47,12 @@ STAT_FILES = {
     "Cleansheet": "cleansheet.csv",
     "Autogol": "autogol.csv",
     "RigoriParati": "rigoriparati.csv",
+    "RigoriSegnati": "rigorisegnati.csv",
+    "RigoriSbagliati": "rigorisbagliati.csv",
     "GolSubiti": "gol_subiti.csv",
+    "Partite": "partite.csv",
+    "Mediavoto": "mediavoto.csv",
+    "Fantamedia": "fantamedia.csv",
     "GolVittoria": "gwin.csv",
     "GolPareggio": "gpar.csv",
 }
@@ -524,6 +534,10 @@ def latest_incoming(prefix: str) -> Path | None:
     candidates = list(INCOMING_DIR.glob(f"{prefix}_*.csv")) + list(INCOMING_DIR.glob(f"{prefix}_*.xlsx"))
     if not candidates:
         return None
+    pattern = re.compile(rf"^{re.escape(prefix)}_\\d{{4}}-\\d{{2}}-\\d{{2}}$")
+    filtered = [p for p in candidates if pattern.match(p.stem)]
+    if filtered:
+        candidates = filtered
     return max(candidates, key=lambda p: p.stat().st_mtime)
 
 def archive_incoming(path: Path, keep: int) -> None:
@@ -610,11 +624,15 @@ def update_statistiche_giocatori() -> None:
         "Gol",
         "Autogol",
         "RigoriParati",
+        "RigoriSegnati",
         "RigoriSbagliati",
         "Assist",
         "Ammonizioni",
         "Espulsioni",
         "Cleansheet",
+        "Partite",
+        "Mediavoto",
+        "Fantamedia",
         "GolVittoria",
         "GolPareggio",
         "GolSubiti",
@@ -623,7 +641,16 @@ def update_statistiche_giocatori() -> None:
             merged[col] = 0
 
     # Preserve rigori columns from existing file if present
-    for col in ["RigoriParati", "RigoriSbagliati", "GolVittoria", "GolPareggio"]:
+    for col in [
+        "RigoriParati",
+        "RigoriSegnati",
+        "RigoriSbagliati",
+        "GolVittoria",
+        "GolPareggio",
+        "Partite",
+        "Mediavoto",
+        "Fantamedia",
+    ]:
         if col in base_df.columns:
             base_col = base_df[["Giocatore", col]].drop_duplicates(subset=["Giocatore"], keep="last")
             merged = merged.merge(
@@ -661,17 +688,23 @@ def update_statistiche_giocatori() -> None:
         merged = merged.drop(columns=[f"{stat_name}_new"])
 
     # Normalize numeric stats
-    for col in [
+    int_cols = [
         "Gol",
         "Autogol",
         "RigoriParati",
+        "RigoriSegnati",
         "RigoriSbagliati",
         "Assist",
         "Ammonizioni",
         "Espulsioni",
         "Cleansheet",
-    ]:
+        "Partite",
+    ]
+    for col in int_cols:
         merged[col] = pd.to_numeric(merged[col], errors="coerce").fillna(0).astype(int)
+
+    for col in ["Mediavoto", "Fantamedia"]:
+        merged[col] = pd.to_numeric(merged[col], errors="coerce").fillna(0).round(2)
 
     # Sorting by role P-D-C-A then name
     role_order = {"P": 0, "D": 1, "C": 2, "A": 3}
@@ -695,7 +728,7 @@ def main() -> None:
     keep = state.get("keep", 5)
 
     for template_name, out_name, stat in STATS:
-        prefix = template_name.split("_")[0]
+        prefix = template_name.replace("_template.csv", "")
         incoming = latest_incoming(prefix)
         if incoming:
             # Move current template to history and replace with incoming
@@ -708,6 +741,9 @@ def main() -> None:
             last.pop(template_name, None)
 
         in_path = TEMPLATE_DIR / template_name
+        if not in_path.exists() and incoming:
+            TEMPLATE_DIR.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(incoming, in_path)
         if not in_path.exists():
             print(f"Template mancante: {in_path}")
             continue
