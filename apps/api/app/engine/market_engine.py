@@ -499,12 +499,7 @@ def suggest_transfers(
 
     def is_new_arrival(player: dict) -> bool:
         name_key = norm_name(name_of(player))
-        if name_key in newcomers_allow:
-            return True
-        pv_s = num(player.get("PV_S"))
-        min_s = num(player.get("MIN_S"))
-        qa = qa_of(player)
-        return pv_s <= 3 and min_s <= 180 and qa >= 12
+        return name_key in newcomers_allow
 
     def is_bench_profile(player: dict) -> bool:
         pv_s = num(player.get("PV_S"))
@@ -544,7 +539,7 @@ def suggest_transfers(
             return 1.0
         weight = max(0.0, min(1.0, newcomers_weights.get(name_key, 0.5)))
         # New arrivals can be interesting, but should not dominate all outcomes.
-        return 0.85 + 0.30 * weight
+        return 0.90 + 0.15 * weight
 
     def new_arrival_floor(player: dict, games_left: int) -> float:
         name_key = norm_name(name_of(player))
@@ -810,6 +805,7 @@ def suggest_transfers(
         neg_sum: float
         best_gain: float
         big_gain_count: int
+        newcomer_count: int
 
     def build_solutions(
         extra_exclude_ins: set[str],
@@ -824,6 +820,7 @@ def suggest_transfers(
         neg_sum_init = 0.0
         best_gain_init = 0.0
         big_gain_init = 0
+        newcomer_count_init = 0
         out_set_init = set()
         in_set_init = set()
 
@@ -850,6 +847,8 @@ def suggest_transfers(
                 best_gain_init = max(best_gain_init, gain)
                 if gain >= 5.0:
                     big_gain_init += 1
+                if is_new_arrival(in_p):
+                    newcomer_count_init += 1
 
         beam = [
             State(
@@ -863,6 +862,7 @@ def suggest_transfers(
                 neg_sum=neg_sum_init,
                 best_gain=best_gain_init,
                 big_gain_count=big_gain_init,
+                newcomer_count=newcomer_count_init,
             )
         ]
 
@@ -891,6 +891,7 @@ def suggest_transfers(
                         continue
                     neg_count = 1
                     neg_sum = abs(cand.gain)
+                newcomer_count = 1 if is_new_arrival(cand.in_player) else 0
                 seeded.append(
                     State(
                         swaps=[cand],
@@ -903,12 +904,13 @@ def suggest_transfers(
                         neg_sum=neg_sum,
                         best_gain=best_gain,
                         big_gain_count=1 if cand.gain >= 5.0 else 0,
+                        newcomer_count=newcomer_count,
                     )
                 )
             if seeded:
                 beam = seeded
 
-        min_swap_gain = 0.8 if relax_level == 0 else (0.35 if relax_level == 1 else 0.0)
+        min_swap_gain = 0.5 if relax_level == 0 else (0.2 if relax_level == 1 else 0.0)
         remaining_changes = max_changes - len(beam[0].swaps)
         for _ in range(remaining_changes):
             next_beam = []
@@ -930,6 +932,10 @@ def suggest_transfers(
                     if spent > credits_residui + earned:
                         continue
                     if cand.gain < min_swap_gain and name_out not in required_outs_set:
+                        continue
+                    newcomer_count = state.newcomer_count + (1 if is_new_arrival(cand.in_player) else 0)
+                    max_newcomers = 2 if relax_level == 0 else (3 if relax_level == 1 else 4)
+                    if newcomer_count > max_newcomers:
                         continue
                     neg_count = state.neg_count
                     neg_sum = state.neg_sum
@@ -958,6 +964,7 @@ def suggest_transfers(
                             neg_sum=neg_sum,
                             best_gain=best_gain,
                             big_gain_count=big_gain_count,
+                            newcomer_count=newcomer_count,
                         )
                     )
             if not next_beam:
