@@ -32,8 +32,8 @@ export default function MercatoSection({
       <div className="dashboard-header">
         <div>
           <p className="eyebrow">Mercato</p>
-          <h2>Coming Soon</h2>
-          <p className="muted">Apertura mercato: 4 Febbraio 2026, ore 08:00.</p>
+          <h2>Mercato Aperto</h2>
+          <p className="muted">Placeholder trasferimenti visibili a tutti.</p>
           {marketUpdatedAt ? (
             <div className="market-update-badge">
               Aggiornamento mercato: {marketUpdatedAt}
@@ -44,29 +44,17 @@ export default function MercatoSection({
 
       <div className="panel market-panel">
         <div className="market-warning">
-          <div className="market-warning-badge">Coming Soon</div>
-          <h3>Il mercato apre a breve</h3>
+          <div className="market-warning-badge">Live</div>
+          <h3>Placeholder mercato</h3>
           <p className="muted">
-            Stiamo preparando il pannello con tutte le operazioni quotidiane.
+            Ultimi cambi registrati, aggiornati in base ai dati disponibili.
           </p>
 
           <div className="market-countdown-inline">
-            <span>Start tra</span>
+            <span>Aggiornamento in</span>
             <strong>{marketCountdown}</strong>
           </div>
-          {isAdmin ? (
-            <div className="market-admin-toggle">
-              <button
-                className="ghost"
-                onClick={() => setMarketPreview((prev) => !prev)}
-              >
-                {marketPreview ? "Nascondi placeholder" : "Mostra placeholder"}
-              </button>
-            </div>
-          ) : null}
-
-          {isAdmin && marketPreview ? (
-            marketItems.length ? (
+          {marketItems.length ? (
               <div className="list market-preview-list">
                 {marketItems.map((item, idx) => (
                   <div key={`${item.team}-${idx}`} className="list-item player-card">
@@ -113,10 +101,9 @@ export default function MercatoSection({
                   </div>
                 ))}
               </div>
-            ) : (
-              <p className="muted">Nessun placeholder disponibile.</p>
-            )
-          ) : null}
+          ) : (
+            <p className="muted">Nessun placeholder disponibile.</p>
+          )}
         </div>
       </div>
 
