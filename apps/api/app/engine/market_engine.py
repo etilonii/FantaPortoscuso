@@ -645,6 +645,23 @@ def suggest_transfers(
             value *= 0.10
         value_map[name] = value
 
+    tit_map: Dict[str, float] = {}
+    bonus_map: Dict[str, float] = {}
+    for p in all_players:
+        name = name_of(p)
+        if not name:
+            continue
+        tit_map[name] = titolarita(p, players_pool)
+        bonus_map[name] = bonus_rate_recent(p)
+
+    def swap_gain(out_p: dict, in_p: dict) -> float:
+        out_name = name_of(out_p)
+        in_name = name_of(in_p)
+        delta_value = value_map.get(in_name, 0.0) - value_map.get(out_name, 0.0)
+        delta_tit = tit_map.get(in_name, 0.0) - tit_map.get(out_name, 0.0)
+        delta_bonus = bonus_map.get(in_name, 0.0) - bonus_map.get(out_name, 0.0)
+        return (0.55 * delta_value) + (0.25 * (delta_tit * 8.0)) + (0.20 * (delta_bonus * 4.0))
+
     in_pool = {r: [] for r in ["P", "D", "C", "A"]}
     out_pool = {r: [] for r in ["P", "D", "C", "A"]}
 
@@ -732,12 +749,11 @@ def suggest_transfers(
             if fixed_pairs and norm_name(name_out) in fixed_pairs:
                 continue
             qa_out = qa_of(out_p)
-            val_out = value_map.get(name_out, 0.0)
             for in_p in in_pool[role]:
                 name_in = name_of(in_p)
                 if not name_in:
                     continue
-                gain = value_map.get(name_in, 0.0) - val_out
+                gain = swap_gain(out_p, in_p)
                 candidates.append(Swap(out_p, in_p, gain, qa_out, qa_of(in_p)))
 
     log(f"candidates: {len(candidates)}")
@@ -781,7 +797,7 @@ def suggest_transfers(
                     continue
                 qa_out = qa_of(out_p)
                 qa_in = qa_of(in_p)
-                gain = value_map.get(name_of(in_p), 0.0) - value_map.get(name_of(out_p), 0.0)
+                gain = swap_gain(out_p, in_p)
                 fixed_swaps_list.append(Swap(out_p, in_p, gain, qa_out, qa_in))
                 out_set_init.add(out_key)
                 in_set_init.add(in_key)
@@ -852,10 +868,12 @@ def suggest_transfers(
             if seeded:
                 beam = seeded
 
+        min_swap_gain = 0.8 if relax_level == 0 else (0.35 if relax_level == 1 else 0.0)
         remaining_changes = max_changes - len(beam[0].swaps)
         for _ in range(remaining_changes):
             next_beam = []
             for state in beam:
+                next_beam.append(state)
                 for cand in candidates:
                     name_out = norm_name(name_of(cand.out_player))
                     name_in = norm_name(name_of(cand.in_player))
@@ -870,6 +888,8 @@ def suggest_transfers(
                     spent = state.spent + cand.qa_in
                     earned = state.earned + cand.qa_out
                     if spent > credits_residui + earned:
+                        continue
+                    if cand.gain < min_swap_gain and name_out not in required_outs_set:
                         continue
                     neg_count = state.neg_count
                     neg_sum = state.neg_sum
