@@ -479,6 +479,24 @@ def suggest_transfers(
     def has_strong_season(player: dict) -> bool:
         return num(player.get("MIN_S")) >= 900 or num(player.get("PV_S")) >= 12 or num(player.get("PT_S")) >= 10
 
+    def mv_of(player: dict) -> float:
+        return num(
+            player.get("MV")
+            or player.get("MV_S")
+            or player.get("Mediavoto")
+            or player.get("MediaVoto")
+            or 0.0
+        )
+
+    def fm_of(player: dict) -> float:
+        return num(
+            player.get("FM")
+            or player.get("FM_S")
+            or player.get("Fantamedia")
+            or player.get("FantaMedia")
+            or 0.0
+        )
+
     def is_new_arrival(player: dict) -> bool:
         name_key = norm_name(name_of(player))
         if name_key in newcomers_allow:
@@ -525,7 +543,8 @@ def suggest_transfers(
         if name_key not in newcomers_weights:
             return 1.0
         weight = max(0.0, min(1.0, newcomers_weights.get(name_key, 0.5)))
-        return 0.6 + 0.8 * weight
+        # New arrivals can be interesting, but should not dominate all outcomes.
+        return 0.85 + 0.30 * weight
 
     def new_arrival_floor(player: dict, games_left: int) -> float:
         name_key = norm_name(name_of(player))
@@ -551,6 +570,7 @@ def suggest_transfers(
         name_key = norm_name(name_of(player))
         if not name_key:
             return False
+        newcomer = is_new_arrival(player)
         if is_long_injury(name_key):
             return False
         if name_key in injured_list and name_key not in injury_return_allow:
@@ -558,15 +578,18 @@ def suggest_transfers(
         if is_star(name_of(player)):
             return False
         starter = titolarita(player, players_pool)
-        if starter < 0.55 and not is_new_arrival(player) and name_key not in injury_return_allow:
+        if starter < 0.55 and not newcomer and name_key not in injury_return_allow:
             return False
         if is_dead_profile(player):
             return False
-        if is_bench_profile(player) and starter < 0.60 and not is_new_arrival(player):
+        if is_bench_profile(player) and starter < 0.60 and not newcomer:
+            return False
+        # Very low sample non-newcomers are treated as bench profiles even with good rates.
+        if not newcomer and num(player.get("PV_S")) <= 2 and num(player.get("MIN_S")) <= 180:
             return False
         if has_recent_minutes(player):
             return True
-        if is_new_arrival(player):
+        if newcomer:
             return True
         if has_strong_season(player):
             return starter >= 0.55
@@ -632,6 +655,7 @@ def suggest_transfers(
         floor = new_arrival_floor(p, games_left)
         if floor > value:
             value = floor
+        newcomer = is_new_arrival(p)
         value = value * injury_factor(key) * new_arrival_factor(key)
         starter = titolarita(p, players_pool)
         starter_norm = max(0.0, min(1.0, (starter - 0.40) / 0.60))
@@ -639,9 +663,25 @@ def suggest_transfers(
         bonus_rate = bonus_rate_recent(p)
         bonus_clamped = max(-0.5, min(1.5, bonus_rate))
         value *= 1.0 + (0.20 * bonus_clamped)
-        if is_bench_profile(p) and starter < 0.60 and not is_new_arrival(p):
+        mv = mv_of(p)
+        fm = fm_of(p)
+        quality = max(mv - 6.0, 0.0) * 0.12 + max(fm - 6.2, 0.0) * 0.16
+        quality = max(0.0, min(0.35, quality))
+        sample = num(p.get("PV_S"))
+        if sample >= 10:
+            reliability = 1.0
+        elif sample >= 6:
+            reliability = 0.75
+        elif sample >= 3:
+            reliability = 0.45
+        else:
+            reliability = 0.20
+        if newcomer:
+            reliability = max(reliability, 0.65)
+        value *= 1.0 + (quality * reliability)
+        if is_bench_profile(p) and starter < 0.60 and not newcomer:
             value *= 0.25
-        if starter < 0.45 and not is_new_arrival(p) and key not in injury_return_allow:
+        if starter < 0.45 and not newcomer and key not in injury_return_allow:
             value *= 0.10
         value_map[name] = value
 
