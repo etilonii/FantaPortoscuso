@@ -7,11 +7,13 @@ import re
 import math
 import random
 import logging
+import csv
 
 logger = logging.getLogger(__name__)
 
 
 _NAME_LIST_CACHE: Dict[str, dict] = {}
+_PLAYER_TIERS_CACHE: Dict[str, dict] = {}
 
 
 def clamp(value: float, lo: float, hi: float) -> float:
@@ -440,6 +442,33 @@ def suggest_transfers(
         _NAME_LIST_CACHE[key] = {"mtime": mtime, "data": data}
         return data
 
+    def _load_player_tiers(path: Path) -> Dict[str, tuple[str, float]]:
+        if not path.exists():
+            return {}
+        key = str(path)
+        mtime = path.stat().st_mtime
+        cached = _PLAYER_TIERS_CACHE.get(key)
+        if cached and cached.get("mtime") == mtime:
+            return cached.get("data", {})
+        data: Dict[str, tuple[str, float]] = {}
+        try:
+            with path.open("r", encoding="utf-8", newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    name = norm_name(row.get("name", ""))
+                    if not name:
+                        continue
+                    tier = str(row.get("tier", "low")).strip().lower()
+                    try:
+                        weight = float(str(row.get("weight", "0")).replace(",", "."))
+                    except ValueError:
+                        weight = 0.0
+                    data[name] = (tier, clamp(weight, 0.0, 1.0))
+        except OSError:
+            data = {}
+        _PLAYER_TIERS_CACHE[key] = {"mtime": mtime, "data": data}
+        return data
+
     def norm_name(name: str) -> str:
         value = str(name or "").lower()
         value = re.sub(r"[^a-z0-9]+", "", value)
@@ -467,6 +496,7 @@ def suggest_transfers(
     injury_weights = _load_injury_weights(data_dir / "infortunati_weights.csv")
     newcomers_allow = _load_name_list(data_dir / "nuovi_arrivi.txt")
     newcomers_weights = _load_weight_map(data_dir / "nuovi_arrivi_weights.csv")
+    player_tiers = _load_player_tiers(data_dir / "player_tiers.csv")
     if newcomers_weights:
         newcomers_allow = newcomers_allow | set(newcomers_weights.keys())
 
@@ -540,6 +570,18 @@ def suggest_transfers(
         weight = max(0.0, min(1.0, newcomers_weights.get(name_key, 0.5)))
         # New arrivals can be interesting, but should not dominate all outcomes.
         return 0.90 + 0.15 * weight
+
+    def tier_factor(name_key: str) -> float:
+        tier, weight = player_tiers.get(name_key, ("low", 0.0))
+        if tier == "top":
+            return 1.08 + 0.12 * weight
+        if tier == "semitop":
+            return 1.03 + 0.08 * weight
+        if tier == "starter":
+            return 0.98 + 0.06 * weight
+        if tier == "scommessa":
+            return 0.95 + 0.08 * weight
+        return 0.90 + 0.10 * weight
 
     def new_arrival_floor(player: dict, games_left: int) -> float:
         name_key = norm_name(name_of(player))
@@ -651,7 +693,7 @@ def suggest_transfers(
         if floor > value:
             value = floor
         newcomer = is_new_arrival(p)
-        value = value * injury_factor(key) * new_arrival_factor(key)
+        value = value * injury_factor(key) * new_arrival_factor(key) * tier_factor(key)
         starter = titolarita(p, players_pool)
         starter_norm = max(0.0, min(1.0, (starter - 0.40) / 0.60))
         value *= 0.70 + 0.60 * starter_norm
