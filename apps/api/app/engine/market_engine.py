@@ -706,18 +706,21 @@ def suggest_transfers(
         stars = [p for p in out_pool[role] if is_star(name_of(p))]
         combined = {p.get("id") or name_of(p): p for p in base + stars if name_of(p)}
         filtered = list(combined.values())
-        if required_outs_set:
-            filtered = [p for p in filtered if norm_name(name_of(p)) in required_outs_set]
+        if include_outs_set:
+            filtered = [
+                p
+                for p in filtered
+                if norm_name(name_of(p)) not in protected_outs
+                or norm_name(name_of(p)) in include_outs_set
+                or norm_name(name_of(p)) in required_outs_set
+            ]
         else:
-            if include_outs_set:
-                filtered = [
-                    p
-                    for p in filtered
-                    if norm_name(name_of(p)) not in protected_outs
-                    or norm_name(name_of(p)) in include_outs_set
-                ]
-            else:
-                filtered = [p for p in filtered if norm_name(name_of(p)) not in protected_outs]
+            filtered = [
+                p
+                for p in filtered
+                if norm_name(name_of(p)) not in protected_outs
+                or norm_name(name_of(p)) in required_outs_set
+            ]
         out_pool[role] = filtered
 
     candidates: List[Swap] = []
@@ -725,8 +728,6 @@ def suggest_transfers(
         for out_p in out_pool[role]:
             name_out = name_of(out_p)
             if not name_out:
-                continue
-            if required_outs_set and norm_name(name_out) not in required_outs_set:
                 continue
             if fixed_pairs and norm_name(name_out) in fixed_pairs:
                 continue
