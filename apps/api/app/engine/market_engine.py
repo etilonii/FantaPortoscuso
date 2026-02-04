@@ -592,11 +592,10 @@ def suggest_transfers(
             if out_key and in_key:
                 fixed_pairs[out_key] = in_key
 
+    star_count = sum(1 for p in user_squad if is_star(name_of(p)))
+    max_changes = max(0, min(int(max_changes or 5) + star_count, 5 + star_count))
     if required_outs_set:
-        max_changes = len(required_outs_set)
-    else:
-        star_count = sum(1 for p in user_squad if is_star(name_of(p)))
-        max_changes = max(0, min(int(max_changes or 5) + star_count, 5 + star_count))
+        max_changes = max(max_changes, len(required_outs_set))
     if max_changes == 0:
         return []
 
@@ -959,7 +958,7 @@ def suggest_transfers(
             filtered_solutions = []
             for sol in solutions:
                 out_set = {norm_name(name_of(s.out_player)) for s in sol.swaps}
-                if out_set == required_outs_set:
+                if required_outs_set.issubset(out_set):
                     filtered_solutions.append(sol)
             solutions = filtered_solutions
         elif include_outs_set:
