@@ -554,25 +554,22 @@ def suggest_transfers(
         if is_long_injury(name_key):
             return False
         if name_key in injured_list and name_key not in injury_return_allow:
-            if not has_strong_season(player):
-                return False
-            starter = titolarita(player, players_pool)
-            if starter < 0.60:
-                return False
+            return False
         if is_star(name_of(player)):
+            return False
+        starter = titolarita(player, players_pool)
+        if starter < 0.55 and not is_new_arrival(player) and name_key not in injury_return_allow:
+            return False
+        if is_dead_profile(player):
+            return False
+        if is_bench_profile(player) and starter < 0.60 and not is_new_arrival(player):
             return False
         if has_recent_minutes(player):
             return True
         if is_new_arrival(player):
             return True
-        if is_dead_profile(player):
-            return False
-        if is_bench_profile(player) and not has_strong_season(player):
-            return True
         if has_strong_season(player):
-            starter = titolarita(player, players_pool)
-            if starter >= 0.55:
-                return True
+            return starter >= 0.55
         return name_key in injury_return_allow and has_season_minutes(player)
 
     required_outs_set = set()
@@ -614,6 +611,17 @@ def suggest_transfers(
     value_map: Dict[str, float] = {}
     games_left_map = games_remaining(teams_data, fixtures, current_round) if teams_data else {}
     all_players = list(players_pool) + list(user_squad)
+    def bonus_rate_recent(player: dict) -> float:
+        pv = max(1.0, num(player.get("PV_R8")) or num(player.get("PV_S")) or 1.0)
+        g = num(player.get("G_R8"))
+        a = num(player.get("A_R8"))
+        rig = num(player.get("RIGSEG_R8"))
+        amm = num(player.get("AMM_R8"))
+        esp = num(player.get("ESP_R8"))
+        aut = num(player.get("AUTOGOL_R8"))
+        total = (3 * g) + (1 * a) + (3 * rig) - (0.5 * amm) - (1 * esp) - (2 * aut)
+        return total / pv
+
     for p in all_players:
         name = name_of(p)
         if not name or name in value_map:
@@ -626,8 +634,16 @@ def suggest_transfers(
         if floor > value:
             value = floor
         value = value * injury_factor(key) * new_arrival_factor(key)
-        if is_bench_profile(p) and not has_strong_season(p):
-            value *= 0.65
+        starter = titolarita(p, players_pool)
+        starter_norm = max(0.0, min(1.0, (starter - 0.40) / 0.60))
+        value *= 0.70 + 0.60 * starter_norm
+        bonus_rate = bonus_rate_recent(p)
+        bonus_clamped = max(-0.5, min(1.5, bonus_rate))
+        value *= 1.0 + (0.20 * bonus_clamped)
+        if is_bench_profile(p) and starter < 0.60 and not is_new_arrival(p):
+            value *= 0.25
+        if starter < 0.45 and not is_new_arrival(p) and key not in injury_return_allow:
+            value *= 0.10
         value_map[name] = value
 
     in_pool = {r: [] for r in ["P", "D", "C", "A"]}
