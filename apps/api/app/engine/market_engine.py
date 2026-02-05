@@ -574,14 +574,27 @@ def suggest_transfers(
     def tier_factor(name_key: str) -> float:
         tier, weight = player_tiers.get(name_key, ("low", 0.0))
         if tier == "top":
-            return 1.08 + 0.12 * weight
+            return 1.20 + 0.20 * weight
         if tier == "semitop":
-            return 1.03 + 0.08 * weight
+            return 1.08 + 0.10 * weight
         if tier == "starter":
-            return 0.98 + 0.06 * weight
+            return 1.00 + 0.08 * weight
         if tier == "scommessa":
-            return 0.95 + 0.08 * weight
-        return 0.90 + 0.10 * weight
+            return 0.95 + 0.10 * weight
+        return 0.85 + 0.10 * weight
+
+    def tier_score(name_key: str) -> float:
+        tier, weight = player_tiers.get(name_key, ("low", 0.0))
+        base = 0.2
+        if tier == "top":
+            base = 1.0
+        elif tier == "semitop":
+            base = 0.8
+        elif tier == "starter":
+            base = 0.6
+        elif tier == "scommessa":
+            base = 0.45
+        return clamp(base * (0.75 + 0.25 * weight), 0.0, 1.2)
 
     def new_arrival_floor(player: dict, games_left: int) -> float:
         name_key = norm_name(name_of(player))
@@ -724,12 +737,22 @@ def suggest_transfers(
 
     tit_map: Dict[str, float] = {}
     bonus_map: Dict[str, float] = {}
+    tier_map: Dict[str, float] = {}
+    growth_map: Dict[str, float] = {}
     for p in all_players:
         name = name_of(p)
         if not name:
             continue
         tit_map[name] = titolarita(p, players_pool)
         bonus_map[name] = bonus_rate_recent(p)
+        key = norm_name(name)
+        tier_map[name] = tier_score(key)
+        qa = qa_of(p)
+        pi = num(p.get("PrezzoIniziale", 0)) or qa
+        if pi <= 0:
+            pi = qa if qa > 0 else 1.0
+        growth = safe_div(qa - pi, pi, 0.0)
+        growth_map[name] = clamp(growth, -0.5, 1.0)
 
     def swap_gain(out_p: dict, in_p: dict) -> float:
         out_name = name_of(out_p)
@@ -737,7 +760,15 @@ def suggest_transfers(
         delta_value = value_map.get(in_name, 0.0) - value_map.get(out_name, 0.0)
         delta_tit = tit_map.get(in_name, 0.0) - tit_map.get(out_name, 0.0)
         delta_bonus = bonus_map.get(in_name, 0.0) - bonus_map.get(out_name, 0.0)
-        return (0.55 * delta_value) + (0.25 * (delta_tit * 8.0)) + (0.20 * (delta_bonus * 4.0))
+        delta_tier = tier_map.get(in_name, 0.0) - tier_map.get(out_name, 0.0)
+        delta_growth = growth_map.get(in_name, 0.0) - growth_map.get(out_name, 0.0)
+        return (
+            (0.40 * delta_value)
+            + (0.20 * (delta_tit * 8.0))
+            + (0.15 * (delta_bonus * 4.0))
+            + (0.20 * (delta_tier * 6.0))
+            + (0.05 * (delta_growth * 4.0))
+        )
 
     in_pool = {r: [] for r in ["P", "D", "C", "A"]}
     out_pool = {r: [] for r in ["P", "D", "C", "A"]}
