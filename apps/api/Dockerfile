@@ -15,6 +15,7 @@ RUN mkdir -p /app/seed/db \
 
 # Ensure CSV seeds are available even when /app/data/db is later replaced by a volume.
 COPY data/db/*.csv /app/seed/db/
+COPY data/history /app/seed/history
 
 RUN chmod +x /app/apps/api/start.sh
 
