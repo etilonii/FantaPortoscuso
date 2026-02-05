@@ -747,12 +747,10 @@ def suggest_transfers(
         bonus_map[name] = bonus_rate_recent(p)
         key = norm_name(name)
         tier_map[name] = tier_score(key)
-        qa = qa_of(p)
-        pi = num(p.get("PrezzoIniziale", 0)) or qa
-        if pi <= 0:
-            pi = qa if qa > 0 else 1.0
-        growth = safe_div(qa - pi, pi, 0.0)
-        growth_map[name] = clamp(growth, -0.5, 1.0)
+        # Expected growth: lower for top (already priced), higher for rising/undervalued profiles.
+        tier_inv = 1.0 - clamp(tier_map[name], 0.0, 1.2)
+        trend = clamp((bonus_map[name] * 0.6) + ((tit_map[name] - 0.55) * 1.2), -0.5, 1.0)
+        growth_map[name] = clamp((0.7 * tier_inv) + (0.3 * trend), -0.5, 1.0)
 
     def swap_gain(out_p: dict, in_p: dict) -> float:
         out_name = name_of(out_p)
