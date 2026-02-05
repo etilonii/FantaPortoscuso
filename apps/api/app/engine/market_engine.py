@@ -344,9 +344,9 @@ def suggest_transfers(
     fixtures: List[dict],
     current_round: int,
     max_changes: int = 5,
-    k_pool: int = 60,
-    m_out: int = 8,
-    beam_width: int = 200,
+    k_pool: int = 90,
+    m_out: int = 12,
+    beam_width: int = 300,
     seed: int | None = None,
     allow_overbudget: bool = False,
     max_negative_gain: float = -2.0,
@@ -963,7 +963,8 @@ def suggest_transfers(
             if seeded:
                 beam = seeded
 
-        min_swap_gain = 0.5 if relax_level == 0 else (0.2 if relax_level == 1 else 0.0)
+        # Allow some negative swaps, as long as total gain stays positive.
+        min_swap_gain = -0.2 if relax_level == 0 else (-0.5 if relax_level == 1 else -1.0)
         remaining_changes = max_changes - len(beam[0].swaps)
         for _ in range(remaining_changes):
             next_beam = []
@@ -994,9 +995,15 @@ def suggest_transfers(
                     neg_sum = state.neg_sum
                     if cand.gain < 0:
                         max_neg_gain = (
-                            -1.0 if relax_level == 0 else (-2.0 if relax_level == 1 else -3.0)
+                            max_negative_gain
+                            if relax_level == 0
+                            else (max_negative_gain * 1.5 if relax_level == 1 else max_negative_gain * 2.0)
                         )
-                        max_neg_swaps = 1 if relax_level == 0 else (1 if relax_level == 1 else 2)
+                        max_neg_swaps = (
+                            max_negative_swaps
+                            if relax_level == 0
+                            else (max_negative_swaps if relax_level == 1 else max_negative_swaps + 1)
+                        )
                         if cand.gain < max_neg_gain:
                             continue
                         if neg_count + 1 > max_neg_swaps:
@@ -1031,17 +1038,8 @@ def suggest_transfers(
                 continue
             if len(state.swaps) < min_changes:
                 continue
-            if state.neg_count > 0:
-                if relax_level == 0:
-                    if state.big_gain_count < 2:
-                        continue
-                    if state.gain_total < 6.0 * state.neg_sum:
-                        continue
-                elif relax_level == 1:
-                    if state.big_gain_count < 1:
-                        continue
-                    if state.gain_total < 4.0 * state.neg_sum:
-                        continue
+            if state.gain_total <= 0:
+                continue
 
             final_club_counts: Dict[str, int] = {}
             for p in user_squad:
