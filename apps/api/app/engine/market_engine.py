@@ -704,7 +704,8 @@ def suggest_transfers(
         if not name or name in value_map:
             continue
         key = norm_name(name)
-        value = value_season(p, players_pool, teams_data, fixtures, current_round)
+        # Base value: rely mostly on tier list + titolarita + expected growth (user preference).
+        value = 0.0
         club = club_of(p)
         games_left = games_left_map.get(club, 10)
         floor = new_arrival_floor(p, games_left)
@@ -714,30 +715,15 @@ def suggest_transfers(
         value = value * injury_factor(key) * new_arrival_factor(key) * tier_factor(key)
         starter = titolarita(p, players_pool)
         starter_norm = max(0.0, min(1.0, (starter - 0.40) / 0.60))
-        value *= 0.70 + 0.60 * starter_norm
-        bonus_rate = bonus_rate_recent(p)
-        bonus_clamped = max(-0.5, min(1.5, bonus_rate))
-        value *= 1.0 + (0.20 * bonus_clamped)
-        mv = mv_of(p)
-        fm = fm_of(p)
-        quality = max(mv - 6.0, 0.0) * 0.12 + max(fm - 6.2, 0.0) * 0.16
-        quality = max(0.0, min(0.35, quality))
-        sample = num(p.get("PV_S"))
-        if sample >= 10:
-            reliability = 1.0
-        elif sample >= 6:
-            reliability = 0.75
-        elif sample >= 3:
-            reliability = 0.45
-        else:
-            reliability = 0.20
-        if newcomer:
-            reliability = max(reliability, 0.65)
-        value *= 1.0 + (quality * reliability)
+        # Tier-driven scoring
+        value += tier_score(key) * 80.0
+        value += starter_norm * 15.0
+        # Growth expected weight (small)
+        # (growth_map computed later and applied in swap_gain)
         if is_bench_profile(p) and starter < 0.60 and not newcomer:
-            value *= 0.25
+            value *= 0.6
         if starter < 0.45 and not newcomer and key not in injury_return_allow:
-            value *= 0.10
+            value *= 0.4
         value_map[name] = value
 
     tit_map: Dict[str, float] = {}
