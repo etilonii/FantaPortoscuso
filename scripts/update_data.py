@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 ROSE_PATH = DATA_DIR / "rose_fantaportoscuso.csv"
 QUOT_PATH = DATA_DIR / "quotazioni.csv"
+MASTER_QUOT_PATH = DATA_DIR / "db" / "quotazioni_master.csv"
 TEAMS_PATH = DATA_DIR / "db" / "teams.csv"
 
 HIST_ROSE = DATA_DIR / "history" / "rose"
@@ -373,12 +374,26 @@ def _sync_rose_with_quotazioni(rose_df: pd.DataFrame, quot_df: pd.DataFrame) -> 
     # Map by player name; keep rose rows even if not in quotazioni (Castellanos rule).
     quot_map = {}
     for _, row in quot_df.iterrows():
-        name = str(row.get("Giocatore", "")).strip()
+        name = (
+            row.get("Giocatore")
+            or row.get("nome")
+            or row.get("Nome")
+            or row.get("Calciatore")
+            or ""
+        )
+        name = str(name).strip()
         if not name:
             continue
+        qa_val = (
+            row.get("PrezzoAttuale")
+            or row.get("QuotazioneAttuale")
+            or row.get("QA")
+            or ""
+        )
+        squadra_val = row.get("Squadra") or row.get("club") or ""
         quot_map[name.lower()] = {
-            "PrezzoAttuale": row.get("PrezzoAttuale", row.get("QuotazioneAttuale", "")),
-            "Squadra": row.get("Squadra", ""),
+            "PrezzoAttuale": qa_val,
+            "Squadra": squadra_val,
         }
 
     updated = rose_df.copy()
@@ -703,11 +718,17 @@ def main() -> None:
             state.setdefault("last_signature", {})["teams"] = current_sig["teams"]
             archive_teams = True
 
-    if args.sync_rose and QUOT_PATH.exists() and ROSE_PATH.exists():
+    if ROSE_PATH.exists():
         rose_df = pd.read_csv(ROSE_PATH)
-        quot_df = pd.read_csv(QUOT_PATH)
-        updated = _sync_rose_with_quotazioni(rose_df, quot_df)
-        _write_csv(updated, ROSE_PATH)
+        if MASTER_QUOT_PATH.exists():
+            quot_df = pd.read_csv(MASTER_QUOT_PATH)
+        elif QUOT_PATH.exists():
+            quot_df = pd.read_csv(QUOT_PATH)
+        else:
+            quot_df = None
+        if quot_df is not None:
+            updated = _sync_rose_with_quotazioni(rose_df, quot_df)
+            _write_csv(updated, ROSE_PATH)
 
     if archive_quot and args.quotazioni:
         _archive_incoming(Path(args.quotazioni), stamp, args.keep)
