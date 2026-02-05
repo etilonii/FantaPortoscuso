@@ -741,12 +741,18 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
             )
             return (info or {}).get("Ruolo", "") or ""
 
+        def _role_key(name: str) -> str:
+            role = _role_for(name)
+            if role:
+                return role
+            return f"__{normalize_name(name)}"
+
         removed_by_role: Dict[str, List[str]] = defaultdict(list)
         added_by_role: Dict[str, List[str]] = defaultdict(list)
         for name in removed:
-            removed_by_role[_role_for(name)].append(name)
+            removed_by_role[_role_key(name)].append(name)
         for name in added:
-            added_by_role[_role_for(name)].append(name)
+            added_by_role[_role_key(name)].append(name)
 
         roles = sorted(set(removed_by_role.keys()) | set(added_by_role.keys()))
         for role in roles:
