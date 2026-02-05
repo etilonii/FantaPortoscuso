@@ -772,6 +772,7 @@ def _enrich_market_items(items: List[Dict[str, str]]) -> List[Dict[str, str]]:
     rose_rows = _read_csv(ROSE_PATH)
     quot_rows = _read_csv(QUOT_PATH)
     old_quot_map = _load_old_quotazioni_map()
+    last_quot_map = _load_last_quotazioni_map()
     player_cards_map = _load_player_cards_map()
 
     quot_map = {}
@@ -811,6 +812,7 @@ def _enrich_market_items(items: List[Dict[str, str]]) -> List[Dict[str, str]]:
         if name.strip().endswith("*"):
             return (
                 player_cards_map.get(key)
+                or last_quot_map.get(key)
                 or old_quot_map.get(key)
                 or rose_team_map.get(team.lower(), {}).get(key, {})
                 or quot_map.get(key, {})
@@ -852,9 +854,13 @@ def _enrich_market_items(items: List[Dict[str, str]]) -> List[Dict[str, str]]:
             out_val = out_info.get("PrezzoAttuale", 0)
         if in_val in ("", None):
             in_val = in_info.get("PrezzoAttuale", 0)
-        if out_key in qa_map:
+        if out_name.strip().endswith("*"):
+            out_val = (last_quot_map.get(out_key) or {}).get("PrezzoAttuale", out_val)
+        elif out_key in qa_map:
             out_val = qa_map.get(out_key)
-        if in_key in qa_map:
+        if in_name.strip().endswith("*"):
+            in_val = (last_quot_map.get(in_key) or {}).get("PrezzoAttuale", in_val)
+        elif in_key in qa_map:
             in_val = qa_map.get(in_key)
         item["out_value"] = float(out_val or 0)
         item["in_value"] = float(in_val or 0)
