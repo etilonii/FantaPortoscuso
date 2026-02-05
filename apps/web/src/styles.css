@@ -794,6 +794,17 @@ body.menu-open .menu-overlay {
 .market-team-search {
   min-width: 220px;
   max-width: 320px;
+  border-radius: 12px;
+  border: 1px solid rgba(91, 209, 255, 0.35);
+  background: rgba(10, 26, 41, 0.55);
+  box-shadow: 0 10px 22px rgba(6, 18, 30, 0.2);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.market-team-search:focus {
+  border-color: rgba(91, 209, 255, 0.8);
+  box-shadow: 0 0 0 3px rgba(91, 209, 255, 0.18);
+  transform: translateY(-1px);
 }
 
 .market-team-list {
@@ -804,6 +815,7 @@ body.menu-open .menu-overlay {
 }
 
 .market-team-card {
+  appearance: none;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -811,10 +823,11 @@ body.menu-open .menu-overlay {
   padding: 10px 12px;
   border-radius: 14px;
   border: 1px solid rgba(91, 209, 255, 0.25);
-  background: rgba(255, 255, 255, 0.03);
+  background: linear-gradient(150deg, rgba(21, 52, 80, 0.45), rgba(8, 22, 36, 0.7));
   color: var(--text);
   text-align: left;
   transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
 }
 
 .market-team-card:hover {
@@ -823,9 +836,15 @@ body.menu-open .menu-overlay {
   border-color: rgba(91, 209, 255, 0.5);
 }
 
+.market-team-card:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 14px rgba(6, 18, 30, 0.2);
+}
+
 .market-team-card.active {
   border-color: rgba(91, 209, 255, 0.75);
   box-shadow: 0 12px 24px rgba(6, 18, 30, 0.25);
+  background: linear-gradient(150deg, rgba(91, 209, 255, 0.25), rgba(8, 22, 36, 0.8));
 }
 
 .market-team-title {
@@ -2380,6 +2399,7 @@ body.theme-light .market-team-card {
 body.theme-light .market-team-card.active {
   border-color: rgba(42, 167, 255, 0.6);
   box-shadow: 0 12px 24px rgba(15, 35, 60, 0.12);
+  background: rgba(42, 167, 255, 0.12);
 }
 
 body.theme-light input,

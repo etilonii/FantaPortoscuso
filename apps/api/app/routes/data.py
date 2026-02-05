@@ -718,7 +718,6 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
         removed = [x.strip() for x in (row.get("Removed") or "").split(";") if x.strip()]
         if not added and not removed:
             continue
-        pairs = max(len(added), len(removed))
         changed_names = set([x.lower() for x in added + removed if x])
         teams.append(
             {
@@ -729,9 +728,33 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
             }
         )
         team_map = rose_team_map.get(team.lower(), {})
-        for i in range(pairs):
-            out_name = removed[i] if i < len(removed) else ""
-            in_name = added[i] if i < len(added) else ""
+        def _role_for(name: str) -> str:
+            if not name:
+                return ""
+            key = normalize_name(name)
+            info = (
+                (player_cards_map.get(key) if name.strip().endswith("*") else None)
+                or (last_quot_map.get(key) if name.strip().endswith("*") else None)
+                or (old_quot_map.get(key) if name.strip().endswith("*") else None)
+                or team_map.get(key)
+                or quot_map.get(key)
+            )
+            return (info or {}).get("Ruolo", "") or ""
+
+        removed_by_role: Dict[str, List[str]] = defaultdict(list)
+        added_by_role: Dict[str, List[str]] = defaultdict(list)
+        for name in removed:
+            removed_by_role[_role_for(name)].append(name)
+        for name in added:
+            added_by_role[_role_for(name)].append(name)
+
+        roles = sorted(set(removed_by_role.keys()) | set(added_by_role.keys()))
+        for role in roles:
+            outs = removed_by_role.get(role, [])
+            ins = added_by_role.get(role, [])
+            for i in range(max(len(outs), len(ins))):
+                out_name = outs[i] if i < len(outs) else ""
+                in_name = ins[i] if i < len(ins) else ""
             out_key = normalize_name(out_name)
             in_key = normalize_name(in_name)
             if out_key and out_key == in_key:
