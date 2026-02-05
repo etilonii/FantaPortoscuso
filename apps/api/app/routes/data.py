@@ -1176,7 +1176,6 @@ def stats_plusvalenze(
     period: str = Query(default="december"),
 ):
     rose = _read_csv(ROSE_PATH)
-    quot_map = _load_qa_map()
     team_totals = defaultdict(lambda: {"acquisto": 0.0, "attuale": 0.0})
     for row in rose:
         team = row.get("Team", "")
@@ -1186,8 +1185,6 @@ def stats_plusvalenze(
         except ValueError:
             acquisto = 0.0
             attuale = 0.0
-        name_key = normalize_name(row.get("Giocatore", ""))
-        attuale = quot_map.get(name_key, attuale)
         team_totals[team]["acquisto"] += acquisto
         team_totals[team]["attuale"] += attuale
 
