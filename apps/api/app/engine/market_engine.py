@@ -648,6 +648,8 @@ def suggest_transfers(
     required_outs_set = set()
     if required_outs:
         required_outs_set = {norm_name(n) for n in required_outs if str(n).strip()}
+    # Starred players must always be included among OUTs.
+    required_outs_set |= {norm_name(name_of(p)) for p in user_squad if is_star(name_of(p))}
 
     exclude_ins_set = set()
     if exclude_ins:
@@ -671,6 +673,7 @@ def suggest_transfers(
         max_changes = max(max_changes, len(required_outs_set))
     if max_changes == 0:
         return []
+    min_changes = max(5, len(required_outs_set))
 
     log(
         f"suggest_transfers: max_changes={max_changes} k_pool={k_pool} m_out={m_out} "
@@ -1047,6 +1050,8 @@ def suggest_transfers(
         for state in beam:
             if not state.swaps:
                 continue
+            if len(state.swaps) < min_changes:
+                continue
             if state.neg_count > 0:
                 if relax_level == 0:
                     if state.big_gain_count < 2:
@@ -1330,6 +1335,8 @@ def suggest_transfers(
                     break
 
             if not swaps:
+                return None
+            if len(swaps) < min_changes:
                 return None
 
             budget_final = credits_residui + earned - spent
