@@ -629,6 +629,15 @@ def _load_residual_credits_map() -> Dict[str, float]:
 def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
     report_path = _latest_market_report()
     if not report_path:
+        if MARKET_PATH.exists():
+            try:
+                data = json.loads(MARKET_PATH.read_text(encoding="utf-8"))
+                return {
+                    "items": data.get("items", []) or [],
+                    "teams": data.get("teams", []) or [],
+                }
+            except Exception:
+                pass
         return {"items": [], "teams": []}
     rose_rows = _read_csv(ROSE_PATH)
     quot_rows = _read_csv(QUOT_PATH)
