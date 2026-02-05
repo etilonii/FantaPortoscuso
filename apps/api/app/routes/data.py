@@ -212,7 +212,7 @@ def _load_last_quotazioni_map() -> Dict[str, Dict[str, str]]:
             name = (row.get("Giocatore") or "").strip()
             if not name:
                 continue
-            key = normalize_name(name)
+            key = normalize_name(strip_star(name))
             current_names.add(key)
             last_seen[key] = {
                 "Squadra": row.get("Squadra", ""),
