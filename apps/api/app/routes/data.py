@@ -706,6 +706,7 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
             "PrezzoAttuale": qa,
             "Ruolo": row.get("Ruolo", ""),
         }
+    role_map = _load_role_map()
     rows = _read_csv(report_path)
     stamp = report_path.stem.replace("rose_changes_", "").replace("_", "-")
     items = []
@@ -739,7 +740,7 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
                 or team_map.get(key)
                 or quot_map.get(key)
             )
-            return (info or {}).get("Ruolo", "") or ""
+            return (info or {}).get("Ruolo", "") or role_map.get(key, "") or ""
 
         def _role_key(name: str) -> str:
             role = _role_for(name)
