@@ -180,6 +180,35 @@ def _load_qa_map() -> Dict[str, float]:
     return qa_map
 
 
+def _load_last_quotazioni_map() -> Dict[str, Dict[str, str]]:
+    """Return last-seen quotazione rows from history/quotazioni (CSV)."""
+    hist_dir = DATA_DIR / "history" / "quotazioni"
+    if not hist_dir.exists():
+        return {}
+    files = sorted(hist_dir.glob("quotazioni_*.csv"), key=lambda p: p.stat().st_mtime, reverse=True)
+    if not files:
+        return {}
+    seen: Dict[str, Dict[str, str]] = {}
+    for path in files:
+        rows = _read_csv(path)
+        for row in rows:
+            name = (row.get("Giocatore") or "").strip()
+            if not name:
+                continue
+            key = normalize_name(name)
+            if key in seen:
+                continue
+            seen[key] = {
+                "Squadra": row.get("Squadra", ""),
+                "PrezzoAttuale": row.get("PrezzoAttuale", 0),
+                "Ruolo": row.get("Ruolo", ""),
+            }
+        # Early exit if we already captured most names (cheap heuristic)
+        if len(seen) >= 500:
+            break
+    return seen
+
+
 def _apply_qa_from_quot(rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
     qa_map = _load_qa_map()
     if not qa_map:
@@ -607,6 +636,7 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
     rose_rows = _read_csv(ROSE_PATH)
     quot_rows = _read_csv(QUOT_PATH)
     old_quot_map = _load_old_quotazioni_map()
+    last_quot_map = _load_last_quotazioni_map()
     player_cards_map = _load_player_cards_map()
     quot_map = {}
     for row in quot_rows:
@@ -665,12 +695,14 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
                 continue
             out_info = (
                 (player_cards_map.get(out_key) if out_name.strip().endswith("*") else None)
+                or (last_quot_map.get(out_key) if out_name.strip().endswith("*") else None)
                 or (old_quot_map.get(out_key) if out_name.strip().endswith("*") else None)
                 or team_map.get(out_key)
                 or quot_map.get(out_key)
             )
             in_info = (
                 (player_cards_map.get(in_key) if in_name.strip().endswith("*") else None)
+                or (last_quot_map.get(in_key) if in_name.strip().endswith("*") else None)
                 or (old_quot_map.get(in_key) if in_name.strip().endswith("*") else None)
                 or team_map.get(in_key)
                 or quot_map.get(in_key)
@@ -685,9 +717,13 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
                     in_name = alt_in
             out_value = float((out_info or {}).get("PrezzoAttuale", 0) or 0)
             in_value = float((in_info or {}).get("PrezzoAttuale", 0) or 0)
-            if out_key in qa_map:
+            if out_name.strip().endswith("*"):
+                out_value = float((last_quot_map.get(out_key) or {}).get("PrezzoAttuale", out_value) or out_value)
+            elif out_key in qa_map:
                 out_value = float(qa_map.get(out_key) or 0)
-            if in_key in qa_map:
+            if in_name.strip().endswith("*"):
+                in_value = float((last_quot_map.get(in_key) or {}).get("PrezzoAttuale", in_value) or in_value)
+            elif in_key in qa_map:
                 in_value = float(qa_map.get(in_key) or 0)
             out_role = (
                 (out_info or {}).get("Ruolo")
