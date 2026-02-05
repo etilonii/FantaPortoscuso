@@ -740,7 +740,12 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
                 or team_map.get(key)
                 or quot_map.get(key)
             )
-            return (info or {}).get("Ruolo", "") or role_map.get(key, "") or ""
+            role = (info or {}).get("Ruolo", "")
+            if not role:
+                role = (player_cards_map.get(key) or {}).get("Ruolo", "")
+            if not role:
+                role = role_map.get(key, "")
+            return role or ""
 
         def _role_key(name: str) -> str:
             role = _role_for(name)
