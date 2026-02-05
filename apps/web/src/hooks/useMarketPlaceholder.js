@@ -8,10 +8,10 @@ export function useMarketPlaceholder(apiBase, loggedIn) {
   const [marketUpdatedAt, setMarketUpdatedAt] = useState("");
 
   const getMarketCountdown = useCallback(() => {
-    const target = new Date("2026-02-04T08:00:00");
+    const target = new Date("2026-02-06T16:00:00+01:00");
     const now = new Date();
     const diff = target.getTime() - now.getTime();
-    if (Number.isNaN(diff) || diff <= 0) return "Apertura imminente";
+    if (Number.isNaN(diff) || diff <= 0) return "Mercato chiuso";
     const totalSeconds = Math.floor(diff / 1000);
     const days = Math.floor(totalSeconds / (24 * 3600));
     const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
