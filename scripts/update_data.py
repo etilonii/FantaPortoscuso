@@ -372,6 +372,11 @@ def _market_team_summary(items: list[dict]) -> list[dict]:
 
 def _sync_rose_with_quotazioni(rose_df: pd.DataFrame, quot_df: pd.DataFrame) -> pd.DataFrame:
     # Map by player name; keep rose rows even if not in quotazioni (Castellanos rule).
+    def _norm(value: str) -> str:
+        base = re.sub(r"\s*\*\s*$", "", str(value or "").strip()).strip().lower()
+        base = re.sub(r"[^a-z0-9]+", "", base)
+        return base
+
     quot_map = {}
     for _, row in quot_df.iterrows():
         name = (
@@ -391,14 +396,14 @@ def _sync_rose_with_quotazioni(rose_df: pd.DataFrame, quot_df: pd.DataFrame) -> 
             or ""
         )
         squadra_val = row.get("Squadra") or row.get("club") or ""
-        quot_map[name.lower()] = {
+        quot_map[_norm(name)] = {
             "PrezzoAttuale": qa_val,
             "Squadra": squadra_val,
         }
 
     updated = rose_df.copy()
     for idx, row in updated.iterrows():
-        name = str(row.get("Giocatore", "")).strip().lower()
+        name = _norm(row.get("Giocatore", ""))
         if not name or name not in quot_map:
             continue
         info = quot_map[name]
@@ -604,6 +609,18 @@ def main() -> None:
         )
 
     if not args.rose and not args.quotazioni and not args.teams:
+        # Still sync PrezzoAttuale from master/quotazioni if rose exists.
+        if ROSE_PATH.exists():
+            rose_df = pd.read_csv(ROSE_PATH)
+            quot_df = None
+            if MASTER_QUOT_PATH.exists():
+                quot_df = pd.read_csv(MASTER_QUOT_PATH)
+            elif QUOT_PATH.exists():
+                quot_df = pd.read_csv(QUOT_PATH)
+            if quot_df is not None:
+                updated = _sync_rose_with_quotazioni(rose_df, quot_df)
+                _write_csv(updated, ROSE_PATH)
+                print("Rose sincronizzata con quotazioni (PrezzoAttuale).")
         print("Nessun nuovo file da aggiornare.")
         return
 

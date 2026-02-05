@@ -5,6 +5,8 @@ DB_PATH="/app/data/db/app.db"
 SEED_PATH="/app/seed/app.db.seed"
 SEED_DB_DIR="/app/seed/db"
 SEED_HISTORY_DIR="/app/seed/history"
+SEED_ROSE="/app/seed/rose_fantaportoscuso.csv"
+ROSE_PATH="/app/data/rose_fantaportoscuso.csv"
 
 mkdir -p /app/data/db
 
@@ -20,6 +22,13 @@ if [ -d "$SEED_DB_DIR" ]; then
       cp "$seed_file" "$target"
     fi
   done
+fi
+
+# Seed rose snapshot if missing or older than seed.
+if [ -f "$SEED_ROSE" ]; then
+  if [ ! -f "$ROSE_PATH" ] || [ "$SEED_ROSE" -nt "$ROSE_PATH" ]; then
+    cp "$SEED_ROSE" "$ROSE_PATH"
+  fi
 fi
 
 # Seed history data if volume is empty (needed for starred QA fallback).

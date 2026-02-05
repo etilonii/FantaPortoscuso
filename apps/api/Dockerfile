@@ -16,6 +16,8 @@ RUN mkdir -p /app/seed/db \
 # Ensure CSV seeds are available even when /app/data/db is later replaced by a volume.
 COPY data/db/*.csv /app/seed/db/
 COPY data/history /app/seed/history
+# Seed latest rose snapshot for volume sync
+COPY data/rose_fantaportoscuso.csv /app/seed/rose_fantaportoscuso.csv
 
 RUN chmod +x /app/apps/api/start.sh
 
