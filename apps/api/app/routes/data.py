@@ -181,29 +181,59 @@ def _load_qa_map() -> Dict[str, float]:
 
 
 def _load_last_quotazioni_map() -> Dict[str, Dict[str, str]]:
-    """Return last-seen quotazione rows from history/quotazioni (CSV)."""
+    """Return last-seen quotazione rows from history/quotazioni (CSV).
+
+    For players that disappear in a newer file, keep the last value from the
+    most recent file where they still appeared.
+    """
     hist_dir = DATA_DIR / "history" / "quotazioni"
     if not hist_dir.exists():
         return {}
-    files = sorted(hist_dir.glob("quotazioni_*.csv"), key=lambda p: p.stat().st_mtime, reverse=True)
+    files = list(hist_dir.glob("quotazioni_*.csv"))
     if not files:
         return {}
-    seen: Dict[str, Dict[str, str]] = {}
+    def _date_key(p: Path):
+        try:
+            return datetime.strptime(p.stem.replace("quotazioni_", ""), "%Y-%m-%d")
+        except Exception:
+            return datetime.fromtimestamp(p.stat().st_mtime)
+
+    files = sorted(files, key=_date_key)
+
+    last_seen: Dict[str, Dict[str, str]] = {}
+    closed: Dict[str, Dict[str, str]] = {}
+    prev_names: set[str] = set()
+
     for path in files:
         rows = _read_csv(path)
+        current_names: set[str] = set()
         for row in rows:
             name = (row.get("Giocatore") or "").strip()
             if not name:
                 continue
             key = normalize_name(name)
-            if key in seen:
-                continue
-            seen[key] = {
+            current_names.add(key)
+            last_seen[key] = {
                 "Squadra": row.get("Squadra", ""),
                 "PrezzoAttuale": row.get("PrezzoAttuale", 0),
                 "Ruolo": row.get("Ruolo", ""),
             }
-    return seen
+
+        # Players present before but missing now -> freeze last_seen.
+        if prev_names:
+            disappeared = prev_names - current_names
+            for key in disappeared:
+                if key in closed:
+                    continue
+                if key in last_seen:
+                    closed[key] = last_seen[key]
+        prev_names = current_names
+
+    # For players never disappeared, keep latest seen.
+    for key, row in last_seen.items():
+        if key not in closed:
+            closed[key] = row
+    return closed
 
 
 def _apply_qa_from_quot(rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
