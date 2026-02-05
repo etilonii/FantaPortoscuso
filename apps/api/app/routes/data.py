@@ -214,9 +214,15 @@ def _load_last_quotazioni_map() -> Dict[str, Dict[str, str]]:
                 continue
             key = normalize_name(strip_star(name))
             current_names.add(key)
+            qa_val = (
+                row.get("PrezzoAttuale")
+                or row.get("QuotazioneAttuale")
+                or row.get("QA")
+                or 0
+            )
             last_seen[key] = {
                 "Squadra": row.get("Squadra", ""),
-                "PrezzoAttuale": row.get("PrezzoAttuale", 0),
+                "PrezzoAttuale": qa_val,
                 "Ruolo": row.get("Ruolo", ""),
             }
 
