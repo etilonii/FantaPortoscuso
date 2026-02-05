@@ -203,9 +203,6 @@ def _load_last_quotazioni_map() -> Dict[str, Dict[str, str]]:
                 "PrezzoAttuale": row.get("PrezzoAttuale", 0),
                 "Ruolo": row.get("Ruolo", ""),
             }
-        # Early exit if we already captured most names (cheap heuristic)
-        if len(seen) >= 500:
-            break
     return seen
 
 
