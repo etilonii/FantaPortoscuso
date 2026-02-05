@@ -1,0 +1,198 @@
+* Carnesecchi prezzo 18 -> 20
+* Audero prezzo 15 -> 14
+* Caprile prezzo 12 -> 13
+* Okoye prezzo 11 -> 12
+* De Gea prezzo 11 -> 10
+* Ravaglia F. prezzo 10 -> 9
+* Corvi prezzo 11 -> 9
+* Paleari prezzo 8 -> 9
+* Bijlow prezzo 10 -> 9
+* Padelli prezzo 4 -> 3
+* Perilli prezzo 3 -> 2
++ Siviero (Torino)
+* Bremer prezzo 14 -> 17
+* Wesley prezzo 16 -> 15
+* Scalvini prezzo 13 -> 14
+* Ostigard prezzo 15 -> 14
+* Martin prezzo 14 -> 13
+* Bisseck prezzo 12 -> 13
+* Kalulu prezzo 12 -> 13
+* Ramon prezzo 12 -> 13
+* Holm prezzo 13 -> 12
+* Holm squadra Bologna -> Juventus
+* Baschirotto prezzo 13 -> 12
+* Coco prezzo 11 -> 12
+* Solet prezzo 11 -> 12
+* Idrissi R. prezzo 8 -> 10
+* Zanoli prezzo 11 -> 10
+* Bernasconi prezzo 8 -> 10
+* Luperto squadra Cagliari -> Cremonese
+* Mina prezzo 8 -> 9
+* Cambiaso prezzo 10 -> 9
+* Valeri prezzo 10 -> 9
+* Idzes prezzo 8 -> 9
+* Zappa prezzo 7 -> 8
+* Folino prezzo 7 -> 8
+* Dodò prezzo 7 -> 8
+* De Winter prezzo 6 -> 8
+* Romagnoli prezzo 9 -> 8
+* Tiago Gabriel prezzo 9 -> 8
+* Angori prezzo 9 -> 8
+* Hien prezzo 8 -> 7
+* Kossounou prezzo 8 -> 7
+* Norton-Cuffy prezzo 8 -> 7
+* Bertola prezzo 6 -> 7
+* Kristensen T. prezzo 6 -> 7
+* Cuadrado prezzo 8 -> 7
+* Heggem prezzo 8 -> 7
+* Obert prezzo 5 -> 6
+* Pellegrini Lu. prezzo 5 -> 6
+* N'Dicka prezzo 7 -> 6
+* Gutierrez prezzo 3 -> 6
+* Ahanor prezzo 6 -> 5
+* Acerbi prezzo 6 -> 5
+* Caracciolo A. prezzo 6 -> 5
+* Pedersen prezzo 4 -> 5
+* Ghilardi prezzo 4 -> 5
+* Frese prezzo 6 -> 5
+* Provstgaard prezzo 3 -> 4
+* Juan Jesus prezzo 3 -> 4
+* Ehizibue prezzo 3 -> 4
+* Athekame prezzo 3 -> 4
+* De Vrij prezzo 4 -> 3
+* Marianucci prezzo 2 -> 3
+* Slotsager prezzo 4 -> 3
+* Ziolkowski prezzo 4 -> 3
+* Zè Pedro prezzo 2 -> 3
++ Garcia U. (Sassuolo)
++ Mlacic (Udinese)
+* Darmian prezzo 1 -> 2
+* Rugani squadra Juventus -> Fiorentina
+* Ndaba prezzo 3 -> 2
+* Ebosse squadra Verona -> Torino
+* Albiol prezzo 3 -> 2
++ Edmundsson (Verona)
+* Joao Mario prezzo 2 -> 1
+* Joao Mario squadra Juventus -> Bologna
+* Nkounkou prezzo 2 -> 1
+* Bozhinov prezzo 2 -> 1
++ Raterink (Cagliari)
++ Pedro Felipe (Sassuolo)
+* Pulisic prezzo 31 -> 30
+* Paz N. prezzo 30 -> 28
+* Calhanoglu prezzo 28 -> 27
+* Rabiot prezzo 24 -> 26
+* Orsolini prezzo 23 -> 22
+* Zielinski prezzo 20 -> 22
+* Vlasic prezzo 17 -> 18
+* Odgaard prezzo 18 -> 17
+* Baturina prezzo 16 -> 17
+* Konè I. prezzo 16 -> 17
+* McKennie prezzo 14 -> 16
+* Konè M. prezzo 17 -> 16
+* Malinovskyi prezzo 14 -> 15
+* Zalewski prezzo 16 -> 15
+* Conceicao prezzo 14 -> 15
+* Thorsby squadra Genoa -> Cremonese
+* Kostic prezzo 13 -> 14
+* Cataldi prezzo 12 -> 14
+* Loftus-Cheek prezzo 12 -> 14
+* Ekkelenkamp prezzo 12 -> 14
+* Taylor K. prezzo 13 -> 14
+* Zaccagni prezzo 14 -> 13
+* Mazzitelli prezzo 11 -> 13
+* Pasalic prezzo 13 -> 12
+* Caqueret prezzo 13 -> 12
+* Ederson D.S. prezzo 10 -> 11
+* Felici prezzo 12 -> 11
+* Miretti prezzo 10 -> 11
+* Matic prezzo 10 -> 11
+* Pobega prezzo 11 -> 10
++ Strefezza (Parma)
+* Frendrup prezzo 9 -> 10
+* Ellertsson prezzo 11 -> 10
+* De Roon prezzo 10 -> 9
+* Tourè I. prezzo 10 -> 9
+* Tramoni M. prezzo 10 -> 9
+* Harrison prezzo 10 -> 9
+* Casadei prezzo 7 -> 8
+* Aebischer prezzo 5 -> 7
+* Messias prezzo 6 -> 7
+* Luis Henrique prezzo 6 -> 7
++ Zaragoza (Roma)
++ Santos A. (Napoli)
+* Bondo prezzo 7 -> 6
+* Vergara prezzo 2 -> 6
+* Elmas prezzo 5 -> 6
+* Sulemana I. prezzo 2 -> 5
+* Deiola prezzo 6 -> 5
+* Baldanzi prezzo 6 -> 5
++ Iling Junior (Pisa)
+* Frattesi prezzo 3 -> 4
+* Iannoni prezzo 5 -> 4
+* Jashari prezzo 3 -> 4
+* Oristanio prezzo 5 -> 4
+* Anjorin prezzo 2 -> 3
+* Ilkhan prezzo 2 -> 3
++ Bakola (Sassuolo)
+* Venturino prezzo 1 -> 2
++ Lahdo (Como)
+* Diouf prezzo 2 -> 1
+* Martinez L. prezzo 35 -> 36
+* Yildiz prezzo 31 -> 30
+* Thuram prezzo 30 -> 29
+* Leao prezzo 29 -> 28
+* Soulè prezzo 25 -> 24
+* Davis K. prezzo 25 -> 24
+* Hojlund prezzo 25 -> 24
+* Berardi prezzo 22 -> 23
+* Castro S. prezzo 23 -> 22
+* Orban G. prezzo 22 -> 21
+* Esposito F.P. prezzo 19 -> 20
+* Nkunku prezzo 17 -> 19
+* Simeone prezzo 19 -> 18
+* Laurientè prezzo 19 -> 18
+* Bonny prezzo 16 -> 17
+* Adams C. prezzo 16 -> 17
+* Cambiaghi prezzo 17 -> 16
+* Kilicsoy prezzo 14 -> 16
+* Durosinmi prezzo 15 -> 16
+* David prezzo 13 -> 15
+* Raspadori prezzo 16 -> 15
+* Ferguson E. prezzo 16 -> 15
+* Malen prezzo 15 -> 14
+* Colombo prezzo 14 -> 13
+* Vitinha O. prezzo 12 -> 13
+* Banda prezzo 11 -> 12
+* Ekuban prezzo 11 -> 10
+* Nzola prezzo 11 -> 10
+* Piccoli prezzo 8 -> 9
+* Ekhator prezzo 10 -> 9
+* Pedro prezzo 7 -> 9
+* Mosquera prezzo 7 -> 8
+* Solomon prezzo 7 -> 8
+* Buksa prezzo 8 -> 7
++ Boga (Juventus)
+* Sarr A. prezzo 6 -> 5
+* Diao prezzo 4 -> 3
+- Mateus Lusuardi (Pisa)
+- Masina (Torino)
+- Goglichidze (Udinese)
+- Kouassi (Lecce)
+- Odenthal (Sassuolo)
+- Paz Y. (Sassuolo)
+- Dembelè A. (Torino)
+- Rui Modesto (Udinese)
+- Vecino (Lazio)
+- Tete Morente (Lecce)
+- Kastanos (Verona)
+- Cuenca H. (Genoa)
+- Lookman (Atalanta)
+- Benedyczak (Parma)
+- Johnsen (Cremonese)
+- Immobile (Bologna)
+- Luvumbo (Cagliari)
+- Pierini (Sassuolo)
+- Ambrosino (Napoli)
+- Buffon L. (Pisa)
+- Skjellerup (Sassuolo)

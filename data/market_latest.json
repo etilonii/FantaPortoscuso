@@ -1,6 +1,798 @@
 {
   "items": [
     {
+      "team": "FC Galli",
+      "date": "2026-02-05",
+      "out": "Dumfries",
+      "out_squadra": "Int",
+      "out_value": 20.0,
+      "in": "Akanji",
+      "in_squadra": "Int",
+      "in_value": 11.0,
+      "delta": 9.0
+    },
+    {
+      "team": "FC Galli",
+      "date": "2026-02-05",
+      "out": "McTominay",
+      "out_squadra": "Nap",
+      "out_value": 26.0,
+      "in": "Hojlund",
+      "in_squadra": "Nap",
+      "in_value": 24.0,
+      "delta": 2.0
+    },
+    {
+      "team": "FC Galli",
+      "date": "2026-02-05",
+      "out": "Sernicola *",
+      "out_squadra": "Cre",
+      "out_value": 1.0,
+      "in": "Zielinski",
+      "in_squadra": "Int",
+      "in_value": 22.0,
+      "delta": -21.0
+    },
+    {
+      "team": "FC Galli",
+      "date": "2026-02-05",
+      "out": "Soul\u00e8",
+      "out_squadra": "Rom",
+      "out_value": 25.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 25.0
+    },
+    {
+      "team": "FC Plasmon",
+      "date": "2026-02-05",
+      "out": "Buffon L.",
+      "out_squadra": "Pis",
+      "out_value": 1.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 1.0
+    },
+    {
+      "team": "FC Plasmon",
+      "date": "2026-02-05",
+      "out": "Giovane",
+      "out_squadra": "Nap",
+      "out_value": 1.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 1.0
+    },
+    {
+      "team": "FC Plasmon",
+      "date": "2026-02-05",
+      "out": "Isaksen",
+      "out_squadra": "Laz",
+      "out_value": 14.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 14.0
+    },
+    {
+      "team": "FC Plasmon",
+      "date": "2026-02-05",
+      "out": "Kaba *",
+      "out_squadra": "Lec",
+      "out_value": 1.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 1.0
+    },
+    {
+      "team": "FC Plasmon",
+      "date": "2026-02-05",
+      "out": "Leao",
+      "out_squadra": "Mil",
+      "out_value": 26.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 26.0
+    },
+    {
+      "team": "FC Plasmon",
+      "date": "2026-02-05",
+      "out": "Mandas *",
+      "out_squadra": "Laz",
+      "out_value": 3.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 3.0
+    },
+    {
+      "team": "FC Plasmon",
+      "date": "2026-02-05",
+      "out": "Terracciano F.",
+      "out_squadra": "Cre",
+      "out_value": 2.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 2.0
+    },
+    {
+      "team": "FC Plasmon",
+      "date": "2026-02-05",
+      "out": "Thuram",
+      "out_squadra": "Int",
+      "out_value": 31.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 31.0
+    },
+    {
+      "team": "FC Spiaze",
+      "date": "2026-02-05",
+      "out": "Angelino",
+      "out_squadra": "Rom",
+      "out_value": 8.0,
+      "in": "Bernede",
+      "in_squadra": "Ver",
+      "in_value": 9.0,
+      "delta": -1.0
+    },
+    {
+      "team": "FC Spiaze",
+      "date": "2026-02-05",
+      "out": "Belghali",
+      "out_squadra": "Ver",
+      "out_value": 8.0,
+      "in": "Diouf",
+      "in_squadra": "Int",
+      "in_value": 1.0,
+      "delta": 7.0
+    },
+    {
+      "team": "FC Spiaze",
+      "date": "2026-02-05",
+      "out": "Benedyczak",
+      "out_squadra": "Par",
+      "out_value": 1.0,
+      "in": "Hojlund",
+      "in_squadra": "Nap",
+      "in_value": 24.0,
+      "delta": -23.0
+    },
+    {
+      "team": "FC Spiaze",
+      "date": "2026-02-05",
+      "out": "Bonazzoli",
+      "out_squadra": "Cre",
+      "out_value": 13.0,
+      "in": "Joao Mario",
+      "in_squadra": "Bol",
+      "in_value": 1.0,
+      "delta": 12.0
+    },
+    {
+      "team": "FC Spiaze",
+      "date": "2026-02-05",
+      "out": "Delprato",
+      "out_squadra": "Par",
+      "out_value": 8.0,
+      "in": "Norton-Cuffy",
+      "in_squadra": "Gen",
+      "in_value": 7.0,
+      "delta": 1.0
+    },
+    {
+      "team": "FC Spiaze",
+      "date": "2026-02-05",
+      "out": "Kaba *",
+      "out_squadra": "Lec",
+      "out_value": 1.0,
+      "in": "Palestra",
+      "in_squadra": "Cag",
+      "in_value": 17.0,
+      "delta": -16.0
+    },
+    {
+      "team": "FC Spiaze",
+      "date": "2026-02-05",
+      "out": "Palma *",
+      "out_squadra": "Udi",
+      "out_value": 1.0,
+      "in": "Pavoletti",
+      "in_squadra": "Cag",
+      "in_value": 1.0,
+      "delta": 0.0
+    },
+    {
+      "team": "FC Spiaze",
+      "date": "2026-02-05",
+      "out": "Stanciu *",
+      "out_squadra": "Gen",
+      "out_value": 8.0,
+      "in": "Pellegrini Lu.",
+      "in_squadra": "Laz",
+      "in_value": 6.0,
+      "delta": 2.0
+    },
+    {
+      "team": "FC Spiaze",
+      "date": "2026-02-05",
+      "out": "Tramoni M.",
+      "out_squadra": "Pis",
+      "out_value": 12.0,
+      "in": "Vergara",
+      "in_squadra": "Nap",
+      "in_value": 6.0,
+      "delta": 6.0
+    },
+    {
+      "team": "I Cigni",
+      "date": "2026-02-05",
+      "out": "Castellanos *",
+      "out_squadra": "Laz",
+      "out_value": 22.0,
+      "in": "Baturina",
+      "in_squadra": "Com",
+      "in_value": 17.0,
+      "delta": 5.0
+    },
+    {
+      "team": "I Cigni",
+      "date": "2026-02-05",
+      "out": "Esteves T. *",
+      "out_squadra": "Pis",
+      "out_value": 1.0,
+      "in": "Lykogiannis",
+      "in_squadra": "Bol",
+      "in_value": 2.0,
+      "delta": -1.0
+    },
+    {
+      "team": "I Cigni",
+      "date": "2026-02-05",
+      "out": "Kean",
+      "out_squadra": "Fio",
+      "out_value": 22.0,
+      "in": "Norton-Cuffy",
+      "in_squadra": "Gen",
+      "in_value": 7.0,
+      "delta": 15.0
+    },
+    {
+      "team": "I Cigni",
+      "date": "2026-02-05",
+      "out": "Tavares N.",
+      "out_squadra": "Laz",
+      "out_value": 12.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 12.0
+    },
+    {
+      "team": "I Cigni",
+      "date": "2026-02-05",
+      "out": "Zhegrova",
+      "out_squadra": "Juv",
+      "out_value": 14.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 14.0
+    },
+    {
+      "team": "Kung-Fu Pandev",
+      "date": "2026-02-05",
+      "out": "Angelino",
+      "out_squadra": "Rom",
+      "out_value": 15.0,
+      "in": "Bowie",
+      "in_squadra": "Ver",
+      "in_value": 6.0,
+      "delta": 9.0
+    },
+    {
+      "team": "Kung-Fu Pandev",
+      "date": "2026-02-05",
+      "out": "Asllani *",
+      "out_squadra": "Tor",
+      "out_value": 4.0,
+      "in": "David",
+      "in_squadra": "Juv",
+      "in_value": 15.0,
+      "delta": -11.0
+    },
+    {
+      "team": "Kung-Fu Pandev",
+      "date": "2026-02-05",
+      "out": "Benedyczak",
+      "out_squadra": "Par",
+      "out_value": 1.0,
+      "in": "Maldini",
+      "in_squadra": "Laz",
+      "in_value": 3.0,
+      "delta": -2.0
+    },
+    {
+      "team": "Kung-Fu Pandev",
+      "date": "2026-02-05",
+      "out": "Cambiaso",
+      "out_squadra": "Juv",
+      "out_value": 15.0,
+      "in": "Norton-Cuffy",
+      "in_squadra": "Gen",
+      "in_value": 7.0,
+      "delta": 8.0
+    },
+    {
+      "team": "Kung-Fu Pandev",
+      "date": "2026-02-05",
+      "out": "Pellegrino M.",
+      "out_squadra": "Par",
+      "out_value": 13.0,
+      "in": "Wesley",
+      "in_squadra": "Rom",
+      "in_value": 15.0,
+      "delta": -2.0
+    },
+    {
+      "team": "Leonte FC",
+      "date": "2026-02-05",
+      "out": "Di Lorenzo",
+      "out_squadra": "Nap",
+      "out_value": 14.0,
+      "in": "Bremer",
+      "in_squadra": "Juv",
+      "in_value": 17.0,
+      "delta": -3.0
+    },
+    {
+      "team": "Leonte FC",
+      "date": "2026-02-05",
+      "out": "Esteves T. *",
+      "out_squadra": "Pis",
+      "out_value": 1.0,
+      "in": "Coulibaly W.",
+      "in_squadra": "Sas",
+      "in_value": 1.0,
+      "delta": 0.0
+    },
+    {
+      "team": "Leonte FC",
+      "date": "2026-02-05",
+      "out": "Folorunsho",
+      "out_squadra": "Cag",
+      "out_value": 9.0,
+      "in": "Djimsiti",
+      "in_squadra": "Ata",
+      "in_value": 6.0,
+      "delta": 3.0
+    },
+    {
+      "team": "Leonte FC",
+      "date": "2026-02-05",
+      "out": "Kaba *",
+      "out_squadra": "Lec",
+      "out_value": 1.0,
+      "in": "Hojholt",
+      "in_squadra": "Pis",
+      "in_value": 1.0,
+      "delta": 0.0
+    },
+    {
+      "team": "Leonte FC",
+      "date": "2026-02-05",
+      "out": "Thuram",
+      "out_squadra": "Int",
+      "out_value": 31.0,
+      "in": "Martinez L.",
+      "in_squadra": "Int",
+      "in_value": 36.0,
+      "delta": -5.0
+    },
+    {
+      "team": "Leonte FC",
+      "date": "2026-02-05",
+      "out": "Tour\u00e8 I.",
+      "out_squadra": "Pis",
+      "out_value": 9.0,
+      "in": "Vergara",
+      "in_squadra": "Nap",
+      "in_value": 6.0,
+      "delta": 3.0
+    },
+    {
+      "team": "Leonte FC",
+      "date": "2026-02-05",
+      "out": "Valenti",
+      "out_squadra": "Par",
+      "out_value": 4.0,
+      "in": "Vranckx",
+      "in_squadra": "Sas",
+      "in_value": 2.0,
+      "delta": 2.0
+    },
+    {
+      "team": "Malm\u00f6 FF",
+      "date": "2026-02-05",
+      "out": "Bernab\u00e8",
+      "out_squadra": "Par",
+      "out_value": 11.0,
+      "in": "Malinovskyi",
+      "in_squadra": "Gen",
+      "in_value": 15.0,
+      "delta": -4.0
+    },
+    {
+      "team": "Malm\u00f6 FF",
+      "date": "2026-02-05",
+      "out": "Pierret *",
+      "out_squadra": "Lec",
+      "out_value": 6.0,
+      "in": "Sala A.",
+      "in_squadra": "Lec",
+      "in_value": 1.0,
+      "delta": 5.0
+    },
+    {
+      "team": "Sciabolata Classica",
+      "date": "2026-02-05",
+      "out": "Asllani *",
+      "out_squadra": "Tor",
+      "out_value": 4.0,
+      "in": "David",
+      "in_squadra": "Juv",
+      "in_value": 15.0,
+      "delta": -11.0
+    },
+    {
+      "team": "Sciabolata Classica",
+      "date": "2026-02-05",
+      "out": "Atta",
+      "out_squadra": "Udi",
+      "out_value": 8.0,
+      "in": "Hojholt",
+      "in_squadra": "Pis",
+      "in_value": 1.0,
+      "delta": 7.0
+    },
+    {
+      "team": "Sciabolata Classica",
+      "date": "2026-02-05",
+      "out": "Benedyczak",
+      "out_squadra": "Par",
+      "out_value": 1.0,
+      "in": "Hojlund",
+      "in_squadra": "Nap",
+      "in_value": 24.0,
+      "delta": -23.0
+    },
+    {
+      "team": "Sciabolata Classica",
+      "date": "2026-02-05",
+      "out": "Cambiaso",
+      "out_squadra": "Juv",
+      "out_value": 15.0,
+      "in": "Rugani",
+      "in_squadra": "Fio",
+      "in_value": 2.0,
+      "delta": 13.0
+    },
+    {
+      "team": "Sciabolata Classica",
+      "date": "2026-02-05",
+      "out": "Gudmundsson A.",
+      "out_squadra": "Fio",
+      "out_value": 17.0,
+      "in": "Sala A.",
+      "in_squadra": "Lec",
+      "in_value": 1.0,
+      "delta": 16.0
+    },
+    {
+      "team": "Sciabolata Classica",
+      "date": "2026-02-05",
+      "out": "Hernani *",
+      "out_squadra": "Par",
+      "out_value": 3.0,
+      "in": "Stengs",
+      "in_squadra": "Pis",
+      "in_value": 1.0,
+      "delta": 2.0
+    },
+    {
+      "team": "Sciabolata Classica",
+      "date": "2026-02-05",
+      "out": "Stanciu *",
+      "out_squadra": "Gen",
+      "out_value": 8.0,
+      "in": "Vergara",
+      "in_squadra": "Nap",
+      "in_value": 6.0,
+      "delta": 2.0
+    },
+    {
+      "team": "Sciabolata Classica",
+      "date": "2026-02-05",
+      "out": "Vitik",
+      "out_squadra": "Bol",
+      "out_value": 8.0,
+      "in": "Zielinski",
+      "in_squadra": "Int",
+      "in_value": 22.0,
+      "delta": -14.0
+    },
+    {
+      "team": "Sciabolata Classica",
+      "date": "2026-02-05",
+      "out": "Vlahovic",
+      "out_squadra": "Juv",
+      "out_value": 21.0,
+      "in": "Z\u00e8 Pedro",
+      "in_squadra": "Cag",
+      "in_value": 3.0,
+      "delta": 18.0
+    },
+    {
+      "team": "SerSi-FC",
+      "date": "2026-02-05",
+      "out": "Bonazzoli",
+      "out_squadra": "Cre",
+      "out_value": 1.0,
+      "in": "Douvikas",
+      "in_squadra": "Com",
+      "in_value": 24.0,
+      "delta": -23.0
+    },
+    {
+      "team": "SerSi-FC",
+      "date": "2026-02-05",
+      "out": "Castellanos *",
+      "out_squadra": "Laz",
+      "out_value": 21.0,
+      "in": "Hojlund",
+      "in_squadra": "Nap",
+      "in_value": 24.0,
+      "delta": -3.0
+    },
+    {
+      "team": "SerSi-FC",
+      "date": "2026-02-05",
+      "out": "Gudmundsson A.",
+      "out_squadra": "Fio",
+      "out_value": 24.0,
+      "in": "Maldini",
+      "in_squadra": "Laz",
+      "in_value": 3.0,
+      "delta": 21.0
+    },
+    {
+      "team": "SerSi-FC",
+      "date": "2026-02-05",
+      "out": "Loftus-Cheek",
+      "out_squadra": "Mil",
+      "out_value": 8.0,
+      "in": "McTominay",
+      "in_squadra": "Nap",
+      "in_value": 24.0,
+      "delta": -16.0
+    },
+    {
+      "team": "SerSi-FC",
+      "date": "2026-02-05",
+      "out": "Simeone",
+      "out_squadra": "Tor",
+      "out_value": 18.0,
+      "in": "Rabiot",
+      "in_squadra": "Mil",
+      "in_value": 26.0,
+      "delta": -8.0
+    },
+    {
+      "team": "SerSi-FC",
+      "date": "2026-02-05",
+      "out": "Zalewski",
+      "out_squadra": "Ata",
+      "out_value": 6.0,
+      "in": "Stojilkovic",
+      "in_squadra": "Pis",
+      "in_value": 4.0,
+      "delta": 2.0
+    },
+    {
+      "team": "XLiverpuh",
+      "date": "2026-02-05",
+      "out": "Bonazzoli",
+      "out_squadra": "Cre",
+      "out_value": 1.0,
+      "in": "Dia",
+      "in_squadra": "Laz",
+      "in_value": 5.0,
+      "delta": -4.0
+    },
+    {
+      "team": "XLiverpuh",
+      "date": "2026-02-05",
+      "out": "Esposito Se.",
+      "out_squadra": "Cag",
+      "out_value": 7.0,
+      "in": "Gutierrez",
+      "in_squadra": "Nap",
+      "in_value": 6.0,
+      "delta": 1.0
+    },
+    {
+      "team": "XLiverpuh",
+      "date": "2026-02-05",
+      "out": "Leao",
+      "out_squadra": "Mil",
+      "out_value": 26.0,
+      "in": "Kilicsoy",
+      "in_squadra": "Cag",
+      "in_value": 16.0,
+      "delta": 10.0
+    },
+    {
+      "team": "XLiverpuh",
+      "date": "2026-02-05",
+      "out": "Paz Y.",
+      "out_squadra": "Sas",
+      "out_value": 1.0,
+      "in": "Martinez L.",
+      "in_squadra": "Int",
+      "in_value": 36.0,
+      "delta": -35.0
+    },
+    {
+      "team": "XLiverpuh",
+      "date": "2026-02-05",
+      "out": "Saelemaekers",
+      "out_squadra": "Mil",
+      "out_value": 12.0,
+      "in": "Yildiz",
+      "in_squadra": "Juv",
+      "in_value": 30.0,
+      "delta": -18.0
+    },
+    {
+      "team": "XLiverpuh",
+      "date": "2026-02-05",
+      "out": "Thuram",
+      "out_squadra": "Int",
+      "out_value": 31.0,
+      "in": "Zielinski",
+      "in_squadra": "Int",
+      "in_value": 22.0,
+      "delta": 9.0
+    },
+    {
+      "team": "coach 71",
+      "date": "2026-02-05",
+      "out": "Kaba *",
+      "out_squadra": "Lec",
+      "out_value": 1.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 1.0
+    },
+    {
+      "team": "i fratelli merda",
+      "date": "2026-02-05",
+      "out": "Arizala",
+      "out_squadra": "Udi",
+      "out_value": 1.0,
+      "in": "Belghali",
+      "in_squadra": "Ver",
+      "in_value": 10.0,
+      "delta": -9.0
+    },
+    {
+      "team": "i fratelli merda",
+      "date": "2026-02-05",
+      "out": "Bonazzoli",
+      "out_squadra": "Cre",
+      "out_value": 3.0,
+      "in": "De Winter",
+      "in_squadra": "Mil",
+      "in_value": 8.0,
+      "delta": -5.0
+    },
+    {
+      "team": "i fratelli merda",
+      "date": "2026-02-05",
+      "out": "Gineitis",
+      "out_squadra": "Tor",
+      "out_value": 5.0,
+      "in": "Idrissi R.",
+      "in_squadra": "Cag",
+      "in_value": 10.0,
+      "delta": -5.0
+    },
+    {
+      "team": "i fratelli merda",
+      "date": "2026-02-05",
+      "out": "Tavares N.",
+      "out_squadra": "Laz",
+      "out_value": 7.0,
+      "in": "Iling Junior",
+      "in_squadra": "Pis",
+      "in_value": 5.0,
+      "delta": 2.0
+    },
+    {
+      "team": "i fratelli merda",
+      "date": "2026-02-05",
+      "out": "Van Der Brempt",
+      "out_squadra": "Com",
+      "out_value": 4.0,
+      "in": "Solomon",
+      "in_squadra": "Fio",
+      "in_value": 8.0,
+      "delta": -4.0
+    },
+    {
+      "team": "puerto rosso blu",
+      "date": "2026-02-05",
+      "out": "Cambiaso",
+      "out_squadra": "Juv",
+      "out_value": 15.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 15.0
+    },
+    {
+      "team": "puerto rosso blu",
+      "date": "2026-02-05",
+      "out": "Dele-Bashiru",
+      "out_squadra": "Laz",
+      "out_value": 11.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 11.0
+    },
+    {
+      "team": "puerto rosso blu",
+      "date": "2026-02-05",
+      "out": "Kaba *",
+      "out_squadra": "Lec",
+      "out_value": 2.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 2.0
+    },
+    {
+      "team": "puerto rosso blu",
+      "date": "2026-02-05",
+      "out": "Soul\u00e8",
+      "out_squadra": "Rom",
+      "out_value": 20.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 20.0
+    },
+    {
+      "team": "puerto rosso blu",
+      "date": "2026-02-05",
+      "out": "Zaccagni",
+      "out_squadra": "Laz",
+      "out_value": 24.0,
+      "in": "",
+      "in_squadra": "",
+      "in_value": 0,
+      "delta": 24.0
+    },
+    {
       "team": "Ipa Bali",
       "date": "2026-02-02",
       "out": "Kaba",
@@ -91,6 +883,54 @@
   ],
   "teams": [
     {
+      "team": "FC Plasmon",
+      "delta": 79.0,
+      "changed_count": 8,
+      "last_date": "2026-02-05"
+    },
+    {
+      "team": "puerto rosso blu",
+      "delta": 72.0,
+      "changed_count": 5,
+      "last_date": "2026-02-05"
+    },
+    {
+      "team": "I Cigni",
+      "delta": 45.0,
+      "changed_count": 8,
+      "last_date": "2026-02-05"
+    },
+    {
+      "team": "FC Galli",
+      "delta": 15.0,
+      "changed_count": 7,
+      "last_date": "2026-02-05"
+    },
+    {
+      "team": "Sciabolata Classica",
+      "delta": 10.0,
+      "changed_count": 18,
+      "last_date": "2026-02-05"
+    },
+    {
+      "team": "Kung-Fu Pandev",
+      "delta": 2.0,
+      "changed_count": 10,
+      "last_date": "2026-02-05"
+    },
+    {
+      "team": "coach 71",
+      "delta": 1.0,
+      "changed_count": 1,
+      "last_date": "2026-02-05"
+    },
+    {
+      "team": "Malm\u00f6 FF",
+      "delta": 1.0,
+      "changed_count": 4,
+      "last_date": "2026-02-05"
+    },
+    {
       "team": "TomMat-iga",
       "delta": 0.0,
       "changed_count": 2,
@@ -103,10 +943,40 @@
       "last_date": "2026-02-02"
     },
     {
+      "team": "Leonte FC",
+      "delta": 0.0,
+      "changed_count": 14,
+      "last_date": "2026-02-05"
+    },
+    {
       "team": "Ipa Bali",
       "delta": 0.0,
       "changed_count": 2,
       "last_date": "2026-02-02"
+    },
+    {
+      "team": "FC Spiaze",
+      "delta": -12.0,
+      "changed_count": 18,
+      "last_date": "2026-02-05"
+    },
+    {
+      "team": "i fratelli merda",
+      "delta": -21.0,
+      "changed_count": 10,
+      "last_date": "2026-02-05"
+    },
+    {
+      "team": "SerSi-FC",
+      "delta": -27.0,
+      "changed_count": 12,
+      "last_date": "2026-02-05"
+    },
+    {
+      "team": "XLiverpuh",
+      "delta": -37.0,
+      "changed_count": 12,
+      "last_date": "2026-02-05"
     }
   ]
 }

@@ -26,6 +26,7 @@ Dimarco,D,Inter,5
 Kean,A,Fiorentina,5
 McTominay,C,Napoli,5
 Moreo,A,Pisa,5
+Nkunku,A,Milan,5
 Simeone,A,Torino,5
 Vardy,A,Cremonese,5
 Vlasic,C,Torino,5
@@ -37,10 +38,10 @@ Gudmundsson A.,C,Fiorentina,4
 Kilicsoy,A,Cagliari,4
 Konè I.,C,Sassuolo,4
 Malinovskyi,C,Genoa,4
-Nkunku,A,Milan,4
 Odgaard,C,Bologna,4
 Ostigard,D,Genoa,4
 Pinamonti,A,Sassuolo,4
+Rabiot,C,Milan,4
 Zambo Anguissa,C,Napoli,4
 Zielinski,C,Inter,4
 Addai,A,Como,3
@@ -63,7 +64,6 @@ McKennie,C,Juventus,3
 Neres,C,Napoli,3
 Nzola,A,Sassuolo,3
 Pellegrini Lo.,C,Roma,3
-Rabiot,C,Milan,3
 Vitinha O.,A,Genoa,3
 Vlahovic,A,Juventus,3
 Wesley,D,Roma,3
@@ -96,7 +96,8 @@ Idrissi R.,D,Cagliari,2
 Isaksen,C,Lazio,2
 Kabasele,D,Udinese,2
 Konè M.,C,Roma,2
-Lookman,A,Atalanta,2
+Loftus-Cheek,C,Milan,2
+Lookman *,A,Atalanta,2
 Mazzitelli,C,Cagliari,2
 Meister,A,Pisa,2
 Muharemovic,D,Sassuolo,2
@@ -127,7 +128,7 @@ Baldanzi,C,Genoa,1
 Barella,C,Inter,1
 Basic,C,Lazio,1
 Bastoni,D,Inter,1
-Benedyczak,A,Parma,1
+Benedyczak *,A,Parma,1
 Bernardeschi,C,Bologna,1
 Bernede,C,Verona,1
 Beukema,D,Napoli,1
@@ -171,7 +172,7 @@ Hermoso,D,Roma,1
 Hien,D,Atalanta,1
 Holm,D,Juventus,1
 Iannoni,C,Sassuolo,1
-Johnsen,A,Cremonese,1
+Johnsen *,A,Cremonese,1
 Kalulu,D,Juventus,1
 Karlstrom,C,Udinese,1
 Kelly L.,D,Juventus,1
@@ -181,7 +182,6 @@ Kuhn,A,Como,1
 Lang *,A,Napoli,1
 Leris,C,Pisa,1
 Lobotka,C,Napoli,1
-Loftus-Cheek,C,Milan,1
 Lorran,C,Pisa,1
 Lucca *,A,Napoli,1
 Lucumì,D,Bologna,1

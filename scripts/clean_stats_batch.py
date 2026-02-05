@@ -534,7 +534,7 @@ def latest_incoming(prefix: str) -> Path | None:
     candidates = list(INCOMING_DIR.glob(f"{prefix}_*.csv")) + list(INCOMING_DIR.glob(f"{prefix}_*.xlsx"))
     if not candidates:
         return None
-    pattern = re.compile(rf"^{re.escape(prefix)}_\\d{{4}}-\\d{{2}}-\\d{{2}}$")
+    pattern = re.compile(rf"^{re.escape(prefix)}_\d{{4}}-\d{{2}}-\d{{2}}$")
     filtered = [p for p in candidates if pattern.match(p.stem)]
     if filtered:
         candidates = filtered

@@ -12,6 +12,7 @@ Krstovic,A,Atalanta,4
 Martin,D,Genoa,4
 Martinez L.,A,Inter,4
 Palestra,D,Cagliari,4
+Rabiot,C,Milan,4
 Soulè,A,Roma,4
 Vandeputte,C,Cremonese,4
 Volpato,C,Sassuolo,4
@@ -38,7 +39,6 @@ Modric,C,Milan,3
 Neres,C,Napoli,3
 Perrone,C,Como,3
 Politano,C,Napoli,3
-Rabiot,C,Milan,3
 Saelemaekers,C,Milan,3
 Spinazzola,D,Napoli,3
 Thuram,A,Inter,3
@@ -90,7 +90,7 @@ Barbieri,D,Cremonese,1
 Bayo V.,A,Udinese,1
 Belahyane,C,Lazio,1
 Bellanova,D,Atalanta,1
-Benedyczak,A,Parma,1
+Benedyczak *,A,Parma,1
 Bernabè,C,Parma,1
 Bernasconi,D,Atalanta,1
 Bertola,D,Udinese,1
@@ -121,7 +121,7 @@ Felici,C,Cagliari,1
 Freuler,C,Bologna,1
 Isaksen,C,Lazio,1
 Joao Mario,D,Bologna,1
-Johnsen,A,Cremonese,1
+Johnsen *,A,Cremonese,1
 Kamara H.,D,Udinese,1
 Kean,A,Fiorentina,1
 Konè M.,C,Roma,1
@@ -134,7 +134,7 @@ Mancini,D,Roma,1
 Marcandalli,D,Genoa,1
 Marianucci,D,Torino,1
 Marusic,D,Lazio,1
-Masina,D,Torino,1
+Masina *,D,Torino,1
 Matic,C,Sassuolo,1
 Meret,P,Napoli,1
 Miretti,C,Juventus,1
@@ -157,7 +157,7 @@ Rensch,D,Roma,1
 Ricci S.,C,Milan,1
 Rovella,C,Lazio,1
 Rowe,C,Bologna,1
-Rui Modesto,D,Udinese,1
+Rui Modesto *,D,Udinese,1
 Sala A.,C,Lecce,1
 Sanabria,A,Cremonese,1
 Scamacca,A,Atalanta,1
@@ -165,13 +165,13 @@ Sohm,C,Bologna,1
 Solet,D,Udinese,1
 Sottil,C,Lecce,1
 Sulemana K.,A,Atalanta,1
-Tete Morente,C,Lecce,1
+Tete Morente *,C,Lecce,1
 Thorsby,C,Cremonese,1
 Thorstvedt,C,Sassuolo,1
 Thuram K.,C,Juventus,1
 Tomori,D,Milan,1
 Valeri,D,Parma,1
-Vecino,C,Lazio,1
+Vecino *,C,Lazio,1
 Vitinha O.,A,Genoa,1
 Vojvoda,D,Como,1
 Walukiewicz,D,Sassuolo,1

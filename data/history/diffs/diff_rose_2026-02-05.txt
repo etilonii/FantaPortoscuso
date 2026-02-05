@@ -1,0 +1,127 @@
++ SerSi-FC: Rabiot
++ SerSi-FC: McTominay
++ SerSi-FC: Maldini
++ SerSi-FC: Hojlund
++ SerSi-FC: Douvikas
++ SerSi-FC: Stojilkovic
++ Sciabolata Classica: Rugani
++ Sciabolata Classica: Zè Pedro
++ Sciabolata Classica: Zielinski
++ Sciabolata Classica: Stengs
++ Sciabolata Classica: Hojholt
++ Sciabolata Classica: Vergara
++ Sciabolata Classica: Sala A.
++ Sciabolata Classica: David
++ Sciabolata Classica: Hojlund
++ Malmö FF: Malinovskyi
++ Malmö FF: Sala A.
++ i fratelli merda: De Winter
++ i fratelli merda: Idrissi R.
++ i fratelli merda: Belghali
++ i fratelli merda: Iling Junior
++ i fratelli merda: Solomon
++ Leonte FC: Djimsiti
++ Leonte FC: Bremer
++ Leonte FC: Coulibaly W.
++ Leonte FC: Vranckx
++ Leonte FC: Hojholt
++ Leonte FC: Vergara
++ Leonte FC: Martinez L.
++ XLiverpuh: Gutierrez
++ XLiverpuh: Zielinski
++ XLiverpuh: Martinez L.
++ XLiverpuh: Dia
++ XLiverpuh: Yildiz
++ XLiverpuh: Kilicsoy
++ FC Spiaze: Pellegrini Lu.
++ FC Spiaze: Norton-Cuffy
++ FC Spiaze: Palestra
++ FC Spiaze: Joao Mario
++ FC Spiaze: Diouf
++ FC Spiaze: Bernede
++ FC Spiaze: Vergara
++ FC Spiaze: Pavoletti
++ FC Spiaze: Hojlund
++ FC Galli: Akanji
++ FC Galli: Zielinski
++ FC Galli: Hojlund
++ I Cigni: Lykogiannis
++ I Cigni: Norton-Cuffy
++ I Cigni: Baturina
++ Kung-Fu Pandev: Norton-Cuffy
++ Kung-Fu Pandev: Wesley
++ Kung-Fu Pandev: Maldini
++ Kung-Fu Pandev: David
++ Kung-Fu Pandev: Bowie
+- SerSi-FC: Loftus-Cheek
+- SerSi-FC: Zalewski
+- SerSi-FC: Gudmundsson A.
+- SerSi-FC: Bonazzoli
+- SerSi-FC: Simeone
+- SerSi-FC: Castellanos *
+- Sciabolata Classica: Cambiaso
+- Sciabolata Classica: Vitik
+- Sciabolata Classica: Hernani *
+- Sciabolata Classica: Asllani *
+- Sciabolata Classica: Gudmundsson A.
+- Sciabolata Classica: Atta
+- Sciabolata Classica: Stanciu *
+- Sciabolata Classica: Vlahovic
+- Sciabolata Classica: Benedyczak
+- Malmö FF: Pierret *
+- Malmö FF: Bernabè
+- puerto rosso blu: Cambiaso
+- puerto rosso blu: Zaccagni
+- puerto rosso blu: Kaba *
+- puerto rosso blu: Dele-Bashiru
+- puerto rosso blu: Soulè
+- i fratelli merda: Tavares N.
+- i fratelli merda: Van Der Brempt
+- i fratelli merda: Arizala
+- i fratelli merda: Gineitis
+- i fratelli merda: Bonazzoli
+- FC Plasmon: Mandas *
+- FC Plasmon: Terracciano F.
+- FC Plasmon: Isaksen
+- FC Plasmon: Kaba *
+- FC Plasmon: Leao
+- FC Plasmon: Thuram
+- FC Plasmon: Giovane
+- FC Plasmon: Buffon L.
+- Leonte FC: Di Lorenzo
+- Leonte FC: Valenti
+- Leonte FC: Esteves T. *
+- Leonte FC: Folorunsho
+- Leonte FC: Kaba *
+- Leonte FC: Tourè I.
+- Leonte FC: Thuram
+- XLiverpuh: Paz Y.
+- XLiverpuh: Saelemaekers
+- XLiverpuh: Bonazzoli
+- XLiverpuh: Esposito Se.
+- XLiverpuh: Leao
+- XLiverpuh: Thuram
+- FC Spiaze: Angelino
+- FC Spiaze: Delprato
+- FC Spiaze: Palma *
+- FC Spiaze: Belghali
+- FC Spiaze: Tramoni M.
+- FC Spiaze: Kaba *
+- FC Spiaze: Stanciu *
+- FC Spiaze: Bonazzoli
+- FC Spiaze: Benedyczak
+- FC Galli: Sernicola *
+- FC Galli: Dumfries
+- FC Galli: McTominay
+- FC Galli: Soulè
+- coach 71: Kaba *
+- I Cigni: Tavares N.
+- I Cigni: Esteves T. *
+- I Cigni: Zhegrova
+- I Cigni: Kean
+- I Cigni: Castellanos *
+- Kung-Fu Pandev: Angelino
+- Kung-Fu Pandev: Cambiaso
+- Kung-Fu Pandev: Asllani *
+- Kung-Fu Pandev: Benedyczak
+- Kung-Fu Pandev: Pellegrino M.
