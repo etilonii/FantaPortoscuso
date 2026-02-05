@@ -821,6 +821,11 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
                 or (quot_map.get(in_key) or {}).get("Squadra")
                 or ""
             )
+            if out_role and in_role and out_role != in_role:
+                in_name = ""
+                in_role = ""
+                in_team = ""
+                in_value = 0
             items.append(
                 {
                     "team": team,
