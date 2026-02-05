@@ -942,6 +942,11 @@ def _enrich_market_items(items: List[Dict[str, str]]) -> List[Dict[str, str]]:
             in_val = (last_quot_map.get(in_key) or {}).get("PrezzoAttuale", in_val)
         elif in_key in qa_map:
             in_val = qa_map.get(in_key)
+        if item["out_ruolo"] and item["in_ruolo"] and item["out_ruolo"] != item["in_ruolo"]:
+            item["in"] = ""
+            item["in_ruolo"] = ""
+            item["in_squadra"] = ""
+            in_val = 0
         item["out_value"] = float(out_val or 0)
         item["in_value"] = float(in_val or 0)
         item["delta"] = item["out_value"] - item["in_value"]
