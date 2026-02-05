@@ -1131,6 +1131,32 @@ def suggest_transfers(
                 keys.add(f"{out_n}->{in_n}")
         return keys
 
+    def top_in_names(sol: Solution, limit: int) -> list[str]:
+        picks = []
+        seen = set()
+        for s in sorted(sol.swaps, key=lambda x: x.gain, reverse=True):
+            name = norm_name(name_of(s.in_player))
+            if not name or name in seen:
+                continue
+            seen.add(name)
+            picks.append(name)
+            if len(picks) >= limit:
+                break
+        return picks
+
+    def top_out_names(sol: Solution, limit: int) -> list[str]:
+        picks = []
+        seen = set()
+        for s in sorted(sol.swaps, key=lambda x: x.gain, reverse=True):
+            name = norm_name(name_of(s.out_player))
+            if not name or name in seen:
+                continue
+            seen.add(name)
+            picks.append(name)
+            if len(picks) >= limit:
+                break
+        return picks
+
     selected: List[Solution] = []
     base_exclude = set()
     base_exclude_outs = set()
