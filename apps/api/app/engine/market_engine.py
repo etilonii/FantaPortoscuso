@@ -569,7 +569,7 @@ def suggest_transfers(
             return 1.0
         weight = max(0.0, min(1.0, newcomers_weights.get(name_key, 0.5)))
         # New arrivals can be interesting, but should not dominate all outcomes.
-        return 0.90 + 0.15 * weight
+        return 0.95 + 0.05 * weight
 
     def tier_factor(name_key: str) -> float:
         tier, weight = player_tiers.get(name_key, ("low", 0.0))
@@ -599,7 +599,7 @@ def suggest_transfers(
     def new_arrival_floor(player: dict, games_left: int) -> float:
         name_key = norm_name(name_of(player))
         weight = newcomers_weights.get(name_key, 0.0)
-        if weight < 0.85:
+        if weight < 0.95:
             return 0.0
         if has_recent_minutes(player):
             return 0.0
@@ -607,13 +607,13 @@ def suggest_transfers(
             return 0.0
         role = role_of(player)
         if role == "A":
-            per_match = 0.20
+            per_match = 0.14
         elif role == "C":
-            per_match = 0.18
-        elif role == "D":
-            per_match = 0.15
-        else:
             per_match = 0.12
+        elif role == "D":
+            per_match = 0.10
+        else:
+            per_match = 0.08
         return games_left * per_match
 
     def eligible_in_player(player: dict) -> bool:
@@ -629,6 +629,8 @@ def suggest_transfers(
             return False
         starter = titolarita(player, players_pool)
         if starter < 0.55 and not newcomer and name_key not in injury_return_allow:
+            return False
+        if newcomer and not has_recent_minutes(player) and starter < 0.55 and name_key not in injury_return_allow:
             return False
         if is_dead_profile(player):
             return False
@@ -1008,7 +1010,7 @@ def suggest_transfers(
                     if cand.gain < min_swap_gain and name_out not in required_outs_set:
                         continue
                     newcomer_count = state.newcomer_count + (1 if is_new_arrival(cand.in_player) else 0)
-                    max_newcomers = 2 if relax_level == 0 else (3 if relax_level == 1 else 4)
+                    max_newcomers = 1 if relax_level == 0 else (2 if relax_level == 1 else 3)
                     if newcomer_count > max_newcomers:
                         continue
                     neg_count = state.neg_count
