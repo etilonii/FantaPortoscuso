@@ -704,26 +704,22 @@ def suggest_transfers(
         if not name or name in value_map:
             continue
         key = norm_name(name)
-        # Base value: rely mostly on tier list + titolarita + expected growth (user preference).
+        # Base value: rely mostly on tier list + titolarita (user preference).
         value = 0.0
-        club = club_of(p)
-        games_left = games_left_map.get(club, 10)
-        floor = new_arrival_floor(p, games_left)
-        if floor > value:
-            value = floor
         newcomer = is_new_arrival(p)
-        value = value * injury_factor(key) * new_arrival_factor(key) * tier_factor(key)
+        value = value * injury_factor(key)
         starter = titolarita(p, players_pool)
         starter_norm = max(0.0, min(1.0, (starter - 0.40) / 0.60))
-        # Tier-driven scoring
-        value += tier_score(key) * 80.0
-        value += starter_norm * 15.0
-        # Growth expected weight (small)
-        # (growth_map computed later and applied in swap_gain)
+        # Tier-driven scoring (primary)
+        value += tier_score(key) * 100.0
+        value += starter_norm * 25.0
         if is_bench_profile(p) and starter < 0.60 and not newcomer:
             value *= 0.6
         if starter < 0.45 and not newcomer and key not in injury_return_allow:
             value *= 0.4
+        # New arrivals should not dominate unless truly top-tier.
+        if newcomer and tier_score(key) < 0.90:
+            value *= 0.85
         value_map[name] = value
 
     tit_map: Dict[str, float] = {}
@@ -738,7 +734,7 @@ def suggest_transfers(
         bonus_map[name] = bonus_rate_recent(p)
         key = norm_name(name)
         tier_map[name] = tier_score(key)
-        # Expected growth: lower for top (already priced), higher for rising/undervalued profiles.
+        # Expected growth kept for now (small), but not used in swap_gain anymore.
         tier_inv = 1.0 - clamp(tier_map[name], 0.0, 1.2)
         trend = clamp((bonus_map[name] * 0.6) + ((tit_map[name] - 0.55) * 1.2), -0.5, 1.0)
         growth_map[name] = clamp((0.7 * tier_inv) + (0.3 * trend), -0.5, 1.0)
@@ -751,13 +747,8 @@ def suggest_transfers(
         delta_bonus = bonus_map.get(in_name, 0.0) - bonus_map.get(out_name, 0.0)
         delta_tier = tier_map.get(in_name, 0.0) - tier_map.get(out_name, 0.0)
         delta_growth = growth_map.get(in_name, 0.0) - growth_map.get(out_name, 0.0)
-        return (
-            (0.40 * delta_value)
-            + (0.20 * (delta_tit * 8.0))
-            + (0.15 * (delta_bonus * 4.0))
-            + (0.20 * (delta_tier * 6.0))
-            + (0.05 * (delta_growth * 4.0))
-        )
+        # Use algorithmic value delta directly (tier-first + titolarita).
+        return delta_value
 
     in_pool = {r: [] for r in ["P", "D", "C", "A"]}
     out_pool = {r: [] for r in ["P", "D", "C", "A"]}
