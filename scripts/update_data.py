@@ -153,23 +153,22 @@ def _diff_quotazioni(prev: pd.DataFrame, curr: pd.DataFrame) -> list[str]:
         if not name:
             continue
         if name not in prev_map:
-            changes.append(f"+ {row.get('Giocatore','')} ({row.get('Squadra','')})")
+            changes.append(f"+ {row.get('Giocatore','')}: {row.get('PrezzoAttuale','')} ({row.get('Squadra','')})")
         else:
             prev_row = prev_map[name]
-            if str(prev_row.get("PrezzoAttuale", "")) != str(row.get("PrezzoAttuale", "")):
-                changes.append(
-                    f"* {row.get('Giocatore','')} prezzo {prev_row.get('PrezzoAttuale','')} -> {row.get('PrezzoAttuale','')}"
-                )
-            if str(prev_row.get("Squadra", "")) != str(row.get("Squadra", "")) and row.get("Squadra", ""):
-                changes.append(
-                    f"* {row.get('Giocatore','')} squadra {prev_row.get('Squadra','')} -> {row.get('Squadra','')}"
-                )
+            prev_price = str(prev_row.get("PrezzoAttuale", ""))
+            curr_price = str(row.get("PrezzoAttuale", ""))
+            prev_team = str(prev_row.get("Squadra", ""))
+            curr_team = str(row.get("Squadra", ""))
+            if prev_price != curr_price or (prev_team != curr_team and curr_team):
+                team_part = f"({curr_team})" if prev_team == curr_team else f"({prev_team}, {curr_team})"
+                changes.append(f"{row.get('Giocatore','')}: {prev_price} -> {curr_price} {team_part}".strip())
 
     for name, row in prev_map.items():
         if not name:
             continue
         if name not in curr_map:
-            changes.append(f"- {row.get('Giocatore','')} ({row.get('Squadra','')})")
+            changes.append(f"- {row.get('Giocatore','')}: {row.get('PrezzoAttuale','')} ({row.get('Squadra','')})")
     return changes
 
 
@@ -181,33 +180,49 @@ def _diff_rose(prev: pd.DataFrame, curr: pd.DataFrame) -> list[str]:
         base = re.sub(r"\s*\*\s*$", "", base)
         return base.strip().lower()
 
+    def _row_map(df: pd.DataFrame) -> dict:
+        out = {}
+        for _, row in df.iterrows():
+            team = str(row.get("Team", "")).strip()
+            name = str(row.get("Giocatore", "")).strip()
+            if not team or not name:
+                continue
+            key = _norm_player(name)
+            if not key:
+                continue
+            out.setdefault(team, {})[key] = row
+        return out
+
+    prev_map = _row_map(prev)
+    curr_map = _row_map(curr)
+    teams = sorted(set(prev_map.keys()) | set(curr_map.keys()))
     changes = []
-    prev_keys = {(str(r.get("Team", "")).strip().lower(), _norm_player(r.get("Giocatore", ""))): r for _, r in prev.iterrows()}
-    curr_keys = {(str(r.get("Team", "")).strip().lower(), _norm_player(r.get("Giocatore", ""))): r for _, r in curr.iterrows()}
 
-    for key, row in curr_keys.items():
-        team, name = key
-        if not team or not name:
-            continue
-        if key not in prev_keys:
-            changes.append(f"+ {row.get('Team','')}: {row.get('Giocatore','')}")
-        else:
-            prev_row = prev_keys[key]
-            if str(prev_row.get("PrezzoAcquisto", "")) != str(row.get("PrezzoAcquisto", "")):
-                changes.append(
-                    f"* {row.get('Team','')} {row.get('Giocatore','')} acquisto {prev_row.get('PrezzoAcquisto','')} -> {row.get('PrezzoAcquisto','')}"
-                )
-            if str(prev_row.get("PrezzoAttuale", "")) != str(row.get("PrezzoAttuale", "")):
-                changes.append(
-                    f"* {row.get('Team','')} {row.get('Giocatore','')} attuale {prev_row.get('PrezzoAttuale','')} -> {row.get('PrezzoAttuale','')}"
-                )
+    for team in teams:
+        prev_players = prev_map.get(team, {})
+        curr_players = curr_map.get(team, {})
+        removed = [k for k in prev_players.keys() if k not in curr_players]
+        added = [k for k in curr_players.keys() if k not in prev_players]
 
-    for key, row in prev_keys.items():
-        team, name = key
-        if not team or not name:
+        pairs = []
+        for role in ["P", "D", "C", "A"]:
+            removed_role = [k for k in removed if str(prev_players[k].get("Ruolo", "")).strip() == role]
+            added_role = [k for k in added if str(curr_players[k].get("Ruolo", "")).strip() == role]
+            for i in range(min(len(removed_role), len(added_role))):
+                pairs.append((removed_role[i], added_role[i]))
+
+        if not pairs:
             continue
-        if key not in curr_keys:
-            changes.append(f"- {row.get('Team','')}: {row.get('Giocatore','')}")
+
+        parts = []
+        for out_key, in_key in pairs:
+            out_row = prev_players[out_key]
+            in_row = curr_players[in_key]
+            parts.append(
+                f"{out_row.get('Giocatore','')}, {out_row.get('PrezzoAttuale','')}, {out_row.get('Ruolo','')}, {out_row.get('Squadra','')} -> "
+                f"{in_row.get('Giocatore','')}, {in_row.get('PrezzoAttuale','')}, {in_row.get('Ruolo','')}, {in_row.get('Squadra','')}"
+            )
+        changes.append(f"{team}: " + "; ".join(parts))
     return changes
 
 
@@ -282,6 +297,52 @@ def _build_market_diff(prev: pd.DataFrame, curr: pd.DataFrame, stamp: str) -> li
     return changes
 
 
+def _market_from_diff_rose(lines: list[str], stamp: str) -> list[dict]:
+    def _parse_side(text: str) -> dict:
+        parts = [p.strip() for p in text.split(",")]
+        if len(parts) < 4:
+            return {"name": "", "value": 0.0, "role": "", "team": ""}
+        name = parts[0]
+        try:
+            value = float(str(parts[1]).replace(",", "."))
+        except ValueError:
+            value = 0.0
+        role = parts[2]
+        team = ", ".join(parts[3:]).strip()
+        return {"name": name, "value": value, "role": role, "team": team}
+
+    items: list[dict] = []
+    for line in lines:
+        if ": " not in line:
+            continue
+        team, rest = line.split(": ", 1)
+        team = team.strip()
+        for part in [p.strip() for p in rest.split(";") if p.strip()]:
+            if " -> " not in part:
+                continue
+            out_txt, in_txt = part.split(" -> ", 1)
+            out_side = _parse_side(out_txt)
+            in_side = _parse_side(in_txt)
+            if not out_side["name"] or not in_side["name"]:
+                continue
+            items.append(
+                {
+                    "team": team,
+                    "date": stamp,
+                    "out": out_side["name"],
+                    "out_squadra": out_side["team"],
+                    "out_value": out_side["value"],
+                    "in": in_side["name"],
+                    "in_squadra": in_side["team"],
+                    "in_value": in_side["value"],
+                    "delta": out_side["value"] - in_side["value"],
+                    "out_ruolo": out_side["role"],
+                    "in_ruolo": in_side["role"],
+                }
+            )
+    return items
+
+
 def _load_market_history() -> list[dict]:
     if not HIST_MARKET.exists():
         return []
@@ -319,9 +380,14 @@ def _rebuild_market_from_history(stamp: str) -> None:
     if prev_path is None:
         print("Nessun storico rose trovato per ricostruire il mercato.")
         return
-    prev_rose = pd.read_csv(prev_path)
-    curr_rose = pd.read_csv(ROSE_PATH)
-    market_changes = _build_market_diff(prev_rose, curr_rose, stamp)
+    diff_path = HIST_DIFFS / f"diff_rose_{stamp}.txt"
+    if diff_path.exists():
+        diff_lines = diff_path.read_text(encoding="utf-8").splitlines()
+        market_changes = _market_from_diff_rose(diff_lines, stamp)
+    else:
+        prev_rose = pd.read_csv(prev_path)
+        curr_rose = pd.read_csv(ROSE_PATH)
+        market_changes = _build_market_diff(prev_rose, curr_rose, stamp)
     HIST_MARKET.mkdir(parents=True, exist_ok=True)
     market_path = HIST_MARKET / f"market_{stamp}.json"
     market_path.write_text(json.dumps(market_changes, indent=2), encoding="utf-8")
@@ -681,7 +747,7 @@ def main() -> None:
             if not prev_rose.empty:
                 diff_lines = _diff_rose(prev_rose, new_rose)
                 _write_diff(diff_lines, stamp, "rose")
-                market_changes = _build_market_diff(prev_rose, new_rose, stamp)
+                market_changes = _market_from_diff_rose(diff_lines, stamp)
                 HIST_MARKET.mkdir(parents=True, exist_ok=True)
                 market_path = HIST_MARKET / f"market_{stamp}.json"
                 market_path.write_text(json.dumps(market_changes, indent=2), encoding="utf-8")
