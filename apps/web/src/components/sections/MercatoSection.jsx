@@ -46,14 +46,22 @@ export default function MercatoSection({
         lastIndex: index,
       };
       entry.items.push(item);
-      entry.count += 1;
       if (item.date && item.date > entry.lastDate) {
         entry.lastDate = item.date;
       }
       entry.lastIndex = Math.max(entry.lastIndex ?? index, index);
       map.set(rawTeam, entry);
     });
-    return Array.from(map.values());
+    return Array.from(map.values()).map((entry) => {
+      const latestItems = entry.lastDate
+        ? entry.items.filter((item) => item.date === entry.lastDate)
+        : entry.items;
+      return {
+        ...entry,
+        items: latestItems,
+        count: latestItems.length,
+      };
+    });
   }, [marketItems]);
 
   const orderedTeams = useMemo(() => {
