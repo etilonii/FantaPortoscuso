@@ -24,3 +24,6 @@ data/archive/
 data/tmp/
 data/reports/*missing_report.txt
 data/reports/update_all_log.txt
+**/__pycache__/
+*.pyc
+apps/web/dist/
