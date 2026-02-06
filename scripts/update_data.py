@@ -347,6 +347,7 @@ def _load_market_history() -> list[dict]:
     if not HIST_MARKET.exists():
         return []
     items = []
+    seen = set()
     for path in sorted(HIST_MARKET.glob("market_*.json"), reverse=True):
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
@@ -359,6 +360,12 @@ def _load_market_history() -> list[dict]:
                         in_key = re.sub(r"\s*\*\s*$", "", in_name).strip().lower()
                         if out_key and out_key == in_key:
                             continue
+                    team_key = str(item.get("team", "")).strip().lower()
+                    date_key = str(item.get("date", "")).strip()
+                    dedupe_key = (team_key, date_key, out_name.lower(), in_name.lower())
+                    if dedupe_key in seen:
+                        continue
+                    seen.add(dedupe_key)
                     items.append(item)
         except json.JSONDecodeError:
             continue
