@@ -1,0 +1,2120 @@
+* ProPro Proibito Sommer attuale 14 -> 16
++ ProPro Proibito: Terracciano
+* ProPro Proibito Martinez Jo. attuale 1 -> 2
+* ProPro Proibito Luperto attuale 9 -> 7
+* ProPro Proibito Pezzella Giu. attuale 4 -> 5
+* ProPro Proibito Rrahmani attuale 13 -> 11
+* ProPro Proibito Bradaric attuale 6 -> 4
+* ProPro Proibito Tiago Gabriel attuale 9 -> 1
+* ProPro Proibito Joao Mario attuale 2 -> 8
+* ProPro Proibito Cristante attuale 12 -> 9
+* ProPro Proibito Zaniolo attuale 20 -> 15
+* ProPro Proibito McTominay attuale 25 -> 26
+* ProPro Proibito Zalewski attuale 15 -> 7
+* ProPro Proibito Thuram K. attuale 13 -> 16
+* ProPro Proibito Paz N. attuale 30 -> 20
+* ProPro Proibito Hojholt attuale 2 -> 1
++ ProPro Proibito: Vergara
+* ProPro Proibito Vardy attuale 20 -> 19
++ ProPro Proibito: Martinez L.
++ ProPro Proibito: David
+* ProPro Proibito Meister attuale 8 -> 3
++ ProPro Proibito: Kilicsoy
++ AC DENTI: Scuffet
+* AC DENTI Sommer attuale 14 -> 10
+* AC DENTI Martinez Jo. attuale 1 -> 3
+* AC DENTI Gosens attuale 10 -> 18
+* AC DENTI Cambiaso attuale 10 -> 15
+* AC DENTI Terracciano F. attuale 11 -> 2
+* AC DENTI Norton-Cuffy attuale 7 -> 3
+* AC DENTI Tiago Gabriel attuale 9 -> 1
+* AC DENTI Veiga D. attuale 5 -> 2
+* AC DENTI Politano attuale 11 -> 15
++ AC DENTI: Orsolini
+* AC DENTI Pulisic attuale 31 -> 28
++ AC DENTI: McTominay
+* AC DENTI McKennie attuale 14 -> 6
+* AC DENTI Aebischer attuale 5 -> 4
+* AC DENTI Karlstrom attuale 10 -> 7
+* AC DENTI Paz N. attuale 30 -> 20
++ AC DENTI: Martinez L.
+* AC DENTI Hojlund attuale 25 -> 24
+* AC DENTI Yildiz attuale 30 -> 25
+* AC DENTI Meister attuale 8 -> 2
++ AC DENTI: Albarracin
+* SAGATU Sommer attuale 14 -> 16
+* SAGATU Martinez Jo. attuale 1 -> 2
+* SAGATU Okoye attuale 10 -> 5
+* SAGATU Bianchetti attuale 6 -> 3
+* SAGATU Gosens attuale 10 -> 18
+* SAGATU Cambiaso attuale 10 -> 11
+* SAGATU Terracciano F. attuale 11 -> 2
+* SAGATU Canestrelli attuale 5 -> 3
+* SAGATU Pulisic attuale 31 -> 28
++ SAGATU: McKennie
+* SAGATU Lovric attuale 3 -> 9
+* SAGATU Zerbin attuale 6 -> 3
+* SAGATU Prati attuale 6 -> 3
+* SAGATU Atta attuale 16 -> 6
++ SAGATU: Baturina
+* SAGATU Hojholt attuale 2 -> 1
+* SAGATU Pinamonti attuale 14 -> 15
++ SAGATU: Kean
++ SAGATU: Martinez L.
++ SAGATU: David
+* SAGATU Giovane attuale 17 -> 3
+* lagg Maignan attuale 20 -> 16
+* lagg Martin attuale 14 -> 10
+* lagg Miranda J. attuale 11 -> 9
++ lagg: Nkounkou
++ lagg: Olivera
+* lagg Joao Mario attuale 2 -> 8
+* lagg Wesley attuale 16 -> 15
+* lagg Heggem attuale 9 -> 5
+* lagg Zaccagni attuale 14 -> 24
++ lagg: Nicolussi Caviglia
+* lagg Malinovskyi attuale 12 -> 8
+* lagg Maldini attuale 3 -> 9
++ lagg: McKennie
+* lagg Da Cunha attuale 11 -> 12
+* lagg Paz N. attuale 30 -> 20
++ lagg: Sala A.
+* lagg Zapata D. attuale 7 -> 10
+* lagg Kean attuale 18 -> 22
++ lagg: Scamacca
++ lagg: David
+* BARAKALLAHOUFIK Milinkovic-Savic V. attuale 19 -> 4
+* BARAKALLAHOUFIK Provedel attuale 17 -> 12
++ BARAKALLAHOUFIK: Motta
++ BARAKALLAHOUFIK: Gosens
++ BARAKALLAHOUFIK: Lykogiannis
+* BARAKALLAHOUFIK Bellanova attuale 6 -> 13
+* BARAKALLAHOUFIK Cambiaso attuale 10 -> 15
+* BARAKALLAHOUFIK Norton-Cuffy attuale 7 -> 3
+* BARAKALLAHOUFIK Palestra attuale 15 -> 4
+* BARAKALLAHOUFIK Orsolini attuale 24 -> 31
+* BARAKALLAHOUFIK Pulisic attuale 31 -> 28
++ BARAKALLAHOUFIK: Nicolussi Caviglia
++ BARAKALLAHOUFIK: Strefezza
+* BARAKALLAHOUFIK Ilkhan attuale 2 -> 1
++ BARAKALLAHOUFIK: Rowe
+* BARAKALLAHOUFIK Paz N. attuale 30 -> 20
+* BARAKALLAHOUFIK Cremaschi attuale 1 -> 2
+* BARAKALLAHOUFIK Kean attuale 18 -> 33
+* BARAKALLAHOUFIK Scamacca attuale 22 -> 21
++ BARAKALLAHOUFIK: Malen
++ BARAKALLAHOUFIK: Diao
++ BARAKALLAHOUFIK: Douvikas
++ SPERA EBBASTA: Silvestri
+* SPERA EBBASTA Sommer attuale 14 -> 10
++ SPERA EBBASTA: Martinez Jo.
+* SPERA EBBASTA Bellanova attuale 6 -> 13
++ SPERA EBBASTA: Obert
+* SPERA EBBASTA Dodò attuale 6 -> 11
++ SPERA EBBASTA: Marianucci
+* SPERA EBBASTA Tiago Gabriel attuale 9 -> 1
+* SPERA EBBASTA Wesley attuale 16 -> 14
++ SPERA EBBASTA: Rabiot
+* SPERA EBBASTA Pulisic attuale 31 -> 28
++ SPERA EBBASTA: Nicolussi Caviglia
+* SPERA EBBASTA Akpa Akpro attuale 2 -> 1
+* SPERA EBBASTA Zerbin attuale 6 -> 3
+* SPERA EBBASTA Ilkhan attuale 2 -> 1
+* SPERA EBBASTA Konè I. attuale 16 -> 6
+* SPERA EBBASTA Paz N. attuale 30 -> 21
++ SPERA EBBASTA: Kean
++ SPERA EBBASTA: Martinez L.
+* SPERA EBBASTA Hojlund attuale 25 -> 21
++ SPERA EBBASTA: Gueye
++ SPERA EBBASTA: Trepy
+* DonBosko46 Perin attuale 3 -> 1
+* DonBosko46 Sommer attuale 14 -> 16
+* DonBosko46 Martinez Jo. attuale 1 -> 2
+* DonBosko46 Mancini attuale 10 -> 11
+* DonBosko46 Bellanova attuale 6 -> 13
++ DonBosko46: Vojvoda
++ DonBosko46: Cambiaso
+* DonBosko46 Tiago Gabriel attuale 9 -> 1
+* DonBosko46 Oyegoke attuale 1 -> 2
+* DonBosko46 Orsolini attuale 24 -> 31
+* DonBosko46 Pulisic attuale 31 -> 28
++ DonBosko46: McTominay
+* DonBosko46 Saelemaekers attuale 19 -> 12
++ DonBosko46: Maldini
+* DonBosko46 Berisha M. attuale 13 -> 3
+* DonBosko46 Iannoni attuale 5 -> 1
++ DonBosko46: Vergara
++ DonBosko46: Morata
+* DonBosko46 Vlahovic attuale 15 -> 21
++ DonBosko46: De Ketelaere
+* DonBosko46 Hojlund attuale 25 -> 21
+* LosPollosHermanos Maignan attuale 20 -> 16
++ LosPollosHermanos: Dimarco
+* LosPollosHermanos Bellanova attuale 6 -> 13
+* LosPollosHermanos Dumfries acquisto 21 -> 10
+* LosPollosHermanos Delprato attuale 9 -> 8
+* LosPollosHermanos Smolcic I. attuale 3 -> 2
+* LosPollosHermanos Joao Mario attuale 2 -> 8
++ LosPollosHermanos: Zielinski
+* LosPollosHermanos Bernardeschi attuale 5 -> 9
+* LosPollosHermanos Orsolini attuale 24 -> 31
++ LosPollosHermanos: McTominay
+* LosPollosHermanos McKennie attuale 14 -> 6
+* LosPollosHermanos Ekkelenkamp attuale 12 -> 10
+* LosPollosHermanos Atta attuale 16 -> 8
+* LosPollosHermanos Pinamonti attuale 14 -> 17
++ LosPollosHermanos: Boga
++ LosPollosHermanos: Raspadori
++ LosPollosHermanos: Malen
+* LosPollosHermanos Meister attuale 8 -> 3
+* SerSi-FC Sommer attuale 14 -> 16
+* SerSi-FC Martinez Jo. attuale 1 -> 2
+* SerSi-FC Martin attuale 14 -> 10
+* SerSi-FC Tomori attuale 7 -> 8
+* SerSi-FC Cambiaso attuale 10 -> 15
+* SerSi-FC Ostigard attuale 15 -> 9
+* SerSi-FC Palestra attuale 15 -> 4
+* SerSi-FC Valle attuale 8 -> 6
+* SerSi-FC Rabiot attuale 23 -> 26
+* SerSi-FC Pulisic attuale 31 -> 28
+* SerSi-FC Malinovskyi attuale 12 -> 7
+* SerSi-FC McTominay attuale 25 -> 24
+* SerSi-FC Adopo attuale 6 -> 5
+* SerSi-FC Paz N. attuale 30 -> 21
+* SerSi-FC Atta attuale 16 -> 6
+* SerSi-FC Scamacca attuale 22 -> 16
+* SerSi-FC Hojlund attuale 25 -> 24
+* SerSi-FC Douvikas attuale 21 -> 24
+* SerSi-FC Gueye attuale 2 -> 1
+* Boiali Maignan attuale 20 -> 16
+* Boiali Vasquez attuale 10 -> 9
+* Boiali Frese attuale 6 -> 3
+* Boiali Delprato attuale 9 -> 8
+* Boiali Ramon attuale 12 -> 4
+* Boiali Tiago Gabriel attuale 9 -> 1
+* Boiali Canestrelli attuale 5 -> 3
+* Boiali Zaccagni attuale 14 -> 24
++ Boiali: Orsolini
+* Boiali Zaniolo attuale 20 -> 15
+* Boiali Tramoni M. attuale 9 -> 12
+* Boiali Zerbin attuale 6 -> 3
+* Boiali Paz N. attuale 30 -> 20
++ Boiali: Ordonez C.
+* Boiali Kean attuale 18 -> 33
++ Boiali: Okereke
++ Boiali: Malen
++ Boiali: Douvikas
+* CuginiDiCampagna Carnesecchi attuale 17 -> 14
+* CuginiDiCampagna Pongracic attuale 5 -> 4
+* CuginiDiCampagna Frese attuale 6 -> 3
+* CuginiDiCampagna Ramon attuale 12 -> 4
+* CuginiDiCampagna Tiago Gabriel attuale 9 -> 1
+* CuginiDiCampagna Muharemovic attuale 7 -> 4
++ CuginiDiCampagna: Joao Mario
++ CuginiDiCampagna: Wesley
+* CuginiDiCampagna Orsolini attuale 24 -> 30
+* CuginiDiCampagna Pulisic attuale 31 -> 28
+* CuginiDiCampagna Zaniolo attuale 20 -> 11
++ CuginiDiCampagna: Nicolussi Caviglia
++ CuginiDiCampagna: Strefezza
+* CuginiDiCampagna Adopo attuale 6 -> 5
+* CuginiDiCampagna Collocolo attuale 2 -> 8
+* CuginiDiCampagna Pinamonti attuale 14 -> 17
+* CuginiDiCampagna Kean attuale 18 -> 33
++ CuginiDiCampagna: Martinez L.
+* CuginiDiCampagna David attuale 13 -> 16
++ CuginiDiCampagna: Trepy
++ Mapoitta: Sommer
+* Mapoitta Semper attuale 9 -> 3
++ Mapoitta: Martinez Jo.
+* Mapoitta Zappacosta attuale 8 -> 13
+* Mapoitta Gosens attuale 10 -> 18
+* Mapoitta Bellanova attuale 6 -> 10
+* Mapoitta Vojvoda attuale 12 -> 6
+* Mapoitta Cambiaso attuale 10 -> 15
+* Mapoitta Tiago Gabriel attuale 9 -> 1
++ Mapoitta: Zaniolo
+* Mapoitta Malinovskyi attuale 12 -> 8
+* Mapoitta McTominay attuale 25 -> 26
++ Mapoitta: McKennie
+* Mapoitta Akpa Akpro attuale 2 -> 1
+* Mapoitta Moro N. attuale 8 -> 3
+* Mapoitta Paz N. attuale 30 -> 20
++ Mapoitta: Scamacca
++ Mapoitta: Boga
+* Mapoitta Leao attuale 30 -> 26
+* Mapoitta Thuram attuale 29 -> 31
+* Mapoitta Ekhator attuale 10 -> 1
+* Lunarossa Sommer attuale 14 -> 16
+* Lunarossa Martinez Jo. attuale 1 -> 2
+* Lunarossa Mina attuale 8 -> 7
+* Lunarossa Tavares N. attuale 6 -> 12
++ Lunarossa: Dossena
++ Lunarossa: Bartesaghi
+* Lunarossa Tiago Gabriel attuale 9 -> 1
+* Lunarossa Wesley attuale 16 -> 14
+* Lunarossa Pulisic attuale 31 -> 28
+* Lunarossa Elmas attuale 6 -> 11
++ Lunarossa: Strefezza
+* Lunarossa McTominay attuale 25 -> 26
+* Lunarossa Zerbin attuale 6 -> 3
+* Lunarossa Ilkhan attuale 2 -> 1
+* Lunarossa Paz N. attuale 30 -> 28
++ Lunarossa: Baturina
++ Lunarossa: Milik
+* Lunarossa Martinez L. attuale 34 -> 27
++ Lunarossa: Hojlund
++ Lunarossa: Yildiz
+* Lunarossa Aboukhlal attuale 3 -> 4
++ EquipoA: Meret
+* EquipoA Milinkovic-Savic V. attuale 19 -> 4
++ EquipoA: Martinez Jo.
+* EquipoA Zappacosta attuale 8 -> 9
+* EquipoA Rrahmani attuale 13 -> 7
++ EquipoA: Bellanova
+* EquipoA Dumfries attuale 10 -> 20
+* EquipoA Zemura attuale 2 -> 3
+* EquipoA Palestra attuale 15 -> 4
+* EquipoA Ramon attuale 12 -> 5
++ EquipoA: Zaccagni
+* EquipoA Orsolini attuale 24 -> 30
+* EquipoA Pulisic attuale 31 -> 28
++ EquipoA: Maldini
+* EquipoA Zerbin attuale 6 -> 3
+* EquipoA Ilkhan attuale 2 -> 1
+* EquipoA Ndour attuale 6 -> 2
+* EquipoA Paz N. attuale 30 -> 21
+* EquipoA Berardi attuale 21 -> 24
++ EquipoA: Malen
++ EquipoA: Yildiz
+* EquipoA Rodriguez Je. attuale 12 -> 6
++ I COMPARI: Scuffet
+* I COMPARI Caprile attuale 12 -> 7
++ I COMPARI: Ciocci
+* I COMPARI Martin attuale 14 -> 10
+* I COMPARI Bellanova attuale 6 -> 13
+* I COMPARI Terracciano F. attuale 11 -> 2
++ I COMPARI: Dodò
++ I COMPARI: Solet
+* I COMPARI Tiago Gabriel attuale 9 -> 2
+* I COMPARI Pulisic attuale 31 -> 28
+* I COMPARI McTominay attuale 25 -> 26
+* I COMPARI Akpa Akpro attuale 2 -> 1
++ I COMPARI: Zaragoza
+* I COMPARI Adzic attuale 3 -> 1
+* I COMPARI Paz N. attuale 30 -> 20
++ I COMPARI: Baturina
++ I COMPARI: Vergara
+* I COMPARI Pavoletti attuale 1 -> 2
+* I COMPARI Martinez L. attuale 34 -> 27
+* I COMPARI Leao attuale 30 -> 26
++ I COMPARI: Malen
+* I COMPARI Soulè attuale 26 -> 20
+* SMOG Perin attuale 3 -> 1
+* SMOG Meret attuale 8 -> 16
+* SMOG Milinkovic-Savic V. attuale 19 -> 4
+* SMOG Martin attuale 14 -> 10
+* SMOG Terracciano F. attuale 11 -> 2
+* SMOG Ehizibue attuale 3 -> 4
+* SMOG Delprato attuale 9 -> 8
+* SMOG Kempf attuale 14 -> 5
+* SMOG Canestrelli attuale 5 -> 3
++ SMOG: Joao Mario
+* SMOG Odgaard attuale 18 -> 16
+* SMOG Zaniolo attuale 20 -> 15
++ SMOG: McKennie
++ SMOG: Stengs
+* SMOG Gudmundsson A. attuale 17 -> 24
+* SMOG Paz N. attuale 30 -> 20
+* SMOG Tourè I. attuale 10 -> 6
+* SMOG Kean attuale 18 -> 31
++ SMOG: Martinez L.
+* SMOG Esposito Se. attuale 16 -> 7
++ SMOG: David
+* SMOG Kilicsoy attuale 12 -> 3
+* CLAN Perin attuale 3 -> 1
++ CLAN: Rugani
+* CLAN Gutierrez attuale 3 -> 7
+* CLAN Tavares N. attuale 6 -> 12
+* CLAN Canestrelli attuale 5 -> 3
+* CLAN Wesley attuale 16 -> 14
+* CLAN Bernardeschi attuale 5 -> 9
+* CLAN Modric attuale 19 -> 12
++ CLAN: Nicolussi Caviglia
+* CLAN Malinovskyi attuale 12 -> 7
+* CLAN McTominay attuale 25 -> 26
+* CLAN Zalewski attuale 15 -> 6
++ CLAN: Baldanzi
++ CLAN: Baturina
+* CLAN Zapata D. attuale 7 -> 10
+* CLAN Thuram attuale 29 -> 31
++ CLAN: Malen
++ CLAN: Hojlund
++ CLAN: Solomon
+* Evergreen De Gea attuale 11 -> 14
++ Evergreen: Dimarco
+* Evergreen Pezzella Giu. attuale 4 -> 6
+* Evergreen Buongiorno attuale 10 -> 13
++ Evergreen: Hermoso
+* Evergreen Kossounou attuale 8 -> 9
+* Evergreen Ostigard attuale 15 -> 9
++ Evergreen: Palestra
++ Evergreen: Zielinski
+* Evergreen Politano attuale 11 -> 16
+* Evergreen Zalewski attuale 15 -> 6
+* Evergreen Harroui attuale 2 -> 7
+* Evergreen Ilkhan attuale 2 -> 1
+* Evergreen Sucic P. attuale 11 -> 9
+* Evergreen Iannoni attuale 5 -> 1
++ Evergreen: Zapata D.
++ Evergreen: Lukaku
++ Evergreen: David
+* Evergreen Ekhator attuale 10 -> 1
+* Sciabolata Classica Perin attuale 3 -> 1
+* Sciabolata Classica Svilar attuale 19 -> 15
+* Sciabolata Classica Martin attuale 14 -> 10
+* Sciabolata Classica Bellanova attuale 6 -> 13
+* Sciabolata Classica Tavares N. attuale 6 -> 12
+* Sciabolata Classica Veiga D. attuale 5 -> 1
+* Sciabolata Classica Angori attuale 9 -> 5
+* Sciabolata Classica Zè Pedro attuale 2 -> 3
+* Sciabolata Classica Zielinski attuale 19 -> 22
+* Sciabolata Classica McTominay attuale 25 -> 26
+* Sciabolata Classica Vlasic attuale 18 -> 15
+* Sciabolata Classica Paz N. attuale 30 -> 21
+* Sciabolata Classica Hojholt attuale 2 -> 1
+* Sciabolata Classica Vergara attuale 2 -> 6
+* Sciabolata Classica Zapata D. attuale 7 -> 10
+* Sciabolata Classica Kean attuale 18 -> 33
+* Sciabolata Classica David attuale 13 -> 15
+* Sciabolata Classica Hojlund attuale 25 -> 24
+* Malmö FF Perin attuale 3 -> 1
+* Malmö FF Buongiorno attuale 10 -> 13
+* Malmö FF Bellanova attuale 6 -> 13
+* Malmö FF De Winter attuale 4 -> 8
+* Malmö FF Terracciano F. attuale 11 -> 5
+* Malmö FF Gila attuale 8 -> 9
+* Malmö FF Comuzzo attuale 7 -> 8
+* Malmö FF Wesley attuale 16 -> 14
+* Malmö FF Modric attuale 19 -> 12
+* Malmö FF Malinovskyi attuale 12 -> 15
+* Malmö FF McTominay attuale 25 -> 26
++ Malmö FF: Adopo
+* Malmö FF Coulibaly L. attuale 13 -> 7
+* Malmö FF El Aynaoui attuale 5 -> 9
++ Malmö FF: Zaragoza
+* Malmö FF Ekkelenkamp attuale 12 -> 10
+* Malmö FF Martinez L. attuale 34 -> 27
++ Malmö FF: Piccoli
+* Malmö FF Esposito Se. attuale 16 -> 7
+* Malmö FF Bonny attuale 14 -> 16
+* Giubbentus Milinkovic-Savic V. attuale 19 -> 4
+* Giubbentus Maignan attuale 20 -> 16
+* Giubbentus Obert attuale 5 -> 4
+* Giubbentus Norton-Cuffy attuale 7 -> 3
+* Giubbentus Tiago Gabriel attuale 9 -> 1
+* Giubbentus Veiga D. attuale 5 -> 2
+* Giubbentus Canestrelli attuale 5 -> 3
++ Giubbentus: Bozhinov
+* Giubbentus Zaccagni attuale 14 -> 26
+* Giubbentus Pulisic attuale 31 -> 28
++ Giubbentus: Zaniolo
++ Giubbentus: McKennie
+* Giubbentus Akpa Akpro attuale 2 -> 3
+* Giubbentus Aebischer attuale 5 -> 4
+* Giubbentus Prati attuale 6 -> 3
+* Giubbentus Scamacca attuale 22 -> 19
++ Giubbentus: Vlahovic
++ Giubbentus: David
+* Tana delle Tigri Perin attuale 3 -> 1
+* Tana delle Tigri Carnesecchi attuale 17 -> 14
++ Tana delle Tigri: Dimarco
+* Tana delle Tigri Martin attuale 14 -> 10
+* Tana delle Tigri Bellanova attuale 6 -> 13
+* Tana delle Tigri Barbieri attuale 9 -> 3
+* Tana delle Tigri Tiago Gabriel attuale 9 -> 1
+* Tana delle Tigri Angori attuale 9 -> 5
+* Tana delle Tigri Pulisic attuale 31 -> 28
+* Tana delle Tigri McTominay attuale 25 -> 26
++ Tana delle Tigri: Maldini
+* Tana delle Tigri Zerbin attuale 6 -> 3
+* Tana delle Tigri Ilkhan attuale 2 -> 1
++ Tana delle Tigri: Diouf
++ Tana delle Tigri: Paz N.
+* Tana delle Tigri Atta attuale 16 -> 6
++ Tana delle Tigri: Pavoletti
+* Tana delle Tigri Berardi attuale 21 -> 24
+* Tana delle Tigri Leao attuale 30 -> 19
++ Tana delle Tigri: David
+* puerto rosso blu Ravaglia F. attuale 12 -> 3
+* puerto rosso blu Walukiewicz attuale 6 -> 5
+* puerto rosso blu Vojvoda attuale 12 -> 6
++ puerto rosso blu: Gutierrez
+* puerto rosso blu Zemura attuale 2 -> 3
+* puerto rosso blu Palestra attuale 15 -> 4
+* puerto rosso blu Wesley attuale 16 -> 14
++ puerto rosso blu: Troilo
++ puerto rosso blu: Nicolussi Caviglia
++ puerto rosso blu: Malinovskyi
+* puerto rosso blu McTominay attuale 25 -> 26
+* puerto rosso blu Saelemaekers attuale 19 -> 12
+* puerto rosso blu Gudmundsson A. attuale 17 -> 24
+* puerto rosso blu Folorunsho attuale 8 -> 9
+* puerto rosso blu Hojholt attuale 2 -> 1
++ puerto rosso blu: Vergara
+* puerto rosso blu Scamacca attuale 22 -> 14
+* puerto rosso blu Esposito Se. attuale 16 -> 7
+* puerto rosso blu Thuram attuale 29 -> 31
++ puerto rosso blu: Douvikas
+* puerto rosso blu Gueye attuale 2 -> 1
+* OnlyFans Carnesecchi attuale 17 -> 14
+* OnlyFans Gosens attuale 10 -> 18
+* OnlyFans Martin attuale 14 -> 10
+* OnlyFans Mina attuale 8 -> 7
+* OnlyFans Terracciano F. attuale 11 -> 2
+* OnlyFans Dodò attuale 6 -> 7
+* OnlyFans Ebosse attuale 2 -> 4
++ OnlyFans: Palestra
+* OnlyFans Pulisic attuale 31 -> 28
+* OnlyFans Zaniolo attuale 20 -> 15
+* OnlyFans McTominay attuale 25 -> 26
+* OnlyFans Adopo attuale 6 -> 5
+* OnlyFans Thuram K. attuale 13 -> 16
+* OnlyFans Ilkhan attuale 2 -> 1
++ OnlyFans: Diouf
+* OnlyFans Tourè I. attuale 10 -> 6
++ OnlyFans: Lukaku
++ OnlyFans: Kouamè
+* OnlyFans Leao attuale 30 -> 26
+* Peaky Tunas Perin attuale 3 -> 1
++ Peaky Tunas: Sava
+* Peaky Tunas Bastoni attuale 17 -> 16
+* Peaky Tunas Di Lorenzo attuale 12 -> 14
+* Peaky Tunas Obert attuale 5 -> 4
+* Peaky Tunas Terracciano F. attuale 11 -> 5
+* Peaky Tunas Tiago Gabriel attuale 9 -> 2
+* Peaky Tunas Angori attuale 9 -> 5
+* Peaky Tunas Barella attuale 17 -> 14
+* Peaky Tunas Pulisic attuale 31 -> 28
++ Peaky Tunas: Tameze
+* Peaky Tunas Lovric attuale 3 -> 9
+* Peaky Tunas Konè I. attuale 16 -> 6
++ Peaky Tunas: Paz N.
+* Peaky Tunas Piotrowski attuale 8 -> 6
++ Peaky Tunas: Pavoletti
+* Peaky Tunas Leao attuale 30 -> 19
++ Peaky Tunas: Yildiz
+* Peaky Tunas Meister attuale 8 -> 2
+* i fratelli merda Carnesecchi attuale 17 -> 14
+* i fratelli merda Zappa attuale 7 -> 6
+* i fratelli merda Dumfries attuale 10 -> 20
+* i fratelli merda De Winter attuale 4 -> 8
+* i fratelli merda Tiago Gabriel attuale 9 -> 1
+* i fratelli merda Idrissi R. attuale 8 -> 10
+* i fratelli merda Belghali attuale 11 -> 10
+* i fratelli merda Barella attuale 17 -> 14
+* i fratelli merda Loftus-Cheek attuale 13 -> 9
+* i fratelli merda Da Cunha attuale 11 -> 12
+* i fratelli merda Thuram K. attuale 13 -> 16
+* i fratelli merda Zerbin attuale 6 -> 5
+* i fratelli merda Bernabè attuale 16 -> 11
+* i fratelli merda Paz N. attuale 30 -> 21
+* i fratelli merda Esposito Se. attuale 16 -> 7
+* i fratelli merda Colombo attuale 14 -> 10
+* i fratelli merda Solomon attuale 7 -> 8
+* i fratelli merda Yildiz attuale 30 -> 25
+* Pro secco Maignan attuale 20 -> 16
+* Pro secco Zappa attuale 7 -> 6
+* Pro secco Vojvoda attuale 12 -> 6
+* Pro secco Terracciano F. attuale 11 -> 2
++ Pro secco: Doig
++ Pro secco: Hien
+* Pro secco Ehizibue attuale 3 -> 5
+* Pro secco Tiago Gabriel attuale 9 -> 1
+* Pro secco Orsolini attuale 24 -> 30
+* Pro secco Pulisic attuale 31 -> 28
++ Pro secco: Nicolussi Caviglia
+* Pro secco McTominay attuale 25 -> 24
+* Pro secco Vlasic attuale 18 -> 9
+* Pro secco Zerbin attuale 6 -> 3
+* Pro secco Paz N. attuale 30 -> 21
++ Pro secco: Sala A.
++ Pro secco: Hojlund
++ Pro secco: Douvikas
++ Pro secco: Aboukhlal
+* TomMat-iga Perin attuale 3 -> 1
+* TomMat-iga Maignan attuale 20 -> 16
+* TomMat-iga Gosens attuale 10 -> 18
+* TomMat-iga Martin attuale 14 -> 10
++ TomMat-iga: Bellanova
+* TomMat-iga Ramon attuale 12 -> 5
+* TomMat-iga Tiago Gabriel attuale 9 -> 1
+* TomMat-iga Veiga D. attuale 5 -> 1
+* TomMat-iga Joao Mario attuale 2 -> 8
+* TomMat-iga Orsolini attuale 24 -> 31
+* TomMat-iga Pulisic attuale 31 -> 28
+* TomMat-iga McTominay attuale 25 -> 24
++ TomMat-iga: Maldini
+* TomMat-iga Folorunsho attuale 8 -> 9
++ TomMat-iga: Paz N.
+* TomMat-iga Scamacca attuale 22 -> 16
++ TomMat-iga: Martinez L.
+* TomMat-iga Thuram attuale 29 -> 31
++ TomMat-iga: Malen
++ TomMat-iga: Albarracin
+* pacho team Milinkovic-Savic V. attuale 19 -> 4
+* pacho team Caprile attuale 12 -> 7
+* pacho team Martin attuale 14 -> 10
+* pacho team Mina attuale 8 -> 7
+* pacho team Estupinan attuale 3 -> 11
+* pacho team Baschirotto attuale 13 -> 8
+* pacho team Marcandalli attuale 6 -> 2
+* pacho team Ramon attuale 12 -> 4
++ pacho team: Strefezza
++ pacho team: McKennie
+* pacho team Zerbin attuale 6 -> 3
+* pacho team Paz N. attuale 30 -> 21
+* pacho team Atta attuale 16 -> 8
++ pacho team: Venturino
++ pacho team: Baturina
++ pacho team: Martinez L.
+* pacho team Hojlund attuale 25 -> 21
++ pacho team: Yildiz
+* pacho team Pellegrino M. attuale 21 -> 13
++ pacho team: Arena A.
+* Longobarda Perin attuale 3 -> 1
+* Longobarda Maignan attuale 20 -> 16
+* Longobarda Pezzella Giu. attuale 4 -> 5
+* Longobarda Akanji attuale 11 -> 10
+* Longobarda Cambiaso attuale 10 -> 15
+* Longobarda Dodò attuale 6 -> 11
++ Longobarda: Zemura
++ Longobarda: Nelsson
+* Longobarda McTominay attuale 25 -> 26
+* Longobarda Konè M. attuale 17 -> 14
++ Longobarda: Baldanzi
+* Longobarda Bondo attuale 7 -> 3
+* Longobarda Paz N. attuale 30 -> 20
+* Longobarda Marin M. attuale 5 -> 4
++ Longobarda: Miller L.
++ Longobarda: Vergara
+* Longobarda Dybala attuale 13 -> 26
+* Longobarda Berardi attuale 21 -> 24
+* Longobarda Kean attuale 18 -> 22
+* Longobarda Soulè attuale 26 -> 20
++ Longobarda: Solomon
+* Real Mellandro Maignan attuale 20 -> 16
++ Real Mellandro: Martinez Jo.
++ Real Mellandro: Rugani
+* Real Mellandro Barbieri attuale 9 -> 3
+* Real Mellandro Marcandalli attuale 6 -> 2
+* Real Mellandro Norton-Cuffy attuale 7 -> 3
+* Real Mellandro Tiago Gabriel attuale 9 -> 1
+* Real Mellandro Canestrelli attuale 5 -> 3
+* Real Mellandro Zaccagni attuale 14 -> 26
+* Real Mellandro Pulisic attuale 31 -> 28
++ Real Mellandro: Zaniolo
++ Real Mellandro: Maldini
+* Real Mellandro Akpa Akpro attuale 2 -> 3
+* Real Mellandro Aebischer attuale 5 -> 4
++ Real Mellandro: Ilkhan
+* Real Mellandro Paz N. attuale 30 -> 21
++ Real Mellandro: Malen
++ Real Mellandro: Yildiz
+* Real Mellandro Meister attuale 8 -> 2
+* BANDITI De Gea attuale 11 -> 14
++ BANDITI: Christensen O.
+* BANDITI Martin attuale 14 -> 10
+* BANDITI Frese attuale 6 -> 4
+* BANDITI Norton-Cuffy attuale 7 -> 6
+* BANDITI Canestrelli attuale 5 -> 3
+* BANDITI Muharemovic attuale 7 -> 5
++ BANDITI: Joao Mario
+* BANDITI Calhanoglu attuale 28 -> 30
++ BANDITI: Rabiot
+* BANDITI Pulisic attuale 31 -> 28
+* BANDITI Bondo attuale 7 -> 3
+* BANDITI Prati attuale 6 -> 3
+* BANDITI Paz N. attuale 30 -> 21
++ BANDITI: Hojholt
++ BANDITI: Martinez L.
+* BANDITI Soulè attuale 26 -> 24
++ BANDITI: Douvikas
+* Plu-Team Perin attuale 3 -> 1
++ Plu-Team: Scuffet
+* Plu-Team Di Gregorio attuale 16 -> 14
+* Plu-Team Gosens attuale 10 -> 18
+* Plu-Team Martin attuale 14 -> 10
+* Plu-Team Bellanova attuale 6 -> 13
++ Plu-Team: Bartesaghi
+* Plu-Team Frese attuale 6 -> 3
+* Plu-Team Wesley attuale 16 -> 15
++ Plu-Team: Bernasconi
+* Plu-Team Orsolini attuale 24 -> 30
+* Plu-Team Pulisic attuale 31 -> 28
+* Plu-Team Saelemaekers attuale 19 -> 12
+* Plu-Team Niasse attuale 4 -> 3
++ Plu-Team: Da Cunha
+* Plu-Team Zerbin attuale 6 -> 3
+* Plu-Team Adzic attuale 3 -> 1
+* Plu-Team Paz N. attuale 30 -> 21
+* Plu-Team Martinez L. attuale 34 -> 27
+* Plu-Team Bonny attuale 14 -> 5
++ Plu-Team: Esposito F.P.
++ Plu-Team: Elphege
+* Ipa Bali Maignan attuale 20 -> 16
+* Ipa Bali Sava attuale 1 -> 4
+* Ipa Bali Luperto attuale 9 -> 7
+* Ipa Bali Bianchetti attuale 6 -> 3
+* Ipa Bali Martin attuale 14 -> 10
+* Ipa Bali Gallo attuale 8 -> 5
+* Ipa Bali Ostigard attuale 15 -> 5
+* Ipa Bali Ramon attuale 12 -> 6
+* Ipa Bali Pulisic attuale 31 -> 28
++ Ipa Bali: Frattesi
++ Ipa Bali: Malinovskyi
+* Ipa Bali McTominay attuale 25 -> 26
+* Ipa Bali Maldini attuale 3 -> 4
++ Ipa Bali: Zaragoza
+* Ipa Bali Paz N. attuale 30 -> 21
++ Ipa Bali: Martinez L.
++ Ipa Bali: Malen
+* Ipa Bali Meister attuale 8 -> 2
+* A.C.TUA CUCS Perin attuale 3 -> 1
++ A.C.TUA CUCS: Scuffet
+* A.C.TUA CUCS Sommer attuale 14 -> 16
+* A.C.TUA CUCS Martin attuale 14 -> 10
+* A.C.TUA CUCS Barbieri attuale 9 -> 3
+* A.C.TUA CUCS Marcandalli attuale 6 -> 2
+* A.C.TUA CUCS Kempf attuale 14 -> 5
+* A.C.TUA CUCS Tiago Gabriel attuale 9 -> 1
+* A.C.TUA CUCS Rodriguez Ju. attuale 3 -> 1
+* A.C.TUA CUCS Calhanoglu attuale 28 -> 30
+* A.C.TUA CUCS Pulisic attuale 31 -> 28
++ A.C.TUA CUCS: Zaniolo
++ A.C.TUA CUCS: McKennie
+* A.C.TUA CUCS Ilkhan attuale 2 -> 1
+* A.C.TUA CUCS Prati attuale 6 -> 4
+* A.C.TUA CUCS Paz N. attuale 30 -> 21
+* A.C.TUA CUCS Collocolo attuale 2 -> 8
++ A.C.TUA CUCS: Pavoletti
++ A.C.TUA CUCS: Martinez L.
+* A.C.TUA CUCS Leao attuale 30 -> 22
++ A.C.TUA CUCS: Yildiz
++ A.C.TUA CUCS: Elphege
+* ROCKY 3 Meret attuale 8 -> 16
+* ROCKY 3 Milinkovic-Savic V. attuale 19 -> 4
+* ROCKY 3 Martin attuale 14 -> 10
+* ROCKY 3 Tomori attuale 7 -> 8
+* ROCKY 3 Norton-Cuffy attuale 7 -> 6
++ ROCKY 3: Palestra
+* ROCKY 3 Coppola F. attuale 2 -> 1
+* ROCKY 3 Joao Mario attuale 2 -> 8
+* ROCKY 3 Wesley attuale 16 -> 14
++ ROCKY 3: Rabiot
+* ROCKY 3 Rovella attuale 4 -> 8
++ ROCKY 3: Frendrup
+* ROCKY 3 Ederson D.S. attuale 10 -> 9
+* ROCKY 3 Ilkhan attuale 2 -> 1
+* ROCKY 3 Paz N. attuale 30 -> 20
++ ROCKY 3: Martinez L.
++ ROCKY 3: Solomon
++ ROCKY 3: Douvikas
+* Fc nipiri Meret attuale 8 -> 16
+* Fc nipiri Milinkovic-Savic V. attuale 19 -> 4
+* Fc nipiri Gosens attuale 10 -> 18
+* Fc nipiri Di Lorenzo attuale 12 -> 14
+* Fc nipiri Akanji attuale 11 -> 9
+* Fc nipiri Scalvini attuale 12 -> 8
+* Fc nipiri Orsolini attuale 24 -> 30
+* Fc nipiri Musah attuale 5 -> 6
+* Fc nipiri Thuram K. attuale 13 -> 15
+* Fc nipiri Gineitis attuale 4 -> 5
+* Fc nipiri Karlstrom attuale 10 -> 6
+* Fc nipiri Paz N. attuale 30 -> 21
+* Fc nipiri David attuale 13 -> 27
+* Fc nipiri Bonny attuale 14 -> 16
+* Non troppo cattivi Perin attuale 3 -> 1
+* Non troppo cattivi Svilar attuale 19 -> 15
+* Non troppo cattivi Dimarco attuale 29 -> 19
+* Non troppo cattivi Bianchetti attuale 6 -> 3
+* Non troppo cattivi Martin attuale 14 -> 10
+* Non troppo cattivi Zemura attuale 2 -> 3
++ Non troppo cattivi: Norton-Cuffy
++ Non troppo cattivi: Valentini N.
++ Non troppo cattivi: Muharemovic
+* Non troppo cattivi Orsolini attuale 24 -> 31
+* Non troppo cattivi Pulisic attuale 31 -> 28
+* Non troppo cattivi McTominay attuale 25 -> 26
+* Non troppo cattivi Niasse attuale 4 -> 3
++ Non troppo cattivi: Diouf
+* Non troppo cattivi Ndour attuale 6 -> 2
+* Non troppo cattivi Prati attuale 6 -> 3
+* Non troppo cattivi Paz N. attuale 30 -> 20
++ Non troppo cattivi: Morata
++ Non troppo cattivi: Martinez L.
++ Non troppo cattivi: Malen
+* BOBONE32 De Gea attuale 11 -> 14
++ BOBONE32: Christensen O.
+* BOBONE32 Gallo attuale 8 -> 5
+* BOBONE32 Pavlovic attuale 15 -> 9
++ BOBONE32: Norton-Cuffy
+* BOBONE32 Ramon attuale 12 -> 6
+* BOBONE32 Tiago Gabriel attuale 9 -> 2
+* BOBONE32 Canestrelli attuale 5 -> 3
+* BOBONE32 Ndiaye attuale 1 -> 3
++ BOBONE32: Zielinski
+* BOBONE32 Saelemaekers attuale 19 -> 12
++ BOBONE32: Maldini
+* BOBONE32 Aebischer attuale 5 -> 4
++ BOBONE32: Lovric
+* BOBONE32 Paz N. attuale 30 -> 20
++ BOBONE32: Ondrejka
++ BOBONE32: Zapata D.
++ BOBONE32: Leao
++ BOBONE32: Douvikas
+* buttiglia25 Svilar attuale 19 -> 15
++ buttiglia25: Juan Jesus
+* buttiglia25 Pezzella Giu. attuale 4 -> 5
+* buttiglia25 Martin attuale 14 -> 10
+* buttiglia25 Bellanova attuale 6 -> 13
+* buttiglia25 Dumfries attuale 10 -> 20
+* buttiglia25 Tiago Gabriel attuale 9 -> 1
+* buttiglia25 Idrissi R. attuale 8 -> 3
+* buttiglia25 Zaccagni attuale 14 -> 24
+* buttiglia25 Pulisic attuale 31 -> 28
+* buttiglia25 McTominay attuale 25 -> 26
++ buttiglia25: Tameze
+* buttiglia25 Akpa Akpro attuale 2 -> 3
++ buttiglia25: Harroui
+* buttiglia25 Zerbin attuale 6 -> 3
++ buttiglia25: Ramadani
+* buttiglia25 Pavoletti attuale 1 -> 2
++ buttiglia25: Hojlund
++ buttiglia25: Yildiz
++ buttiglia25: Albarracin
+* kalashnikov Ravaglia F. attuale 12 -> 3
++ kalashnikov: Romagna
+* kalashnikov Mina attuale 8 -> 7
+* kalashnikov Rrahmani attuale 13 -> 7
+* kalashnikov Pavlovic attuale 15 -> 7
+* kalashnikov Dumfries attuale 10 -> 16
+* kalashnikov Cambiaso attuale 10 -> 15
+* kalashnikov Pulisic attuale 31 -> 28
+* kalashnikov Zaniolo attuale 20 -> 15
++ kalashnikov: McTominay
+* kalashnikov Messias attuale 2 -> 7
++ kalashnikov: Akpa Akpro
++ kalashnikov: Gudmundsson A.
+* kalashnikov Adzic attuale 3 -> 1
+* kalashnikov Kean attuale 18 -> 33
++ kalashnikov: Scamacca
++ kalashnikov: Solomon
+* kalashnikov Meister attuale 8 -> 3
++ kalashnikov: Douvikas
+* SPOSTATI De Gea attuale 11 -> 14
++ SPOSTATI: Christensen O.
+* SPOSTATI Pezzella Giu. attuale 4 -> 6
+* SPOSTATI Martin attuale 14 -> 10
+* SPOSTATI Mina attuale 8 -> 7
+* SPOSTATI Bellanova attuale 6 -> 13
++ SPOSTATI: Estupinan
++ SPOSTATI: Palestra
+* SPOSTATI Valle attuale 8 -> 6
++ SPOSTATI: Mazzitelli
+* SPOSTATI Pulisic attuale 31 -> 28
+* SPOSTATI Tramoni M. attuale 9 -> 12
+* SPOSTATI Vranckx attuale 3 -> 4
++ SPOSTATI: Ferguson
+* SPOSTATI Paz N. attuale 30 -> 20
++ SPOSTATI: Vergara
++ SPOSTATI: Martinez L.
+* SPOSTATI Leao attuale 30 -> 24
+* SPOSTATI Hojlund attuale 25 -> 24
+* SPOSTATI Meister attuale 8 -> 2
++ SPOSTATI: Kuhn
+* Lions Perin attuale 3 -> 1
++ Lions: Gosens
+* Lions Bellanova attuale 6 -> 13
+* Lions Cambiaso attuale 10 -> 15
+* Lions Van Der Brempt attuale 3 -> 2
+* Lions Tiago Gabriel attuale 9 -> 1
++ Lions: Pasalic
+* Lions Pulisic attuale 31 -> 28
++ Lions: Loftus-Cheek
+* Lions McTominay attuale 25 -> 26
+* Lions Ndour attuale 6 -> 2
+* Lions Prati attuale 6 -> 3
+* Lions Paz N. attuale 30 -> 21
++ Lions: Hojholt
+* Lions Thuram attuale 29 -> 31
+* Lions Cancellieri attuale 14 -> 3
++ Lions: Okereke
++ Lions: Douvikas
++ CISCO TEAM: Meret
+* CISCO TEAM Milinkovic-Savic V. attuale 19 -> 4
++ CISCO TEAM: Bremer
+* CISCO TEAM Cambiaso attuale 10 -> 15
+* CISCO TEAM Norton-Cuffy attuale 7 -> 6
+* CISCO TEAM Tiago Gabriel attuale 9 -> 1
+* CISCO TEAM Canestrelli attuale 5 -> 3
+* CISCO TEAM Pellegrini Lo. attuale 14 -> 16
++ CISCO TEAM: Mazzitelli
+* CISCO TEAM Pulisic attuale 31 -> 28
++ CISCO TEAM: Maldini
+* CISCO TEAM Aebischer attuale 5 -> 4
+* CISCO TEAM Prati attuale 6 -> 3
+* CISCO TEAM Paz N. attuale 30 -> 21
+* CISCO TEAM Berardi attuale 21 -> 24
++ CISCO TEAM: Martinez L.
+* CISCO TEAM Cancellieri attuale 14 -> 3
+* CISCO TEAM Ferguson E. attuale 16 -> 19
++ CISCO TEAM: Trepy
+* FC Plasmon Perin attuale 3 -> 1
+* FC Plasmon Provedel attuale 17 -> 12
++ FC Plasmon: Motta
++ FC Plasmon: Dimarco
+* FC Plasmon Martin attuale 14 -> 10
+* FC Plasmon Miranda J. attuale 11 -> 9
+* FC Plasmon Angelino attuale 7 -> 8
+* FC Plasmon Cambiaso attuale 10 -> 15
+* FC Plasmon Dodò attuale 6 -> 11
+* FC Plasmon Tiago Gabriel attuale 9 -> 1
+* FC Plasmon Pulisic attuale 31 -> 28
+* FC Plasmon Malinovskyi attuale 12 -> 7
++ FC Plasmon: Maldini
+* FC Plasmon Akpa Akpro attuale 2 -> 1
+* FC Plasmon Zerbin attuale 6 -> 3
+* FC Plasmon Ndour attuale 6 -> 2
+* FC Plasmon Paz N. attuale 30 -> 20
++ FC Plasmon: Venturino
+* FC Plasmon Kean attuale 18 -> 31
++ FC Plasmon: Martinez L.
++ FC Plasmon: David
++ FC Plasmon: Malen
++ FC Plasmon: Albarracin
+* Piovra73 Maignan attuale 20 -> 16
+* Piovra73 Cambiaso attuale 10 -> 15
+* Piovra73 Tavares N. attuale 6 -> 12
+* Piovra73 Terracciano F. attuale 11 -> 5
+* Piovra73 Marcandalli attuale 6 -> 2
+* Piovra73 Tiago Gabriel attuale 9 -> 1
+* Piovra73 Veiga D. attuale 5 -> 2
+* Piovra73 Canestrelli attuale 5 -> 3
++ Piovra73: Mazzitelli
++ Piovra73: Orsolini
++ Piovra73: McTominay
++ Piovra73: Diouf
+* Piovra73 Paz N. attuale 30 -> 20
++ Piovra73: Liteta
+* Piovra73 Sorensen O. attuale 7 -> 5
++ Piovra73: Vergara
++ Piovra73: Morata
+* Piovra73 Berardi attuale 21 -> 24
+* Piovra73 Kean attuale 18 -> 31
+* Piovra73 Martinez L. attuale 34 -> 27
+* Piovra73 Giovane attuale 17 -> 1
+* Leonte FC Perin attuale 3 -> 1
+* Leonte FC Djimsiti attuale 5 -> 6
+* Leonte FC Bastoni attuale 17 -> 16
+* Leonte FC Bremer attuale 13 -> 17
+* Leonte FC Pavlovic attuale 15 -> 12
+* Leonte FC Dodò attuale 6 -> 11
+* Leonte FC Canestrelli attuale 5 -> 3
+* Leonte FC Pulisic attuale 31 -> 28
+* Leonte FC McTominay attuale 25 -> 26
+* Leonte FC Estevez attuale 5 -> 2
+* Leonte FC Vranckx attuale 3 -> 2
+* Leonte FC Basic attuale 14 -> 1
+* Leonte FC Ndour attuale 6 -> 2
+* Leonte FC Hojholt attuale 2 -> 1
+* Leonte FC Vergara attuale 2 -> 6
+* Leonte FC Martinez L. attuale 34 -> 36
+* Leonte FC Leao attuale 30 -> 26
+* Leonte FC Cancellieri attuale 14 -> 3
+* Leonte FC Soulè attuale 26 -> 20
+* Concali Craboni FC Provedel attuale 17 -> 12
++ Concali Craboni FC: Motta
+* Concali Craboni FC Dimarco attuale 29 -> 27
+* Concali Craboni FC Akanji attuale 11 -> 10
+* Concali Craboni FC Mina attuale 8 -> 7
+* Concali Craboni FC Baschirotto attuale 13 -> 8
+* Concali Craboni FC Palestra attuale 15 -> 4
+* Concali Craboni FC Valle attuale 8 -> 6
++ Concali Craboni FC: Nelsson
+* Concali Craboni FC Barella attuale 17 -> 14
+* Concali Craboni FC Pulisic attuale 31 -> 28
+* Concali Craboni FC Zambo Anguissa attuale 19 -> 15
+* Concali Craboni FC Vranckx attuale 3 -> 4
+* Concali Craboni FC Berisha M. attuale 13 -> 3
+* Concali Craboni FC Akinsanmiro attuale 7 -> 3
+* Concali Craboni FC Paz N. attuale 30 -> 21
+* Concali Craboni FC Tourè I. attuale 10 -> 6
+* Concali Craboni FC Bonazzoli attuale 20 -> 13
+* Concali Craboni FC Esposito Se. attuale 16 -> 7
++ Concali Craboni FC: Moreo
+* Concali Craboni FC David attuale 13 -> 27
+* Concali Craboni FC Douvikas attuale 21 -> 9
+* LEONE Meret attuale 8 -> 16
+* LEONE Milinkovic-Savic V. attuale 19 -> 4
+* LEONE Pavlovic attuale 15 -> 7
+* LEONE Cambiaso attuale 10 -> 15
+* LEONE Dodò attuale 6 -> 11
+* LEONE Bisseck attuale 10 -> 5
+* LEONE Kempf attuale 14 -> 6
+* LEONE Wesley attuale 16 -> 14
+* LEONE Saelemaekers attuale 19 -> 12
+* LEONE Tramoni M. attuale 9 -> 12
+* LEONE Aebischer attuale 5 -> 4
+* LEONE Ederson D.S. attuale 10 -> 9
+* LEONE Paz N. attuale 30 -> 28
+* LEONE Atta attuale 16 -> 6
+* LEONE Stanciu * attuale 1 -> 8
+* LEONE Berardi attuale 21 -> 24
+* LEONE Simeone attuale 19 -> 11
+* LEONE Piccoli attuale 9 -> 17
+* LEONE Davis K. attuale 24 -> 12
+* LEONE Kilicsoy attuale 12 -> 6
+* XLiverpuh Svilar attuale 19 -> 15
+* XLiverpuh Pezzella Giu. attuale 4 -> 5
+* XLiverpuh Lykogiannis attuale 2 -> 5
+* XLiverpuh Gutierrez attuale 3 -> 6
+* XLiverpuh Terracciano F. attuale 11 -> 5
+* XLiverpuh Palestra attuale 15 -> 4
+* XLiverpuh Valle attuale 8 -> 6
+* XLiverpuh Kempf attuale 14 -> 10
+* XLiverpuh Zielinski attuale 19 -> 22
+* XLiverpuh Pulisic attuale 31 -> 28
+* XLiverpuh Zaniolo attuale 20 -> 15
+* XLiverpuh Prati attuale 6 -> 3
+* XLiverpuh Paz N. attuale 30 -> 20
+* XLiverpuh Atta attuale 16 -> 8
+* XLiverpuh Martinez L. attuale 34 -> 36
+* XLiverpuh Hojlund attuale 25 -> 21
+* XLiverpuh Kilicsoy attuale 12 -> 16
+* Sarzanello Team Maignan attuale 20 -> 16
++ Sarzanello Team: Torriani
+* Sarzanello Team Martin attuale 14 -> 10
++ Sarzanello Team: Miranda J.
+* Sarzanello Team Scalvini attuale 12 -> 8
+* Sarzanello Team Barbieri attuale 9 -> 3
+* Sarzanello Team Angori attuale 9 -> 5
+* Sarzanello Team Joao Mario attuale 2 -> 8
+* Sarzanello Team Wesley attuale 16 -> 15
+* Sarzanello Team Pasalic attuale 13 -> 11
+* Sarzanello Team Sergi Roberto attuale 3 -> 4
+* Sarzanello Team Adopo attuale 6 -> 5
++ Sarzanello Team: Casadei
++ Sarzanello Team: Ekkelenkamp
+* Sarzanello Team Paz N. attuale 30 -> 20
+* Sarzanello Team Atta attuale 16 -> 8
+* Sarzanello Team Sucic P. attuale 11 -> 9
++ Sarzanello Team: Zapata D.
+* Sarzanello Team Esposito Se. attuale 16 -> 7
++ Sarzanello Team: Yildiz
+* Sarzanello Team Esposito F.P. attuale 18 -> 7
+* FC Spiaze Perin attuale 3 -> 1
+* FC Spiaze Dimarco attuale 29 -> 19
+* FC Spiaze Pellegrini Lu. attuale 5 -> 6
+* FC Spiaze Beukema attuale 7 -> 10
+* FC Spiaze Palestra attuale 15 -> 17
+* FC Spiaze Tiago Gabriel attuale 9 -> 1
+* FC Spiaze Joao Mario attuale 2 -> 1
+* FC Spiaze Leris attuale 12 -> 2
+* FC Spiaze Pulisic attuale 31 -> 28
+* FC Spiaze Ricci S. attuale 13 -> 10
+* FC Spiaze Diouf attuale 2 -> 1
+* FC Spiaze Paz N. attuale 30 -> 20
+* FC Spiaze Iannoni attuale 5 -> 1
+* FC Spiaze Vergara attuale 2 -> 6
+* FC Spiaze De Ketelaere attuale 17 -> 22
+* FC Spiaze Hojlund attuale 25 -> 24
+* FC Spiaze Rodriguez Je. attuale 12 -> 6
+* KARABE 1975 Ravaglia F. attuale 12 -> 3
+* KARABE 1975 Zappacosta attuale 8 -> 9
+* KARABE 1975 Marusic attuale 7 -> 8
+* KARABE 1975 Pavlovic attuale 15 -> 7
+* KARABE 1975 Tiago Gabriel attuale 9 -> 1
+* KARABE 1975 Idrissi R. attuale 8 -> 3
+* KARABE 1975 Canestrelli attuale 5 -> 3
++ KARABE 1975: Zielinski
++ KARABE 1975: Ederson D.S.
++ KARABE 1975: Thorstvedt
+* KARABE 1975 Gineitis attuale 4 -> 5
+* KARABE 1975 Ndour attuale 6 -> 2
+* KARABE 1975 Karlstrom attuale 10 -> 6
++ KARABE 1975: Baturina
+* KARABE 1975 Kean attuale 18 -> 31
++ KARABE 1975: Scamacca
+* KARABE 1975 Esposito Se. attuale 16 -> 7
+* KARABE 1975 Colombo attuale 14 -> 6
++ KARABE 1975: Hojlund
+* SPARROW Maignan attuale 20 -> 16
++ SPARROW: Dimarco
+* SPARROW Martin attuale 14 -> 10
+* SPARROW Bellanova attuale 6 -> 13
+* SPARROW Valeri attuale 10 -> 9
+* SPARROW Dodò attuale 6 -> 11
++ SPARROW: Palestra
+* SPARROW Wesley attuale 16 -> 15
+* SPARROW McTominay attuale 25 -> 24
++ SPARROW: Maldini
++ SPARROW: McKennie
+* SPARROW Ilkhan attuale 2 -> 1
+* SPARROW Paz N. attuale 30 -> 20
+* SPARROW Tourè I. attuale 10 -> 7
+* SPARROW Iannoni attuale 5 -> 1
+* SPARROW Martinez L. attuale 34 -> 27
++ SPARROW: David
++ SPARROW: Malen
+* SPARROW Esposito F.P. attuale 18 -> 7
+* SPARROW Gueye attuale 2 -> 1
+* DEEDPULLY Svilar attuale 19 -> 15
+* DEEDPULLY Biraghi attuale 3 -> 8
++ DEEDPULLY: Dimarco
+* DEEDPULLY Mina attuale 8 -> 12
+* DEEDPULLY Tavares N. attuale 6 -> 12
+* DEEDPULLY De Winter attuale 4 -> 8
+* DEEDPULLY Joao Mario attuale 2 -> 8
+* DEEDPULLY Orsolini attuale 24 -> 30
+* DEEDPULLY Pulisic attuale 31 -> 28
+* DEEDPULLY Zaniolo attuale 20 -> 15
+* DEEDPULLY Loftus-Cheek attuale 13 -> 9
++ DEEDPULLY: Maldini
+* DEEDPULLY Zalewski attuale 15 -> 7
+* DEEDPULLY Ilkhan attuale 2 -> 1
+* DEEDPULLY Iannoni attuale 5 -> 1
++ DEEDPULLY: Raspadori
++ DEEDPULLY: Esposito Se.
++ DEEDPULLY: David
+* DEEDPULLY Kilicsoy attuale 12 -> 6
+* Temptation Haaland Maignan attuale 20 -> 16
++ Temptation Haaland: Turati
++ Temptation Haaland: Dimarco
+* Temptation Haaland Walukiewicz attuale 6 -> 5
+* Temptation Haaland Bellanova attuale 6 -> 13
+* Temptation Haaland Barbieri attuale 9 -> 3
+* Temptation Haaland Frese attuale 6 -> 3
+* Temptation Haaland Pulisic attuale 31 -> 28
+* Temptation Haaland McTominay attuale 25 -> 26
+* Temptation Haaland Zerbin attuale 6 -> 3
+* Temptation Haaland Ndour attuale 6 -> 2
+* Temptation Haaland Paz N. attuale 30 -> 20
+* Temptation Haaland Baturina attuale 14 -> 9
++ Temptation Haaland: Vergara
++ Temptation Haaland: Sala A.
++ Temptation Haaland: Pavoletti
++ Temptation Haaland: Martinez L.
++ Temptation Haaland: David
++ Temptation Haaland: Malen
+* Pi-Ciaccio Maignan attuale 20 -> 16
+* Pi-Ciaccio Martinez Jo. attuale 1 -> 2
+* Pi-Ciaccio Mancini attuale 10 -> 11
+* Pi-Ciaccio Martin attuale 14 -> 10
+* Pi-Ciaccio Mina attuale 8 -> 7
++ Pi-Ciaccio: Bellanova
++ Pi-Ciaccio: Gutierrez
+* Pi-Ciaccio Tiago Gabriel attuale 9 -> 1
++ Pi-Ciaccio: Rabiot
++ Pi-Ciaccio: McTominay
+* Pi-Ciaccio Bondo attuale 7 -> 4
+* Pi-Ciaccio Prati attuale 6 -> 3
+* Pi-Ciaccio Akinsanmiro attuale 7 -> 3
+* Pi-Ciaccio Paz N. attuale 30 -> 20
+* Pi-Ciaccio Atta attuale 16 -> 6
++ Pi-Ciaccio: Ondrejka
++ Pi-Ciaccio: Martinez L.
+* Pi-Ciaccio Esposito Se. attuale 16 -> 7
+* Pi-Ciaccio Colombo attuale 14 -> 6
++ Pi-Ciaccio: David
++ Pi-Ciaccio: Douvikas
+* LE 4 M Perin attuale 3 -> 1
+* LE 4 M Martin attuale 14 -> 10
+* LE 4 M Dumfries attuale 10 -> 20
++ LE 4 M: Dossena
+* LE 4 M Delprato attuale 9 -> 8
++ LE 4 M: Palestra
++ LE 4 M: Joao Mario
++ LE 4 M: Zielinski
+* LE 4 M Pulisic attuale 31 -> 28
+* LE 4 M Zaniolo attuale 20 -> 15
++ LE 4 M: McKennie
+* LE 4 M Ndour attuale 6 -> 2
+* LE 4 M Prati attuale 6 -> 3
+* LE 4 M Paz N. attuale 30 -> 27
++ LE 4 M: Morata
+* LE 4 M Kean attuale 18 -> 31
++ LE 4 M: Okereke
++ LE 4 M: Hojlund
+* i bro Svilar attuale 19 -> 15
+* i bro Mina attuale 8 -> 7
++ i bro: Dodò
+* i bro Zemura attuale 2 -> 4
+* i bro Tiago Gabriel attuale 9 -> 1
++ i bro: Joao Mario
++ i bro: Bernasconi
+* i bro Pulisic attuale 31 -> 28
+* i bro Mkhitaryan attuale 7 -> 9
+* i bro McTominay attuale 25 -> 26
++ i bro: McKennie
+* i bro Akpa Akpro attuale 2 -> 1
+* i bro Miretti attuale 9 -> 1
+* i bro Zerbin attuale 6 -> 3
+* i bro Folorunsho attuale 8 -> 9
+* i bro Esposito Se. attuale 16 -> 7
+* i bro Thuram attuale 29 -> 31
++ i bro: Hojlund
++ i bro: Sarr A.
++ i bro: Douvikas
+* Hellas merdona De Gea attuale 11 -> 14
++ Hellas merdona: Christensen O.
+* Hellas merdona Marusic attuale 7 -> 8
+* Hellas merdona Mancini attuale 10 -> 11
+* Hellas merdona Dumfries attuale 10 -> 20
+* Hellas merdona Terracciano F. attuale 11 -> 2
+* Hellas merdona Norton-Cuffy attuale 7 -> 3
+* Hellas merdona Tiago Gabriel attuale 9 -> 1
+* Hellas merdona Pulisic attuale 31 -> 28
++ Hellas merdona: Malinovskyi
+* Hellas merdona Elmas attuale 6 -> 8
+* Hellas merdona Adopo attuale 6 -> 5
+* Hellas merdona Akpa Akpro attuale 2 -> 1
+* Hellas merdona Bondo attuale 7 -> 3
+* Hellas merdona Ilkhan attuale 2 -> 1
+* Hellas merdona Paz N. attuale 30 -> 28
+* Hellas merdona Leao attuale 30 -> 26
++ Hellas merdona: Malen
++ Hellas merdona: Kilicsoy
++ Hellas merdona: Gueye
++ Sisal Palace: Gollini
+* Sisal Palace Svilar attuale 19 -> 15
++ Sisal Palace: Akanji
+* Sisal Palace Tomori attuale 7 -> 8
+* Sisal Palace Estupinan attuale 3 -> 11
+* Sisal Palace Cambiaso attuale 10 -> 15
+* Sisal Palace Olivera attuale 3 -> 10
+* Sisal Palace Canestrelli attuale 5 -> 3
+* Sisal Palace Barella attuale 17 -> 14
+* Sisal Palace Pulisic attuale 31 -> 28
+* Sisal Palace Adopo attuale 6 -> 5
++ Sisal Palace: McKennie
+* Sisal Palace Akpa Akpro attuale 2 -> 1
+* Sisal Palace Thuram K. attuale 13 -> 15
+* Sisal Palace Zerbin attuale 6 -> 3
+* Sisal Palace Iannoni attuale 5 -> 1
+* Sisal Palace Scamacca attuale 22 -> 14
+* Sisal Palace Thuram attuale 29 -> 31
++ Sisal Palace: Hojlund
+* Sisal Palace Dallinga attuale 8 -> 10
++ Sisal Palace: Douvikas
+* real donk Svilar attuale 19 -> 15
++ real donk: Torriani
+* real donk Pezzella Giu. attuale 4 -> 5
+* real donk Vojvoda attuale 12 -> 6
+* real donk Ostigard attuale 15 -> 5
+* real donk Gatti attuale 5 -> 8
+* real donk Lucumì attuale 7 -> 8
+* real donk Wesley attuale 16 -> 15
+* real donk Pasalic attuale 13 -> 11
+* real donk Pulisic attuale 31 -> 28
++ real donk: Zaniolo
++ real donk: Thuram K.
+* real donk Aebischer attuale 5 -> 4
++ real donk: Diouf
+* real donk Prati attuale 6 -> 3
++ real donk: Nkunku
+* real donk Pellegrino M. attuale 21 -> 16
++ real donk: Esposito F.P.
++ real donk: Kilicsoy
+* Imperatori del culo Ravaglia F. attuale 12 -> 3
+* Imperatori del culo Maignan attuale 20 -> 16
+* Imperatori del culo Bellanova attuale 6 -> 13
+* Imperatori del culo Cambiaso attuale 10 -> 15
+* Imperatori del culo Ostigard attuale 15 -> 5
++ Imperatori del culo: Dossena
+* Imperatori del culo Tiago Gabriel attuale 9 -> 1
+* Imperatori del culo Vitik attuale 4 -> 8
++ Imperatori del culo: Orsolini
+* Imperatori del culo Pulisic attuale 31 -> 28
+* Imperatori del culo Adopo attuale 6 -> 5
+* Imperatori del culo Akpa Akpro attuale 2 -> 1
+* Imperatori del culo Tramoni M. attuale 9 -> 12
++ Imperatori del culo: Vergara
++ Imperatori del culo: Morata
+* Imperatori del culo Kean attuale 18 -> 22
+* Imperatori del culo Martinez L. attuale 34 -> 27
++ Imperatori del culo: David
++ Imperatori del culo: Malen
+* Due Amici al Var Perin attuale 3 -> 1
+* Due Amici al Var Sava attuale 1 -> 4
+* Due Amici al Var Tomori attuale 7 -> 8
+* Due Amici al Var Dodò attuale 6 -> 11
+* Due Amici al Var Tiago Gabriel attuale 9 -> 1
++ Due Amici al Var: Joao Mario
+* Due Amici al Var Wesley attuale 16 -> 14
+* Due Amici al Var Orsolini attuale 24 -> 30
++ Due Amici al Var: Zaniolo
++ Due Amici al Var: McTominay
++ Due Amici al Var: Maldini
++ Due Amici al Var: Diouf
+* Due Amici al Var Prati attuale 6 -> 3
+* Due Amici al Var Paz N. attuale 30 -> 21
+* Due Amici al Var Kean attuale 18 -> 22
++ Due Amici al Var: Martinez L.
++ Due Amici al Var: Malen
+* MARCIO TEAM Perin attuale 3 -> 1
+* MARCIO TEAM Mandas * attuale 1 -> 3
++ MARCIO TEAM: Gosens
+* MARCIO TEAM Hermoso attuale 10 -> 4
+* MARCIO TEAM Obert attuale 5 -> 4
+* MARCIO TEAM Norton-Cuffy attuale 7 -> 3
+* MARCIO TEAM Palestra attuale 15 -> 4
++ MARCIO TEAM: Muharemovic
++ MARCIO TEAM: Orsolini
+* MARCIO TEAM Pulisic attuale 31 -> 28
+* MARCIO TEAM McTominay attuale 25 -> 24
++ MARCIO TEAM: Maldini
+* MARCIO TEAM Ilkhan attuale 2 -> 1
+* MARCIO TEAM Ndour attuale 6 -> 2
+* MARCIO TEAM Paz N. attuale 30 -> 21
+* MARCIO TEAM Berardi attuale 21 -> 24
++ MARCIO TEAM: Malen
++ MARCIO TEAM: Solomon
+* FC Galli Scuffet attuale 4 -> 3
+* FC Galli Svilar attuale 19 -> 15
++ FC Galli: Juan Jesus
+* FC Galli Lazzari attuale 4 -> 3
++ FC Galli: Bellanova
+* FC Galli Kalulu attuale 12 -> 9
+* FC Galli Doig attuale 6 -> 4
+* FC Galli Kristensen T. attuale 7 -> 5
+* FC Galli Zielinski attuale 19 -> 22
+* FC Galli Pasalic attuale 13 -> 11
+* FC Galli Pulisic attuale 31 -> 28
+* FC Galli Malinovskyi attuale 12 -> 7
+* FC Galli Akpa Akpro attuale 2 -> 1
+* FC Galli Basic attuale 14 -> 1
+* FC Galli Zarraga attuale 2 -> 3
+* FC Galli Folorunsho attuale 8 -> 9
++ FC Galli: Pedro
+* FC Galli Leao attuale 30 -> 22
+* FC Galli Hojlund attuale 25 -> 24
+* coach 71 Milinkovic-Savic V. attuale 19 -> 4
+* coach 71 Maignan attuale 20 -> 16
+* coach 71 Caracciolo A. attuale 6 -> 4
++ coach 71: N'Dicka
+* coach 71 Miranda J. attuale 11 -> 9
+* coach 71 Dumfries attuale 10 -> 20
+* coach 71 Terracciano F. attuale 11 -> 2
+* coach 71 Norton-Cuffy attuale 7 -> 6
+* coach 71 Tiago Gabriel attuale 9 -> 2
++ coach 71: Zielinski
+* coach 71 Zaniolo attuale 20 -> 15
++ coach 71: Malinovskyi
+* coach 71 Adopo attuale 6 -> 5
+* coach 71 Akpa Akpro attuale 2 -> 1
+* coach 71 Ilkhan attuale 2 -> 1
++ coach 71: Zaragoza
+* coach 71 Paz N. attuale 30 -> 21
+* coach 71 Kean attuale 18 -> 31
++ coach 71: Nkunku
++ coach 71: Malen
+* coach 71 Hojlund attuale 25 -> 21
+* coach 71 Giovane attuale 17 -> 1
+* scarsenal Caprile attuale 12 -> 7
++ scarsenal: Sherri
++ scarsenal: N'Dicka
+* scarsenal Pavlovic attuale 15 -> 7
+* scarsenal Dodò attuale 6 -> 11
+* scarsenal Norton-Cuffy attuale 7 -> 3
+* scarsenal Ramon attuale 12 -> 5
+* scarsenal Canestrelli attuale 5 -> 3
++ scarsenal: Orsolini
+* scarsenal Lobotka attuale 10 -> 9
++ scarsenal: Nicolussi Caviglia
+* scarsenal McTominay attuale 25 -> 26
+* scarsenal Saelemaekers attuale 19 -> 12
++ scarsenal: McKennie
+* scarsenal Zerbin attuale 6 -> 3
+* scarsenal Atta attuale 16 -> 6
+* scarsenal Pinamonti attuale 14 -> 16
+* scarsenal Scamacca attuale 22 -> 14
+* scarsenal Martinez L. attuale 34 -> 27
++ scarsenal: Malen
+* scarsenal Rodriguez Je. attuale 12 -> 6
+* BinuSpuntu Sommer attuale 14 -> 10
+* BinuSpuntu Caprile attuale 12 -> 7
++ BinuSpuntu: Martinez Jo.
++ BinuSpuntu: Rugani
++ BinuSpuntu: Pongracic
+* BinuSpuntu Terracciano F. attuale 11 -> 2
+* BinuSpuntu Van Der Brempt attuale 3 -> 4
+* BinuSpuntu Canestrelli attuale 5 -> 3
++ BinuSpuntu: Belghali
+* BinuSpuntu McTominay attuale 25 -> 26
+* BinuSpuntu Saelemaekers attuale 19 -> 12
++ BinuSpuntu: McKennie
+* BinuSpuntu Da Cunha attuale 11 -> 12
+* BinuSpuntu Akinsanmiro attuale 7 -> 3
+* BinuSpuntu Paz N. attuale 30 -> 28
+* BinuSpuntu Atta attuale 16 -> 6
++ BinuSpuntu: Hojholt
++ BinuSpuntu: Martinez L.
+* BinuSpuntu David attuale 13 -> 16
+* BinuSpuntu Hojlund attuale 25 -> 21
++ BinuSpuntu: Solomon
++ BinuSpuntu: Albarracin
+* HeineKean Svilar attuale 19 -> 15
++ HeineKean: Vasquez D.
+* HeineKean Bellanova attuale 6 -> 13
+* HeineKean Cambiaso attuale 10 -> 15
++ HeineKean: Obert
+* HeineKean Ramon attuale 12 -> 4
+* HeineKean Tiago Gabriel attuale 9 -> 1
++ HeineKean: Floriani Mussolini
+* HeineKean Angori attuale 9 -> 5
+* HeineKean Loftus-Cheek attuale 13 -> 8
++ HeineKean: Fagioli
++ HeineKean: McTominay
+* HeineKean Gudmundsson A. attuale 17 -> 24
+* HeineKean Prati attuale 6 -> 3
+* HeineKean Conceicao attuale 15 -> 18
++ HeineKean: Vergara
++ HeineKean: Morata
+* HeineKean Thuram attuale 29 -> 31
+* HeineKean David attuale 13 -> 27
++ HeineKean: Hojlund
+* HeineKean Cheddira attuale 6 -> 4
+* Antibro Svilar attuale 19 -> 15
++ Antibro: Dimarco
++ Antibro: Martin
+* Antibro Vasquez attuale 10 -> 9
+* Antibro Cambiaso attuale 10 -> 15
+* Antibro Tavares N. attuale 6 -> 12
+* Antibro Dodò attuale 6 -> 11
+* Antibro Vitik attuale 4 -> 8
+* Antibro Pulisic attuale 31 -> 28
++ Antibro: Malinovskyi
+* Antibro Estevez attuale 5 -> 2
+* Antibro Vlasic acquisto 15 -> 18
+* Antibro Aebischer attuale 5 -> 4
+* Antibro Paz N. attuale 30 -> 20
+* Antibro Keita M. attuale 8 -> 6
++ Antibro: Sala A.
+* Antibro Berardi attuale 21 -> 24
++ Antibro: Pedro
+* Antibro Martinez L. attuale 34 -> 27
+* Antibro Esposito Se. attuale 16 -> 7
+* Antibro Meister attuale 8 -> 3
+* Scarzooka Perin attuale 3 -> 1
++ Scarzooka: Akanji
+* Scarzooka Vojvoda attuale 12 -> 6
++ Scarzooka: Dodò
+* Scarzooka Norton-Cuffy attuale 7 -> 3
+* Scarzooka Tiago Gabriel attuale 9 -> 1
++ Scarzooka: Joao Mario
++ Scarzooka: Calhanoglu
+* Scarzooka Pulisic attuale 31 -> 28
+* Scarzooka Adopo attuale 6 -> 5
+* Scarzooka Zalewski attuale 15 -> 7
++ Scarzooka: Hojholt
+* Scarzooka Kean attuale 18 -> 31
++ Scarzooka: Malen
+* Scarzooka Njie attuale 6 -> 1
++ Scarzooka: Douvikas
+* Fc Cortomuso Meret attuale 8 -> 16
+* Fc Cortomuso Milinkovic-Savic V. attuale 19 -> 4
+* Fc Cortomuso Sava attuale 1 -> 4
+* Fc Cortomuso Martin attuale 14 -> 10
+* Fc Cortomuso Bellanova attuale 6 -> 10
+* Fc Cortomuso Pavlovic attuale 15 -> 7
+* Fc Cortomuso Dodò attuale 6 -> 11
++ Fc Cortomuso: Palestra
++ Fc Cortomuso: Ahanor
+* Fc Cortomuso Tiago Gabriel attuale 9 -> 1
+* Fc Cortomuso Orsolini attuale 24 -> 30
+* Fc Cortomuso Pulisic attuale 31 -> 28
+* Fc Cortomuso Malinovskyi attuale 12 -> 7
++ Fc Cortomuso: McTominay
++ Fc Cortomuso: Maldini
+* Fc Cortomuso Ilkhan attuale 2 -> 1
+* Fc Cortomuso Paz N. attuale 30 -> 20
+* Fc Cortomuso Venturino attuale 1 -> 3
++ Fc Cortomuso: Kean
+* Fc Cortomuso Martinez L. attuale 34 -> 27
+* Fc Cortomuso Leao attuale 30 -> 22
++ Fc Cortomuso: Malen
++ Fc Cortomuso: Kulenovic
+* I Cigni Sommer attuale 14 -> 16
+* I Cigni Martinez Jo. attuale 1 -> 2
+* I Cigni Hermoso attuale 10 -> 4
+* I Cigni Dodò attuale 6 -> 11
+* I Cigni Valle attuale 8 -> 6
+* I Cigni Politano attuale 11 -> 13
+* I Cigni Tramoni M. attuale 9 -> 12
+* I Cigni Folorunsho attuale 8 -> 9
+* I Cigni Ndour attuale 6 -> 2
+* I Cigni Isaksen attuale 14 -> 13
++ I Cigni: Rowe
+* I Cigni Baturina attuale 14 -> 17
++ I Cigni: Vergara
++ I Cigni: Zapata D.
++ I Cigni: Malen
+* I Cigni Almqvist attuale 3 -> 4
+* SILVEDO Maignan attuale 20 -> 16
+* SILVEDO Biraghi attuale 3 -> 8
++ SILVEDO: Djimsiti
+* SILVEDO Vasquez attuale 10 -> 9
+* SILVEDO Terracciano F. attuale 11 -> 2
+* SILVEDO Dodò attuale 6 -> 11
++ SILVEDO: Palestra
+* SILVEDO Idrissi R. attuale 8 -> 3
+* SILVEDO Grassi attuale 5 -> 4
++ SILVEDO: Orsolini
+* SILVEDO Zaniolo attuale 20 -> 15
+* SILVEDO Koopmeiners attuale 5 -> 14
+* SILVEDO Pisilli attuale 6 -> 7
+* SILVEDO Folorunsho attuale 8 -> 9
+* SILVEDO Ndour attuale 6 -> 2
+* SILVEDO Paz N. attuale 30 -> 20
++ SILVEDO: Zapata D.
+* SILVEDO Lukaku attuale 15 -> 19
+* SILVEDO Martinez L. attuale 34 -> 27
++ SILVEDO: David
+* F.C Pennic Hellas Milinkovic-Savic V. attuale 19 -> 4
+* F.C Pennic Hellas Caprile attuale 12 -> 7
++ F.C Pennic Hellas: Sherri
+* F.C Pennic Hellas Dimarco attuale 29 -> 27
+* F.C Pennic Hellas Dodò attuale 6 -> 11
+* F.C Pennic Hellas Norton-Cuffy attuale 7 -> 3
+* F.C Pennic Hellas Valle attuale 8 -> 6
+* F.C Pennic Hellas Tiago Gabriel attuale 9 -> 1
+* F.C Pennic Hellas Muharemovic attuale 7 -> 4
+* F.C Pennic Hellas Ndaba attuale 3 -> 1
+* F.C Pennic Hellas Zaccagni attuale 14 -> 26
++ F.C Pennic Hellas: Zaniolo
+* F.C Pennic Hellas Adopo attuale 6 -> 5
+* F.C Pennic Hellas Basic attuale 14 -> 1
+* F.C Pennic Hellas Vlasic attuale 18 -> 14
++ F.C Pennic Hellas: Ederson D.S.
+* F.C Pennic Hellas Atta attuale 16 -> 6
++ F.C Pennic Hellas: Venturino
++ F.C Pennic Hellas: David
+* F.C Pennic Hellas Hojlund attuale 25 -> 24
+* F.C Pennic Hellas Esposito F.P. attuale 18 -> 7
+* F.C Pennic Hellas Giovane attuale 17 -> 3
+* PEAKY BLINDERS Perin attuale 3 -> 1
+* PEAKY BLINDERS Martin attuale 14 -> 10
+* PEAKY BLINDERS Bellanova attuale 6 -> 13
+* PEAKY BLINDERS Dodò attuale 6 -> 11
+* PEAKY BLINDERS Barbieri attuale 9 -> 3
+* PEAKY BLINDERS Frese attuale 6 -> 3
+* PEAKY BLINDERS Norton-Cuffy attuale 7 -> 3
++ PEAKY BLINDERS: Rabiot
+* PEAKY BLINDERS Pulisic attuale 31 -> 28
++ PEAKY BLINDERS: Zaniolo
+* PEAKY BLINDERS Adopo attuale 6 -> 5
+* PEAKY BLINDERS Zerbin attuale 6 -> 3
+* PEAKY BLINDERS Paz N. attuale 30 -> 21
+* PEAKY BLINDERS Sorensen O. attuale 7 -> 5
++ PEAKY BLINDERS: Pavoletti
++ PEAKY BLINDERS: Martinez L.
++ PEAKY BLINDERS: David
++ PEAKY BLINDERS: Hojlund
+* FC Buttarighe De Gea attuale 11 -> 14
+* FC Buttarighe Mina attuale 8 -> 7
++ FC Buttarighe: Kalulu
+* FC Buttarighe Dodò attuale 6 -> 12
+* FC Buttarighe Delprato attuale 9 -> 8
+* FC Buttarighe Norton-Cuffy attuale 7 -> 6
+* FC Buttarighe Van Der Brempt attuale 3 -> 4
+* FC Buttarighe Coppola F. attuale 2 -> 1
++ FC Buttarighe: Zielinski
+* FC Buttarighe Pulisic attuale 31 -> 28
+* FC Buttarighe Modric attuale 19 -> 12
+* FC Buttarighe McTominay attuale 25 -> 26
+* FC Buttarighe Zalewski attuale 15 -> 6
+* FC Buttarighe Paz N. attuale 30 -> 20
+* FC Buttarighe Hojholt attuale 2 -> 1
++ FC Buttarighe: Martinez L.
++ FC Buttarighe: Boga
++ FC Buttarighe: Malen
+* FC Buttarighe Esposito F.P. attuale 18 -> 7
+* FC Buttarighe Rodriguez Je. attuale 12 -> 6
+* mezzebirre Maignan attuale 20 -> 16
+* mezzebirre Caprile attuale 12 -> 7
++ mezzebirre: Calabresi
++ mezzebirre: Hermoso
+* mezzebirre Holm attuale 13 -> 8
+* mezzebirre Barbieri attuale 9 -> 3
+* mezzebirre Beukema attuale 7 -> 10
+* mezzebirre Kempf attuale 14 -> 5
+* mezzebirre Wesley attuale 16 -> 14
+* mezzebirre Zaccagni attuale 14 -> 26
+* mezzebirre Pulisic attuale 31 -> 28
+* mezzebirre Odgaard attuale 18 -> 16
++ mezzebirre: Zarraga
++ mezzebirre: Diouf
+* mezzebirre Ndour attuale 6 -> 2
+* mezzebirre Neres attuale 17 -> 13
++ mezzebirre: Cremaschi
++ mezzebirre: Sanabria
+* mezzebirre Leao attuale 30 -> 24
+* mezzebirre Davis K. attuale 24 -> 13
+* mezzebirre Camarda attuale 4 -> 12
+* mezzebirre Addai attuale 12 -> 10
+* ISGOPPAISI2 Milinkovic-Savic V. attuale 19 -> 4
+* ISGOPPAISI2 Svilar attuale 19 -> 15
++ ISGOPPAISI2: Rrahmani
++ ISGOPPAISI2: Kalulu
+* ISGOPPAISI2 Vojvoda attuale 12 -> 6
+* ISGOPPAISI2 Dodò attuale 6 -> 11
+* ISGOPPAISI2 Lucumì attuale 7 -> 9
+* ISGOPPAISI2 Tiago Gabriel attuale 9 -> 2
+* ISGOPPAISI2 Joao Mario attuale 2 -> 8
+* ISGOPPAISI2 Calhanoglu attuale 28 -> 30
++ ISGOPPAISI2: McTominay
+* ISGOPPAISI2 Adopo attuale 6 -> 5
++ ISGOPPAISI2: Maldini
+* ISGOPPAISI2 Akpa Akpro attuale 2 -> 1
++ ISGOPPAISI2: Gudmundsson A.
+* ISGOPPAISI2 Boloca attuale 2 -> 6
+* ISGOPPAISI2 Paz N. attuale 30 -> 20
++ ISGOPPAISI2: Kean
+* ISGOPPAISI2 Scamacca attuale 22 -> 16
+* ISGOPPAISI2 Soulè attuale 26 -> 20
+* ISGOPPAISI2 Bonny attuale 14 -> 5
+* Kung-Fu Pandev Sommer attuale 14 -> 16
+* Kung-Fu Pandev Martinez Jo. attuale 1 -> 2
+* Kung-Fu Pandev Pezzella Giu. attuale 4 -> 5
+* Kung-Fu Pandev Tiago Gabriel attuale 9 -> 1
+* Kung-Fu Pandev Veiga D. attuale 5 -> 1
+* Kung-Fu Pandev Wesley attuale 16 -> 15
++ Kung-Fu Pandev: Bozhinov
+* Kung-Fu Pandev Politano attuale 11 -> 16
+* Kung-Fu Pandev McKennie attuale 14 -> 6
+* Kung-Fu Pandev Vlasic attuale 18 -> 14
++ Kung-Fu Pandev: Zaragoza
+* Kung-Fu Pandev Paz N. attuale 30 -> 20
+* Kung-Fu Pandev Conceicao attuale 15 -> 18
+* Kung-Fu Pandev Kean attuale 18 -> 31
+* Kung-Fu Pandev David attuale 13 -> 15
+* Kung-Fu Pandev Soulè attuale 26 -> 20
+* Kung-Fu Pandev Hojlund attuale 25 -> 21
+* Riccardigno Maignan attuale 20 -> 16
+* Riccardigno Okoye attuale 10 -> 5
++ Riccardigno: Gosens
+* Riccardigno Tavares N. attuale 6 -> 12
+* Riccardigno Kempf attuale 14 -> 5
+* Riccardigno Tiago Gabriel attuale 9 -> 1
+* Riccardigno Canestrelli attuale 5 -> 3
+* Riccardigno Politano attuale 11 -> 15
+* Riccardigno Pulisic attuale 31 -> 28
+* Riccardigno Zaniolo attuale 20 -> 15
++ Riccardigno: Brescianini
+* Riccardigno Akpa Akpro attuale 2 -> 1
+* Riccardigno Isaksen attuale 14 -> 13
++ Riccardigno: Zaragoza
+* Riccardigno Paz N. attuale 30 -> 20
+* Riccardigno Bonazzoli attuale 20 -> 1
+* Riccardigno David attuale 13 -> 16
++ Riccardigno: Douvikas
+* Riccardigno Aboukhlal attuale 3 -> 9
++ Riccardigno: Kilicsoy
+* Nastro Azzurro Svilar attuale 19 -> 15
++ Nastro Azzurro: Furlanetto
+* Nastro Azzurro Pezzella Giu. attuale 4 -> 5
+* Nastro Azzurro Gosens attuale 10 -> 18
+* Nastro Azzurro Gabbia attuale 8 -> 7
+* Nastro Azzurro Valenti attuale 7 -> 4
+* Nastro Azzurro Obert attuale 5 -> 4
+* Nastro Azzurro Veiga D. attuale 5 -> 2
+* Nastro Azzurro Angori attuale 9 -> 5
+* Nastro Azzurro Pulisic attuale 31 -> 28
+* Nastro Azzurro McTominay attuale 25 -> 26
++ Nastro Azzurro: McKennie
+* Nastro Azzurro Zerbin attuale 6 -> 3
+* Nastro Azzurro Prati attuale 6 -> 4
+* Nastro Azzurro Paz N. attuale 30 -> 21
++ Nastro Azzurro: Baturina
++ Nastro Azzurro: Vergara
+* Nastro Azzurro Kean attuale 18 -> 33
++ Nastro Azzurro: Martinez L.
++ Nastro Azzurro: David
++ Nastro Azzurro: Malen
++ Nastro Azzurro: Frigan
+* Collocolo Team Sommer attuale 14 -> 16
+* Collocolo Team Martinez Jo. attuale 1 -> 2
++ Collocolo Team: N'Dicka
++ Collocolo Team: Rrahmani
++ Collocolo Team: Doig
+* Collocolo Team Norton-Cuffy attuale 7 -> 3
++ Collocolo Team: Joao Mario
+* Collocolo Team Belghali attuale 11 -> 8
+* Collocolo Team Pulisic attuale 31 -> 28
++ Collocolo Team: McTominay
+* Collocolo Team Basic attuale 14 -> 1
++ Collocolo Team: Suslov
++ Collocolo Team: Pierotti
++ Collocolo Team: Baturina
++ Collocolo Team: Pavoletti
+* Collocolo Team Kean attuale 18 -> 33
+* Collocolo Team Leao attuale 30 -> 26
+* Collocolo Team Pellegrino M. attuale 21 -> 13
+- ProPro Proibito: Di Gennaro
+- ProPro Proibito: Folorunsho
+- ProPro Proibito: Bonazzoli
+- ProPro Proibito: Leao
+- ProPro Proibito: Davis K.
+- AC DENTI: Ravaglia F.
+- AC DENTI: Odgaard
+- AC DENTI: Atta
+- AC DENTI: Kean
+- AC DENTI: Cancellieri
+- SAGATU: Politano
+- SAGATU: Saelemaekers
+- SAGATU: Vlahovic
+- SAGATU: Leao
+- SAGATU: Thuram
+- lagg: Tavares N.
+- lagg: Paz Y. *
+- lagg: Gudmundsson A.
+- lagg: Kaba *
+- lagg: Prati
+- lagg: Vlahovic
+- lagg: Giovane
+- BARAKALLAHOUFIK: Mandas *
+- BARAKALLAHOUFIK: Zanoli
+- BARAKALLAHOUFIK: Dembelè A. *
+- BARAKALLAHOUFIK: Politano
+- BARAKALLAHOUFIK: Bondo
+- BARAKALLAHOUFIK: Kaba *
+- BARAKALLAHOUFIK: Cutrone *
+- BARAKALLAHOUFIK: Thuram
+- BARAKALLAHOUFIK: Meister
+- SPERA EBBASTA: Padelli
+- SPERA EBBASTA: Ravaglia F.
+- SPERA EBBASTA: Unai Nunez *
+- SPERA EBBASTA: Lovik *
+- SPERA EBBASTA: Zaccagni
+- SPERA EBBASTA: Gronbaek *
+- SPERA EBBASTA: Leao
+- SPERA EBBASTA: Thuram
+- SPERA EBBASTA: Lucca *
+- SPERA EBBASTA: Buffon L. *
+- DonBosko46: Pavlovic
+- DonBosko46: Dodò
+- DonBosko46: Politano
+- DonBosko46: Kaba *
+- DonBosko46: Atta
+- DonBosko46: Immobile *
+- DonBosko46: Giovane
+- LosPollosHermanos: Zanoli
+- LosPollosHermanos: Paz N.
+- LosPollosHermanos: Vandeputte
+- LosPollosHermanos: Thuram
+- LosPollosHermanos: Soulè
+- LosPollosHermanos: Benedyczak *
+- Boiali: Ilkhan
+- Boiali: Atta
+- Boiali: Vlahovic
+- Boiali: Banda
+- Boiali: Giovane
+- CuginiDiCampagna: Angelino
+- CuginiDiCampagna: Cambiaso
+- CuginiDiCampagna: Asllani *
+- CuginiDiCampagna: Zerbin
+- CuginiDiCampagna: Bonazzoli
+- CuginiDiCampagna: Esposito Se.
+- Mapoitta: Milinkovic-Savic V.
+- Mapoitta: Ravaglia F.
+- Mapoitta: Politano
+- Mapoitta: Saelemaekers
+- Mapoitta: Vlahovic
+- Mapoitta: Benedyczak *
+- Lunarossa: Vojvoda
+- Lunarossa: Terracciano F.
+- Lunarossa: Saelemaekers
+- Lunarossa: Stanciu *
+- Lunarossa: Kean
+- Lunarossa: Leao
+- Lunarossa: Benedyczak *
+- EquipoA: De Gea
+- EquipoA: Martinelli T. *
+- EquipoA: Nkounkou
+- EquipoA: Kaba *
+- EquipoA: Atta
+- EquipoA: Leao
+- EquipoA: Cancellieri
+- I COMPARI: Radunovic *
+- I COMPARI: Milinkovic-Savic V.
+- I COMPARI: Estupinan
+- I COMPARI: Dembelè A. *
+- I COMPARI: Barella
+- I COMPARI: Tramoni M.
+- I COMPARI: Kaba *
+- I COMPARI: Giovane
+- SMOG: Cambiaso
+- SMOG: Politano
+- SMOG: Modric
+- SMOG: Vlahovic
+- SMOG: Giovane
+- CLAN: Cuadrado
+- CLAN: Zaccagni
+- CLAN: Asllani *
+- CLAN: Folorunsho
+- CLAN: Esposito Se.
+- CLAN: Lookman *
+- CLAN: Rodriguez Je.
+- Evergreen: Dumfries
+- Evergreen: Posch *
+- Evergreen: Paz Y. *
+- Evergreen: Paz N.
+- Evergreen: Vardy
+- Evergreen: Thuram
+- Evergreen: Castro S.
+- Malmö FF: Sucic P.
+- Malmö FF: Sala A.
+- Malmö FF: Ekuban
+- Giubbentus: Cabal
+- Giubbentus: Politano
+- Giubbentus: Isaksen
+- Giubbentus: Thuram
+- Giubbentus: Meister
+- Tana delle Tigri: Pavlovic
+- Tana delle Tigri: Zaccagni
+- Tana delle Tigri: Berisha M.
+- Tana delle Tigri: Kaba *
+- Tana delle Tigri: Bonazzoli
+- Tana delle Tigri: Giovane
+- puerto rosso blu: Estupinan
+- OnlyFans: Di Lorenzo
+- OnlyFans: Kaba *
+- OnlyFans: Esposito Se.
+- OnlyFans: Ambrosino *
+- Peaky Tunas: Pinsoglio
+- Peaky Tunas: Zaccagni
+- Peaky Tunas: Zambo Anguissa
+- Peaky Tunas: Simeone
+- Peaky Tunas: Ekhator
+- Pro secco: Ranieri L.
+- Pro secco: Gaspar K.
+- Pro secco: Leris
+- Pro secco: Kaba *
+- Pro secco: Vlahovic
+- Pro secco: Lookman *
+- Pro secco: Giovane
+- TomMat-iga: Terracciano F.
+- TomMat-iga: Atta
+- TomMat-iga: Stanciu *
+- TomMat-iga: Esposito Se.
+- TomMat-iga: Soulè
+- TomMat-iga: Giovane
+- pacho team: Zaccagni
+- pacho team: Pulisic
+- pacho team: Vlasic
+- pacho team: Kaba *
+- pacho team: Kean
+- pacho team: Thuram
+- pacho team: Meister
+- Longobarda: Gaspar K.
+- Longobarda: Tiago Gabriel
+- Longobarda: Fofana Y.
+- Longobarda: Harroui
+- Longobarda: Kaba *
+- Longobarda: Almqvist
+- Real Mellandro: Milinkovic-Savic V.
+- Real Mellandro: Biraghi
+- Real Mellandro: Barella
+- Real Mellandro: Asllani *
+- Real Mellandro: Kaba *
+- Real Mellandro: Thuram
+- Real Mellandro: Diao
+- BANDITI: Martinelli T. *
+- BANDITI: Rodriguez Ju.
+- BANDITI: Orsolini
+- BANDITI: Zerbin
+- BANDITI: Leao
+- BANDITI: Thuram
+- Plu-Team: Corvi
+- Plu-Team: Dumfries
+- Plu-Team: Paz Y. *
+- Plu-Team: Tourè I.
+- Plu-Team: Pinamonti
+- Plu-Team: Giovane
+- Ipa Bali: Calhanoglu
+- Ipa Bali: Pobega
+- Ipa Bali: Bondo
+- Ipa Bali: Kean
+- Ipa Bali: Vlahovic
+- A.C.TUA CUCS: Ravaglia F.
+- A.C.TUA CUCS: Orsolini
+- A.C.TUA CUCS: Stanciu *
+- A.C.TUA CUCS: Bonazzoli
+- A.C.TUA CUCS: Thuram
+- A.C.TUA CUCS: Soulè
+- A.C.TUA CUCS: Buffon L. *
+- ROCKY 3: Kristensen T.
+- ROCKY 3: Calhanoglu
+- ROCKY 3: Basic
+- ROCKY 3: Leao
+- ROCKY 3: Thuram
+- ROCKY 3: Benedyczak *
+- Non troppo cattivi: Angelino
+- Non troppo cattivi: Tiago Gabriel
+- Non troppo cattivi: Angori
+- Non troppo cattivi: Kaba *
+- Non troppo cattivi: Pinamonti
+- Non troppo cattivi: Thuram
+- Non troppo cattivi: Almqvist
+- BOBONE32: Martinelli T. *
+- BOBONE32: Cambiaso
+- BOBONE32: Barella
+- BOBONE32: Asllani *
+- BOBONE32: Carboni V. *
+- BOBONE32: Folorunsho
+- BOBONE32: Davis K.
+- BOBONE32: Castellanos *
+- BOBONE32: Bonny
+- buttiglia25: Zortea
+- buttiglia25: Estevez
+- buttiglia25: Ricci S.
+- buttiglia25: Tete Morente *
+- buttiglia25: Bonazzoli
+- buttiglia25: Vlahovic
+- buttiglia25: Benedyczak *
+- kalashnikov: Sernicola *
+- kalashnikov: Politano
+- kalashnikov: Barella
+- kalashnikov: Pasalic
+- kalashnikov: Leao
+- kalashnikov: Lookman *
+- kalashnikov: Bonny
+- SPOSTATI: Martinelli T. *
+- SPOSTATI: Terracciano F.
+- SPOSTATI: Lovik *
+- SPOSTATI: El Shaarawy
+- SPOSTATI: Saelemaekers
+- SPOSTATI: Kaba *
+- SPOSTATI: Thuram
+- SPOSTATI: Giovane
+- Lions: Di Lorenzo
+- Lions: Politano
+- Lions: Orsolini
+- Lions: Kaba *
+- Lions: Almqvist
+- Lions: Rodriguez Je.
+- CISCO TEAM: Maignan
+- CISCO TEAM: Martin
+- CISCO TEAM: Zaccagni
+- CISCO TEAM: Asllani *
+- CISCO TEAM: Vlahovic
+- CISCO TEAM: Giovane
+- Piovra73: Zaccagni
+- Piovra73: Modric
+- Piovra73: Tramoni M.
+- Piovra73: Asllani *
+- Piovra73: Kaba *
+- Piovra73: Vandeputte
+- Piovra73: Ekuban
+- Concali Craboni FC: Mandas *
+- Concali Craboni FC: Canestrelli
+- Concali Craboni FC: Simeone
+- Sarzanello Team: Okoye
+- Sarzanello Team: Tavares N.
+- Sarzanello Team: Carboni V. *
+- Sarzanello Team: Isaksen
+- Sarzanello Team: Kean
+- Sarzanello Team: Giovane
+- KARABE 1975: Zaccagni
+- KARABE 1975: Pulisic
+- KARABE 1975: Prati
+- KARABE 1975: Stanciu *
+- KARABE 1975: Leao
+- KARABE 1975: Thuram
+- SPARROW: Barbieri
+- SPARROW: Tiago Gabriel
+- SPARROW: Pulisic
+- SPARROW: Kaba *
+- SPARROW: Bonazzoli
+- SPARROW: Soulè
+- DEEDPULLY: Norton-Cuffy
+- DEEDPULLY: Kaba *
+- DEEDPULLY: Bonazzoli
+- DEEDPULLY: Thuram
+- DEEDPULLY: Castro S.
+- Temptation Haaland: Radunovic *
+- Temptation Haaland: Martin
+- Temptation Haaland: Calhanoglu
+- Temptation Haaland: Stanciu *
+- Temptation Haaland: Kean
+- Temptation Haaland: Thuram
+- Temptation Haaland: Giovane
+- Temptation Haaland: Buffon L. *
+- Pi-Ciaccio: Di Lorenzo
+- Pi-Ciaccio: Kempf
+- Pi-Ciaccio: Vazquez *
+- Pi-Ciaccio: Orsolini
+- Pi-Ciaccio: Pulisic
+- Pi-Ciaccio: Thuram
+- Pi-Ciaccio: Benedyczak *
+- Pi-Ciaccio: Giovane
+- LE 4 M: Sernicola *
+- LE 4 M: Kempf
+- LE 4 M: Van Der Brempt
+- LE 4 M: Basic
+- LE 4 M: Sucic P.
+- LE 4 M: Leao
+- LE 4 M: Benedyczak *
+- LE 4 M: Buffon L. *
+- i bro: Di Lorenzo
+- i bro: Dumfries
+- i bro: Paz Y. *
+- i bro: Stanciu *
+- i bro: Vlahovic
+- i bro: Leao
+- i bro: Castro S.
+- Hellas merdona: Martinelli T. *
+- Hellas merdona: Thorstvedt
+- Hellas merdona: Lookman *
+- Hellas merdona: Banda
+- Hellas merdona: Ngonge *
+- Sisal Palace: Milinkovic-Savic V.
+- Sisal Palace: Di Lorenzo
+- Sisal Palace: Zaccagni
+- Sisal Palace: Ferguson E.
+- Sisal Palace: Giovane
+- real donk: Mandas *
+- real donk: Orsolini
+- real donk: Zalewski
+- real donk: Pafundi *
+- real donk: Berardi
+- real donk: Vlahovic
+- real donk: Giovane
+- Imperatori del culo: Idrissi R.
+- Imperatori del culo: Zaccagni
+- Imperatori del culo: Sulemana I.
+- Imperatori del culo: Ferguson E.
+- Imperatori del culo: Giovane
+- Imperatori del culo: Buffon L. *
+- Due Amici al Var: Lovik *
+- Due Amici al Var: Pellegrini Lo.
+- Due Amici al Var: Kastanos *
+- Due Amici al Var: Pulisic
+- Due Amici al Var: Malinovskyi
+- Due Amici al Var: De Ketelaere
+- Due Amici al Var: Giovane
+- MARCIO TEAM: Dumfries
+- MARCIO TEAM: Cambiaso
+- MARCIO TEAM: Zaccagni
+- MARCIO TEAM: Stanciu *
+- MARCIO TEAM: Esposito Se.
+- MARCIO TEAM: Ferguson E.
+- FC Galli: De Winter
+- FC Galli: Ekhator
+- coach 71: Ranieri L.
+- coach 71: Barella
+- coach 71: Pulisic
+- coach 71: Vlahovic
+- coach 71: Ferguson E.
+- scarsenal: Radunovic *
+- scarsenal: Britschgi
+- scarsenal: Zaccagni
+- scarsenal: Tramoni M.
+- scarsenal: Gudmundsson A.
+- scarsenal: Giovane
+- BinuSpuntu: Radunovic *
+- BinuSpuntu: Dumfries
+- BinuSpuntu: Cambiaso
+- BinuSpuntu: Esteves T. *
+- BinuSpuntu: Adopo
+- BinuSpuntu: Kaba *
+- BinuSpuntu: Bonazzoli
+- BinuSpuntu: Kean
+- BinuSpuntu: Benedyczak *
+- HeineKean: Milinkovic-Savic V.
+- HeineKean: Dodò
+- HeineKean: Mbambi *
+- HeineKean: Politano
+- HeineKean: Folorunsho
+- HeineKean: Stanciu *
+- HeineKean: Castellanos *
+- HeineKean: Addai
+- Antibro: Bastoni
+- Antibro: Terracciano F.
+- Antibro: Orsolini
+- Antibro: Asllani *
+- Antibro: Giovane
+- Scarzooka: Di Lorenzo
+- Scarzooka: Dumfries
+- Scarzooka: Paz Y. *
+- Scarzooka: Zerbin
+- Scarzooka: Paz N.
+- Scarzooka: Leao
+- Scarzooka: Buffon L. *
+- Fc Cortomuso: Palma *
+- Fc Cortomuso: Angori
+- Fc Cortomuso: Kaba *
+- Fc Cortomuso: Atta
+- Fc Cortomuso: Dybala
+- Fc Cortomuso: Pellegrino M.
+- Fc Cortomuso: Giovane
+- I Cigni: El Shaarawy
+- I Cigni: Akpa Akpro
+- SILVEDO: Ranieri L.
+- SILVEDO: Holm
+- SILVEDO: Odgaard
+- SILVEDO: Pavoletti
+- SILVEDO: Davis K.
+- F.C Pennic Hellas: Mandas *
+- F.C Pennic Hellas: Pulisic
+- F.C Pennic Hellas: Lipani
+- F.C Pennic Hellas: Ndour
+- F.C Pennic Hellas: Dallinga
+- PEAKY BLINDERS: Orsolini
+- PEAKY BLINDERS: Calhanoglu
+- PEAKY BLINDERS: Leao
+- PEAKY BLINDERS: Thuram
+- PEAKY BLINDERS: Giovane
+- PEAKY BLINDERS: Buffon L. *
+- FC Buttarighe: Dumfries
+- FC Buttarighe: Leris
+- FC Buttarighe: Bonazzoli
+- FC Buttarighe: Thuram
+- FC Buttarighe: Ferguson E.
+- mezzebirre: Canestrelli
+- mezzebirre: Esteves T. *
+- mezzebirre: Zerbin
+- mezzebirre: Ilkhan
+- mezzebirre: Folorunsho
+- mezzebirre: Morata
+- ISGOPPAISI2: Di Lorenzo
+- ISGOPPAISI2: Sernicola *
+- ISGOPPAISI2: Zaccagni
+- ISGOPPAISI2: Saelemaekers
+- ISGOPPAISI2: Sulemana I.
+- ISGOPPAISI2: Thuram
+- Kung-Fu Pandev: Valenti
+- Kung-Fu Pandev: Zarraga
+- Riccardigno: Angelino
+- Riccardigno: Zerbin
+- Riccardigno: Sucic P.
+- Riccardigno: Berardi
+- Riccardigno: Kean
+- Nastro Azzurro: Gollini
+- Nastro Azzurro: Orsolini
+- Nastro Azzurro: Saelemaekers
+- Nastro Azzurro: Asllani *
+- Nastro Azzurro: Vardy
+- Nastro Azzurro: Cancellieri
+- Nastro Azzurro: Castellanos *
+- Nastro Azzurro: Buffon L. *
+- Collocolo Team: Martin
+- Collocolo Team: Di Lorenzo
+- Collocolo Team: Sernicola *
+- Collocolo Team: Estupinan
+- Collocolo Team: Politano
+- Collocolo Team: Rog *
+- Collocolo Team: Isaksen
+- Collocolo Team: Atta
+- Collocolo Team: Buffon L. *
