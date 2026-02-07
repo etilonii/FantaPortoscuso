@@ -8,6 +8,8 @@ export default function MercatoSection({
   formatInt,
 }) {
   const [activeTeam, setActiveTeam] = useState("");
+  const [boughtVisibleCount, setBoughtVisibleCount] = useState(10);
+  const [releasedVisibleCount, setReleasedVisibleCount] = useState(10);
 
   const marketTeamsByName = useMemo(() => {
     const map = new Map();
@@ -60,14 +62,14 @@ export default function MercatoSection({
   const orderedTeams = useMemo(() => {
     return [...marketTeamsByName]
       .sort((a, b) => {
-      const aPos = standingsMap.get(normalizeTeam(a.team));
-      const bPos = standingsMap.get(normalizeTeam(b.team));
-      const aKnown = Number.isFinite(aPos);
-      const bKnown = Number.isFinite(bPos);
-      if (aKnown && bKnown && aPos !== bPos) return aPos - bPos;
-      if (aKnown && !bKnown) return -1;
-      if (!aKnown && bKnown) return 1;
-      return a.team.localeCompare(b.team, "it", { sensitivity: "base" });
+        const aPos = standingsMap.get(normalizeTeam(a.team));
+        const bPos = standingsMap.get(normalizeTeam(b.team));
+        const aKnown = Number.isFinite(aPos);
+        const bKnown = Number.isFinite(bPos);
+        if (aKnown && bKnown && aPos !== bPos) return aPos - bPos;
+        if (aKnown && !bKnown) return -1;
+        if (!aKnown && bKnown) return 1;
+        return a.team.localeCompare(b.team, "it", { sensitivity: "base" });
       })
       .map((team) => {
         const pos = standingsMap.get(normalizeTeam(team.team));
@@ -90,10 +92,9 @@ export default function MercatoSection({
   const latestMarketDate = useMemo(() => {
     const dates = (marketItems || [])
       .map((item) => String(item?.date || "").trim())
-      .filter(Boolean);
-    if (!dates.length) return "";
-    const sorted = dates.sort();
-    return sorted[sorted.length - 1] || "";
+      .filter(Boolean)
+      .sort();
+    return dates.length ? dates[dates.length - 1] : "";
   }, [marketItems]);
 
   const marketWindowItems = useMemo(() => {
@@ -103,7 +104,7 @@ export default function MercatoSection({
     );
   }, [marketItems, latestMarketDate]);
 
-  const buildRank = useMemo(() => {
+  const rankings = useMemo(() => {
     const aggregate = (nameField, roleField, teamField) => {
       const map = new Map();
       marketWindowItems.forEach((item) => {
@@ -127,8 +128,15 @@ export default function MercatoSection({
         .map((row) => ({
           ...row,
           teamCount: row.teams.size,
+          teamsList: Array.from(row.teams).sort((a, b) =>
+            a.localeCompare(b, "it", { sensitivity: "base" })
+          ),
         }))
-        .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "it", { sensitivity: "base" }));
+        .sort(
+          (a, b) =>
+            b.count - a.count ||
+            a.name.localeCompare(b.name, "it", { sensitivity: "base" })
+        );
     };
     return {
       bought: aggregate("in", "in_ruolo", "in_squadra"),
@@ -136,8 +144,16 @@ export default function MercatoSection({
     };
   }, [marketWindowItems]);
 
-  const topBought = useMemo(() => buildRank.bought.slice(0, 20), [buildRank]);
-  const topReleased = useMemo(() => buildRank.released.slice(0, 20), [buildRank]);
+  const topBought = rankings.bought;
+  const topReleased = rankings.released;
+  const visibleBought = useMemo(
+    () => topBought.slice(0, boughtVisibleCount),
+    [topBought, boughtVisibleCount]
+  );
+  const visibleReleased = useMemo(
+    () => topReleased.slice(0, releasedVisibleCount),
+    [topReleased, releasedVisibleCount]
+  );
 
   useEffect(() => {
     if (!orderedTeams.length) {
@@ -149,6 +165,18 @@ export default function MercatoSection({
       setActiveTeam(orderedTeams[0].team);
     }
   }, [orderedTeams, activeTeam]);
+
+  useEffect(() => {
+    setBoughtVisibleCount(10);
+    setReleasedVisibleCount(10);
+  }, [latestMarketDate]);
+
+  const podiumClass = (idx) => {
+    if (idx === 0) return "gold";
+    if (idx === 1) return "silver";
+    if (idx === 2) return "bronze";
+    return "";
+  };
 
   return (
     <section className="dashboard">
@@ -168,18 +196,24 @@ export default function MercatoSection({
         <div className="market-warning">
           <div className="market-warning-badge">Live</div>
           <h3>Trasferimenti di mercato</h3>
-          <p className="muted">Ultimi cambi registrati. Seleziona un team per i dettagli.</p>
+          <p className="muted">
+            Ultimi cambi registrati. Seleziona un team per i dettagli.
+          </p>
 
           <div className="market-countdown-inline">
             <span>Chiusura tra</span>
             <strong>{marketCountdown}</strong>
           </div>
+
           {marketItems.length ? (
             <>
               {orderedTeams.length ? (
                 <>
                   <div className="market-team-controls market-team-select-wrap">
-                    <label className="market-team-select-label" htmlFor="market-team-select">
+                    <label
+                      className="market-team-select-label"
+                      htmlFor="market-team-select"
+                    >
                       Team
                     </label>
                     <select
@@ -190,7 +224,8 @@ export default function MercatoSection({
                     >
                       {orderedTeams.map((team) => (
                         <option key={team.team} value={team.team}>
-                          {team.pos ? `#${team.pos} ` : ""}{team.team} ({team.count})
+                          {team.pos ? `#${team.pos} ` : ""}
+                          {team.team} ({team.count})
                         </option>
                       ))}
                     </select>
@@ -223,7 +258,9 @@ export default function MercatoSection({
                                   </span>
                                 </span>
                               </div>
+
                               <span className="market-swap-arrow">-&gt;</span>
+
                               <div className="market-swap-col">
                                 <span className="market-swap-label">Acquisto</span>
                                 <span className="market-swap-name">{item.in || "-"}</span>
@@ -236,6 +273,7 @@ export default function MercatoSection({
                                   </span>
                                 </span>
                               </div>
+
                               <div
                                 className={`market-swap-delta-card ${
                                   Number(item.delta) >= 0 ? "pos" : "neg"
@@ -253,30 +291,40 @@ export default function MercatoSection({
                     <p className="muted">Nessun cambio disponibile.</p>
                   )}
 
-                  <div className="market-ranking-wrap">
+                  <div className="market-ranking-wrap market-ranking-grid">
                     <details className="accordion market-accordion" open>
                       <summary>
-                        <span>Giocatori più acquistati</span>
+                        <span>Giocatori piu acquistati</span>
                         <strong>{topBought.length}</strong>
                       </summary>
-                      {topBought.length ? (
+                      {visibleBought.length ? (
                         <div className="list market-ranking-list">
-                          {topBought.map((row, idx) => (
-                            <div key={`buy-${row.name}-${idx}`} className="list-item market-ranking-item">
+                          {visibleBought.map((row, idx) => (
+                            <div
+                              key={`buy-${row.name}-${idx}`}
+                              className="list-item market-ranking-item"
+                            >
                               <div>
                                 <p className="rank-title">
-                                  <span
-                                    className={`rank-badge ${
-                                      idx === 0 ? "gold" : idx === 1 ? "silver" : idx === 2 ? "bronze" : ""
-                                    }`}
-                                  >
+                                  <span className={`rank-badge ${podiumClass(idx)}`}>
                                     #{idx + 1}
                                   </span>
                                   <span className="market-ranking-name">{row.name}</span>
                                 </p>
                                 <span className="muted">
-                                  {(row.role || "-")} - {(row.squadra || "-")} · {row.teamCount} team
+                                  {(row.role || "-")} - {(row.squadra || "-")} ·{" "}
+                                  {row.teamCount} team
                                 </span>
+                                <div className="team-tags">
+                                  {(row.teamsList || []).map((teamName) => (
+                                    <span
+                                      key={`buy-${row.name}-${teamName}`}
+                                      className="team-tag"
+                                    >
+                                      {teamName}
+                                    </span>
+                                  ))}
+                                </div>
                               </div>
                               <strong>{row.count}</strong>
                             </div>
@@ -285,31 +333,54 @@ export default function MercatoSection({
                       ) : (
                         <p className="muted">Nessun acquisto disponibile.</p>
                       )}
+                      {topBought.length > visibleBought.length ? (
+                        <button
+                          type="button"
+                          className="ghost market-expand-btn"
+                          onClick={() =>
+                            setBoughtVisibleCount((prev) =>
+                              Math.min(prev + 10, topBought.length)
+                            )
+                          }
+                        >
+                          Mostra altri 10
+                        </button>
+                      ) : null}
                     </details>
 
-                    <details className="accordion market-accordion">
+                    <details className="accordion market-accordion" open>
                       <summary>
-                        <span>Giocatori più svincolati</span>
+                        <span>Giocatori piu svincolati</span>
                         <strong>{topReleased.length}</strong>
                       </summary>
-                      {topReleased.length ? (
+                      {visibleReleased.length ? (
                         <div className="list market-ranking-list">
-                          {topReleased.map((row, idx) => (
-                            <div key={`rel-${row.name}-${idx}`} className="list-item market-ranking-item">
+                          {visibleReleased.map((row, idx) => (
+                            <div
+                              key={`rel-${row.name}-${idx}`}
+                              className="list-item market-ranking-item"
+                            >
                               <div>
                                 <p className="rank-title">
-                                  <span
-                                    className={`rank-badge ${
-                                      idx === 0 ? "gold" : idx === 1 ? "silver" : idx === 2 ? "bronze" : ""
-                                    }`}
-                                  >
+                                  <span className={`rank-badge ${podiumClass(idx)}`}>
                                     #{idx + 1}
                                   </span>
                                   <span className="market-ranking-name">{row.name}</span>
                                 </p>
                                 <span className="muted">
-                                  {(row.role || "-")} - {(row.squadra || "-")} · {row.teamCount} team
+                                  {(row.role || "-")} - {(row.squadra || "-")} ·{" "}
+                                  {row.teamCount} team
                                 </span>
+                                <div className="team-tags">
+                                  {(row.teamsList || []).map((teamName) => (
+                                    <span
+                                      key={`rel-${row.name}-${teamName}`}
+                                      className="team-tag"
+                                    >
+                                      {teamName}
+                                    </span>
+                                  ))}
+                                </div>
                               </div>
                               <strong>{row.count}</strong>
                             </div>
@@ -318,6 +389,19 @@ export default function MercatoSection({
                       ) : (
                         <p className="muted">Nessuno svincolo disponibile.</p>
                       )}
+                      {topReleased.length > visibleReleased.length ? (
+                        <button
+                          type="button"
+                          className="ghost market-expand-btn"
+                          onClick={() =>
+                            setReleasedVisibleCount((prev) =>
+                              Math.min(prev + 10, topReleased.length)
+                            )
+                          }
+                        >
+                          Mostra altri 10
+                        </button>
+                      ) : null}
                     </details>
                   </div>
                 </>
@@ -330,7 +414,6 @@ export default function MercatoSection({
           )}
         </div>
       </div>
-
     </section>
   );
 }

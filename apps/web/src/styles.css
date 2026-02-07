@@ -917,6 +917,13 @@ body.menu-open .menu-overlay {
   width: 100%;
 }
 
+.market-ranking-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
 .market-accordion summary span {
   letter-spacing: 0.01em;
 }
@@ -929,8 +936,17 @@ body.menu-open .menu-overlay {
   padding: 12px 14px;
 }
 
+.market-ranking-item .team-tags {
+  margin-top: 8px;
+}
+
 .market-ranking-name {
   font-weight: 700;
+}
+
+.market-expand-btn {
+  margin-top: 10px;
+  width: 100%;
 }
 
 .market-preview-list .list-item {
@@ -2316,6 +2332,12 @@ body.menu-open .menu-overlay {
 .admin-actions {
   display: grid;
   gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .market-ranking-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .admin-row {
