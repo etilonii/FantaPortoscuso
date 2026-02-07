@@ -2095,7 +2095,8 @@ useEffect(() => {
 
                     <div className="admin-row admin-row-stacked">
                       <p className="muted">
-                        Reset usati: {adminResetUsage?.used ?? 0}/{adminResetUsage?.limit ?? 3}
+                        Key selezionata ({(adminResetKey || "-").toUpperCase()}): reset usati{" "}
+                        {adminResetUsage?.used ?? 0}/{adminResetUsage?.limit ?? 3}
                         {adminResetUsage?.season
                           ? ` · Stagione ${adminResetUsage.season}`
                           : ""}
@@ -2128,6 +2129,10 @@ useEffect(() => {
                               {item.is_admin ? "ADMIN" : "USER"} - {item.used ? "Attivata" : "Non usata"}
                             </span>
                             <span className="muted">Team: {item.team || "-"}</span>
+                            <span className="muted">
+                              Reset: {item.reset_used ?? 0}/{item.reset_limit ?? 3}
+                              {item.reset_season ? ` · Stagione ${item.reset_season}` : ""}
+                            </span>
                             <span className="muted">
                               Ultimo accesso:{" "}
                               {item.online

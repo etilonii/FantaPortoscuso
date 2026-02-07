@@ -31,6 +31,10 @@ class AdminKeyItem(BaseModel):
     used_at: str | None = None
     last_seen_at: str | None = None
     online: bool = False
+    reset_used: int = 0
+    reset_limit: int = 3
+    reset_season: str | None = None
+    reset_cooldown_blocked: bool = False
 
 
 class ImportKeysRequest(BaseModel):

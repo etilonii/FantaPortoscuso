@@ -6,6 +6,7 @@ from pathlib import Path
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Request
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from ..config import KEY_LENGTH
@@ -57,7 +58,8 @@ RESET_COOLDOWN_HOURS = 24
 
 def _current_season(now: datetime | None = None) -> str:
     ref = now or datetime.utcnow()
-    start_year = ref.year if ref.month >= 7 else ref.year - 1
+    # La stagione parte ad agosto.
+    start_year = ref.year if ref.month >= 8 else ref.year - 1
     end_year = (start_year + 1) % 100
     return f"{start_year}-{end_year:02d}"
 
@@ -132,6 +134,7 @@ def list_keys(
     db: Session = Depends(get_db),
 ):
     _require_admin_key(x_admin_key, db)
+    season = _current_season()
     keys = db.query(AccessKey).order_by(AccessKey.created_at.desc()).all()
     now = datetime.utcnow()
     sessions = db.query(DeviceSession).all()
@@ -150,6 +153,19 @@ def list_keys(
                 last_seen_map[s.key] = last_seen
             if last_seen >= now - timedelta(minutes=5):
                 online_keys.add(s.key)
+
+    reset_rows = (
+        db.query(
+            KeyReset.key.label("key"),
+            func.count(KeyReset.id).label("used"),
+            func.max(KeyReset.reset_at).label("last_reset_at"),
+        )
+        .filter(KeyReset.season == season)
+        .group_by(KeyReset.key)
+        .all()
+    )
+    reset_map = {row.key: row for row in reset_rows}
+
     return [
         AdminKeyItem(
             key=k.key,
@@ -162,6 +178,14 @@ def list_keys(
             used_at=k.used_at.isoformat() if k.used_at else None,
             last_seen_at=last_seen_map.get(k.key).isoformat() if last_seen_map.get(k.key) else None,
             online=k.key in online_keys,
+            reset_used=int(getattr(reset_map.get(k.key), "used", 0) or 0),
+            reset_limit=MAX_KEY_RESETS_PER_SEASON,
+            reset_season=season,
+            reset_cooldown_blocked=(
+                bool(getattr(reset_map.get(k.key), "last_reset_at", None))
+                and getattr(reset_map.get(k.key), "last_reset_at")
+                >= now - timedelta(hours=RESET_COOLDOWN_HOURS)
+            ),
         )
         for k in keys
     ]

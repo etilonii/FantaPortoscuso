@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 from pathlib import Path
 
 from fastapi import APIRouter
@@ -29,7 +28,7 @@ STATUS_PATH = DATA_DIR / "status.json"
 @router.get("/data-status")
 def data_status():
     fallback = {
-        "last_update": datetime.utcnow().isoformat(),
+        "last_update": "",
         "result": "error",
         "message": "Nessun aggiornamento dati disponibile",
     }
