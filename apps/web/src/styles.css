@@ -833,6 +833,11 @@ body.menu-open .menu-overlay {
   transform: translateY(-1px);
 }
 
+.market-team-select option {
+  color: #12263b;
+  background: #f4f8fc;
+}
+
 .market-team-search {
   min-width: 220px;
   max-width: 320px;
@@ -2453,6 +2458,11 @@ body.theme-light .market-team-select:hover {
 body.theme-light .market-team-select:focus {
   border-color: rgba(42, 167, 255, 0.8);
   box-shadow: 0 0 0 3px rgba(42, 167, 255, 0.2);
+}
+
+body.theme-light .market-team-select option {
+  color: var(--text);
+  background: var(--surface);
 }
 
 body.theme-light .market-team-card.active {
