@@ -315,16 +315,19 @@ export default function MercatoSection({
                                   {(row.role || "-")} - {(row.squadra || "-")} ·{" "}
                                   {row.teamCount} team
                                 </span>
-                                <div className="team-tags">
-                                  {(row.teamsList || []).map((teamName) => (
-                                    <span
-                                      key={`buy-${row.name}-${teamName}`}
-                                      className="team-tag"
-                                    >
-                                      {teamName}
-                                    </span>
-                                  ))}
-                                </div>
+                                <details className="market-inline-accordion">
+                                  <summary>Team ({row.teamCount})</summary>
+                                  <div className="team-tags">
+                                    {(row.teamsList || []).map((teamName) => (
+                                      <span
+                                        key={`buy-${row.name}-${teamName}`}
+                                        className="team-tag"
+                                      >
+                                        {teamName}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </details>
                               </div>
                               <strong>{row.count}</strong>
                             </div>
@@ -371,16 +374,19 @@ export default function MercatoSection({
                                   {(row.role || "-")} - {(row.squadra || "-")} ·{" "}
                                   {row.teamCount} team
                                 </span>
-                                <div className="team-tags">
-                                  {(row.teamsList || []).map((teamName) => (
-                                    <span
-                                      key={`rel-${row.name}-${teamName}`}
-                                      className="team-tag"
-                                    >
-                                      {teamName}
-                                    </span>
-                                  ))}
-                                </div>
+                                <details className="market-inline-accordion">
+                                  <summary>Team ({row.teamCount})</summary>
+                                  <div className="team-tags">
+                                    {(row.teamsList || []).map((teamName) => (
+                                      <span
+                                        key={`rel-${row.name}-${teamName}`}
+                                        className="team-tag"
+                                      >
+                                        {teamName}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </details>
                               </div>
                               <strong>{row.count}</strong>
                             </div>

@@ -940,6 +940,26 @@ body.menu-open .menu-overlay {
   margin-top: 8px;
 }
 
+.market-inline-accordion {
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 4px 8px;
+}
+
+.market-inline-accordion summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.market-inline-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
 .market-ranking-name {
   font-weight: 700;
 }
