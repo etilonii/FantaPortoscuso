@@ -1,4 +1,4 @@
-export default function TopAcquistiSection({
+ï»¿export default function TopAcquistiSection({
   activeTopRole,
   setActiveTopRole,
   aggregatesLoading,
@@ -16,7 +16,7 @@ export default function TopAcquistiSection({
     <section className="dashboard">
       <div className="dashboard-header">
         <div>
-          <p className="eyebrow">Giocatori più acquistati</p>
+          <p className="eyebrow">Giocatori piÃ¹ acquistati</p>
           <h2>Per Ruolo</h2>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function TopAcquistiSection({
                         </button>
                       </p>
                       <span className="muted">
-                        Squadra: {p.squadra || "-"} · Teams: {p.count}
+                        Squadra: {p.squadra || "-"} Teams: {p.count}
                       </span>
                       <div className="team-tags">
                         {(p.teams || []).map((t) => (
@@ -126,3 +126,4 @@ export default function TopAcquistiSection({
     </section>
   );
 }
+
