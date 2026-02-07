@@ -33,6 +33,9 @@ if ($ForceStats) {
 }
 python "$root\scripts\clean_stats_batch.py" @statsArgs
 
+Write-Host "==> Aggiornamento CLASSIFICHE FORZA"
+python "$root\scripts\build_team_strength_ranking.py" --snapshot --snapshot-date "$DateStamp"
+
 $endStamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
 Add-Content -Path $logPath -Value "$endStamp | update-all done"
 Write-Host "==> Fatto."

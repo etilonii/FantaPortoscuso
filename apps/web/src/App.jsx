@@ -822,6 +822,25 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     topPosTo,
   ]);
 
+  const topAcquistiRangeLabel = useMemo(() => {
+    const fromRaw = Number.parseInt(String(topPosFrom || "").trim(), 10);
+    const toRaw = Number.parseInt(String(topPosTo || "").trim(), 10);
+    const hasFrom = Number.isFinite(fromRaw);
+    const hasTo = Number.isFinite(toRaw);
+    if (!hasFrom && !hasTo) return "Tutte le posizioni";
+    const from = hasFrom ? Math.max(1, fromRaw) : 1;
+    const to = hasTo ? Math.max(1, toRaw) : 84;
+    const low = Math.min(from, to);
+    const high = Math.max(from, to);
+    return `Range attivo: #${low} - #${high}`;
+  }, [topPosFrom, topPosTo]);
+
+  const resetTopAcquistiFilters = () => {
+    setTopAcquistiQuery("");
+    setTopPosFrom("");
+    setTopPosTo("");
+  };
+
   /* ===========================
      MERCATO: placeholder
   =========================== */
@@ -1704,6 +1723,8 @@ useEffect(() => {
                 setTopPosFrom={setTopPosFrom}
                 topPosTo={topPosTo}
                 setTopPosTo={setTopPosTo}
+                topAcquistiRangeLabel={topAcquistiRangeLabel}
+                onResetTopAcquistiFilters={resetTopAcquistiFilters}
                 filteredTopAcquisti={filteredTopAcquisti}
                 openPlayer={openPlayer}
                 formatInt={formatInt}

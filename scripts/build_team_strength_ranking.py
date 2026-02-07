@@ -1,4 +1,6 @@
+import argparse
 import csv
+from datetime import date
 from pathlib import Path
 from typing import Dict, List
 
@@ -8,6 +10,7 @@ DATA_DIR = ROOT / "data"
 ROSE_PATH = DATA_DIR / "rose_fantaportoscuso.csv"
 TIERS_PATH = DATA_DIR / "player_tiers.csv"
 REPORTS_DIR = DATA_DIR / "reports"
+REPORTS_HISTORY_DIR = REPORTS_DIR / "history"
 OUT_RANKING = REPORTS_DIR / "team_strength_ranking.csv"
 OUT_PLAYERS = REPORTS_DIR / "team_strength_players.csv"
 OUT_STARTING_RANKING = REPORTS_DIR / "team_starting_strength_ranking.csv"
@@ -57,6 +60,62 @@ def player_force(score_auto: float, weight: float, prezzo_attuale: float, has_ti
     # Fallback when a player is missing in tier list.
     fallback = clamp(prezzo_attuale * 1.5, 0.0, 60.0)
     return round(fallback, 2), "fallback_price"
+
+
+def validate_roster_rows(rows: List[Dict[str, str]], strict: bool) -> tuple[List[str], List[str]]:
+    warnings: List[str] = []
+    errors: List[str] = []
+    role_set = {"P", "D", "C", "A"}
+    team_counts: Dict[str, int] = {}
+
+    for row in rows:
+        team = (row.get("Team") or "").strip()
+        name = (row.get("Giocatore") or "").strip()
+        role = (row.get("Ruolo") or "").strip().upper()
+        if not team or not name:
+            continue
+        team_counts[team] = team_counts.get(team, 0) + 1
+
+        if role not in role_set:
+            errors.append(f"Ruolo non valido: team={team} giocatore={name} ruolo='{role}'")
+
+        prezzo_raw = str(row.get("PrezzoAttuale", "")).strip()
+        if prezzo_raw == "":
+            warnings.append(f"PrezzoAttuale mancante: team={team} giocatore={name}")
+        else:
+            prezzo = to_float(prezzo_raw, -1.0)
+            if prezzo < 0:
+                warnings.append(f"PrezzoAttuale non numerico: team={team} giocatore={name} value='{prezzo_raw}'")
+
+    bad_teams = sorted(team for team, cnt in team_counts.items() if cnt != 23)
+    if bad_teams:
+        for team in bad_teams:
+            errors.append(f"Rosa non da 23: team={team} count={team_counts[team]}")
+
+    if strict and errors:
+        raise ValueError("Validazione rose fallita: " + "; ".join(errors[:12]))
+
+    return warnings, errors
+
+
+def load_standings_teams() -> List[str]:
+    path = DATA_DIR / "classifica.csv"
+    if not path.exists():
+        return []
+    rows = read_csv(path)
+    out: List[str] = []
+    for row in rows:
+        team = (row.get("Squadra") or row.get("Team") or "").strip()
+        if team:
+            out.append(team)
+    return out
+
+
+def write_snapshot(src: Path, snapshot_date: str) -> Path:
+    REPORTS_HISTORY_DIR.mkdir(parents=True, exist_ok=True)
+    out = REPORTS_HISTORY_DIR / f"{src.stem}_{snapshot_date}{src.suffix}"
+    out.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
+    return out
 
 
 def compute_best_starting_xi(
@@ -121,10 +180,26 @@ def compute_best_starting_xi(
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Build team strength rankings from rose + tier list")
+    parser.add_argument("--snapshot", action="store_true", help="Write dated copies in data/reports/history")
+    parser.add_argument("--snapshot-date", default="", help="Date for snapshot suffix (YYYY-MM-DD)")
+    parser.add_argument("--strict", action="store_true", help="Fail on roster validation errors")
+    args = parser.parse_args()
+
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
     rose_rows = read_csv(ROSE_PATH)
     tiers_rows = read_csv(TIERS_PATH)
+
+    val_warnings, val_errors = validate_roster_rows(rose_rows, strict=args.strict)
+    if val_errors:
+        print(f"[WARN] Validation errors: {len(val_errors)}")
+        for msg in val_errors[:20]:
+            print(f"  - {msg}")
+    if val_warnings:
+        print(f"[WARN] Validation warnings: {len(val_warnings)}")
+        for msg in val_warnings[:20]:
+            print(f"  - {msg}")
 
     tiers_map: Dict[str, Dict[str, str]] = {}
     for row in tiers_rows:
@@ -351,6 +426,24 @@ def main() -> None:
         writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(starting_ranking_rows)
+
+    standings_teams = set(normalize_name(t) for t in load_standings_teams())
+    if standings_teams:
+        rose_teams = set(normalize_name(row["Team"]) for row in ranking_rows)
+        missing_in_standings = sorted(rose_teams - standings_teams)
+        if missing_in_standings:
+            print(f"[WARN] Team non presenti in classifica.csv: {len(missing_in_standings)}")
+
+    if args.snapshot:
+        snap_date = args.snapshot_date.strip() or date.today().isoformat()
+        snap_files = [
+            write_snapshot(OUT_RANKING, snap_date),
+            write_snapshot(OUT_PLAYERS, snap_date),
+            write_snapshot(OUT_STARTING_RANKING, snap_date),
+            write_snapshot(OUT_STARTING_XI, snap_date),
+        ]
+        for path in snap_files:
+            print(f"Snapshot written: {path}")
 
     print(f"Ranking written: {OUT_RANKING}")
     print(f"Players detail written: {OUT_PLAYERS}")

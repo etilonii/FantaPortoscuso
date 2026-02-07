@@ -8,6 +8,8 @@
   setTopPosFrom,
   topPosTo,
   setTopPosTo,
+  topAcquistiRangeLabel,
+  onResetTopAcquistiFilters,
   filteredTopAcquisti,
   openPlayer,
   formatInt,
@@ -79,6 +81,17 @@
                     onChange={(e) => setTopPosTo(e.target.value)}
                   />
                 </label>
+              </div>
+
+              <div className="top-acquisti-toolbar">
+                <span className="muted">{topAcquistiRangeLabel}</span>
+                <button
+                  type="button"
+                  className="ghost"
+                  onClick={onResetTopAcquistiFilters}
+                >
+                  Reset filtri
+                </button>
               </div>
 
               {filteredTopAcquisti.length ? (
