@@ -87,6 +87,58 @@ export default function MercatoSection({
     );
   }, [orderedTeams, activeTeam]);
 
+  const latestMarketDate = useMemo(() => {
+    const dates = (marketItems || [])
+      .map((item) => String(item?.date || "").trim())
+      .filter(Boolean);
+    if (!dates.length) return "";
+    const sorted = dates.sort();
+    return sorted[sorted.length - 1] || "";
+  }, [marketItems]);
+
+  const marketWindowItems = useMemo(() => {
+    if (!latestMarketDate) return marketItems || [];
+    return (marketItems || []).filter(
+      (item) => String(item?.date || "").trim() === latestMarketDate
+    );
+  }, [marketItems, latestMarketDate]);
+
+  const buildRank = useMemo(() => {
+    const aggregate = (nameField, roleField, teamField) => {
+      const map = new Map();
+      marketWindowItems.forEach((item) => {
+        const name = String(item?.[nameField] || "").trim();
+        if (!name || name === "-") return;
+        const key = name.toLowerCase();
+        const row = map.get(key) || {
+          name,
+          role: String(item?.[roleField] || "").trim(),
+          squadra: String(item?.[teamField] || "").trim(),
+          count: 0,
+          teams: new Set(),
+        };
+        row.count += 1;
+        if (item?.team) row.teams.add(String(item.team).trim());
+        if (!row.role && item?.[roleField]) row.role = String(item[roleField]).trim();
+        if (!row.squadra && item?.[teamField]) row.squadra = String(item[teamField]).trim();
+        map.set(key, row);
+      });
+      return Array.from(map.values())
+        .map((row) => ({
+          ...row,
+          teamCount: row.teams.size,
+        }))
+        .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "it", { sensitivity: "base" }));
+    };
+    return {
+      bought: aggregate("in", "in_ruolo", "in_squadra"),
+      released: aggregate("out", "out_ruolo", "out_squadra"),
+    };
+  }, [marketWindowItems]);
+
+  const topBought = useMemo(() => buildRank.bought.slice(0, 20), [buildRank]);
+  const topReleased = useMemo(() => buildRank.released.slice(0, 20), [buildRank]);
+
   useEffect(() => {
     if (!orderedTeams.length) {
       if (activeTeam) setActiveTeam("");
@@ -200,6 +252,74 @@ export default function MercatoSection({
                   ) : (
                     <p className="muted">Nessun cambio disponibile.</p>
                   )}
+
+                  <div className="market-ranking-wrap">
+                    <details className="accordion market-accordion" open>
+                      <summary>
+                        <span>Giocatori più acquistati</span>
+                        <strong>{topBought.length}</strong>
+                      </summary>
+                      {topBought.length ? (
+                        <div className="list market-ranking-list">
+                          {topBought.map((row, idx) => (
+                            <div key={`buy-${row.name}-${idx}`} className="list-item market-ranking-item">
+                              <div>
+                                <p className="rank-title">
+                                  <span
+                                    className={`rank-badge ${
+                                      idx === 0 ? "gold" : idx === 1 ? "silver" : idx === 2 ? "bronze" : ""
+                                    }`}
+                                  >
+                                    #{idx + 1}
+                                  </span>
+                                  <span className="market-ranking-name">{row.name}</span>
+                                </p>
+                                <span className="muted">
+                                  {(row.role || "-")} - {(row.squadra || "-")} · {row.teamCount} team
+                                </span>
+                              </div>
+                              <strong>{row.count}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="muted">Nessun acquisto disponibile.</p>
+                      )}
+                    </details>
+
+                    <details className="accordion market-accordion">
+                      <summary>
+                        <span>Giocatori più svincolati</span>
+                        <strong>{topReleased.length}</strong>
+                      </summary>
+                      {topReleased.length ? (
+                        <div className="list market-ranking-list">
+                          {topReleased.map((row, idx) => (
+                            <div key={`rel-${row.name}-${idx}`} className="list-item market-ranking-item">
+                              <div>
+                                <p className="rank-title">
+                                  <span
+                                    className={`rank-badge ${
+                                      idx === 0 ? "gold" : idx === 1 ? "silver" : idx === 2 ? "bronze" : ""
+                                    }`}
+                                  >
+                                    #{idx + 1}
+                                  </span>
+                                  <span className="market-ranking-name">{row.name}</span>
+                                </p>
+                                <span className="muted">
+                                  {(row.role || "-")} - {(row.squadra || "-")} · {row.teamCount} team
+                                </span>
+                              </div>
+                              <strong>{row.count}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="muted">Nessuno svincolo disponibile.</p>
+                      )}
+                    </details>
+                  </div>
                 </>
               ) : (
                 <p className="muted">Nessun team trovato.</p>

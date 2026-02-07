@@ -912,6 +912,27 @@ body.menu-open .menu-overlay {
   margin-top: 10px;
 }
 
+.market-ranking-wrap {
+  margin-top: 14px;
+  width: 100%;
+}
+
+.market-accordion summary span {
+  letter-spacing: 0.01em;
+}
+
+.market-ranking-list {
+  margin-top: 8px;
+}
+
+.market-ranking-item {
+  padding: 12px 14px;
+}
+
+.market-ranking-name {
+  font-weight: 700;
+}
+
 .market-preview-list .list-item {
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
