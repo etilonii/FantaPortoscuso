@@ -9,7 +9,6 @@ from typing import Dict, List, Optional
 from fastapi import APIRouter, Query, Body, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
-from apps.api.app.engine.market_engine import suggest_transfers
 from apps.api.app.deps import get_db
 from apps.api.app.models import AccessKey, Fixture, Player, PlayerStats, Team, TeamKey
 from apps.api.app.utils.names import normalize_name, strip_star, is_starred
@@ -1398,79 +1397,7 @@ def refresh_market(
 
 @router.post("/market/suggest")
 def market_suggest(payload: dict = Body(default=None)):
-    payload = payload or {}
-    user_squad = payload.get("user_squad", [])
-    credits = float(payload.get("credits_residui", 0) or 0)
-    players_pool = payload.get("players_pool", [])
-    teams_data = payload.get("teams_data", {})
-    fixtures = payload.get("fixtures", [])
-    current_round = int(payload.get("currentRound") or payload.get("current_round") or 1)
-    params = payload.get("params", {}) or {}
-
-    if not teams_data:
-        teams_data = _build_teams_data_from_user_squad(user_squad)
-
-    k_pool = max(int(params.get("k_pool", 60)), 20)
-    m_out = max(int(params.get("m_out", 8)), 6)
-    beam_width = max(int(params.get("beam_width", 200)), 200)
-
-    required_outs = params.get("required_outs") or []
-    if not required_outs:
-        starred = []
-        for p in user_squad:
-            name = (p.get("Giocatore") or p.get("nome") or "").strip()
-            if name.endswith("*"):
-                cleaned = name[:-1].strip()
-                if cleaned:
-                    starred.append(cleaned)
-        if starred:
-            required_outs = starred
-    exclude_ins = params.get("exclude_ins") or []
-    fixed_swaps = params.get("fixed_swaps") or []
-    include_outs_any = params.get("include_outs_any") or []
-    debug = bool(params.get("debug") or payload.get("debug"))
-
-    solutions = suggest_transfers(
-        user_squad=user_squad,
-        credits_residui=credits,
-        players_pool=players_pool,
-        teams_data=teams_data,
-        fixtures=fixtures,
-        current_round=current_round,
-        max_changes=max(int(params.get("max_changes", 5)), len(required_outs)),
-        k_pool=k_pool,
-        m_out=m_out,
-        beam_width=beam_width,
-        required_outs=required_outs,
-        exclude_ins=exclude_ins,
-        fixed_swaps=fixed_swaps,
-        include_outs_any=include_outs_any,
-        debug=debug,
-    )
-
-    out = []
-    for sol in solutions:
-        out.append(
-            {
-                "budget_initial": sol.budget_initial,
-                "budget_final": sol.budget_final,
-                "total_gain": sol.total_gain,
-                "recommended_outs": sol.recommended_outs,
-                "warnings": sol.warnings,
-                "swaps": [
-                    {
-                        "out": s.out_player.get("nome") or s.out_player.get("Giocatore"),
-                        "in": s.in_player.get("nome") or s.in_player.get("Giocatore"),
-                        "qa_out": s.qa_out,
-                        "qa_in": s.qa_in,
-                        "gain": s.gain,
-                        "cost_net": s.cost_net,
-                    }
-                    for s in sol.swaps
-                ],
-            }
-        )
-    return {"solutions": out}
+    raise HTTPException(status_code=410, detail="Algoritmo mercato temporaneamente disattivato")
 
 
 @router.get("/market/payload")
@@ -1478,11 +1405,4 @@ def market_payload(
     x_access_key: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    if not x_access_key:
-        raise HTTPException(status_code=401, detail="Access key richiesta")
-    key_value = x_access_key.strip().lower()
-    record = db.query(TeamKey).filter(TeamKey.key == key_value).first()
-    if not record:
-        raise HTTPException(status_code=404, detail="Team non associato alla key")
-    payload = _build_market_suggest_payload(record.team, db)
-    return {"team": record.team, "payload": payload}
+    raise HTTPException(status_code=410, detail="Algoritmo mercato temporaneamente disattivato")

@@ -1318,16 +1318,11 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const playerSlug = slugify(selectedPlayer);
 
 useEffect(() => {
-  if (!loggedIn) {
-    setSuggestPayload(null);
-    setSuggestTeam("");
-    setSuggestions([]);
-    setSuggestError("");
-    setSuggestHasRun(false);
-    return;
-  }
-  loadSuggestPayload();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  setSuggestPayload(null);
+  setSuggestTeam("");
+  setSuggestions([]);
+  setSuggestError("");
+  setSuggestHasRun(false);
 }, [loggedIn]);
 
   /* ===========================
