@@ -220,6 +220,8 @@ export default function App() {
   });
   const [activeTopRole, setActiveTopRole] = useState("P");
   const [topAcquistiQuery, setTopAcquistiQuery] = useState("");
+  const [topPosFrom, setTopPosFrom] = useState("");
+  const [topPosTo, setTopPosTo] = useState("");
 
   /* ===== PLAYER ===== */
   const [selectedPlayer, setSelectedPlayer] = useState(null);
@@ -754,17 +756,71 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const filteredTopAcquisti = useMemo(() => {
     const q = String(topAcquistiQuery || "").trim().toLowerCase();
-    const list = (topPlayersByRole[activeTopRole] || []).map((item, index) => ({
-      ...item,
-      rank: index + 1,
-    }));
-    if (!q) return list;
-    return list.filter((p) =>
-      String(p.name || "")
-        .toLowerCase()
-        .includes(q)
-    );
-  }, [topPlayersByRole, activeTopRole, topAcquistiQuery]);
+    const posMap = new Map();
+    for (const row of marketStandings || []) {
+      const team = String(row.team || row.Team || row.Squadra || "").trim();
+      const posNum = Number(row.pos ?? row.Pos ?? row.posizione ?? row.Posizione);
+      if (!team || !Number.isFinite(posNum)) continue;
+      posMap.set(normalizeName(team), Math.trunc(posNum));
+    }
+
+    const maxPos = Math.max(84, ...(Array.from(posMap.values()).length ? Array.from(posMap.values()) : [84]));
+    const fromRaw = Number.parseInt(String(topPosFrom || "").trim(), 10);
+    const toRaw = Number.parseInt(String(topPosTo || "").trim(), 10);
+    const hasFrom = Number.isFinite(fromRaw);
+    const hasTo = Number.isFinite(toRaw);
+    let from = hasFrom ? Math.max(1, fromRaw) : 1;
+    let to = hasTo ? Math.max(1, toRaw) : maxPos;
+    if (from > to) [from, to] = [to, from];
+    const rangeActive = hasFrom || hasTo;
+
+    const list = (topPlayersByRole[activeTopRole] || [])
+      .map((item) => {
+        const teams = Array.isArray(item.teams) ? item.teams : [];
+        const teamsInRange = teams.filter((teamName) => {
+          const pos = posMap.get(normalizeName(teamName));
+          if (!Number.isFinite(pos)) return false;
+          return pos >= from && pos <= to;
+        });
+        const rangeCount = teamsInRange.length;
+        if (rangeActive && rangeCount === 0) return null;
+        return {
+          ...item,
+          countTotal: Number(item.count || 0),
+          count: rangeActive ? rangeCount : Number(item.count || 0),
+          teams: rangeActive ? teamsInRange : teams,
+        };
+      })
+      .filter(Boolean)
+      .filter((p) => {
+        if (!q) return true;
+        return String(p.name || "")
+          .toLowerCase()
+          .includes(q);
+      })
+      .sort((a, b) => {
+        if (b.count !== a.count) return b.count - a.count;
+        if ((b.countTotal || 0) !== (a.countTotal || 0)) {
+          return (b.countTotal || 0) - (a.countTotal || 0);
+        }
+        return String(a.name || "").localeCompare(String(b.name || ""), "it", {
+          sensitivity: "base",
+        });
+      })
+      .map((item, index) => ({
+        ...item,
+        rank: index + 1,
+      }));
+
+    return list;
+  }, [
+    topPlayersByRole,
+    activeTopRole,
+    topAcquistiQuery,
+    marketStandings,
+    topPosFrom,
+    topPosTo,
+  ]);
 
   /* ===========================
      MERCATO: placeholder
@@ -1644,6 +1700,10 @@ useEffect(() => {
                 aggregatesLoading={aggregatesLoading}
                 topAcquistiQuery={topAcquistiQuery}
                 setTopAcquistiQuery={setTopAcquistiQuery}
+                topPosFrom={topPosFrom}
+                setTopPosFrom={setTopPosFrom}
+                topPosTo={topPosTo}
+                setTopPosTo={setTopPosTo}
                 filteredTopAcquisti={filteredTopAcquisti}
                 openPlayer={openPlayer}
                 formatInt={formatInt}

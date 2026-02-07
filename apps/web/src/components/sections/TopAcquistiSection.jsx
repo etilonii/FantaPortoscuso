@@ -4,6 +4,10 @@ export default function TopAcquistiSection({
   aggregatesLoading,
   topAcquistiQuery,
   setTopAcquistiQuery,
+  topPosFrom,
+  setTopPosFrom,
+  topPosTo,
+  setTopPosTo,
   filteredTopAcquisti,
   openPlayer,
   formatInt,
@@ -12,7 +16,7 @@ export default function TopAcquistiSection({
     <section className="dashboard">
       <div className="dashboard-header">
         <div>
-          <p className="eyebrow">Giocatori piÃ¹ acquistati</p>
+          <p className="eyebrow">Giocatori più acquistati</p>
           <h2>Per Ruolo</h2>
         </div>
       </div>
@@ -50,6 +54,33 @@ export default function TopAcquistiSection({
                 />
               </label>
 
+              <div className="top-acquisti-range">
+                <label className="field">
+                  <span>Posizione da</span>
+                  <input
+                    className="input"
+                    type="number"
+                    min="1"
+                    step="1"
+                    placeholder="Es. 7"
+                    value={topPosFrom}
+                    onChange={(e) => setTopPosFrom(e.target.value)}
+                  />
+                </label>
+                <label className="field">
+                  <span>Posizione a</span>
+                  <input
+                    className="input"
+                    type="number"
+                    min="1"
+                    step="1"
+                    placeholder="Es. 30"
+                    value={topPosTo}
+                    onChange={(e) => setTopPosTo(e.target.value)}
+                  />
+                </label>
+              </div>
+
               {filteredTopAcquisti.length ? (
                 filteredTopAcquisti.map((p, idx) => (
                   <div
@@ -72,7 +103,7 @@ export default function TopAcquistiSection({
                         </button>
                       </p>
                       <span className="muted">
-                        Squadra: {p.squadra || "-"} Â· Teams: {p.count}
+                        Squadra: {p.squadra || "-"} · Teams: {p.count}
                       </span>
                       <div className="team-tags">
                         {(p.teams || []).map((t) => (

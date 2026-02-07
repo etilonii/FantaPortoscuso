@@ -511,6 +511,23 @@ body.menu-open .menu-overlay {
   box-shadow: 0 0 0 3px rgba(91, 209, 255, 0.15);
 }
 
+.top-acquisti-range {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 8px 0 14px;
+}
+
+.top-acquisti-range .field {
+  margin: 0;
+}
+
+.top-acquisti-range .field span {
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
 .rose-compact {
   padding: 6px !important;
 }
@@ -2356,6 +2373,10 @@ body.menu-open .menu-overlay {
 
 @media (max-width: 900px) {
   .market-ranking-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .top-acquisti-range {
     grid-template-columns: 1fr;
   }
 }
