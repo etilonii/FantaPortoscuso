@@ -8,10 +8,24 @@ SEED_HISTORY_DIR="/app/seed/history"
 SEED_ROSE="/app/seed/rose_fantaportoscuso.csv"
 ROSE_PATH="/app/data/rose_fantaportoscuso.csv"
 
-mkdir -p /app/data/db
+warn() {
+  echo "WARN: $1" >&2
+}
+
+safe_mkdir() {
+  mkdir -p "$1" || warn "mkdir failed: $1"
+}
+
+safe_copy() {
+  src="$1"
+  dst="$2"
+  cp "$src" "$dst" || warn "copy failed: $src -> $dst"
+}
+
+safe_mkdir /app/data/db
 
 if [ ! -f "$DB_PATH" ] && [ -f "$SEED_PATH" ]; then
-  cp "$SEED_PATH" "$DB_PATH"
+  safe_copy "$SEED_PATH" "$DB_PATH"
 fi
 
 if [ -d "$SEED_DB_DIR" ]; then
@@ -19,7 +33,7 @@ if [ -d "$SEED_DB_DIR" ]; then
     [ -f "$seed_file" ] || continue
     target="/app/data/db/$(basename "$seed_file")"
     if [ ! -s "$target" ]; then
-      cp "$seed_file" "$target"
+      safe_copy "$seed_file" "$target"
     fi
   done
 fi
@@ -27,7 +41,7 @@ fi
 # Seed rose snapshot if missing or older than seed.
 if [ -f "$SEED_ROSE" ]; then
   if [ ! -f "$ROSE_PATH" ] || [ "$SEED_ROSE" -nt "$ROSE_PATH" ]; then
-    cp "$SEED_ROSE" "$ROSE_PATH"
+    safe_copy "$SEED_ROSE" "$ROSE_PATH"
   fi
 fi
 
@@ -37,8 +51,8 @@ if [ -d "$SEED_HISTORY_DIR" ]; then
     [ -d "$hist_dir" ] || continue
     target="/app/data/history/$(basename "$hist_dir")"
     if [ ! -d "$target" ] || [ -z "$(ls -A "$target" 2>/dev/null)" ]; then
-      mkdir -p "$target"
-      cp -r "$hist_dir"/* "$target"/ 2>/dev/null || true
+      safe_mkdir "$target"
+      cp -r "$hist_dir"/* "$target"/ 2>/dev/null || warn "history seed copy failed for $(basename "$hist_dir")"
     fi
   done
 fi
