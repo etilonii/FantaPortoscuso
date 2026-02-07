@@ -190,6 +190,7 @@ export default function App() {
 
   /* ===== TEAMS / ROSE ===== */
   const [teams, setTeams] = useState([]);
+  const [marketStandings, setMarketStandings] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState("");
   const [roster, setRoster] = useState([]);
   const [roleFilter, setRoleFilter] = useState("all");
@@ -358,6 +359,15 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setRoster(data.items || []);
+    } catch {}
+  };
+
+  const loadMarketStandings = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/data/standings`);
+      if (!res.ok) return;
+      const data = await res.json();
+      setMarketStandings(Array.isArray(data.items) ? data.items : []);
     } catch {}
   };
 
@@ -1223,6 +1233,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   useEffect(() => {
     loadSummary();
     loadTeams();
+    loadMarketStandings();
     loadPlusvalenze();
     loadAllPlusvalenze();
     loadListone();
@@ -1643,6 +1654,7 @@ useEffect(() => {
               <MercatoSection
                 marketUpdatedAt={marketUpdatedAt}
                 marketCountdown={marketCountdown}
+                marketStandings={marketStandings}
                 isAdmin={isAdmin}
                 marketPreview={marketPreview}
                 setMarketPreview={setMarketPreview}

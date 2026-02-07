@@ -4,6 +4,7 @@ export default function MercatoSection({
   marketUpdatedAt,
   marketCountdown,
   marketItems,
+  marketStandings,
   formatInt,
 }) {
   const [teamSearch, setTeamSearch] = useState("");
@@ -41,14 +42,35 @@ export default function MercatoSection({
     });
   }, [marketItems]);
 
+  const normalizeTeam = (value) =>
+    String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "");
+
+  const standingsMap = useMemo(() => {
+    const map = new Map();
+    (marketStandings || []).forEach((row, idx) => {
+      const team = String(row.team || row.Squadra || "").trim();
+      if (!team) return;
+      const rawPos = Number(row.pos ?? row.Pos ?? idx + 1);
+      const pos = Number.isFinite(rawPos) ? rawPos : idx + 1;
+      map.set(normalizeTeam(team), pos);
+    });
+    return map;
+  }, [marketStandings]);
+
   const orderedTeams = useMemo(() => {
     return [...marketTeamsByName].sort((a, b) => {
-      const aDate = a.lastDate || "";
-      const bDate = b.lastDate || "";
-      if (aDate !== bDate) return bDate.localeCompare(aDate);
-      return (b.lastIndex ?? 0) - (a.lastIndex ?? 0);
+      const aPos = standingsMap.get(normalizeTeam(a.team));
+      const bPos = standingsMap.get(normalizeTeam(b.team));
+      const aKnown = Number.isFinite(aPos);
+      const bKnown = Number.isFinite(bPos);
+      if (aKnown && bKnown && aPos !== bPos) return aPos - bPos;
+      if (aKnown && !bKnown) return -1;
+      if (!aKnown && bKnown) return 1;
+      return a.team.localeCompare(b.team, "it", { sensitivity: "base" });
     });
-  }, [marketTeamsByName]);
+  }, [marketTeamsByName, standingsMap]);
 
   const filteredTeams = useMemo(() => {
     const query = teamSearch.trim().toLowerCase();
