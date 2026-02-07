@@ -23,6 +23,7 @@ RESIDUAL_CREDITS_PATH = DATA_DIR / "rose_nuovo_credits.csv"
 STATS_PATH = DATA_DIR / "statistiche_giocatori.csv"
 MARKET_PATH = DATA_DIR / "market_latest.json"
 MARKET_REPORT_GLOB = "rose_changes_*.csv"
+ROSE_DIFF_GLOB = "diff_rose_*.txt"
 STATS_DIR = DATA_DIR / "stats"
 PLAYER_CARDS_PATH = DATA_DIR / "db" / "quotazioni_master.csv"
 PLAYER_STATS_PATH = DATA_DIR / "db" / "player_stats.csv"
@@ -508,6 +509,110 @@ def _latest_market_report() -> Optional[Path]:
     return candidates[0] if candidates else None
 
 
+def _latest_rose_diff() -> Optional[Path]:
+    diffs_dir = DATA_DIR / "history" / "diffs"
+    if not diffs_dir.exists():
+        return None
+    candidates = sorted(
+        diffs_dir.glob(ROSE_DIFF_GLOB),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    return candidates[0] if candidates else None
+
+
+def _build_market_from_rose_diff(path: Path) -> Dict[str, List[Dict[str, str]]]:
+    stamp = path.stem.replace("diff_rose_", "")
+    items: List[Dict[str, str]] = []
+    team_rows: Dict[str, Dict[str, object]] = {}
+    seen = set()
+
+    lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+    for raw_line in lines:
+        line = raw_line.strip()
+        if not line or ":" not in line:
+            continue
+        team, payload = line.split(":", 1)
+        team = team.strip()
+        payload = payload.strip()
+        if not team or not payload:
+            continue
+
+        swaps = [part.strip() for part in payload.split(";") if part.strip()]
+        for swap in swaps:
+            if "->" not in swap:
+                continue
+            left, right = [part.strip() for part in swap.split("->", 1)]
+
+            out_parts = [part.strip() for part in left.split(",")]
+            in_parts = [part.strip() for part in right.split(",")]
+
+            out_name = out_parts[0] if len(out_parts) >= 1 else ""
+            out_value = out_parts[1] if len(out_parts) >= 2 else "0"
+            out_role = out_parts[2] if len(out_parts) >= 3 else ""
+            out_team = out_parts[3] if len(out_parts) >= 4 else ""
+
+            in_name = in_parts[0] if len(in_parts) >= 1 else ""
+            in_value = in_parts[1] if len(in_parts) >= 2 else "0"
+            in_role = in_parts[2] if len(in_parts) >= 3 else ""
+            in_team = in_parts[3] if len(in_parts) >= 4 else ""
+
+            # Keep one logical swap only once per team/date.
+            dedupe_key = (
+                team.lower(),
+                stamp,
+                normalize_name(out_name),
+                normalize_name(in_name),
+                (out_role or "").upper(),
+                (in_role or "").upper(),
+            )
+            if dedupe_key in seen:
+                continue
+            seen.add(dedupe_key)
+
+            try:
+                out_value_num = float(str(out_value).replace(",", "."))
+            except ValueError:
+                out_value_num = 0.0
+            try:
+                in_value_num = float(str(in_value).replace(",", "."))
+            except ValueError:
+                in_value_num = 0.0
+
+            items.append(
+                {
+                    "team": team,
+                    "date": stamp,
+                    "out": out_name,
+                    "out_missing": out_name.endswith("*"),
+                    "out_squadra": out_team,
+                    "out_ruolo": (out_role or "").upper(),
+                    "out_value": out_value_num,
+                    "in": in_name,
+                    "in_missing": in_name.endswith("*"),
+                    "in_squadra": in_team,
+                    "in_ruolo": (in_role or "").upper(),
+                    "in_value": in_value_num,
+                    "delta": out_value_num - in_value_num,
+                }
+            )
+
+            row = team_rows.get(team) or {
+                "team": team,
+                "delta": 0.0,
+                "changed_count": 0,
+                "last_date": stamp,
+            }
+            row["delta"] = float(row["delta"]) + (out_value_num - in_value_num)
+            row["changed_count"] = int(row["changed_count"]) + 1
+            row["last_date"] = stamp
+            team_rows[team] = row
+
+    teams = list(team_rows.values())
+    teams.sort(key=lambda r: str(r.get("team", "")).lower())
+    return {"items": items, "teams": teams}
+
+
 def _latest_rose_xlsx() -> Optional[Path]:
     if not ROSE_XLSX_DIR.exists():
         return None
@@ -663,6 +768,12 @@ def _load_residual_credits_map() -> Dict[str, float]:
 
 
 def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
+    diff_path = _latest_rose_diff()
+    if diff_path:
+        data = _build_market_from_rose_diff(diff_path)
+        if data.get("items"):
+            return data
+
     report_path = _latest_market_report()
     if not report_path:
         if MARKET_PATH.exists():
@@ -1203,6 +1314,116 @@ def teams():
     rose = _read_csv(ROSE_PATH)
     team_set = sorted({row.get("Team", "") for row in rose if row.get("Team")})
     return {"items": team_set}
+
+
+def _load_standings_rows() -> List[Dict[str, object]]:
+    base_dir = Path(__file__).resolve().parents[4]
+    candidates = [
+        base_dir / "Classifica_FantaPortoscuso-25.xlsx",
+        DATA_DIR / "classifica.xlsx",
+        DATA_DIR / "classifica.csv",
+    ]
+    source = next((p for p in candidates if p.exists()), None)
+    if source is None:
+        return []
+
+    try:
+        if source.suffix.lower() == ".csv":
+            rows = _read_csv(source)
+            out = []
+            for idx, row in enumerate(rows):
+                team = str(row.get("Squadra") or row.get("Team") or "").strip()
+                if not team:
+                    continue
+                pos_raw = str(row.get("Pos") or row.get("Posizione") or "").strip()
+                pts_raw = str(row.get("Pt. totali") or row.get("Punti") or "").strip()
+                played_raw = str(row.get("Partite Giocate") or row.get("PG") or "").strip()
+                try:
+                    pos = int(float(pos_raw.replace(",", "."))) if pos_raw else idx + 1
+                except ValueError:
+                    pos = idx + 1
+                try:
+                    points = float(pts_raw.replace(",", ".")) if pts_raw else 0.0
+                except ValueError:
+                    points = 0.0
+                try:
+                    played = int(float(played_raw.replace(",", "."))) if played_raw else 0
+                except ValueError:
+                    played = 0
+                out.append({"pos": pos, "team": team, "played": played, "points": points})
+            out.sort(key=lambda x: x["pos"])
+            return out
+
+        import pandas as pd
+
+        raw = pd.read_excel(source, header=None)
+        header_row = 0
+        for i in range(min(len(raw), 20)):
+            values = [
+                str(v).strip().lower()
+                for v in raw.iloc[i].tolist()
+                if str(v).strip() and str(v).strip().lower() != "nan"
+            ]
+            if not values:
+                continue
+            has_pos = any(v in {"pos", "posizione"} for v in values)
+            has_team = any("squadra" in v or "team" in v for v in values)
+            if has_pos and has_team:
+                header_row = i
+                break
+
+        df = pd.read_excel(source, header=header_row)
+        col_map = {str(c).strip().lower(): c for c in df.columns}
+
+        pos_col = None
+        team_col = None
+        points_col = None
+        played_col = None
+
+        for k, v in col_map.items():
+            if pos_col is None and (k == "pos" or "posizione" in k):
+                pos_col = v
+            if team_col is None and ("squadra" in k or k == "team"):
+                team_col = v
+            if points_col is None and ("pt" in k and "tot" in k):
+                points_col = v
+            if played_col is None and ("partite" in k or k in {"pg", "23"}):
+                played_col = v
+
+        if team_col is None:
+            return []
+
+        out = []
+        for idx, row in df.iterrows():
+            team = str(row.get(team_col, "")).strip()
+            if not team or team.lower() == "nan":
+                continue
+            pos_val = row.get(pos_col) if pos_col is not None else (idx + 1)
+            points_val = row.get(points_col) if points_col is not None else 0
+            played_val = row.get(played_col) if played_col is not None else 0
+            try:
+                pos = int(float(pos_val))
+            except (TypeError, ValueError):
+                pos = idx + 1
+            try:
+                points = float(points_val)
+            except (TypeError, ValueError):
+                points = 0.0
+            try:
+                played = int(float(played_val))
+            except (TypeError, ValueError):
+                played = 0
+            out.append({"pos": pos, "team": team, "played": played, "points": points})
+
+        out.sort(key=lambda x: x["pos"])
+        return out
+    except Exception:
+        return []
+
+
+@router.get("/standings")
+def standings():
+    return {"items": _load_standings_rows()}
 
 
 @router.get("/team/{team_name}")
