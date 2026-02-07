@@ -105,6 +105,20 @@ const formatLastAccess = (value) => {
   return `${time} ${date}`;
 };
 
+const formatDataStatusDate = (value) => {
+  if (!value) return "-";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "-";
+  return d.toLocaleString("it-IT", {
+    timeZone: "Europe/Rome",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
 /* ===========================
    CONFIG
 =========================== */
@@ -132,6 +146,13 @@ export default function App() {
 
   /* ===== DASHBOARD ===== */
   const [summary, setSummary] = useState({ teams: 0, players: 0 });
+  const [dataStatus, setDataStatus] = useState({
+    last_update: "",
+    result: "error",
+    message: "Nessun aggiornamento dati disponibile",
+    season: "",
+    matchday: null,
+  });
 
   /* ===== SEARCH ===== */
   const [activeTab, setActiveTab] = useState("rose");
@@ -237,6 +258,8 @@ export default function App() {
   const [adminTeamKey, setAdminTeamKey] = useState("");
   const [adminTeamName, setAdminTeamName] = useState("");
   const [adminResetKey, setAdminResetKey] = useState("");
+  const [adminResetNote, setAdminResetNote] = useState("");
+  const [adminResetUsage, setAdminResetUsage] = useState(null);
   const [adminImportKeys, setAdminImportKeys] = useState("");
   const [adminImportIsAdmin, setAdminImportIsAdmin] = useState(false);
   const [adminImportTeamKeys, setAdminImportTeamKeys] = useState("");
@@ -337,6 +360,42 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       const data = await res.json();
       setSummary(data);
     } catch {}
+  };
+
+  const loadDataStatus = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/meta/data-status`);
+      if (!res.ok) throw new Error("status request failed");
+      const data = await res.json();
+      const rawMatchday = data?.matchday;
+      let parsedMatchday = null;
+      if (
+        rawMatchday !== undefined &&
+        rawMatchday !== null &&
+        rawMatchday !== ""
+      ) {
+        const numericMatchday = Number(rawMatchday);
+        if (Number.isFinite(numericMatchday)) {
+          parsedMatchday = numericMatchday;
+        }
+      }
+      const normalized = {
+        last_update: String(data?.last_update || ""),
+        result: String(data?.result || "").toLowerCase() === "ok" ? "ok" : "error",
+        message:
+          String(data?.message || "").trim() ||
+          "Nessun aggiornamento dati disponibile",
+        season: String(data?.season || ""),
+        matchday: parsedMatchday,
+      };
+      setDataStatus(normalized);
+    } catch {
+      setDataStatus((prev) => ({
+        ...prev,
+        result: "error",
+        message: "Errore nel recupero stato dati",
+      }));
+    }
   };
 
   const loadTeams = async () => {
@@ -1192,6 +1251,31 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     } catch {}
   };
 
+  const loadAdminResetUsage = async (keyValue) => {
+    if (!isAdmin) return;
+    const key = String(keyValue || "").trim().toLowerCase();
+    if (!key) {
+      setAdminResetUsage(null);
+      return;
+    }
+    try {
+      const res = await fetch(
+        `${API_BASE}/auth/admin/reset-usage?key=${encodeURIComponent(key)}`,
+        {
+          headers: { "X-Admin-Key": accessKey.trim().toLowerCase() },
+        }
+      );
+      if (!res.ok) {
+        setAdminResetUsage(null);
+        return;
+      }
+      const data = await res.json();
+      setAdminResetUsage(data || null);
+    } catch {
+      setAdminResetUsage(null);
+    }
+  };
+
   const resetKeyAdmin = async () => {
     if (!isAdmin) return;
     const key = adminResetKey.trim().toLowerCase();
@@ -1203,13 +1287,25 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           "Content-Type": "application/json",
           "X-Admin-Key": accessKey.trim().toLowerCase(),
         },
-        body: JSON.stringify({ key }),
+        body: JSON.stringify({ key, note: adminResetNote.trim() || null }),
       });
-      if (!res.ok) return;
-      setAdminNotice(`Key ${key.toUpperCase()} resettata.`);
-      setAdminResetKey("");
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAdminNotice(data?.detail || "Errore durante il reset key.");
+        loadAdminResetUsage(key);
+        return;
+      }
+      setAdminNotice(
+        `Key ${key.toUpperCase()} resettata. Reset usati: ${data?.used ?? "-"}${
+          data?.limit ? `/${data.limit}` : "/3"
+        }`
+      );
+      setAdminResetNote("");
       loadAdminKeys();
-    } catch {}
+      loadAdminResetUsage(key);
+    } catch {
+      setAdminNotice("Errore durante il reset key.");
+    }
   };
 
   const importKeysAdmin = async () => {
@@ -1307,6 +1403,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   useEffect(() => {
     loadSummary();
+    loadDataStatus();
     loadTeams();
     loadMarketStandings();
     loadPlusvalenze();
@@ -1329,6 +1426,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     loadAdminTeamKeys();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
+
+  useEffect(() => {
+    if (!loggedIn || !isAdmin) return;
+    loadAdminResetUsage(adminResetKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adminResetKey, loggedIn, isAdmin]);
 
   useEffect(() => {
     if (!loggedIn || !accessKey.trim()) return;
@@ -1614,6 +1717,8 @@ useEffect(() => {
             {activeMenu === "home" && (
               <HomeSection
                 summary={summary}
+                dataStatus={dataStatus}
+                formatDataStatusDate={formatDataStatusDate}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 query={query}
@@ -1977,9 +2082,24 @@ useEffect(() => {
                         value={adminResetKey}
                         onChange={(e) => setAdminResetKey(e.target.value)}
                       />
+                      <input
+                        className="input"
+                        placeholder="Nota reset (opzionale)"
+                        value={adminResetNote}
+                        onChange={(e) => setAdminResetNote(e.target.value)}
+                      />
                       <button className="ghost" onClick={resetKeyAdmin}>
                         Reset key
                       </button>
+                    </div>
+
+                    <div className="admin-row admin-row-stacked">
+                      <p className="muted">
+                        Reset usati: {adminResetUsage?.used ?? 0}/{adminResetUsage?.limit ?? 3}
+                        {adminResetUsage?.season
+                          ? ` · Stagione ${adminResetUsage.season}`
+                          : ""}
+                      </p>
                     </div>
 
                     <div className="admin-row admin-row-stacked">

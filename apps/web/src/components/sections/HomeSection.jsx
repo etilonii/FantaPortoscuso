@@ -1,5 +1,7 @@
 export default function HomeSection({
   summary,
+  dataStatus,
+  formatDataStatusDate,
   activeTab,
   setActiveTab,
   query,
@@ -22,6 +24,13 @@ export default function HomeSection({
   goToTeam,
   setActiveMenu,
 }) {
+  const statusOk = String(dataStatus?.result || "").toLowerCase() === "ok";
+  const statusClass = statusOk ? "ok" : "error";
+  const hasMatchday =
+    dataStatus?.matchday !== null &&
+    dataStatus?.matchday !== undefined &&
+    Number.isFinite(Number(dataStatus.matchday));
+
   return (
     <section className="dashboard">
       <div className="dashboard-header left row">
@@ -49,6 +58,27 @@ export default function HomeSection({
             <strong>{summary.players}</strong>
           </button>
         </div>
+      </div>
+
+      <div className="panel data-status-panel">
+        <div className="panel-header">
+          <h3>Stato Dati</h3>
+          <span className={`status-badge ${statusClass}`}>
+            {statusOk ? "OK" : "Errore"}
+          </span>
+        </div>
+        <div className="data-status-meta">
+          <span className="muted">
+            Ultimo aggiornamento: {formatDataStatusDate(dataStatus?.last_update)}
+          </span>
+          {dataStatus?.season ? (
+            <span className="muted">Stagione: {dataStatus.season}</span>
+          ) : null}
+          {hasMatchday ? (
+            <span className="muted">Giornata: {dataStatus.matchday}</span>
+          ) : null}
+        </div>
+        <p className="data-status-message">{dataStatus?.message || "-"}</p>
       </div>
 
       <div className="panel">

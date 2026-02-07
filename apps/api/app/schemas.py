@@ -49,6 +49,16 @@ class ImportTeamKeysRequest(BaseModel):
 
 class ResetKeyRequest(BaseModel):
     key: str = Field(min_length=1)
+    note: str | None = None
+
+
+class KeyResetUsageResponse(BaseModel):
+    key: str
+    season: str
+    used: int
+    limit: int = 3
+    last_reset_at: str | None = None
+    cooldown_blocked: bool = False
 
 
 class SetAdminRequest(BaseModel):

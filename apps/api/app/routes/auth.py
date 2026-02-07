@@ -10,13 +10,14 @@ from sqlalchemy.orm import Session
 
 from ..config import KEY_LENGTH
 from ..deps import get_db
-from ..models import AccessKey, DeviceSession, TeamKey
+from ..models import AccessKey, DeviceSession, KeyReset, TeamKey
 from ..schemas import (
     AdminKeyResponse,
     AdminKeyItem,
     ImportKeysRequest,
     ImportTeamKeysRequest,
     KeyCreateResponse,
+    KeyResetUsageResponse,
     LoginRequest,
     LoginResponse,
     PingRequest,
@@ -29,10 +30,36 @@ from ..schemas import (
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-DATA_DIR = Path(__file__).resolve().parents[4] / "data"
+
+
+def _resolve_data_dir() -> Path:
+    here = Path(__file__).resolve()
+    for base in [here.parent, *here.parents]:
+        candidate = base / "data"
+        if candidate.is_dir():
+            return candidate
+
+    cwd_candidate = Path.cwd() / "data"
+    if cwd_candidate.is_dir():
+        return cwd_candidate
+
+    return Path(__file__).resolve().parent / "data"
+
+
+DATA_DIR = _resolve_data_dir()
 LAST_UPDATE_PATH = DATA_DIR / "history" / "last_update.json"
 LAST_STATS_UPDATE_PATH = DATA_DIR / "history" / "last_stats_update.json"
 MARKET_LATEST_PATH = DATA_DIR / "market_latest.json"
+
+MAX_KEY_RESETS_PER_SEASON = 3
+RESET_COOLDOWN_HOURS = 24
+
+
+def _current_season(now: datetime | None = None) -> str:
+    ref = now or datetime.utcnow()
+    start_year = ref.year if ref.month >= 7 else ref.year - 1
+    end_year = (start_year + 1) % 100
+    return f"{start_year}-{end_year:02d}"
 
 
 def _generate_key() -> str:
@@ -83,6 +110,21 @@ def _require_admin_key(x_admin_key: str | None, db: Session) -> AccessKey:
         raise HTTPException(status_code=403, detail="Admin key non ancora attivata")
     return record
 
+
+
+def _key_reset_usage(db: Session, key_value: str, season: str) -> tuple[int, datetime | None, bool]:
+    used = db.query(KeyReset).filter(KeyReset.key == key_value, KeyReset.season == season).count()
+    last_reset = (
+        db.query(KeyReset)
+        .filter(KeyReset.key == key_value, KeyReset.season == season)
+        .order_by(KeyReset.reset_at.desc())
+        .first()
+    )
+    last_reset_at = last_reset.reset_at if last_reset else None
+    cooldown_blocked = False
+    if last_reset_at and last_reset_at >= datetime.utcnow() - timedelta(hours=RESET_COOLDOWN_HOURS):
+        cooldown_blocked = True
+    return used, last_reset_at, cooldown_blocked
 
 @router.get("/admin/keys", response_model=list[AdminKeyItem])
 def list_keys(
@@ -332,27 +374,74 @@ def import_team_keys(
     return {"imported": inserted}
 
 
+@router.get("/admin/reset-usage", response_model=KeyResetUsageResponse)
+def key_reset_usage_admin(
+    key: str,
+    x_admin_key: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db)
+    key_value = key.strip().lower()
+    if not key_value:
+        raise HTTPException(status_code=400, detail="Key non valida")
+    season = _current_season()
+    used, last_reset_at, cooldown_blocked = _key_reset_usage(db, key_value, season)
+    return KeyResetUsageResponse(
+        key=key_value,
+        season=season,
+        used=used,
+        limit=MAX_KEY_RESETS_PER_SEASON,
+        last_reset_at=last_reset_at.isoformat() if last_reset_at else None,
+        cooldown_blocked=cooldown_blocked,
+    )
+
 @router.post("/admin/reset-key")
 def reset_key_admin(
     payload: ResetKeyRequest,
     x_admin_key: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    admin_record = _require_admin_key(x_admin_key, db)
     key_value = payload.key.strip().lower()
     if not key_value:
         raise HTTPException(status_code=400, detail="Key non valida")
+
+    season = _current_season()
+    used, last_reset_at, cooldown_blocked = _key_reset_usage(db, key_value, season)
+    if used >= MAX_KEY_RESETS_PER_SEASON:
+        raise HTTPException(
+            status_code=403,
+            detail="Limite reset raggiunto: massimo 3 reset per stagione.",
+        )
+    if cooldown_blocked:
+        raise HTTPException(
+            status_code=403,
+            detail="Reset gia' effettuato nelle ultime 24 ore. Riprova piu' tardi.",
+        )
+
     record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
     if not record:
         raise HTTPException(status_code=404, detail="Key non trovata")
+
     record.used = False
     record.device_id = None
     record.user_agent_hash = None
     record.ip_address = None
     record.used_at = None
     db.add(record)
+
+    note_value = (payload.note or "").strip() or None
+    db.add(
+        KeyReset(
+            key=key_value,
+            season=season,
+            reset_at=datetime.utcnow(),
+            admin_key=admin_record.key,
+            note=note_value,
+        )
+    )
     db.commit()
-    return {"status": "ok"}
+    return {"status": "ok", "used": used + 1, "limit": MAX_KEY_RESETS_PER_SEASON}
 
 
 @router.post("/ping")

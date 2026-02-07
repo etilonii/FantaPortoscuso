@@ -480,6 +480,49 @@ body.menu-open .menu-overlay {
   text-align: center;
 }
 
+.data-status-panel {
+  text-align: left;
+  background: linear-gradient(145deg, rgba(17, 41, 64, 0.85), rgba(20, 52, 80, 0.65));
+}
+
+.data-status-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-top: 6px;
+}
+
+.data-status-message {
+  margin-top: 10px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 84px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid transparent;
+}
+
+.status-badge.ok {
+  background: rgba(75, 201, 122, 0.2);
+  border-color: rgba(75, 201, 122, 0.55);
+  color: #87f2ab;
+}
+
+.status-badge.error {
+  background: rgba(243, 95, 95, 0.2);
+  border-color: rgba(243, 95, 95, 0.55);
+  color: #ffb7b7;
+}
+
 
 .role-switch {
   display: flex;
@@ -2572,6 +2615,22 @@ body.theme-light .market-team-card.active {
   border-color: rgba(42, 167, 255, 0.6);
   box-shadow: 0 12px 24px rgba(15, 35, 60, 0.12);
   background: rgba(42, 167, 255, 0.12);
+}
+
+body.theme-light .data-status-panel {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(237, 246, 255, 0.92));
+}
+
+body.theme-light .status-badge.ok {
+  background: rgba(70, 160, 100, 0.14);
+  border-color: rgba(70, 160, 100, 0.45);
+  color: #1f5a37;
+}
+
+body.theme-light .status-badge.error {
+  background: rgba(200, 70, 70, 0.14);
+  border-color: rgba(200, 70, 70, 0.45);
+  color: #7c2424;
 }
 
 body.theme-light input,

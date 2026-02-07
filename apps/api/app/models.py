@@ -125,6 +125,17 @@ class TeamKey(Base):
     team = Column(String(64), nullable=False)
 
 
+class KeyReset(Base):
+    __tablename__ = "key_resets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key = Column(String(32), nullable=False, index=True)
+    season = Column(String(16), nullable=False, index=True)
+    reset_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    admin_key = Column(String(32), nullable=True)
+    note = Column(String(255), nullable=True)
+
+
 def ensure_schema(engine) -> None:
     with engine.connect() as conn:
         result = conn.execute(text("PRAGMA table_info(access_keys)"))
@@ -151,4 +162,28 @@ def ensure_schema(engine) -> None:
             conn.execute(text("ALTER TABLE player_stats ADD COLUMN rig_sbagl_s FLOAT DEFAULT 0"))
         if "rig_sbagl_r8" not in scolumns:
             conn.execute(text("ALTER TABLE player_stats ADD COLUMN rig_sbagl_r8 FLOAT DEFAULT 0"))
+        conn.commit()
+
+        conn.execute(
+            text(
+                """
+                CREATE TABLE IF NOT EXISTS key_resets (
+                    id INTEGER PRIMARY KEY,
+                    key VARCHAR(32) NOT NULL,
+                    season VARCHAR(16) NOT NULL,
+                    reset_at DATETIME NOT NULL,
+                    admin_key VARCHAR(32),
+                    note VARCHAR(255)
+                )
+                """
+            )
+        )
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_key_resets_key ON key_resets (key)"))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_key_resets_season ON key_resets (season)"))
+        conn.execute(
+            text(
+                "CREATE INDEX IF NOT EXISTS ix_key_resets_key_season ON key_resets (key, season)"
+            )
+        )
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_key_resets_reset_at ON key_resets (reset_at)"))
         conn.commit()
