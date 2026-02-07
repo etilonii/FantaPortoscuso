@@ -7,8 +7,6 @@ export default function MercatoSection({
   marketStandings,
   formatInt,
 }) {
-  const [teamSearch, setTeamSearch] = useState("");
-  const [showAllTeams, setShowAllTeams] = useState(false);
   const [activeTeam, setActiveTeam] = useState("");
 
   const marketTeamsByName = useMemo(() => {
@@ -60,7 +58,8 @@ export default function MercatoSection({
   }, [marketStandings]);
 
   const orderedTeams = useMemo(() => {
-    return [...marketTeamsByName].sort((a, b) => {
+    return [...marketTeamsByName]
+      .sort((a, b) => {
       const aPos = standingsMap.get(normalizeTeam(a.team));
       const bPos = standingsMap.get(normalizeTeam(b.team));
       const aKnown = Number.isFinite(aPos);
@@ -69,41 +68,35 @@ export default function MercatoSection({
       if (aKnown && !bKnown) return -1;
       if (!aKnown && bKnown) return 1;
       return a.team.localeCompare(b.team, "it", { sensitivity: "base" });
-    });
+      })
+      .map((team) => {
+        const pos = standingsMap.get(normalizeTeam(team.team));
+        return {
+          ...team,
+          pos: Number.isFinite(pos) ? pos : null,
+        };
+      });
   }, [marketTeamsByName, standingsMap]);
 
-  const filteredTeams = useMemo(() => {
-    const query = teamSearch.trim().toLowerCase();
-    if (!query) return orderedTeams;
-    return orderedTeams.filter((team) => team.team.toLowerCase().includes(query));
-  }, [orderedTeams, teamSearch]);
-
-  const visibleTeams = useMemo(() => {
-    if (!teamSearch.trim() && !showAllTeams) {
-      return filteredTeams.slice(0, 5);
-    }
-    return filteredTeams;
-  }, [filteredTeams, showAllTeams, teamSearch]);
-
   const activeTeamEntry = useMemo(() => {
-    if (!visibleTeams.length) return null;
+    if (!orderedTeams.length) return null;
     return (
-      visibleTeams.find((team) => team.team === activeTeam) ||
-      visibleTeams[0] ||
+      orderedTeams.find((team) => team.team === activeTeam) ||
+      orderedTeams[0] ||
       null
     );
-  }, [visibleTeams, activeTeam]);
+  }, [orderedTeams, activeTeam]);
 
   useEffect(() => {
-    if (!visibleTeams.length) {
+    if (!orderedTeams.length) {
       if (activeTeam) setActiveTeam("");
       return;
     }
-    const exists = visibleTeams.some((team) => team.team === activeTeam);
+    const exists = orderedTeams.some((team) => team.team === activeTeam);
     if (!exists) {
-      setActiveTeam(visibleTeams[0].team);
+      setActiveTeam(orderedTeams[0].team);
     }
-  }, [visibleTeams, activeTeam]);
+  }, [orderedTeams, activeTeam]);
 
   return (
     <section className="dashboard">
@@ -131,40 +124,24 @@ export default function MercatoSection({
           </div>
           {marketItems.length ? (
             <>
-              <div className="market-team-controls">
-                <input
-                  className="input market-team-search"
-                  placeholder="Cerca team..."
-                  value={teamSearch}
-                  onChange={(e) => setTeamSearch(e.target.value)}
-                />
-                {filteredTeams.length > 5 && !teamSearch.trim() ? (
-                  <button
-                    type="button"
-                    className="ghost"
-                    onClick={() => setShowAllTeams((prev) => !prev)}
-                  >
-                    {showAllTeams ? "Mostra meno team" : "Mostra piu team"}
-                  </button>
-                ) : null}
-              </div>
-
-              {visibleTeams.length ? (
+              {orderedTeams.length ? (
                 <>
-                  <div className="market-team-list">
-                    {visibleTeams.map((team) => (
-                      <button
-                        key={team.team}
-                        type="button"
-                        className={`market-team-card ${
-                          activeTeamEntry?.team === team.team ? "active" : ""
-                        }`}
-                        onClick={() => setActiveTeam(team.team)}
-                      >
-                        <span className="market-team-title">{team.team}</span>
-                        <span className="market-team-count">{team.count} cambi</span>
-                      </button>
-                    ))}
+                  <div className="market-team-controls market-team-select-wrap">
+                    <label className="market-team-select-label" htmlFor="market-team-select">
+                      Team
+                    </label>
+                    <select
+                      id="market-team-select"
+                      className="input market-team-select"
+                      value={activeTeamEntry?.team || ""}
+                      onChange={(e) => setActiveTeam(e.target.value)}
+                    >
+                      {orderedTeams.map((team) => (
+                        <option key={team.team} value={team.team}>
+                          {team.pos ? `#${team.pos} ` : ""}{team.team} ({team.count})
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   {activeTeamEntry ? (
@@ -176,7 +153,10 @@ export default function MercatoSection({
                         >
                           <div>
                             <p className="rank-title">
-                              <span className="team-name">{activeTeamEntry.team}</span>
+                              <span className="team-name">
+                                {activeTeamEntry.pos ? `#${activeTeamEntry.pos} ` : ""}
+                                {activeTeamEntry.team}
+                              </span>
                             </p>
                             <div className="market-swap-card">
                               <div className="market-swap-col">
