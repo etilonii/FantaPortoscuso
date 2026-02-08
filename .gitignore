@@ -24,6 +24,12 @@ data/archive/
 data/tmp/
 data/reports/*missing_report.txt
 data/reports/update_all_log.txt
+# Runtime/generated outputs
+data/status.json
+data/backups/
+data/reports/history/
+# Keep tracked template
+!data/status.example.json
 **/__pycache__/
 *.pyc
 apps/web/dist/

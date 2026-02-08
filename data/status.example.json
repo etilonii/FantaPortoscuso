@@ -1,0 +1,12 @@
+{
+  "message": "Nessun aggiornamento dati disponibile",
+  "update_id": "",
+  "last_update": "",
+  "steps": {
+    "rose": "pending",
+    "strength": "pending",
+    "stats": "pending"
+  },
+  "season": "",
+  "result": "error"
+}
