@@ -1,6 +1,7 @@
 import argparse
 import hashlib
 import json
+import sys
 from pathlib import Path
 import subprocess
 import shutil
@@ -12,6 +13,12 @@ import re
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from apps.api.app.backup import run_backup_fail_fast
+from apps.api.app.config import BACKUP_DIR, BACKUP_KEEP_LAST, DATABASE_URL
+
 DATA_DIR = ROOT / "data"
 TEMPLATE_DIR = DATA_DIR / "templates" / "stats"
 OUT_DIR = DATA_DIR / "stats"
@@ -726,12 +733,27 @@ def main() -> None:
     last = state.get("last_signature", {})
     updated = False
     keep = state.get("keep", 5)
+    backup_done = False
+
+    def ensure_backup() -> None:
+        nonlocal backup_done
+        if backup_done:
+            return
+        run_backup_fail_fast(
+            DATABASE_URL,
+            BACKUP_DIR,
+            BACKUP_KEEP_LAST,
+            prefix="stats",
+            base_dir=ROOT,
+        )
+        backup_done = True
 
     for template_name, out_name, stat in STATS:
         prefix = template_name.replace("_template.csv", "")
         incoming = latest_incoming(prefix)
         if incoming:
             # Move current template to history and replace with incoming
+            ensure_backup()
             template_path = TEMPLATE_DIR / template_name
             archive_template(template_path, prefix, keep)
             TEMPLATE_DIR.mkdir(parents=True, exist_ok=True)
@@ -742,6 +764,7 @@ def main() -> None:
 
         in_path = TEMPLATE_DIR / template_name
         if not in_path.exists() and incoming:
+            ensure_backup()
             TEMPLATE_DIR.mkdir(parents=True, exist_ok=True)
             shutil.copy2(incoming, in_path)
         if not in_path.exists():
@@ -754,6 +777,7 @@ def main() -> None:
 
         out_path = OUT_DIR / out_name
         report_path = DATA_DIR / "reports" / f"{out_path.stem}_missing_report.txt"
+        ensure_backup()
         if stat in ("GolVittoria", "GolPareggio"):
             clean_simple_stat(in_path, out_path, stat, report_path)
         else:
@@ -778,6 +802,7 @@ def main() -> None:
     if R8_DISORDINATI_PATH.exists():
         r8_sig = signature_for(R8_DISORDINATI_PATH)
         if last.get(r8_sig_key) != r8_sig or args.force:
+            ensure_backup()
             missing_r8 = update_r8_disordinati_template()
             last[r8_sig_key] = r8_sig
             updated = True
@@ -785,6 +810,7 @@ def main() -> None:
                 print(f"R8 disordinati: {len(set(missing_r8))} nomi non risolti.")
 
     if updated:
+        ensure_backup()
         state["last_signature"] = last
         save_state(state)
         update_statistiche_giocatori()

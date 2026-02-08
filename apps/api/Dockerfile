@@ -1,26 +1,16 @@
 FROM python:3.12-slim
 
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
 
 WORKDIR /app
 
-COPY apps/api/requirements.txt /app/apps/api/requirements.txt
-RUN pip install --no-cache-dir -r /app/apps/api/requirements.txt
+COPY apps/api/requirements.txt /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt
 
 COPY apps/api /app/apps/api
-COPY data /app/data
-
-RUN mkdir -p /app/seed/db \
-  && if [ -f /app/data/db/app.db ]; then cp /app/data/db/app.db /app/seed/app.db.seed; fi
-
-# Ensure CSV seeds are available even when /app/data/db is later replaced by a volume.
-COPY data/db/*.csv /app/seed/db/
-COPY data/history /app/seed/history
-# Seed latest rose snapshot for volume sync
-COPY data/rose_fantaportoscuso.csv /app/seed/rose_fantaportoscuso.csv
-
-RUN chmod +x /app/apps/api/start.sh
 
 EXPOSE 8001
 
-CMD ["/app/apps/api/start.sh"]
+CMD ["sh", "-c", "mkdir -p /app/data/db /app/data/backups && uvicorn apps.api.app.main:create_app --factory --host 0.0.0.0 --port ${PORT:-8001}"]

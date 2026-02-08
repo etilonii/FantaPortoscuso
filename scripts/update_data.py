@@ -2,6 +2,7 @@ import argparse
 import hashlib
 import json
 import re
+import sys
 from datetime import date
 from pathlib import Path
 from typing import List, Tuple
@@ -9,6 +10,12 @@ from typing import List, Tuple
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from apps.api.app.backup import run_backup_fail_fast
+from apps.api.app.config import BACKUP_DIR, BACKUP_KEEP_LAST, DATABASE_URL
+
 DATA_DIR = ROOT / "data"
 ROSE_PATH = DATA_DIR / "rose_fantaportoscuso.csv"
 QUOT_PATH = DATA_DIR / "quotazioni.csv"
@@ -776,6 +783,21 @@ def main() -> None:
     parser.add_argument("--rebuild-market", action="store_true", help="Rebuild market using latest rose history")
     args = parser.parse_args()
 
+    backup_done = False
+
+    def ensure_backup() -> None:
+        nonlocal backup_done
+        if backup_done:
+            return
+        run_backup_fail_fast(
+            DATABASE_URL,
+            BACKUP_DIR,
+            BACKUP_KEEP_LAST,
+            prefix="update",
+            base_dir=ROOT,
+        )
+        backup_done = True
+
     if args.rebuild_market:
         _rebuild_market_from_history(args.date)
         return
@@ -799,6 +821,7 @@ def main() -> None:
             elif QUOT_PATH.exists():
                 quot_df = pd.read_csv(QUOT_PATH)
             if quot_df is not None:
+                ensure_backup()
                 updated = _sync_rose_with_quotazioni(rose_df, quot_df)
                 _write_csv(updated, ROSE_PATH)
                 print("Rose sincronizzata con quotazioni (PrezzoAttuale).")
@@ -822,7 +845,6 @@ def main() -> None:
     prev_quot = pd.DataFrame()
     prev_rose = pd.DataFrame()
     prev_teams = pd.DataFrame()
-
     if args.quotazioni:
         quot_path = Path(args.quotazioni)
         current_sig["quotazioni"] = _file_signature(quot_path)
@@ -938,6 +960,7 @@ def main() -> None:
             )
 
     if prepared_quot is not None:
+        ensure_backup()
         _archive_current(QUOT_PATH, HIST_QUOT, stamp, "quotazioni", args.keep)
         _write_csv(prepared_quot, QUOT_PATH)
         if not prev_quot.empty:
@@ -948,6 +971,7 @@ def main() -> None:
         archive_quot = True
 
     if prepared_rose is not None:
+        ensure_backup()
         _archive_current(ROSE_PATH, HIST_ROSE, stamp, "rose_fantaportoscuso", args.keep)
         _write_csv(prepared_rose, ROSE_PATH)
         if not prev_rose.empty:
@@ -974,6 +998,7 @@ def main() -> None:
         archive_rose = True
 
     if prepared_teams is not None:
+        ensure_backup()
         _archive_current(TEAMS_PATH, HIST_TEAMS, stamp, "teams", args.keep)
         _write_csv(prepared_teams, TEAMS_PATH)
         updated_teams = True
@@ -989,6 +1014,7 @@ def main() -> None:
         else:
             quot_df = None
         if quot_df is not None:
+            ensure_backup()
             updated = _sync_rose_with_quotazioni(rose_df, quot_df)
             _write_csv(updated, ROSE_PATH)
 

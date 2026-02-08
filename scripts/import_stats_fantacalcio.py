@@ -1,12 +1,18 @@
 import argparse
+import sys
 from datetime import date
 from pathlib import Path
 import re
 
 import pandas as pd
 
-
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from apps.api.app.backup import run_backup_fail_fast
+from apps.api.app.config import BACKUP_DIR, BACKUP_KEEP_LAST, DATABASE_URL
+
 DATA_DIR = ROOT / "data"
 INCOMING_STATS = DATA_DIR / "incoming" / "stats"
 
@@ -114,6 +120,20 @@ def main() -> None:
     }
 
     INCOMING_STATS.mkdir(parents=True, exist_ok=True)
+    backup_done = False
+
+    def ensure_backup() -> None:
+        nonlocal backup_done
+        if backup_done:
+            return
+        run_backup_fail_fast(
+            DATABASE_URL,
+            BACKUP_DIR,
+            BACKUP_KEEP_LAST,
+            prefix="import-stats",
+            base_dir=ROOT,
+        )
+        backup_done = True
 
     for out_name, label in STAT_SPECS.items():
         stat_col = cols.get(label)
@@ -139,6 +159,7 @@ def main() -> None:
         out_df = out_df[out_df[label] > 0]
 
         out_path = INCOMING_STATS / f"{out_name}_{args.date_stamp}.csv"
+        ensure_backup()
         out_df.to_csv(out_path, index=False)
         print(out_path)
 

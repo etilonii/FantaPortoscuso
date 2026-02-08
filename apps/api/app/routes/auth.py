@@ -9,8 +9,9 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from ..backup import run_backup_fail_fast
 from ..auth_utils import access_key_from_bearer
-from ..config import KEY_LENGTH
+from ..config import BACKUP_DIR, BACKUP_KEEP_LAST, DATABASE_URL, KEY_LENGTH
 from ..deps import get_db
 from ..models import AccessKey, DeviceSession, KeyReset, RefreshToken, TeamKey
 from ..auth_tokens import (
@@ -72,6 +73,18 @@ def _current_season(now: datetime | None = None) -> str:
     start_year = ref.year if ref.month >= 8 else ref.year - 1
     end_year = (start_year + 1) % 100
     return f"{start_year}-{end_year:02d}"
+
+
+def _backup_or_500(prefix: str) -> None:
+    try:
+        run_backup_fail_fast(
+            DATABASE_URL,
+            BACKUP_DIR,
+            BACKUP_KEEP_LAST,
+            prefix=prefix,
+        )
+    except RuntimeError as exc:
+        raise HTTPException(status_code=500, detail=f"Backup failed: {exc}") from exc
 
 
 def _generate_key() -> str:
@@ -412,6 +425,7 @@ def import_keys(
     db: Session = Depends(get_db),
 ):
     _require_admin_key(x_admin_key, db, authorization)
+    _backup_or_500("import-keys")
     inserted = 0
     for raw_key in payload.keys:
         key_value = raw_key.strip().lower()
@@ -437,6 +451,7 @@ def import_team_keys(
     db: Session = Depends(get_db),
 ):
     _require_admin_key(x_admin_key, db, authorization)
+    _backup_or_500("import-team-keys")
     inserted = 0
     for item in payload.items:
         key_value = item.key.strip().lower()
@@ -484,6 +499,7 @@ def reset_key_admin(
     db: Session = Depends(get_db),
 ):
     admin_record = _require_admin_key(x_admin_key, db, authorization)
+    _backup_or_500("reset-key")
     key_value = payload.key.strip().lower()
     if not key_value:
         raise HTTPException(status_code=400, detail="Key non valida")

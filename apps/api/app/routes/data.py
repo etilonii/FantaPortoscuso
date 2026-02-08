@@ -9,7 +9,9 @@ from typing import Dict, List, Optional
 from fastapi import APIRouter, Query, Body, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
+from apps.api.app.backup import run_backup_fail_fast
 from apps.api.app.auth_utils import access_key_from_bearer
+from apps.api.app.config import BACKUP_DIR, BACKUP_KEEP_LAST, DATABASE_URL
 from apps.api.app.deps import get_db
 from apps.api.app.models import AccessKey, Fixture, Player, PlayerStats, Team, TeamKey
 from apps.api.app.utils.names import normalize_name, strip_star, is_starred
@@ -115,6 +117,18 @@ def _require_admin_key(
         raise HTTPException(status_code=403, detail="Admin key non valida")
     if not record.used:
         raise HTTPException(status_code=403, detail="Admin key non ancora attivata")
+
+
+def _backup_or_500(prefix: str) -> None:
+    try:
+        run_backup_fail_fast(
+            DATABASE_URL,
+            BACKUP_DIR,
+            BACKUP_KEEP_LAST,
+            prefix=prefix,
+        )
+    except RuntimeError as exc:
+        raise HTTPException(status_code=500, detail=f"Backup failed: {exc}") from exc
 
 
 def _strip_leading_initial(value: str) -> str:
@@ -1608,6 +1622,7 @@ def refresh_market(
     db: Session = Depends(get_db),
 ):
     _require_admin_key(x_admin_key, db, authorization)
+    _backup_or_500("market")
     data = _build_market_placeholder()
     data["items"] = _enrich_market_items(data.get("items", []))
     try:
