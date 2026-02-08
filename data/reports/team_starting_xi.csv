@@ -8,13 +8,13 @@ Pos,Team,ForzaTitolari,ModuloMigliore,Portiere,Difensori,Centrocampisti,Attaccan
 7,SerSi-FC,865.88,3-4-3,Sommer,Palestra; Ostigard; Martin,Pulisic; Paz N.; Rabiot; McTominay,Scamacca; Douvikas; Hojlund
 8,Lunarossa,865.03,3-4-3,Sommer,Wesley; Bartesaghi; Tiago Gabriel,Pulisic; Paz N.; Baturina; McTominay,Martinez L.; Yildiz; Hojlund
 9,Antibro,862.69,3-4-3,Svilar,Dimarco; Martin; Cambiaso,Pulisic; Paz N.; Vlasic; Malinovskyi,Martinez L.; Berardi; Esposito Se.
-10,I COMPARI,862.11,3-4-3,Caprile,Martin; Terracciano F.; Solet,Pulisic; Paz N.; Baturina; McTominay,Martinez L.; Leao; Soulè
+10,I COMPARI,862.11,3-4-3,Caprile,Martin; Solet; Terracciano F.,Pulisic; Paz N.; Baturina; McTominay,Martinez L.; Leao; Soulè
 11,Pro secco,857.21,3-4-3,Maignan,Vojvoda; Terracciano F.; Tiago Gabriel,Pulisic; Paz N.; Orsolini; McTominay,Martinez L.; Douvikas; Hojlund
 12,Concali Craboni FC,853.01,3-4-3,Provedel,Dimarco; Palestra; Baschirotto,Pulisic; Paz N.; Zambo Anguissa; Berisha M.,Douvikas; Bonazzoli; Moreo
 13,OnlyFans,852.56,3-4-3,Carnesecchi,Palestra; Martin; Gosens,Pulisic; McTominay; Zaniolo; Thuram K.,Berardi; Leao; Thuram
 14,Pi-Ciaccio,851.88,3-4-3,Maignan,Bremer; Martin; Mancini,Paz N.; Rabiot; McTominay; Atta,Martinez L.; Douvikas; Esposito Se.
 15,AC DENTI,850.01,3-4-3,Sommer,Gosens; Terracciano F.; Cambiaso,Pulisic; Paz N.; Orsolini; McTominay,Martinez L.; Yildiz; Hojlund
-16,Plu-Team,849.73,3-4-3,Di Gregorio,Wesley; Martin; Bartesaghi,Pulisic; Paz N.; Orsolini; Saelemaekers,Martinez L.; Bonny; Esposito F.P.
+16,Plu-Team,849.73,3-4-3,Di Gregorio,Wesley; Bartesaghi; Martin,Pulisic; Paz N.; Orsolini; Saelemaekers,Martinez L.; Bonny; Esposito F.P.
 17,Ipa Bali,849.19,3-4-3,Maignan,Ostigard; Martin; Ramon,Pulisic; Paz N.; McTominay; Malinovskyi,Martinez L.; Berardi; Malen
 18,SPARROW,848.83,4-4-2,Maignan,Dimarco; Palestra; Wesley; Martin,Paz N.; McTominay; Gudmundsson A.; McKennie,Martinez L.; Esposito F.P.
 19,LEONE,848.80,4-3-3,Milinkovic-Savic V.,Bremer; Kempf; Pavlovic; Wesley,Paz N.; Atta; Saelemaekers,Berardi; Davis K.; Simeone
@@ -52,7 +52,7 @@ Pos,Team,ForzaTitolari,ModuloMigliore,Portiere,Difensori,Centrocampisti,Attaccan
 51,BARAKALLAHOUFIK,806.83,4-3-3,Milinkovic-Savic V.,Palestra; Gosens; Cambiaso; Norton-Cuffy,Pulisic; Paz N.; Orsolini,Scamacca; Douvikas; Kean
 52,Piovra73,806.03,3-4-3,Maignan,Terracciano F.; Cambiaso; Tiago Gabriel,Paz N.; Orsolini; McTominay; Mazzitelli,Martinez L.; Berardi; Kean
 53,puerto rosso blu,803.34,3-4-3,Ravaglia F.,Palestra; Wesley; Vojvoda,McTominay; Saelemaekers; Gudmundsson A.; Malinovskyi,Thuram; Scamacca; Douvikas
-54,FC Plasmon,802.64,4-3-3,Provedel,Dimarco; Martin; Miranda J.; Cambiaso,Pulisic; Paz N.; Malinovskyi,Martinez L.; Kean; Malen
+54,FC Plasmon,802.64,4-3-3,Provedel,Dimarco; Martin; Cambiaso; Miranda J.,Pulisic; Paz N.; Malinovskyi,Martinez L.; Kean; Malen
 55,BinuSpuntu,800.78,3-5-2,Caprile,Belghali; Terracciano F.; Valeri,Paz N.; McTominay; Atta; Saelemaekers; McKennie,Martinez L.; Hojlund
 56,kalashnikov,799.50,3-4-3,Ravaglia F.,Pavlovic; Rrahmani; Cambiaso,Pulisic; McTominay; Zaniolo; Gudmundsson A.,Scamacca; Douvikas; Kean
 57,Sciabolata Classica,798.46,3-4-3,Svilar,Martin; Angori; Bellanova,Paz N.; Zielinski; McTominay; Vlasic,Berardi; Hojlund; Kean
@@ -70,7 +70,7 @@ Pos,Team,ForzaTitolari,ModuloMigliore,Portiere,Difensori,Centrocampisti,Attaccan
 69,Lions,778.36,3-4-3,Di Gregorio,Gosens; Cambiaso; Tiago Gabriel,Pulisic; Paz N.; McTominay; Pasalic,Thuram; Douvikas; Cancellieri
 70,Sisal Palace,777.98,3-4-3,Svilar,Akanji; Cambiaso; Tomori,Pulisic; McKennie; Barella; Thuram K.,Thuram; Scamacca; Douvikas
 71,i fratelli merda,777.96,3-4-3,Carnesecchi,Belghali; Dumfries; Idrissi R.,Paz N.; Bernabè; Barella; Da Cunha,Martinez L.; Yildiz; Esposito Se.
-72,i bro,774.86,3-4-3,Svilar,Tiago Gabriel; Bernasconi; Mina,Pulisic; McTominay; McKennie; Miretti,Thuram; Douvikas; Hojlund
+72,i bro,774.86,3-4-3,Svilar,Bernasconi; Tiago Gabriel; Mina,Pulisic; McTominay; McKennie; Miretti,Thuram; Douvikas; Hojlund
 73,ProPro Proibito,774.18,3-4-3,Sommer,Rrahmani; Valeri; Luperto,Paz N.; McTominay; Zaniolo; Zalewski,Martinez L.; Kilicsoy; Vardy
 74,Fc nipiri,773.43,5-3-2,Milinkovic-Savic V.,Scalvini; Di Lorenzo; Gosens; Solet; Akanji,Paz N.; Orsolini; Thuram K.,Berardi; Bonny
 75,SAGATU,772.95,3-4-3,Sommer,Gosens; Terracciano F.; Cambiaso,Pulisic; Baturina; Atta; McKennie,Martinez L.; Kean; Giovane
