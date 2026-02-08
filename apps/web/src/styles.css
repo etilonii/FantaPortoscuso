@@ -498,6 +498,74 @@ body.menu-open .menu-overlay {
   color: var(--text);
 }
 
+.data-status-footer {
+  margin-top: 6px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border-style: dashed;
+  background: rgba(12, 30, 48, 0.45);
+}
+
+.data-status-footer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.data-status-footer-head h4 {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.data-status-meta.compact {
+  gap: 6px 12px;
+  margin-top: 4px;
+  font-size: 0.78rem;
+}
+
+.data-status-message.compact {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.status-badge.compact {
+  min-width: 0;
+  padding: 4px 8px;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+}
+
+.data-status-steps-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: 6px;
+}
+
+.data-status-step-inline {
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.data-status-step-inline.ok {
+  color: #87f2ab;
+}
+
+.data-status-step-inline.running {
+  color: #ffe2a1;
+}
+
+.data-status-step-inline.error {
+  color: #ffb7b7;
+}
+
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -2625,6 +2693,22 @@ body.theme-light .market-team-card.active {
 
 body.theme-light .data-status-panel {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(237, 246, 255, 0.92));
+}
+
+body.theme-light .data-status-footer {
+  background: var(--surface-2);
+}
+
+body.theme-light .data-status-step-inline.ok {
+  color: #1f5a37;
+}
+
+body.theme-light .data-status-step-inline.running {
+  color: #6b4a12;
+}
+
+body.theme-light .data-status-step-inline.error {
+  color: #7c2424;
 }
 
 body.theme-light .status-badge.ok {

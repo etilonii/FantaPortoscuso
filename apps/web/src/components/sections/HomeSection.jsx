@@ -39,14 +39,6 @@ export default function HomeSection({
     return "-";
   };
 
-  const stepBadgeClass = (value) => {
-    const v = String(value || "").toLowerCase();
-    if (v === "ok") return "status-badge ok";
-    if (v === "running") return "status-badge running";
-    if (v === "error") return "status-badge error";
-    return "status-badge";
-  };
-
   const hasSteps =
     dataStatus?.steps &&
     typeof dataStatus.steps === "object" &&
@@ -99,46 +91,6 @@ export default function HomeSection({
             <strong>{summary.players}</strong>
           </button>
         </div>
-      </div>
-
-      <div className="panel data-status-panel">
-        <div className="panel-header">
-          <h3>Stato Dati</h3>
-          <span className={`status-badge ${statusClass}`}>
-            {statusLabel}
-          </span>
-        </div>
-        <div className="data-status-meta">
-          <span className="muted">
-            Ultimo aggiornamento: {formatDataStatusDate(dataStatus?.last_update)}
-          </span>
-          {dataStatus?.season ? (
-            <span className="muted">Stagione: {dataStatus.season}</span>
-          ) : null}
-          {hasMatchday ? (
-            <span className="muted">Giornata: {dataStatus.matchday}</span>
-          ) : null}
-          {dataStatus?.update_id ? (
-            <span className="muted">Update ID: {dataStatus.update_id}</span>
-          ) : null}
-        </div>
-        <p className="data-status-message">{dataStatus?.message || "-"}</p>
-        {hasSteps ? (
-          <div className="list">
-            {["rose", "stats", "strength"].map((key) => {
-              const value = dataStatus?.steps?.[key];
-              if (!value) return null;
-              return (
-                <div key={key} className="list-item">
-                  <span>{stepLabels[key]}</span>
-                  <span className={stepBadgeClass(value)}>
-                    {formatStepStatus(value)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        ) : null}
       </div>
 
       <div className="panel">
@@ -426,6 +378,43 @@ export default function HomeSection({
             )}
           </nav>
         </section>
+      </div>
+
+      <div className="panel data-status-panel data-status-footer">
+        <div className="data-status-footer-head">
+          <h4>Stato dati</h4>
+          <span className={`status-badge compact ${statusClass}`}>
+            {statusLabel}
+          </span>
+        </div>
+        <div className="data-status-meta compact">
+          <span className="muted">
+            Ultimo aggiornamento: {formatDataStatusDate(dataStatus?.last_update)}
+          </span>
+          {dataStatus?.season ? (
+            <span className="muted">Stagione: {dataStatus.season}</span>
+          ) : null}
+          {hasMatchday ? (
+            <span className="muted">Giornata: {dataStatus.matchday}</span>
+          ) : null}
+          {dataStatus?.update_id ? (
+            <span className="muted">Update ID: {dataStatus.update_id}</span>
+          ) : null}
+        </div>
+        <p className="data-status-message compact">{dataStatus?.message || "-"}</p>
+        {hasSteps ? (
+          <div className="data-status-steps-inline">
+            {["rose", "stats", "strength"].map((key) => {
+              const value = dataStatus?.steps?.[key];
+              if (!value) return null;
+              return (
+                <span key={key} className={`data-status-step-inline ${value}`}>
+                  {stepLabels[key]}: {formatStepStatus(value)}
+                </span>
+              );
+            })}
+          </div>
+        ) : null}
       </div>
     </section>
   );
