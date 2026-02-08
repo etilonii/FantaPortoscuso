@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import APIRouter
@@ -23,30 +24,15 @@ def _resolve_data_dir() -> Path:
 
 DATA_DIR = _resolve_data_dir()
 STATUS_PATH = DATA_DIR / "status.json"
+CORE_DATA_FILES = {
+    "rose": DATA_DIR / "rose_fantaportoscuso.csv",
+    "stats": DATA_DIR / "statistiche_giocatori.csv",
+    "strength": DATA_DIR / "classifica.csv",
+    "quotazioni": DATA_DIR / "quotazioni.csv",
+}
 
 
-@router.get("/data-status")
-def data_status():
-    fallback = {
-        "last_update": "",
-        "result": "error",
-        "message": "Nessun aggiornamento dati disponibile",
-    }
-
-    if not STATUS_PATH.exists():
-        return fallback
-
-    try:
-        raw = json.loads(STATUS_PATH.read_text(encoding="utf-8"))
-    except Exception:
-        return {
-            **fallback,
-            "message": "Nessun aggiornamento dati disponibile",
-        }
-
-    if not isinstance(raw, dict):
-        return fallback
-
+def _normalize_payload(raw: dict, fallback: dict) -> dict:
     result = str(raw.get("result", "")).strip().lower()
     if result in {"ok", "success"}:
         normalized_result = "ok"
@@ -88,3 +74,47 @@ def data_status():
             payload["steps"] = steps
 
     return payload
+
+
+def _build_data_files_status(fallback: dict) -> dict:
+    file_status = {}
+    mtimes = []
+    for key, path in CORE_DATA_FILES.items():
+        ok = path.exists() and path.is_file() and path.stat().st_size > 0
+        file_status[key] = "ok" if ok else "error"
+        if ok:
+            mtimes.append(path.stat().st_mtime)
+
+    if not mtimes:
+        return fallback
+
+    latest_dt = datetime.fromtimestamp(max(mtimes), tz=timezone.utc)
+    return {
+        "last_update": latest_dt.isoformat().replace("+00:00", "Z"),
+        "result": "ok",
+        "message": "Stato derivato dai file dati correnti",
+        "steps": {
+            "rose": file_status["rose"],
+            "stats": file_status["stats"],
+            "strength": file_status["strength"],
+        },
+    }
+
+
+@router.get("/data-status")
+def data_status():
+    fallback = {
+        "last_update": "",
+        "result": "error",
+        "message": "Nessun aggiornamento dati disponibile",
+    }
+
+    if STATUS_PATH.exists():
+        try:
+            raw = json.loads(STATUS_PATH.read_text(encoding="utf-8"))
+            if isinstance(raw, dict):
+                return _normalize_payload(raw, fallback)
+        except Exception:
+            pass
+
+    return _build_data_files_status(fallback)
