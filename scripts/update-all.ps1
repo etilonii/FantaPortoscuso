@@ -107,7 +107,7 @@ function Get-StepRunningMessage([string]$stepName) {
 }
 
 function Get-StepErrorMessage([string]$stepLabel) {
-  return "Errore durante: $stepLabel — sto terminando..."
+  return "Errore durante: $stepLabel - sto terminando..."
 }
 
 # Scrive subito uno stato iniziale visibile prima dei backup e dei task python.
