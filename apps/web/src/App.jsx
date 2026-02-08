@@ -126,7 +126,10 @@ const KEY_STORAGE = "fp_access_key";
 const ACCESS_TOKEN_STORAGE = "fp_access_token";
 const REFRESH_TOKEN_STORAGE = "fp_refresh_token";
 const API_BASE =
-  import.meta.env.VITE_API_BASE || "http://localhost:8001";
+  import.meta.env.VITE_API_BASE ||
+  (import.meta.env.DEV
+    ? "http://localhost:8001"
+    : "https://fantaportoscuso.up.railway.app");
 
 /* ===========================
    APP
