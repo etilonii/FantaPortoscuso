@@ -24,8 +24,49 @@ export default function HomeSection({
   goToTeam,
   setActiveMenu,
 }) {
-  const statusOk = String(dataStatus?.result || "").toLowerCase() === "ok";
-  const statusClass = statusOk ? "ok" : "error";
+  const stepLabels = {
+    rose: "Rose/Quotazioni",
+    stats: "Statistiche",
+    strength: "Forza squadra",
+  };
+
+  const formatStepStatus = (value) => {
+    const v = String(value || "").toLowerCase();
+    if (v === "ok") return "OK";
+    if (v === "error") return "Errore";
+    if (v === "running") return "In corso";
+    if (v === "pending") return "In attesa";
+    return "-";
+  };
+
+  const stepBadgeClass = (value) => {
+    const v = String(value || "").toLowerCase();
+    if (v === "ok") return "status-badge ok";
+    if (v === "running") return "status-badge running";
+    if (v === "error") return "status-badge error";
+    return "status-badge";
+  };
+
+  const hasSteps =
+    dataStatus?.steps &&
+    typeof dataStatus.steps === "object" &&
+    Object.keys(dataStatus.steps).length > 0;
+
+  const statusValue = String(dataStatus?.result || "").toLowerCase();
+  const statusClass =
+    statusValue === "ok"
+      ? "ok"
+      : statusValue === "running"
+      ? "running"
+      : "error";
+  const statusLabel =
+    statusValue === "ok"
+      ? "OK"
+      : statusValue === "running"
+      ? "In corso"
+      : statusValue === "error"
+      ? "Errore"
+      : "Sconosciuto";
   const hasMatchday =
     dataStatus?.matchday !== null &&
     dataStatus?.matchday !== undefined &&
@@ -64,7 +105,7 @@ export default function HomeSection({
         <div className="panel-header">
           <h3>Stato Dati</h3>
           <span className={`status-badge ${statusClass}`}>
-            {statusOk ? "OK" : "Errore"}
+            {statusLabel}
           </span>
         </div>
         <div className="data-status-meta">
@@ -77,8 +118,27 @@ export default function HomeSection({
           {hasMatchday ? (
             <span className="muted">Giornata: {dataStatus.matchday}</span>
           ) : null}
+          {dataStatus?.update_id ? (
+            <span className="muted">Update ID: {dataStatus.update_id}</span>
+          ) : null}
         </div>
         <p className="data-status-message">{dataStatus?.message || "-"}</p>
+        {hasSteps ? (
+          <div className="list">
+            {["rose", "stats", "strength"].map((key) => {
+              const value = dataStatus?.steps?.[key];
+              if (!value) return null;
+              return (
+                <div key={key} className="list-item">
+                  <span>{stepLabels[key]}</span>
+                  <span className={stepBadgeClass(value)}>
+                    {formatStepStatus(value)}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
       </div>
 
       <div className="panel">

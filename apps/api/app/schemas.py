@@ -14,6 +14,26 @@ class LoginResponse(BaseModel):
     status: str
     message: str
     is_admin: bool = False
+    access_token: str | None = None
+    access_expires_at: str | None = None
+    refresh_token: str | None = None
+    refresh_expires_at: str | None = None
+    warning: str | None = None
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str = Field(min_length=16)
+
+
+class RefreshResponse(BaseModel):
+    access_token: str
+    access_expires_at: str
+    refresh_token: str | None = None
+    refresh_expires_at: str | None = None
+
+
+class LogoutRequest(BaseModel):
+    refresh_token: str = Field(min_length=16)
 
 
 class AdminKeyResponse(BaseModel):

@@ -9,9 +9,16 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from ..auth_utils import access_key_from_bearer
 from ..config import KEY_LENGTH
 from ..deps import get_db
-from ..models import AccessKey, DeviceSession, KeyReset, TeamKey
+from ..models import AccessKey, DeviceSession, KeyReset, RefreshToken, TeamKey
+from ..auth_tokens import (
+    REFRESH_TOKEN_TTL,
+    create_access_token,
+    create_refresh_token,
+    hash_refresh_token,
+)
 from ..schemas import (
     AdminKeyResponse,
     AdminKeyItem,
@@ -21,7 +28,10 @@ from ..schemas import (
     KeyResetUsageResponse,
     LoginRequest,
     LoginResponse,
+    LogoutRequest,
     PingRequest,
+    RefreshRequest,
+    RefreshResponse,
     ResetKeyRequest,
     SetAdminRequest,
     TeamKeyRequest,
@@ -74,6 +84,33 @@ def _ua_hash(user_agent: str) -> str:
     return hashlib.sha256(user_agent.encode("utf-8")).hexdigest()
 
 
+def _issue_tokens(db: Session, access_key: AccessKey, device_id: str | None) -> dict:
+    access_token, access_expires_at = create_access_token(
+        key_value=access_key.key,
+        is_admin=bool(access_key.is_admin),
+        device_id=device_id,
+    )
+    refresh_token_raw = create_refresh_token()
+    refresh_expires_at = datetime.utcnow() + REFRESH_TOKEN_TTL
+
+    refresh_record = RefreshToken(
+        key_id=access_key.id,
+        token_hash=hash_refresh_token(refresh_token_raw),
+        device_id=device_id,
+        expires_at=refresh_expires_at,
+        last_used_at=datetime.utcnow(),
+    )
+    db.add(refresh_record)
+    db.commit()
+
+    return {
+        "access_token": access_token,
+        "access_expires_at": access_expires_at.isoformat(),
+        "refresh_token": refresh_token_raw,
+        "refresh_expires_at": refresh_expires_at.isoformat(),
+    }
+
+
 @router.post("/keys", response_model=KeyCreateResponse)
 def create_key(db: Session = Depends(get_db)):
     for _ in range(5):
@@ -101,7 +138,17 @@ def bootstrap_admin_key(db: Session = Depends(get_db)):
     raise HTTPException(status_code=500, detail="Failed to generate admin key")
 
 
-def _require_admin_key(x_admin_key: str | None, db: Session) -> AccessKey:
+def _require_admin_key(
+    x_admin_key: str | None,
+    db: Session,
+    authorization: str | None = None,
+) -> AccessKey:
+    bearer_record = access_key_from_bearer(authorization, db)
+    if bearer_record is not None:
+        if not bearer_record.is_admin:
+            raise HTTPException(status_code=403, detail="Permessi admin richiesti")
+        return bearer_record
+
     if not x_admin_key:
         raise HTTPException(status_code=401, detail="Admin key richiesta")
     key_value = x_admin_key.strip().lower()
@@ -131,9 +178,10 @@ def _key_reset_usage(db: Session, key_value: str, season: str) -> tuple[int, dat
 @router.get("/admin/keys", response_model=list[AdminKeyItem])
 def list_keys(
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     season = _current_season()
     keys = db.query(AccessKey).order_by(AccessKey.created_at.desc()).all()
     now = datetime.utcnow()
@@ -194,9 +242,10 @@ def list_keys(
 @router.post("/admin/keys", response_model=KeyCreateResponse)
 def create_key_admin(
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     for _ in range(5):
         key = _generate_key()
         if not db.query(AccessKey).filter(AccessKey.key == key).first():
@@ -211,9 +260,10 @@ def create_key_admin(
 def set_admin_flag(
     payload: SetAdminRequest,
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     key_value = payload.key.strip().lower()
     record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
     if not record:
@@ -228,9 +278,10 @@ def set_admin_flag(
 def set_team_key(
     payload: TeamKeyRequest,
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     key_value = payload.key.strip().lower()
     team_value = payload.team.strip()
     if not key_value or not team_value:
@@ -248,9 +299,10 @@ def set_team_key(
 @router.get("/admin/team-keys", response_model=list[TeamKeyItem])
 def list_team_keys(
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     items = db.query(TeamKey).order_by(TeamKey.team.asc()).all()
     return [TeamKeyItem(key=item.key, team=item.team) for item in items]
 
@@ -259,9 +311,10 @@ def list_team_keys(
 def delete_team_key(
     payload: TeamKeyDeleteRequest,
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     key_value = payload.key.strip().lower()
     if not key_value:
         raise HTTPException(status_code=400, detail="Key non valida")
@@ -276,9 +329,10 @@ def delete_team_key(
 @router.get("/admin/status")
 def admin_status(
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     status = {"data": {}, "market": {}, "auth": {}}
 
     if LAST_UPDATE_PATH.exists():
@@ -354,9 +408,10 @@ def admin_status(
 def import_keys(
     payload: ImportKeysRequest,
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     inserted = 0
     for raw_key in payload.keys:
         key_value = raw_key.strip().lower()
@@ -378,9 +433,10 @@ def import_keys(
 def import_team_keys(
     payload: ImportTeamKeysRequest,
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     inserted = 0
     for item in payload.items:
         key_value = item.key.strip().lower()
@@ -402,9 +458,10 @@ def import_team_keys(
 def key_reset_usage_admin(
     key: str,
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     key_value = key.strip().lower()
     if not key_value:
         raise HTTPException(status_code=400, detail="Key non valida")
@@ -423,9 +480,10 @@ def key_reset_usage_admin(
 def reset_key_admin(
     payload: ResetKeyRequest,
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    admin_record = _require_admin_key(x_admin_key, db)
+    admin_record = _require_admin_key(x_admin_key, db, authorization)
     key_value = payload.key.strip().lower()
     if not key_value:
         raise HTTPException(status_code=400, detail="Key non valida")
@@ -469,12 +527,21 @@ def reset_key_admin(
 
 
 @router.post("/ping")
-def ping(payload: PingRequest, request: Request, db: Session = Depends(get_db)):
-    key_value = payload.key.strip().lower()
+def ping(
+    payload: PingRequest,
+    request: Request,
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
     device_id = payload.device_id.strip()
-    access_key = db.query(AccessKey).filter(AccessKey.key == key_value).first()
-    if not access_key:
-        raise HTTPException(status_code=401, detail="Key non valida")
+    bearer_record = access_key_from_bearer(authorization, db)
+    if bearer_record is not None:
+        access_key = bearer_record
+    else:
+        key_value = payload.key.strip().lower()
+        access_key = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+        if not access_key:
+            raise HTTPException(status_code=401, detail="Key non valida")
     session = db.query(DeviceSession).filter(DeviceSession.device_id == device_id).first()
     if session:
         session.last_seen_at = datetime.utcnow()
@@ -513,8 +580,13 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
         )
         db.add(session)
         db.commit()
+        tokens = _issue_tokens(db, access_key, device_id)
         return LoginResponse(
-            status="ok", message="Accesso autorizzato e device collegato", is_admin=access_key.is_admin
+            status="ok",
+            message="Accesso autorizzato e device collegato",
+            is_admin=access_key.is_admin,
+            warning="Accesso legacy con key: passa ai Bearer token.",
+            **tokens,
         )
 
     # Already used: check device binding
@@ -536,7 +608,14 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
             )
             db.add(session)
             db.commit()
-            return LoginResponse(status="ok", message="Accesso autorizzato (admin)", is_admin=True)
+            tokens = _issue_tokens(db, access_key, device_id)
+            return LoginResponse(
+                status="ok",
+                message="Accesso autorizzato (admin)",
+                is_admin=True,
+                warning="Accesso legacy con key: passa ai Bearer token.",
+                **tokens,
+            )
     else:
         if access_key.device_id != device_id:
             raise HTTPException(status_code=403, detail="Key gia' legata ad altro dispositivo")
@@ -548,4 +627,60 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
         db.add(session)
         db.commit()
 
-    return LoginResponse(status="ok", message="Accesso autorizzato", is_admin=access_key.is_admin)
+    tokens = _issue_tokens(db, access_key, device_id)
+    return LoginResponse(
+        status="ok",
+        message="Accesso autorizzato",
+        is_admin=access_key.is_admin,
+        warning="Accesso legacy con key: passa ai Bearer token.",
+        **tokens,
+    )
+
+
+@router.post("/refresh", response_model=RefreshResponse)
+def refresh_tokens(payload: RefreshRequest, db: Session = Depends(get_db)):
+    now = datetime.utcnow()
+    token_hash = hash_refresh_token(payload.refresh_token.strip())
+    record = (
+        db.query(RefreshToken)
+        .filter(
+            RefreshToken.token_hash == token_hash,
+            RefreshToken.revoked_at.is_(None),
+            RefreshToken.expires_at > now,
+        )
+        .first()
+    )
+    if not record:
+        raise HTTPException(status_code=401, detail="Refresh token non valido o scaduto")
+
+    access_key = db.query(AccessKey).filter(AccessKey.id == record.key_id).first()
+    if not access_key:
+        raise HTTPException(status_code=401, detail="Refresh token non valido")
+
+    record.revoked_at = now
+    record.last_used_at = now
+    db.add(record)
+    db.commit()
+
+    tokens = _issue_tokens(db, access_key, record.device_id)
+    return RefreshResponse(
+        access_token=tokens["access_token"],
+        access_expires_at=tokens["access_expires_at"],
+        refresh_token=tokens["refresh_token"],
+        refresh_expires_at=tokens["refresh_expires_at"],
+    )
+
+
+@router.post("/logout")
+def logout(payload: LogoutRequest, db: Session = Depends(get_db)):
+    token_hash = hash_refresh_token(payload.refresh_token.strip())
+    record = (
+        db.query(RefreshToken)
+        .filter(RefreshToken.token_hash == token_hash, RefreshToken.revoked_at.is_(None))
+        .first()
+    )
+    if record:
+        record.revoked_at = datetime.utcnow()
+        db.add(record)
+        db.commit()
+    return {"status": "ok"}

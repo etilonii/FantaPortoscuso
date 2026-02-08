@@ -517,6 +517,12 @@ body.menu-open .menu-overlay {
   color: #87f2ab;
 }
 
+.status-badge.running {
+  background: rgba(255, 201, 79, 0.2);
+  border-color: rgba(255, 201, 79, 0.55);
+  color: #ffe2a1;
+}
+
 .status-badge.error {
   background: rgba(243, 95, 95, 0.2);
   border-color: rgba(243, 95, 95, 0.55);
@@ -2625,6 +2631,12 @@ body.theme-light .status-badge.ok {
   background: rgba(70, 160, 100, 0.14);
   border-color: rgba(70, 160, 100, 0.45);
   color: #1f5a37;
+}
+
+body.theme-light .status-badge.running {
+  background: rgba(210, 150, 32, 0.16);
+  border-color: rgba(210, 150, 32, 0.45);
+  color: #6b4a12;
 }
 
 body.theme-light .status-badge.error {

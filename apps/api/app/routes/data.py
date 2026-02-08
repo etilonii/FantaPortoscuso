@@ -9,6 +9,7 @@ from typing import Dict, List, Optional
 from fastapi import APIRouter, Query, Body, Depends, Header, HTTPException
 from sqlalchemy.orm import Session
 
+from apps.api.app.auth_utils import access_key_from_bearer
 from apps.api.app.deps import get_db
 from apps.api.app.models import AccessKey, Fixture, Player, PlayerStats, Team, TeamKey
 from apps.api.app.utils.names import normalize_name, strip_star, is_starred
@@ -95,7 +96,17 @@ def _matches(text: str, query: str) -> bool:
     return query.lower() in text.lower()
 
 
-def _require_admin_key(x_admin_key: str | None, db: Session) -> None:
+def _require_admin_key(
+    x_admin_key: str | None,
+    db: Session,
+    authorization: str | None = None,
+) -> None:
+    bearer_record = access_key_from_bearer(authorization, db)
+    if bearer_record is not None:
+        if not bearer_record.is_admin:
+            raise HTTPException(status_code=403, detail="Permessi admin richiesti")
+        return
+
     if not x_admin_key:
         raise HTTPException(status_code=401, detail="Admin key richiesta")
     key_value = x_admin_key.strip().lower()
@@ -1593,9 +1604,10 @@ def market():
 @router.post("/admin/market/refresh")
 def refresh_market(
     x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),
 ):
-    _require_admin_key(x_admin_key, db)
+    _require_admin_key(x_admin_key, db, authorization)
     data = _build_market_placeholder()
     data["items"] = _enrich_market_items(data.get("items", []))
     try:

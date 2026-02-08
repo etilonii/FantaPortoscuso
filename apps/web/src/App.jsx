@@ -123,6 +123,8 @@ const formatDataStatusDate = (value) => {
    CONFIG
 =========================== */
 const KEY_STORAGE = "fp_access_key";
+const ACCESS_TOKEN_STORAGE = "fp_access_token";
+const REFRESH_TOKEN_STORAGE = "fp_refresh_token";
 const API_BASE =
   import.meta.env.VITE_API_BASE || "http://localhost:8001";
 
@@ -134,6 +136,8 @@ export default function App() {
 
   /* ===== AUTH ===== */
   const [accessKey, setAccessKey] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+  const [refreshToken, setRefreshToken] = useState("");
   const [rememberKey, setRememberKey] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -152,6 +156,8 @@ export default function App() {
     message: "Nessun aggiornamento dati disponibile",
     season: "",
     matchday: null,
+    update_id: "",
+    steps: {},
   });
 
   /* ===== SEARCH ===== */
@@ -305,6 +311,91 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     document.body.classList.toggle("theme-light", next === "light");
   };
 
+  const persistTokens = (nextAccessToken, nextRefreshToken) => {
+    const safeAccess = String(nextAccessToken || "").trim();
+    const safeRefresh = String(nextRefreshToken || "").trim();
+    setAccessToken(safeAccess);
+    setRefreshToken(safeRefresh);
+    try {
+      if (safeAccess) {
+        localStorage.setItem(ACCESS_TOKEN_STORAGE, safeAccess);
+      } else {
+        localStorage.removeItem(ACCESS_TOKEN_STORAGE);
+      }
+      if (safeRefresh) {
+        localStorage.setItem(REFRESH_TOKEN_STORAGE, safeRefresh);
+      } else {
+        localStorage.removeItem(REFRESH_TOKEN_STORAGE);
+      }
+    } catch {}
+  };
+
+  const clearAuthSession = (message = "") => {
+    setLoggedIn(false);
+    setIsAdmin(false);
+    setStatus("idle");
+    if (message) {
+      setError(message);
+    }
+    persistTokens("", "");
+  };
+
+  const refreshAccessToken = async () => {
+    const currentRefresh = String(refreshToken || "").trim();
+    if (!currentRefresh) return { ok: false, accessToken: "", refreshToken: "" };
+    try {
+      const res = await fetch(`${API_BASE}/auth/refresh`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh_token: currentRefresh }),
+      });
+      if (!res.ok) return { ok: false, accessToken: "", refreshToken: "" };
+      const data = await res.json().catch(() => ({}));
+      const nextAccess = String(data?.access_token || "").trim();
+      if (!nextAccess) return { ok: false, accessToken: "", refreshToken: "" };
+      const nextRefresh = String(data?.refresh_token || currentRefresh).trim();
+      persistTokens(nextAccess, nextRefresh);
+      return { ok: true, accessToken: nextAccess, refreshToken: nextRefresh };
+    } catch {
+      return { ok: false, accessToken: "", refreshToken: "" };
+    }
+  };
+
+  const fetchWithAuth = async (url, options = {}, retryOn401 = true) => {
+    const headers = { ...(options.headers || {}) };
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+    const response = await fetch(url, { ...options, headers });
+    if (response.status !== 401 || !retryOn401) return response;
+
+    const refreshed = await refreshAccessToken();
+    if (!refreshed.ok) {
+      clearAuthSession("Sessione scaduta. Effettua nuovamente il login.");
+      return response;
+    }
+
+    const retryHeaders = { ...(options.headers || {}) };
+    retryHeaders.Authorization = `Bearer ${refreshed.accessToken}`;
+    return fetch(url, { ...options, headers: retryHeaders });
+  };
+
+  const buildAuthHeaders = ({
+    legacyAccessKey = false,
+    legacyAdminKey = false,
+    extraHeaders = {},
+  } = {}) => {
+    const headers = { ...extraHeaders };
+    const keyValue = accessKey.trim().toLowerCase();
+    if (!accessToken && legacyAccessKey && keyValue) {
+      headers["X-Access-Key"] = keyValue;
+    }
+    if (!accessToken && legacyAdminKey && keyValue) {
+      headers["X-Admin-Key"] = keyValue;
+    }
+    return headers;
+  };
+
   /* ===========================
      LOGIN
   =========================== */
@@ -336,6 +427,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setLoggedIn(true);
       setIsAdmin(!!data.is_admin);
       setStatus("success");
+      persistTokens(data?.access_token || "", data?.refresh_token || "");
 
       if (rememberKey) {
         localStorage.setItem(
@@ -347,6 +439,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       }
     } catch (err) {
       setStatus("error");
+      persistTokens("", "");
       setError(err.message || "Errore login");
     }
   };
@@ -381,12 +474,31 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       }
       const normalized = {
         last_update: String(data?.last_update || ""),
-        result: String(data?.result || "").toLowerCase() === "ok" ? "ok" : "error",
+        result: (() => {
+          const rawResult = String(data?.result || "").trim().toLowerCase();
+          return ["ok", "error", "running"].includes(rawResult)
+            ? rawResult
+            : "error";
+        })(),
         message:
           String(data?.message || "").trim() ||
           "Nessun aggiornamento dati disponibile",
         season: String(data?.season || ""),
         matchday: parsedMatchday,
+        update_id: String(data?.update_id || ""),
+        steps: (() => {
+          const rawSteps =
+            data?.steps && typeof data.steps === "object" ? data.steps : {};
+          const allowed = new Set(["pending", "running", "ok", "error"]);
+          const normalizedSteps = {};
+          ["rose", "stats", "strength"].forEach((key) => {
+            const value = String(rawSteps[key] || "").trim().toLowerCase();
+            if (allowed.has(value)) {
+              normalizedSteps[key] = value;
+            }
+          });
+          return normalizedSteps;
+        })(),
       };
       setDataStatus(normalized);
     } catch {
@@ -394,6 +506,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         ...prev,
         result: "error",
         message: "Errore nel recupero stato dati",
+        update_id: "",
+        steps: {},
       }));
     }
   };
@@ -912,10 +1026,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     if (!force && suggestPayload) return true;
 
     try {
-      const res = await fetch(`${API_BASE}/data/market/payload`, {
-        headers: {
-          "X-Access-Key": accessKey.trim().toLowerCase(),
-        },
+      const res = await fetchWithAuth(`${API_BASE}/data/market/payload`, {
+        headers: buildAuthHeaders({ legacyAccessKey: true }),
       });
       if (!res.ok) return false;
 
@@ -1144,8 +1256,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const loadAdminKeys = async () => {
     if (!isAdmin) return;
     try {
-      const res = await fetch(`${API_BASE}/auth/admin/keys`, {
-        headers: { "X-Admin-Key": accessKey.trim().toLowerCase() },
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/keys`, {
+        headers: buildAuthHeaders({ legacyAdminKey: true }),
       });
       if (!res.ok) return;
       const data = await res.json();
@@ -1156,12 +1268,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const createNewKey = async () => {
     if (!isAdmin) return;
     try {
-      const res = await fetch(`${API_BASE}/auth/admin/keys`, {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/keys`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Admin-Key": accessKey.trim().toLowerCase(),
-        },
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
       });
       if (!res.ok) return;
       const data = await res.json();
@@ -1174,8 +1286,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const loadAdminStatus = async () => {
     if (!isAdmin) return;
     try {
-      const res = await fetch(`${API_BASE}/auth/admin/status`, {
-        headers: { "X-Admin-Key": accessKey.trim().toLowerCase() },
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/status`, {
+        headers: buildAuthHeaders({ legacyAdminKey: true }),
       });
       if (!res.ok) return;
       const data = await res.json();
@@ -1186,8 +1298,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const loadAdminTeamKeys = async () => {
     if (!isAdmin) return;
     try {
-      const res = await fetch(`${API_BASE}/auth/admin/team-keys`, {
-        headers: { "X-Admin-Key": accessKey.trim().toLowerCase() },
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/team-keys`, {
+        headers: buildAuthHeaders({ legacyAdminKey: true }),
       });
       if (!res.ok) return;
       const data = await res.json();
@@ -1198,9 +1310,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const refreshMarketAdmin = async () => {
     if (!isAdmin) return;
     try {
-      const res = await fetch(`${API_BASE}/data/admin/market/refresh`, {
+      const res = await fetchWithAuth(`${API_BASE}/data/admin/market/refresh`, {
         method: "POST",
-        headers: { "X-Admin-Key": accessKey.trim().toLowerCase() },
+        headers: buildAuthHeaders({ legacyAdminKey: true }),
       });
       if (!res.ok) return;
       setAdminNotice("Mercato aggiornato.");
@@ -1214,12 +1326,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     const key = adminSetAdminKey.trim().toLowerCase();
     if (!key) return;
     try {
-      const res = await fetch(`${API_BASE}/auth/admin/set-admin`, {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/set-admin`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Admin-Key": accessKey.trim().toLowerCase(),
-        },
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
         body: JSON.stringify({ key, is_admin: true }),
       });
       if (!res.ok) return;
@@ -1235,12 +1347,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     const team = adminTeamName.trim();
     if (!key || !team) return;
     try {
-      const res = await fetch(`${API_BASE}/auth/admin/team-key`, {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/team-key`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Admin-Key": accessKey.trim().toLowerCase(),
-        },
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
         body: JSON.stringify({ key, team }),
       });
       if (!res.ok) return;
@@ -1259,10 +1371,10 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       return;
     }
     try {
-      const res = await fetch(
+      const res = await fetchWithAuth(
         `${API_BASE}/auth/admin/reset-usage?key=${encodeURIComponent(key)}`,
         {
-          headers: { "X-Admin-Key": accessKey.trim().toLowerCase() },
+          headers: buildAuthHeaders({ legacyAdminKey: true }),
         }
       );
       if (!res.ok) {
@@ -1281,12 +1393,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     const key = adminResetKey.trim().toLowerCase();
     if (!key) return;
     try {
-      const res = await fetch(`${API_BASE}/auth/admin/reset-key`, {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/reset-key`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Admin-Key": accessKey.trim().toLowerCase(),
-        },
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
         body: JSON.stringify({ key, note: adminResetNote.trim() || null }),
       });
       const data = await res.json().catch(() => ({}));
@@ -1316,12 +1428,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       .filter(Boolean);
     if (!raw.length) return;
     try {
-      const res = await fetch(`${API_BASE}/auth/admin/import-keys`, {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/import-keys`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Admin-Key": accessKey.trim().toLowerCase(),
-        },
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
         body: JSON.stringify({ keys: raw, is_admin: adminImportIsAdmin }),
       });
       if (!res.ok) return;
@@ -1345,12 +1457,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       .filter(Boolean);
     if (!items.length) return;
     try {
-      const res = await fetch(`${API_BASE}/auth/admin/import-team-keys`, {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/import-team-keys`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Admin-Key": accessKey.trim().toLowerCase(),
-        },
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
         body: JSON.stringify({ items }),
       });
       if (!res.ok) return;
@@ -1365,12 +1477,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     const key = String(keyValue || "").trim().toLowerCase();
     if (!key) return;
     try {
-      const res = await fetch(`${API_BASE}/auth/admin/team-key`, {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/team-key`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Admin-Key": accessKey.trim().toLowerCase(),
-        },
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
         body: JSON.stringify({ key }),
       });
       if (!res.ok) return;
@@ -1388,6 +1500,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (saved) {
         setAccessKey(saved);
         setRememberKey(true);
+      }
+      const savedAccessToken = localStorage.getItem(ACCESS_TOKEN_STORAGE) || "";
+      const savedRefreshToken = localStorage.getItem(REFRESH_TOKEN_STORAGE) || "";
+      if (savedAccessToken || savedRefreshToken) {
+        setAccessToken(savedAccessToken);
+        setRefreshToken(savedRefreshToken);
       }
     } catch {}
   }, []);
@@ -1437,7 +1555,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     if (!loggedIn || !accessKey.trim()) return;
     const ping = async () => {
       try {
-        await fetch(`${API_BASE}/auth/ping`, {
+        await fetchWithAuth(`${API_BASE}/auth/ping`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ key: accessKey.trim(), device_id: deviceId }),
@@ -1447,7 +1565,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     ping();
     const timer = setInterval(ping, 60000);
     return () => clearInterval(timer);
-  }, [loggedIn, accessKey, deviceId]);
+  }, [loggedIn, accessKey, deviceId, accessToken, refreshToken]);
 
   useEffect(() => {
     if (!loggedIn || !teams.length) return;

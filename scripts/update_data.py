@@ -89,6 +89,114 @@ def _validate_columns(df: pd.DataFrame, required: List[str], label: str) -> None
         raise ValueError(f"{label} missing columns: {missing}")
 
 
+def _is_blank(value: object) -> bool:
+    if pd.isna(value):
+        return True
+    if isinstance(value, str) and value.strip() == "":
+        return True
+    return False
+
+
+def _norm_key(value: object) -> str:
+    if pd.isna(value):
+        return ""
+    return str(value).strip().lower()
+
+
+def _row_numbers(mask: pd.Series, limit: int = 10) -> str:
+    idx = mask[mask].index.tolist()[:limit]
+    if not idx:
+        return ""
+    # +2 because CSV row numbers are 1-based and row 1 is the header.
+    rows = [str(i + 2) for i in idx]
+    return ", ".join(rows)
+
+
+def _raise_csv_validation_error(file_label: str, issues: List[str]) -> None:
+    formatted = "\n".join([f"- {msg}" for msg in issues])
+    raise ValueError(f"CSV VALIDATION ERROR\nFile: {file_label}\n{formatted}")
+
+
+def _validate_csv_input(
+    df: pd.DataFrame,
+    *,
+    file_label: str,
+    required_cols: List[str],
+    allowed_cols: List[str],
+    key_cols: List[str],
+    numeric_cols: dict[str, str],
+    enum_cols: dict[str, set[str]] | None = None,
+) -> None:
+    issues: List[str] = []
+
+    missing = [c for c in required_cols if c not in df.columns]
+    if missing:
+        issues.append(f"colonne richieste mancanti: {missing}")
+
+    extra = [c for c in df.columns if c not in allowed_cols]
+    if extra:
+        issues.append(f"colonne extra non previste: {extra}")
+
+    if df.empty:
+        issues.append("file vuoto: nessuna riga dati presente")
+
+    present_required = [c for c in required_cols if c in df.columns]
+    if present_required and not df.empty:
+        incomplete_mask = df[present_required].apply(lambda row: any(_is_blank(v) for v in row), axis=1)
+        if incomplete_mask.any():
+            issues.append(
+                f"righe vuote/incomplete rilevate alle righe: {_row_numbers(incomplete_mask)}"
+            )
+
+    missing_key_cols = [c for c in key_cols if c not in df.columns]
+    if missing_key_cols:
+        issues.append(f"colonne chiave primaria mancanti: {missing_key_cols}")
+    elif key_cols and not df.empty:
+        key_df = pd.DataFrame({c: df[c].map(_norm_key) for c in key_cols})
+        key_blank_mask = key_df.apply(lambda row: any(v == "" for v in row), axis=1)
+        if key_blank_mask.any():
+            issues.append(
+                f"chiave primaria vuota alle righe: {_row_numbers(key_blank_mask)}"
+            )
+        dup_mask = key_df.duplicated(keep=False)
+        if dup_mask.any():
+            issues.append(
+                f"duplicati sulla chiave primaria ({', '.join(key_cols)}) alle righe: {_row_numbers(dup_mask)}"
+            )
+
+    for col, kind in numeric_cols.items():
+        if col not in df.columns or df.empty:
+            continue
+        stripped = df[col].map(lambda x: "" if pd.isna(x) else str(x).strip())
+        numeric = pd.to_numeric(df[col], errors="coerce")
+        invalid_mask = (stripped != "") & numeric.isna()
+        if invalid_mask.any():
+            issues.append(
+                f"valori non numerici in '{col}' alle righe: {_row_numbers(invalid_mask)}"
+            )
+            continue
+        if kind == "int":
+            int_mask = (stripped != "") & ((numeric % 1) != 0)
+            if int_mask.any():
+                issues.append(
+                    f"valori non interi in '{col}' alle righe: {_row_numbers(int_mask)}"
+                )
+
+    if enum_cols:
+        for col, allowed_values in enum_cols.items():
+            if col not in df.columns or df.empty:
+                continue
+            normalized = df[col].map(lambda x: "" if _is_blank(x) else str(x).strip().upper())
+            invalid_mask = (normalized != "") & (~normalized.isin(allowed_values))
+            if invalid_mask.any():
+                issues.append(
+                    f"valori non validi in '{col}' alle righe: {_row_numbers(invalid_mask)}"
+                )
+
+    if issues:
+        _raise_csv_validation_error(file_label, issues)
+
+
 def _normalize_teams_columns(df: pd.DataFrame) -> pd.DataFrame:
     col_map = {
         "team": "name",
@@ -708,6 +816,12 @@ def main() -> None:
     archive_quot = False
     archive_rose = False
     archive_teams = False
+    prepared_quot: pd.DataFrame | None = None
+    prepared_rose: pd.DataFrame | None = None
+    prepared_teams: pd.DataFrame | None = None
+    prev_quot = pd.DataFrame()
+    prev_rose = pd.DataFrame()
+    prev_teams = pd.DataFrame()
 
     if args.quotazioni:
         quot_path = Path(args.quotazioni)
@@ -717,18 +831,29 @@ def main() -> None:
             archive_quot = True
         else:
             prev_quot = pd.read_csv(QUOT_PATH) if QUOT_PATH.exists() else pd.DataFrame()
-            new_quot = _read_input(quot_path)
-            if not all(col in new_quot.columns for col in ["Giocatore", "PrezzoAttuale"]):
-                new_quot = _parse_quotazioni_listone(quot_path)
-            _validate_columns(new_quot, ["Giocatore", "PrezzoAttuale"], "Quotazioni")
-            _archive_current(QUOT_PATH, HIST_QUOT, stamp, "quotazioni", args.keep)
-            _write_csv(new_quot, QUOT_PATH)
-            if not prev_quot.empty:
-                diff_lines = _diff_quotazioni(prev_quot, new_quot)
-                _write_diff(diff_lines, stamp, "quotazioni")
-            updated_quot = True
-            state.setdefault("last_signature", {})["quotazioni"] = current_sig["quotazioni"]
-            archive_quot = True
+            prepared_quot = _read_input(quot_path)
+            if not all(col in prepared_quot.columns for col in ["Giocatore", "PrezzoAttuale"]):
+                prepared_quot = _parse_quotazioni_listone(quot_path)
+            _validate_csv_input(
+                prepared_quot,
+                file_label=quot_path.name,
+                required_cols=["Giocatore", "PrezzoAttuale"],
+                allowed_cols=[
+                    "Giocatore",
+                    "Squadra",
+                    "PrezzoAttuale",
+                    "PrezzoIniziale",
+                    "Ruolo",
+                    "RuoloMantra",
+                    "FVM",
+                ],
+                key_cols=["Giocatore"],
+                numeric_cols={
+                    "PrezzoAttuale": "float",
+                    "PrezzoIniziale": "float",
+                    "FVM": "float",
+                },
+            )
 
     if args.rose:
         rose_path = Path(args.rose)
@@ -738,41 +863,28 @@ def main() -> None:
             archive_rose = True
         else:
             prev_rose = pd.read_csv(ROSE_PATH) if ROSE_PATH.exists() else pd.DataFrame()
-            new_rose = _read_input(rose_path)
+            prepared_rose = _read_input(rose_path)
             required_cols = ["Team", "Giocatore", "Ruolo", "Squadra", "PrezzoAcquisto", "PrezzoAttuale"]
-            if not all(col in new_rose.columns for col in required_cols) and rose_path.suffix.lower() in {
+            if not all(col in prepared_rose.columns for col in required_cols) and rose_path.suffix.lower() in {
                 ".xlsx",
                 ".xls",
             }:
                 try:
-                    new_rose = _parse_rose_nuovo(rose_path)
+                    prepared_rose = _parse_rose_nuovo(rose_path)
                 except ValueError:
-                    new_rose = _parse_squadre_master(rose_path)
-            _validate_columns(new_rose, required_cols, "Rose")
-            _archive_current(ROSE_PATH, HIST_ROSE, stamp, "rose_fantaportoscuso", args.keep)
-            _write_csv(new_rose, ROSE_PATH)
-            if not prev_rose.empty:
-                diff_lines = _diff_rose(prev_rose, new_rose)
-                _write_diff(diff_lines, stamp, "rose")
-                market_changes = _market_from_diff_rose(diff_lines, stamp)
-                HIST_MARKET.mkdir(parents=True, exist_ok=True)
-                market_path = HIST_MARKET / f"market_{stamp}.json"
-                market_path.write_text(json.dumps(market_changes, indent=2), encoding="utf-8")
-                # Keep full market history (no rotation) for season-long tracking
-                all_items = _load_market_history()
-                MARKET_LATEST.write_text(
-                    json.dumps(
-                        {
-                            "items": all_items,
-                            "teams": _market_team_summary(all_items),
-                        },
-                        indent=2,
-                    ),
-                    encoding="utf-8",
-                )
-            updated_rose = True
-            state.setdefault("last_signature", {})["rose"] = current_sig["rose"]
-            archive_rose = True
+                    prepared_rose = _parse_squadre_master(rose_path)
+            _validate_csv_input(
+                prepared_rose,
+                file_label=rose_path.name,
+                required_cols=required_cols,
+                allowed_cols=required_cols,
+                key_cols=["Team", "Giocatore"],
+                numeric_cols={
+                    "PrezzoAcquisto": "float",
+                    "PrezzoAttuale": "float",
+                },
+                enum_cols={"Ruolo": {"P", "D", "C", "A"}},
+            )
 
     if args.teams:
         teams_path = Path(args.teams)
@@ -782,8 +894,8 @@ def main() -> None:
             archive_teams = True
         else:
             prev_teams = pd.read_csv(TEAMS_PATH) if TEAMS_PATH.exists() else pd.DataFrame()
-            new_teams = _read_input(teams_path)
-            new_teams = _normalize_teams_columns(new_teams)
+            prepared_teams = _read_input(teams_path)
+            prepared_teams = _normalize_teams_columns(prepared_teams)
             required_cols = [
                 "name",
                 "PPG_S",
@@ -801,12 +913,72 @@ def main() -> None:
                 "CoachBoost",
                 "GamesRemaining",
             ]
-            _validate_columns(new_teams, required_cols, "Teams")
-            _archive_current(TEAMS_PATH, HIST_TEAMS, stamp, "teams", args.keep)
-            _write_csv(new_teams, TEAMS_PATH)
-            updated_teams = True
-            state.setdefault("last_signature", {})["teams"] = current_sig["teams"]
-            archive_teams = True
+            _validate_csv_input(
+                prepared_teams,
+                file_label=teams_path.name,
+                required_cols=required_cols,
+                allowed_cols=required_cols,
+                key_cols=["name"],
+                numeric_cols={
+                    "PPG_S": "float",
+                    "PPG_R8": "float",
+                    "GFpg_S": "float",
+                    "GFpg_R8": "float",
+                    "GApg_S": "float",
+                    "GApg_R8": "float",
+                    "MoodTeam": "float",
+                    "CoachStyle_P": "float",
+                    "CoachStyle_D": "float",
+                    "CoachStyle_C": "float",
+                    "CoachStyle_A": "float",
+                    "CoachStability": "float",
+                    "CoachBoost": "float",
+                    "GamesRemaining": "int",
+                },
+            )
+
+    if prepared_quot is not None:
+        _archive_current(QUOT_PATH, HIST_QUOT, stamp, "quotazioni", args.keep)
+        _write_csv(prepared_quot, QUOT_PATH)
+        if not prev_quot.empty:
+            diff_lines = _diff_quotazioni(prev_quot, prepared_quot)
+            _write_diff(diff_lines, stamp, "quotazioni")
+        updated_quot = True
+        state.setdefault("last_signature", {})["quotazioni"] = current_sig["quotazioni"]
+        archive_quot = True
+
+    if prepared_rose is not None:
+        _archive_current(ROSE_PATH, HIST_ROSE, stamp, "rose_fantaportoscuso", args.keep)
+        _write_csv(prepared_rose, ROSE_PATH)
+        if not prev_rose.empty:
+            diff_lines = _diff_rose(prev_rose, prepared_rose)
+            _write_diff(diff_lines, stamp, "rose")
+            market_changes = _market_from_diff_rose(diff_lines, stamp)
+            HIST_MARKET.mkdir(parents=True, exist_ok=True)
+            market_path = HIST_MARKET / f"market_{stamp}.json"
+            market_path.write_text(json.dumps(market_changes, indent=2), encoding="utf-8")
+            # Keep full market history (no rotation) for season-long tracking
+            all_items = _load_market_history()
+            MARKET_LATEST.write_text(
+                json.dumps(
+                    {
+                        "items": all_items,
+                        "teams": _market_team_summary(all_items),
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+        updated_rose = True
+        state.setdefault("last_signature", {})["rose"] = current_sig["rose"]
+        archive_rose = True
+
+    if prepared_teams is not None:
+        _archive_current(TEAMS_PATH, HIST_TEAMS, stamp, "teams", args.keep)
+        _write_csv(prepared_teams, TEAMS_PATH)
+        updated_teams = True
+        state.setdefault("last_signature", {})["teams"] = current_sig["teams"]
+        archive_teams = True
 
     if ROSE_PATH.exists():
         rose_df = pd.read_csv(ROSE_PATH)

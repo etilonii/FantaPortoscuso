@@ -136,6 +136,19 @@ class KeyReset(Base):
     note = Column(String(255), nullable=True)
 
 
+class RefreshToken(Base):
+    __tablename__ = "refresh_tokens"
+
+    id = Column(Integer, primary_key=True, index=True)
+    key_id = Column(Integer, ForeignKey("access_keys.id"), nullable=False, index=True)
+    token_hash = Column(String(128), nullable=False, unique=True, index=True)
+    device_id = Column(String(128), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    expires_at = Column(DateTime, nullable=False, index=True)
+    revoked_at = Column(DateTime, nullable=True, index=True)
+    last_used_at = Column(DateTime, nullable=True)
+
+
 def ensure_schema(engine) -> None:
     with engine.connect() as conn:
         result = conn.execute(text("PRAGMA table_info(access_keys)"))
@@ -186,4 +199,23 @@ def ensure_schema(engine) -> None:
             )
         )
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_key_resets_reset_at ON key_resets (reset_at)"))
+        conn.execute(
+            text(
+                """
+                CREATE TABLE IF NOT EXISTS refresh_tokens (
+                    id INTEGER PRIMARY KEY,
+                    key_id INTEGER NOT NULL,
+                    token_hash VARCHAR(128) NOT NULL UNIQUE,
+                    device_id VARCHAR(128),
+                    created_at DATETIME NOT NULL,
+                    expires_at DATETIME NOT NULL,
+                    revoked_at DATETIME,
+                    last_used_at DATETIME
+                )
+                """
+            )
+        )
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_refresh_tokens_key_id ON refresh_tokens (key_id)"))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_refresh_tokens_expires_at ON refresh_tokens (expires_at)"))
+        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_refresh_tokens_revoked_at ON refresh_tokens (revoked_at)"))
         conn.commit()

@@ -30,6 +30,13 @@ function Write-UpdateLog([string]$message) {
 
 Write-UpdateLog "update-all start"
 
+$updateId = (Get-Date).ToString("yyyyMMdd_HHmmss_fff")
+$steps = @{
+  rose = "pending"
+  stats = "pending"
+  strength = "pending"
+}
+
 if (-not $DateStamp) {
   $DateStamp = (Get-Date).ToString("yyyy-MM-dd")
 }
@@ -53,9 +60,58 @@ function Write-DataStatus([string]$result, [string]$message) {
     result = $result
     message = $message
     season = $season
+    update_id = $updateId
+    steps = $steps
   }
-  $statusObj | ConvertTo-Json -Depth 4 | Set-Content -Path $statusPath -Encoding UTF8
+  $tmpStatusPath = "$statusPath.tmp"
+  try {
+    $statusObj | ConvertTo-Json -Depth 4 | Set-Content -Path $tmpStatusPath -Encoding UTF8
+    $moved = $false
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+      try {
+        Move-Item -Path $tmpStatusPath -Destination $statusPath -Force -ErrorAction Stop
+        $moved = $true
+        break
+      }
+      catch {
+        if ($attempt -lt 3) {
+          Start-Sleep -Milliseconds 300
+        } else {
+          throw
+        }
+      }
+    }
+    if (-not $moved) {
+      throw "status move failed after retries"
+    }
+  }
+  catch {
+    Write-UpdateLog "status write failed | result=$result | error=$($_.Exception.Message)"
+    if (Test-Path $tmpStatusPath) {
+      try {
+        Remove-Item -Path $tmpStatusPath -Force -ErrorAction SilentlyContinue
+      }
+      catch {}
+    }
+    throw
+  }
 }
+
+function Get-StepRunningMessage([string]$stepName) {
+  switch ($stepName) {
+    "rose" { return "Aggiornamento in corso: Rose/Quotazioni..." }
+    "stats" { return "Aggiornamento in corso: Statistiche..." }
+    "strength" { return "Aggiornamento in corso: Classifiche Forza..." }
+    default { return "Aggiornamento in corso..." }
+  }
+}
+
+function Get-StepErrorMessage([string]$stepLabel) {
+  return "Errore durante: $stepLabel — sto terminando..."
+}
+
+# Scrive subito uno stato iniziale visibile prima dei backup e dei task python.
+Write-DataStatus -result "running" -message "Aggiornamento in corso..."
 
 $dbCandidates = @(
   "$root\app.db",
@@ -147,17 +203,50 @@ try {
   if ($SyncRose) {
     $updateArgs += "--sync-rose"
   }
-  python "$root\scripts\update_data.py" @updateArgs
+  $steps.rose = "running"
+  Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "rose")
+  try {
+    python "$root\scripts\update_data.py" @updateArgs
+    $steps.rose = "ok"
+    Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "stats")
+  }
+  catch {
+    $steps.rose = "error"
+    Write-DataStatus -result "running" -message (Get-StepErrorMessage -stepLabel "Rose/Quotazioni")
+    throw
+  }
 
   Write-Host "==> Aggiornamento STATISTICHE"
   $statsArgs = @()
   if ($ForceStats) {
     $statsArgs += "--force"
   }
-  python "$root\scripts\clean_stats_batch.py" @statsArgs
+  $steps.stats = "running"
+  Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "stats")
+  try {
+    python "$root\scripts\clean_stats_batch.py" @statsArgs
+    $steps.stats = "ok"
+    Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "strength")
+  }
+  catch {
+    $steps.stats = "error"
+    Write-DataStatus -result "running" -message (Get-StepErrorMessage -stepLabel "Statistiche")
+    throw
+  }
 
   Write-Host "==> Aggiornamento CLASSIFICHE FORZA"
-  python "$root\scripts\build_team_strength_ranking.py" --snapshot --snapshot-date "$DateStamp"
+  $steps.strength = "running"
+  Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "strength")
+  try {
+    python "$root\scripts\build_team_strength_ranking.py" --snapshot --snapshot-date "$DateStamp"
+    $steps.strength = "ok"
+    Write-DataStatus -result "running" -message "Aggiornamento in corso: Finalizzazione..."
+  }
+  catch {
+    $steps.strength = "error"
+    Write-DataStatus -result "running" -message (Get-StepErrorMessage -stepLabel "Classifiche Forza")
+    throw
+  }
 
   $isSuccess = $true
   Write-DataStatus -result "ok" -message $overallMessage

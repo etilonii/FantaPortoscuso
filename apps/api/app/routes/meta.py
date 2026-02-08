@@ -48,7 +48,12 @@ def data_status():
         return fallback
 
     result = str(raw.get("result", "")).strip().lower()
-    normalized_result = "ok" if result == "ok" else "error"
+    if result in {"ok", "success"}:
+        normalized_result = "ok"
+    elif result == "running":
+        normalized_result = "running"
+    else:
+        normalized_result = "error"
 
     payload = {
         "last_update": str(raw.get("last_update") or fallback["last_update"]),
@@ -66,5 +71,20 @@ def data_status():
             payload["matchday"] = int(matchday)
         except (TypeError, ValueError):
             pass
+
+    update_id = raw.get("update_id")
+    if update_id not in (None, ""):
+        payload["update_id"] = str(update_id)
+
+    raw_steps = raw.get("steps")
+    if isinstance(raw_steps, dict):
+        allowed = {"pending", "running", "ok", "error"}
+        steps = {}
+        for key in ("rose", "stats", "strength"):
+            value = str(raw_steps.get(key, "")).strip().lower()
+            if value in allowed:
+                steps[key] = value
+        if steps:
+            payload["steps"] = steps
 
     return payload
