@@ -25,6 +25,7 @@ QUOT_PATH = DATA_DIR / "quotazioni.csv"
 RESIDUAL_CREDITS_PATH = DATA_DIR / "rose_nuovo_credits.csv"
 STATS_PATH = DATA_DIR / "statistiche_giocatori.csv"
 MARKET_PATH = DATA_DIR / "market_latest.json"
+STARTING_XI_REPORT_PATH = DATA_DIR / "reports" / "team_starting_xi.csv"
 MARKET_REPORT_GLOB = "rose_changes_*.csv"
 ROSE_DIFF_GLOB = "diff_rose_*.txt"
 STATS_DIR = DATA_DIR / "stats"
@@ -61,6 +62,13 @@ def _read_csv(path: Path) -> List[Dict[str, str]]:
 def _count_lines(path: Path) -> int:
     if not path.exists():
         return 0
+
+
+def _split_players_cell(value: str | None) -> List[str]:
+    raw = str(value or "").strip()
+    if not raw:
+        return []
+    return [item.strip() for item in raw.split(";") if item and item.strip()]
     try:
         with path.open("r", encoding="utf-8", errors="ignore") as handle:
             return sum(1 for _ in handle)
@@ -1449,6 +1457,56 @@ def _load_standings_rows() -> List[Dict[str, object]]:
 @router.get("/standings")
 def standings():
     return {"items": _load_standings_rows()}
+
+
+@router.get("/formazioni")
+def formazioni(
+    team: Optional[str] = Query(default=None),
+    limit: int = Query(default=200, ge=1, le=500),
+):
+    rows = _read_csv(STARTING_XI_REPORT_PATH)
+    team_key = normalize_name(team or "")
+    items: List[Dict[str, object]] = []
+
+    for idx, row in enumerate(rows):
+        team_name = str(row.get("Team") or "").strip()
+        if not team_name:
+            continue
+        if team_key and normalize_name(team_name) != team_key:
+            continue
+
+        pos_raw = str(row.get("Pos") or "").strip()
+        try:
+            pos = int(float(pos_raw.replace(",", "."))) if pos_raw else idx + 1
+        except ValueError:
+            pos = idx + 1
+
+        forza_raw = str(row.get("ForzaTitolari") or "").strip()
+        try:
+            forza_titolari = float(forza_raw.replace(",", ".")) if forza_raw else 0.0
+        except ValueError:
+            forza_titolari = 0.0
+
+        portiere = str(row.get("Portiere") or "").strip()
+        difensori = _split_players_cell(row.get("Difensori"))
+        centrocampisti = _split_players_cell(row.get("Centrocampisti"))
+        attaccanti = _split_players_cell(row.get("Attaccanti"))
+
+        items.append(
+            {
+                "pos": pos,
+                "team": team_name,
+                "modulo": str(row.get("ModuloMigliore") or "").strip(),
+                "forza_titolari": forza_titolari,
+                "portiere": portiere,
+                "difensori": difensori,
+                "centrocampisti": centrocampisti,
+                "attaccanti": attaccanti,
+            }
+        )
+
+    items.sort(key=lambda x: (x.get("pos", 9999), str(x.get("team", "")).lower()))
+    return {"items": items[:limit]}
 
 
 @router.get("/team/{team_name}")

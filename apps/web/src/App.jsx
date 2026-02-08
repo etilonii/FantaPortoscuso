@@ -5,6 +5,7 @@ import HomeSection from "./components/sections/HomeSection";
 import MercatoSection from "./components/sections/MercatoSection";
 import PlusvalenzeSection from "./components/sections/PlusvalenzeSection";
 import RoseSection from "./components/sections/RoseSection";
+import FormazioniSection from "./components/sections/FormazioniSection";
 import StatsSection from "./components/sections/StatsSection";
 import TopAcquistiSection from "./components/sections/TopAcquistiSection";
 
@@ -223,6 +224,8 @@ export default function App() {
   const [marketStandings, setMarketStandings] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState("");
   const [roster, setRoster] = useState([]);
+  const [formations, setFormations] = useState([]);
+  const [formationTeam, setFormationTeam] = useState("all");
   const [roleFilter, setRoleFilter] = useState("all");
   const [squadraFilter, setSquadraFilter] = useState("all");
   const [rosterQuery, setRosterQuery] = useState("");
@@ -546,6 +549,15 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setMarketStandings(Array.isArray(data.items) ? data.items : []);
+    } catch {}
+  };
+
+  const loadFormazioni = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/data/formazioni?limit=300`);
+      if (!res.ok) return;
+      const data = await res.json();
+      setFormations(Array.isArray(data.items) ? data.items : []);
     } catch {}
   };
 
@@ -1527,6 +1539,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     loadDataStatus();
     loadTeams();
     loadMarketStandings();
+    loadFormazioni();
     loadPlusvalenze();
     loadAllPlusvalenze();
     loadListone();
@@ -1732,6 +1745,16 @@ useEffect(() => {
               </button>
 
               <button
+                className={activeMenu === "formazioni" ? "menu-item active" : "menu-item"}
+                onClick={() => {
+                  setActiveMenu("formazioni");
+                  setMenuOpen(false);
+                }}
+              >
+                Formazioni
+              </button>
+
+              <button
                 className={
                   activeMenu === "plusvalenze" ? "menu-item active" : "menu-item"
                 }
@@ -1810,6 +1833,8 @@ useEffect(() => {
                   ? "Statistiche"
                   : activeMenu === "rose"
                   ? "Rose"
+                  : activeMenu === "formazioni"
+                  ? "Formazioni"
                   : activeMenu === "plusvalenze"
                   ? "Plusvalenze"
                   : activeMenu === "listone"
@@ -1912,6 +1937,16 @@ useEffect(() => {
                 roster={rosterDisplay}
                 formatInt={formatInt}
                 openPlayer={openPlayer}
+              />
+            )}
+
+            {activeMenu === "formazioni" && (
+              <FormazioniSection
+                formations={formations}
+                formationTeam={formationTeam}
+                setFormationTeam={setFormationTeam}
+                openPlayer={openPlayer}
+                formatDecimal={formatDecimal}
               />
             )}
 
