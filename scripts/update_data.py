@@ -700,6 +700,19 @@ def _parse_quotazioni_listone(path: Path) -> pd.DataFrame:
         "FVM": "FVM",
     }
     df = df.rename(columns=col_map)
+    canonical_cols = [
+        "Giocatore",
+        "Squadra",
+        "PrezzoAttuale",
+        "PrezzoIniziale",
+        "Ruolo",
+        "RuoloMantra",
+        "FVM",
+    ]
+    for col in canonical_cols:
+        if col not in df.columns:
+            df[col] = ""
+    df = df[canonical_cols].copy()
     df["Giocatore"] = df["Giocatore"].astype(str).str.strip()
     return df
 

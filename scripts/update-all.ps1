@@ -2,7 +2,8 @@ param(
   [string]$DateStamp,
   [switch]$ForceStats,
   [int]$Keep = 5,
-  [switch]$SyncRose
+  [switch]$SyncRose,
+  [switch]$UsePipelineV2
 )
 
 $ErrorActionPreference = "Stop"
@@ -198,7 +199,11 @@ $overallMessage = "Aggiornamento completato con successo."
 $isSuccess = $false
 
 try {
-  Write-Host "==> Aggiornamento ROSE/QUOTAZIONI ($DateStamp)"
+  if ($UsePipelineV2) {
+    Write-Host "==> Aggiornamento CLASSIFICA/ROSE/QUOTAZIONI (Pipeline V2, $DateStamp)"
+  } else {
+    Write-Host "==> Aggiornamento ROSE/QUOTAZIONI ($DateStamp)"
+  }
   $updateArgs = @("--auto", "--date", $DateStamp, "--keep", "$Keep")
   if ($SyncRose) {
     $updateArgs += "--sync-rose"
@@ -206,7 +211,15 @@ try {
   $steps.rose = "running"
   Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "rose")
   try {
-    python "$root\scripts\update_data.py" @updateArgs
+    if ($UsePipelineV2) {
+      python "$root\scripts\pipeline_v2.py" --domains "classifica,rose,quotazioni" --date "$DateStamp"
+      if ($SyncRose) {
+        python "$root\scripts\update_data.py" --date "$DateStamp" --keep "$Keep" --sync-rose
+      }
+    }
+    else {
+      python "$root\scripts\update_data.py" @updateArgs
+    }
     $steps.rose = "ok"
     Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "stats")
   }
