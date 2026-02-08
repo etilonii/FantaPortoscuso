@@ -10,6 +10,7 @@ COPY apps/api/requirements.txt /tmp/requirements.txt
 RUN pip install -r /tmp/requirements.txt
 
 COPY apps/api /app/apps/api
+COPY data /app/data
 
 EXPOSE 8001
 

@@ -16,7 +16,14 @@ node_modules/
 apps/web/node_modules/
 apps/web/dist/
 
-data/
+# Keep tracked data files in image; exclude runtime/output only.
+data/backups/
+data/reports/history/
+data/status.json
+data/incoming/
+data/archive/
+data/tmp/
+data/db/*.db
 
 npm-debug.log
 yarn-error.log
