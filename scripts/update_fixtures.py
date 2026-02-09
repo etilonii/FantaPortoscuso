@@ -1,0 +1,239 @@
+from __future__ import annotations
+
+import argparse
+import csv
+import re
+from pathlib import Path
+from typing import Dict, List, Optional
+
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "data"
+INCOMING_FIXTURES_DIR = DATA_DIR / "incoming" / "fixtures"
+TEMPLATE_FIXTURES_PATH = DATA_DIR / "templates" / "fixtures_rounds_template.csv"
+OUTPUT_FIXTURES_PATH = DATA_DIR / "db" / "fixtures.csv"
+SUPPORTED_EXTENSIONS = {".csv", ".xlsx", ".xls"}
+
+
+def _norm_header(value: object) -> str:
+    text = str(value or "").strip().lower()
+    text = text.replace(".", "")
+    text = re.sub(r"[^a-z0-9]+", "", text)
+    return text
+
+
+def _parse_int(value: object) -> Optional[int]:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    try:
+        return int(float(raw.replace(",", ".")))
+    except ValueError:
+        return None
+
+
+def _clean_row(row: Dict[object, object]) -> Dict[str, str]:
+    cleaned: Dict[str, str] = {}
+    for key, value in row.items():
+        if key is None:
+            continue
+        cleaned[_norm_header(key)] = "" if value is None else str(value).strip()
+    return cleaned
+
+
+def _read_table_rows(path: Path) -> List[Dict[str, str]]:
+    suffix = path.suffix.lower()
+    if suffix == ".csv":
+        with path.open("r", encoding="utf-8-sig", newline="") as handle:
+            reader = csv.DictReader(handle)
+            return [_clean_row(row) for row in reader if row]
+
+    if suffix in {".xlsx", ".xls"}:
+        import pandas as pd
+
+        frame = pd.read_excel(path)
+        if frame is None or frame.empty:
+            return []
+        frame = frame.fillna("")
+        return [_clean_row(row.to_dict()) for _, row in frame.iterrows()]
+
+    raise ValueError(f"Unsupported extension: {suffix}")
+
+
+def _latest_supported_file(folder: Path) -> Optional[Path]:
+    if not folder.exists() or not folder.is_dir():
+        return None
+    files = [
+        p
+        for p in folder.iterdir()
+        if p.is_file() and p.suffix.lower() in SUPPORTED_EXTENSIONS
+    ]
+    if not files:
+        return None
+    return max(files, key=lambda p: p.stat().st_mtime)
+
+
+def _pick_source(explicit: Optional[str]) -> Path:
+    if explicit:
+        path = Path(explicit).expanduser()
+        if not path.is_absolute():
+            path = (ROOT / path).resolve()
+        if not path.exists() or not path.is_file():
+            raise FileNotFoundError(f"Source not found: {path}")
+        return path
+
+    incoming = _latest_supported_file(INCOMING_FIXTURES_DIR)
+    if incoming is not None:
+        return incoming
+    if TEMPLATE_FIXTURES_PATH.exists():
+        return TEMPLATE_FIXTURES_PATH
+    raise FileNotFoundError(
+        f"No fixtures source found in {INCOMING_FIXTURES_DIR} and missing template {TEMPLATE_FIXTURES_PATH}"
+    )
+
+
+def _pick_value(row: Dict[str, str], aliases: List[str]) -> str:
+    for key in aliases:
+        value = row.get(_norm_header(key), "")
+        if value:
+            return value
+    return ""
+
+
+def _normalize_team(value: str) -> str:
+    return re.sub(r"\s+", " ", (value or "").strip())
+
+
+def _build_rows(source_rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    matches: List[Dict[str, object]] = []
+    seen = set()
+
+    for row in source_rows:
+        round_value = _parse_int(_pick_value(row, ["round", "giornata", "matchday", "turno"]))
+        home_team = _normalize_team(_pick_value(row, ["home", "casa", "team_home", "hometeam"]))
+        away_team = _normalize_team(_pick_value(row, ["away", "trasferta", "team_away", "awayteam"]))
+        if round_value is None or not home_team or not away_team:
+            continue
+
+        home_score = _parse_int(
+            _pick_value(row, ["home_score", "goals_home", "gol_casa", "score_home", "gh"])
+        )
+        away_score = _parse_int(
+            _pick_value(row, ["away_score", "goals_away", "gol_trasferta", "score_away", "ga"])
+        )
+
+        dedupe_key = (round_value, home_team.lower(), away_team.lower())
+        if dedupe_key in seen:
+            continue
+        seen.add(dedupe_key)
+
+        matches.append(
+            {
+                "round": round_value,
+                "home": home_team,
+                "away": away_team,
+                "home_score": home_score,
+                "away_score": away_score,
+            }
+        )
+
+    matches.sort(key=lambda m: (int(m["round"]), str(m["home"]).lower(), str(m["away"]).lower()))
+
+    rows_out: List[Dict[str, str]] = []
+    for m in matches:
+        home_score = m["home_score"]
+        away_score = m["away_score"]
+        home_score_text = "" if home_score is None else str(home_score)
+        away_score_text = "" if away_score is None else str(away_score)
+
+        rows_out.append(
+            {
+                "round": str(m["round"]),
+                "team": str(m["home"]),
+                "opponent": str(m["away"]),
+                "home_away": "H",
+                "home_score": home_score_text,
+                "away_score": away_score_text,
+                "team_score": home_score_text,
+                "opponent_score": away_score_text,
+            }
+        )
+        rows_out.append(
+            {
+                "round": str(m["round"]),
+                "team": str(m["away"]),
+                "opponent": str(m["home"]),
+                "home_away": "A",
+                "home_score": home_score_text,
+                "away_score": away_score_text,
+                "team_score": away_score_text,
+                "opponent_score": home_score_text,
+            }
+        )
+
+    return rows_out
+
+
+def _write_rows(path: Path, rows: List[Dict[str, str]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fieldnames = [
+        "round",
+        "team",
+        "opponent",
+        "home_away",
+        "home_score",
+        "away_score",
+        "team_score",
+        "opponent_score",
+    ]
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Build data/db/fixtures.csv from a fixtures source (CSV/XLSX), "
+            "including optional match results."
+        )
+    )
+    parser.add_argument(
+        "--source",
+        default=None,
+        help="Optional explicit source path. Defaults to latest data/incoming/fixtures/* else template.",
+    )
+    parser.add_argument(
+        "--output",
+        default=str(OUTPUT_FIXTURES_PATH),
+        help="Output fixtures path (default: data/db/fixtures.csv).",
+    )
+    args = parser.parse_args()
+
+    source = _pick_source(args.source)
+    output = Path(args.output).expanduser()
+    if not output.is_absolute():
+        output = (ROOT / output).resolve()
+
+    source_rows = _read_table_rows(source)
+    rows_out = _build_rows(source_rows)
+    if not rows_out:
+        raise RuntimeError(f"No valid fixtures found in {source}")
+
+    _write_rows(output, rows_out)
+
+    rounds = sorted({int(row["round"]) for row in rows_out if row.get("home_away") == "H"})
+    with_scores = sum(
+        1
+        for row in rows_out
+        if row.get("home_away") == "H" and row.get("home_score") != "" and row.get("away_score") != ""
+    )
+    print(f"[ok] fixtures written: {output}")
+    print(f"[ok] source: {source}")
+    print(f"[ok] rounds: {rounds[0]}-{rounds[-1]} ({len(rounds)} rounds)")
+    print(f"[ok] matches with scores: {with_scores}")
+
+
+if __name__ == "__main__":
+    main()

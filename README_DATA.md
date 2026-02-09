@@ -38,6 +38,11 @@ powershell -ExecutionPolicy Bypass -File .\scripts\update-all.ps1 -UsePipelineV2
 Con `-UsePipelineV2` il passo rose/quotazioni usa `pipeline_v2.py` (classifica+rose+quotazioni),
 mentre stats/report restano gestiti dal flusso esistente.
 
+Per fissare/aggiornare la giornata corrente nello stato dati:
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\update-all.ps1 -UsePipelineV2 -Matchday 24
+```
+
 ## File "current" (sempre in `data/`)
 - `quotazioni.csv`
 - `rose_fantaportoscuso.csv`
@@ -49,10 +54,44 @@ mentre stats/report restano gestiti dal flusso esistente.
 - `data/incoming/` -> solo file nuovi grezzi in attesa di pulizia
 - `data/history/` -> copie datate dopo ogni update
 - `data/reports/` -> report automatici
+- `data/reports/formazioni_giornata.csv` -> formazioni reali per giornata (opzionale)
 - `data/raw/` -> sorgenti grezze non pronte
 - `data/templates/` -> template di import
 - `data/db/` -> DB/CSV master
 - `data/tmp/` -> temporanei
+
+## Formazioni reali (giornata)
+- Template: `data/templates/formazioni_giornata_template.csv`
+- File letti dall'API (ordine priorita'):
+  - ultimo file in `data/incoming/formazioni/` (`.csv/.xlsx/.xls`)
+  - `data/reports/formazioni_giornata.csv|xlsx`
+  - `data/reports/formazioni_reali.csv|xlsx`
+  - `data/db/formazioni_giornata.csv`
+- Colonne attese: `giornata, team, modulo, portiere, difensori, centrocampisti, attaccanti`
+- Separatore giocatori per reparto: `;`
+- Se il file non c'e' (o manca la giornata), la sezione Formazioni mostra fallback "miglior XI" ordinato per classifica.
+
+## Fixtures e giornata corrente
+- Script: `python .\scripts\update_fixtures.py`
+- Sorgente predefinita:
+  - ultimo file in `data/incoming/fixtures/` (`.csv/.xlsx/.xls`)
+  - fallback `data/templates/fixtures_rounds_template.csv`
+- Output: `data/db/fixtures.csv` con colonne:
+  - `round, team, opponent, home_away`
+  - opzionali risultati: `home_score, away_score, team_score, opponent_score`
+- Template con risultati: `data/templates/fixtures_results_template.csv`
+- La giornata corrente e' risolta in questo ordine:
+  1) `status.json.matchday` (se presente)
+  2) inferenza da risultati in `data/db/fixtures.csv`
+  3) fallback da `data/stats/partite.csv`
+
+## Regolamento (scoring live)
+- File unico: `data/config/regolamento.json`
+- Contiene:
+  - valori bonus/malus (es. gol `+3`, assist `+1`, ammonizione `-0.5`)
+  - configurazione `6 politico`
+  - moduli modificatori (difesa, capitano)
+- Usato per il calcolo da `Live` -> `Formazioni` (voto/fantavoto e totale live).
 
 ## Regole semplici
 - Non modificare a mano i file in `data/history/`

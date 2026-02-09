@@ -6,6 +6,7 @@ import MercatoSection from "./components/sections/MercatoSection";
 import PlusvalenzeSection from "./components/sections/PlusvalenzeSection";
 import RoseSection from "./components/sections/RoseSection";
 import FormazioniSection from "./components/sections/FormazioniSection";
+import LiveSection from "./components/sections/LiveSection";
 import StatsSection from "./components/sections/StatsSection";
 import TopAcquistiSection from "./components/sections/TopAcquistiSection";
 
@@ -226,6 +227,27 @@ export default function App() {
   const [roster, setRoster] = useState([]);
   const [formations, setFormations] = useState([]);
   const [formationTeam, setFormationTeam] = useState("all");
+  const [formationRound, setFormationRound] = useState("");
+  const [formationOrder, setFormationOrder] = useState("classifica");
+  const [formationMeta, setFormationMeta] = useState({
+    round: null,
+    source: "projection",
+    availableRounds: [],
+    orderBy: "classifica",
+    orderAllowed: ["classifica", "live_total"],
+    note: "",
+  });
+  const [livePayload, setLivePayload] = useState({
+    round: null,
+    available_rounds: [],
+    fixtures: [],
+    teams: [],
+    event_fields: [],
+    bonus_malus: {},
+  });
+  const [liveError, setLiveError] = useState("");
+  const [liveLoading, setLiveLoading] = useState(false);
+  const [liveSavingKey, setLiveSavingKey] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [squadraFilter, setSquadraFilter] = useState("all");
   const [rosterQuery, setRosterQuery] = useState("");
@@ -552,13 +574,197 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     } catch {}
   };
 
-  const loadFormazioni = async () => {
+  const loadFormazioni = async (roundValue = null, orderValue = null) => {
     try {
-      const res = await fetch(`${API_BASE}/data/formazioni?limit=300`);
+      const params = new URLSearchParams({ limit: "300" });
+      const parsedRound = Number(roundValue);
+      if (Number.isFinite(parsedRound) && parsedRound > 0) {
+        params.set("round", String(parsedRound));
+      }
+      const normalizedOrder = String(orderValue || formationOrder || "classifica")
+        .trim()
+        .toLowerCase();
+      if (normalizedOrder === "classifica" || normalizedOrder === "live_total") {
+        params.set("order_by", normalizedOrder);
+      }
+      const res = await fetch(`${API_BASE}/data/formazioni?${params.toString()}`);
       if (!res.ok) return;
       const data = await res.json();
       setFormations(Array.isArray(data.items) ? data.items : []);
+      const apiRound = Number(data?.round);
+      const normalizedRound = Number.isFinite(apiRound) ? apiRound : null;
+      const availableRounds = Array.isArray(data?.available_rounds)
+        ? data.available_rounds
+            .map((value) => Number(value))
+            .filter((value) => Number.isFinite(value))
+            .sort((a, b) => a - b)
+        : [];
+      setFormationMeta({
+        round: normalizedRound,
+        source: String(data?.source || "").toLowerCase() === "real" ? "real" : "projection",
+        availableRounds,
+        orderBy:
+          String(data?.order_by || "").toLowerCase() === "live_total"
+            ? "live_total"
+            : "classifica",
+        orderAllowed: Array.isArray(data?.order_allowed)
+          ? data.order_allowed
+              .map((value) => String(value || "").trim().toLowerCase())
+              .filter((value) => value === "classifica" || value === "live_total")
+          : ["classifica", "live_total"],
+        note: String(data?.note || "").trim(),
+      });
+      const nextOrder =
+        String(data?.order_by || "").toLowerCase() === "live_total"
+          ? "live_total"
+          : "classifica";
+      setFormationOrder(nextOrder);
+      if (normalizedRound !== null) {
+        setFormationRound(String(normalizedRound));
+      } else if (availableRounds.length) {
+        setFormationRound(String(availableRounds[availableRounds.length - 1]));
+      } else {
+        setFormationRound("");
+      }
     } catch {}
+  };
+
+  const onFormationRoundChange = (nextRound) => {
+    setFormationRound(nextRound);
+    loadFormazioni(nextRound, formationOrder);
+  };
+
+  const onFormationOrderChange = (nextOrder) => {
+    const normalizedOrder =
+      String(nextOrder || "").toLowerCase() === "live_total" ? "live_total" : "classifica";
+    setFormationOrder(normalizedOrder);
+    loadFormazioni(formationRound || null, normalizedOrder);
+  };
+
+  const loadLivePayload = async (roundValue = null) => {
+    if (!loggedIn || !isAdmin) return;
+    try {
+      setLiveLoading(true);
+      setLiveError("");
+      const params = new URLSearchParams();
+      const parsedRound = Number(roundValue);
+      if (Number.isFinite(parsedRound) && parsedRound > 0) {
+        params.set("round", String(parsedRound));
+      }
+      const queryString = params.toString();
+      const endpoint = `${API_BASE}/data/live/payload${queryString ? `?${queryString}` : ""}`;
+      const res = await fetchWithAuth(endpoint, {
+        headers: buildAuthHeaders({ legacyAdminKey: true }),
+      });
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload?.detail || "Errore caricamento dati live");
+      }
+      const data = await res.json();
+      setLivePayload({
+        round: Number.isFinite(Number(data?.round)) ? Number(data.round) : null,
+        available_rounds: Array.isArray(data?.available_rounds) ? data.available_rounds : [],
+        fixtures: Array.isArray(data?.fixtures) ? data.fixtures : [],
+        teams: Array.isArray(data?.teams) ? data.teams : [],
+        event_fields: Array.isArray(data?.event_fields) ? data.event_fields : [],
+        bonus_malus:
+          data?.bonus_malus && typeof data.bonus_malus === "object"
+            ? data.bonus_malus
+            : {},
+      });
+    } catch (err) {
+      setLiveError(err?.message || "Errore caricamento dati live");
+    } finally {
+      setLiveLoading(false);
+    }
+  };
+
+  const onLiveRoundChange = async (nextRound) => {
+    await loadLivePayload(nextRound);
+  };
+
+  const saveLiveMatchSix = async (payload) => {
+    if (!loggedIn || !isAdmin) return;
+    try {
+      setLiveLoading(true);
+      setLiveError("");
+      const res = await fetchWithAuth(`${API_BASE}/data/live/match-six`, {
+        method: "POST",
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.detail || "Errore aggiornamento 6 politico");
+      }
+      await loadLivePayload(livePayload?.round || payload?.round || null);
+      await loadFormazioni(
+        formationRound || livePayload?.round || payload?.round || null,
+        formationOrder
+      );
+    } catch (err) {
+      setLiveError(err?.message || "Errore aggiornamento 6 politico");
+    } finally {
+      setLiveLoading(false);
+    }
+  };
+
+  const saveLivePlayerVote = async (payload) => {
+    if (!loggedIn || !isAdmin) return;
+    const rowKey = payload?.rowKey || "";
+    try {
+      setLiveSavingKey(rowKey);
+      setLiveError("");
+      const eventFields = [
+        "goal",
+        "assist",
+        "assist_da_fermo",
+        "rigore_segnato",
+        "rigore_parato",
+        "rigore_sbagliato",
+        "gol_subito_portiere",
+        "ammonizione",
+        "espulsione",
+        "autogol",
+        "gol_vittoria",
+        "gol_pareggio",
+      ];
+      const body = {
+        round: payload?.round,
+        team: payload?.team,
+        player: payload?.player,
+        role: payload?.role || "",
+        vote: payload?.vote,
+        is_sv: Boolean(payload?.is_sv),
+      };
+      eventFields.forEach((field) => {
+        body[field] = payload?.[field] ?? 0;
+      });
+      const res = await fetchWithAuth(`${API_BASE}/data/live/player`, {
+        method: "POST",
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.detail || "Errore salvataggio voto live");
+      }
+      await loadLivePayload(livePayload?.round || payload?.round || null);
+      await loadFormazioni(
+        formationRound || livePayload?.round || payload?.round || null,
+        formationOrder
+      );
+    } catch (err) {
+      setLiveError(err?.message || "Errore salvataggio voto live");
+    } finally {
+      setLiveSavingKey("");
+    }
   };
 
   const loadListone = async () => {
@@ -1623,6 +1829,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn, activeMenu, quoteRole, quoteOrder]);
 
+  useEffect(() => {
+    if (!loggedIn || !isAdmin || activeMenu !== "live") return;
+    loadLivePayload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn, isAdmin, activeMenu]);
+
   /* ===========================
      MENU OPEN (mobile)
   =========================== */
@@ -1754,6 +1966,18 @@ useEffect(() => {
                 Formazioni
               </button>
 
+              {isAdmin && (
+                <button
+                  className={activeMenu === "live" ? "menu-item active" : "menu-item"}
+                  onClick={() => {
+                    setActiveMenu("live");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Live
+                </button>
+              )}
+
               <button
                 className={
                   activeMenu === "plusvalenze" ? "menu-item active" : "menu-item"
@@ -1835,6 +2059,8 @@ useEffect(() => {
                   ? "Rose"
                   : activeMenu === "formazioni"
                   ? "Formazioni"
+                  : activeMenu === "live"
+                  ? "Live"
                   : activeMenu === "plusvalenze"
                   ? "Plusvalenze"
                   : activeMenu === "listone"
@@ -1945,8 +2171,27 @@ useEffect(() => {
                 formations={formations}
                 formationTeam={formationTeam}
                 setFormationTeam={setFormationTeam}
+                formationRound={formationRound}
+                onFormationRoundChange={onFormationRoundChange}
+                formationOrder={formationOrder}
+                onFormationOrderChange={onFormationOrderChange}
+                formationMeta={formationMeta}
+                reloadFormazioni={() => loadFormazioni(formationRound || null, formationOrder)}
                 openPlayer={openPlayer}
                 formatDecimal={formatDecimal}
+              />
+            )}
+
+            {activeMenu === "live" && isAdmin && (
+              <LiveSection
+                liveData={livePayload}
+                liveLoading={liveLoading}
+                liveError={liveError}
+                liveSavingKey={liveSavingKey}
+                onReload={() => loadLivePayload(livePayload?.round || null)}
+                onRoundChange={onLiveRoundChange}
+                onToggleSixPolitico={saveLiveMatchSix}
+                onSavePlayer={saveLivePlayerVote}
               />
             )}
 

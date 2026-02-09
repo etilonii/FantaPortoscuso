@@ -125,6 +125,49 @@ class TeamKey(Base):
     team = Column(String(64), nullable=False)
 
 
+class LiveFixtureFlag(Base):
+    __tablename__ = "live_fixture_flags"
+    __table_args__ = (
+        UniqueConstraint("round", "home_team", "away_team", name="uq_live_fixture_flags_round_teams"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    round = Column(Integer, nullable=False, index=True)
+    home_team = Column(String(64), nullable=False)
+    away_team = Column(String(64), nullable=False)
+    six_politico = Column(Boolean, default=False, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class LivePlayerVote(Base):
+    __tablename__ = "live_player_votes"
+    __table_args__ = (
+        UniqueConstraint("round", "team", "player_name", name="uq_live_player_votes_round_team_player"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    round = Column(Integer, nullable=False, index=True)
+    team = Column(String(64), nullable=False, index=True)
+    player_name = Column(String(128), nullable=False, index=True)
+    role = Column(String(8), nullable=True)
+    vote = Column(Float, nullable=True)
+    fantavote = Column(Float, nullable=True)
+    goal = Column(Integer, default=0, nullable=False)
+    assist = Column(Integer, default=0, nullable=False)
+    assist_da_fermo = Column(Integer, default=0, nullable=False)
+    rigore_segnato = Column(Integer, default=0, nullable=False)
+    rigore_parato = Column(Integer, default=0, nullable=False)
+    rigore_sbagliato = Column(Integer, default=0, nullable=False)
+    autogol = Column(Integer, default=0, nullable=False)
+    gol_subito_portiere = Column(Integer, default=0, nullable=False)
+    ammonizione = Column(Integer, default=0, nullable=False)
+    espulsione = Column(Integer, default=0, nullable=False)
+    gol_vittoria = Column(Integer, default=0, nullable=False)
+    gol_pareggio = Column(Integer, default=0, nullable=False)
+    is_sv = Column(Boolean, default=False, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
 class KeyReset(Base):
     __tablename__ = "key_resets"
 
@@ -218,4 +261,74 @@ def ensure_schema(engine) -> None:
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_refresh_tokens_key_id ON refresh_tokens (key_id)"))
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_refresh_tokens_expires_at ON refresh_tokens (expires_at)"))
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_refresh_tokens_revoked_at ON refresh_tokens (revoked_at)"))
+        conn.commit()
+
+        conn.execute(
+            text(
+                """
+                CREATE TABLE IF NOT EXISTS live_fixture_flags (
+                    id INTEGER PRIMARY KEY,
+                    round INTEGER NOT NULL,
+                    home_team VARCHAR(64) NOT NULL,
+                    away_team VARCHAR(64) NOT NULL,
+                    six_politico BOOLEAN NOT NULL DEFAULT 0,
+                    updated_at DATETIME NOT NULL
+                )
+                """
+            )
+        )
+        conn.execute(
+            text(
+                """
+                CREATE TABLE IF NOT EXISTS live_player_votes (
+                    id INTEGER PRIMARY KEY,
+                    round INTEGER NOT NULL,
+                    team VARCHAR(64) NOT NULL,
+                    player_name VARCHAR(128) NOT NULL,
+                    role VARCHAR(8),
+                    vote FLOAT,
+                    fantavote FLOAT,
+                    goal INTEGER NOT NULL DEFAULT 0,
+                    assist INTEGER NOT NULL DEFAULT 0,
+                    assist_da_fermo INTEGER NOT NULL DEFAULT 0,
+                    rigore_segnato INTEGER NOT NULL DEFAULT 0,
+                    rigore_parato INTEGER NOT NULL DEFAULT 0,
+                    rigore_sbagliato INTEGER NOT NULL DEFAULT 0,
+                    autogol INTEGER NOT NULL DEFAULT 0,
+                    gol_subito_portiere INTEGER NOT NULL DEFAULT 0,
+                    ammonizione INTEGER NOT NULL DEFAULT 0,
+                    espulsione INTEGER NOT NULL DEFAULT 0,
+                    gol_vittoria INTEGER NOT NULL DEFAULT 0,
+                    gol_pareggio INTEGER NOT NULL DEFAULT 0,
+                    is_sv BOOLEAN NOT NULL DEFAULT 0,
+                    updated_at DATETIME NOT NULL
+                )
+                """
+            )
+        )
+        conn.commit()
+
+        result = conn.execute(text("PRAGMA table_info(live_player_votes)"))
+        live_columns = {row[1] for row in result}
+        int_columns = [
+            "goal",
+            "assist",
+            "assist_da_fermo",
+            "rigore_segnato",
+            "rigore_parato",
+            "rigore_sbagliato",
+            "autogol",
+            "gol_subito_portiere",
+            "ammonizione",
+            "espulsione",
+            "gol_vittoria",
+            "gol_pareggio",
+        ]
+        for column in int_columns:
+            if column not in live_columns:
+                conn.execute(
+                    text(
+                        f"ALTER TABLE live_player_votes ADD COLUMN {column} INTEGER NOT NULL DEFAULT 0"
+                    )
+                )
         conn.commit()

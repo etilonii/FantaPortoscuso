@@ -3,7 +3,8 @@ param(
   [switch]$ForceStats,
   [int]$Keep = 5,
   [switch]$SyncRose,
-  [switch]$UsePipelineV2
+  [switch]$UsePipelineV2,
+  [int]$Matchday = 0
 )
 
 $ErrorActionPreference = "Stop"
@@ -42,6 +43,25 @@ if (-not $DateStamp) {
   $DateStamp = (Get-Date).ToString("yyyy-MM-dd")
 }
 
+$statusMatchday = $null
+if ($Matchday -gt 0) {
+  $statusMatchday = $Matchday
+}
+elseif (Test-Path $statusPath) {
+  try {
+    $existingStatus = Get-Content -Path $statusPath -Raw | ConvertFrom-Json
+    if ($null -ne $existingStatus.matchday) {
+      $existingRaw = "$($existingStatus.matchday)".Trim()
+      if ($existingRaw -match "^\d+$") {
+        $statusMatchday = [int]$existingRaw
+      }
+    }
+  }
+  catch {
+    $statusMatchday = $null
+  }
+}
+
 function Get-SeasonFromDate([datetime]$dt) {
   if ($dt.Month -ge 7) {
     $startYear = $dt.Year
@@ -63,6 +83,9 @@ function Write-DataStatus([string]$result, [string]$message) {
     season = $season
     update_id = $updateId
     steps = $steps
+  }
+  if ($null -ne $statusMatchday) {
+    $statusObj.matchday = [int]$statusMatchday
   }
   $tmpStatusPath = "$statusPath.tmp"
   try {
