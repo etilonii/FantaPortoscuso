@@ -2617,8 +2617,17 @@ body.menu-open .menu-overlay {
     grid-template-columns: 1fr;
   }
 
-  .live-team-grid {
+  .live-team-grid,
+  .live-match-columns {
     grid-template-columns: 1fr;
+  }
+
+  .live-player-main {
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+  }
+
+  .live-player-events {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .top-acquisti-range {
@@ -2724,6 +2733,121 @@ body.menu-open .menu-overlay {
   color: var(--muted);
 }
 
+.live-switch.compact {
+  font-size: 0.78rem;
+}
+
+.live-match-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.live-match-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  display: grid;
+  gap: 10px;
+}
+
+.live-match-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.live-match-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.live-team-column {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  padding: 8px;
+}
+
+.live-team-title {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+}
+
+.live-player-list {
+  display: grid;
+  gap: 6px;
+}
+
+.live-player-row {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.live-player-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto auto auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-player-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.role-pill.tiny {
+  font-size: 0.66rem;
+  line-height: 1;
+  padding: 3px 7px;
+}
+
+.live-input-compact {
+  min-width: 52px;
+  width: 56px;
+  padding: 5px 6px;
+  font-size: 0.75rem;
+}
+
+.live-sv-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.live-save-btn {
+  min-width: 46px;
+  padding: 5px 7px;
+  font-size: 0.72rem;
+}
+
+.live-player-events {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.live-event-cell {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+
 .live-team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
@@ -2776,15 +2900,19 @@ body.menu-open .menu-overlay {
 }
 
 .live-input-xs {
-  min-width: 44px;
-  width: 48px;
-  padding: 6px 6px;
+  min-width: 0;
+  width: 100%;
+  padding: 4px 4px;
   text-align: center;
+  font-size: 0.72rem;
 }
 
 .live-fv-preview {
   font-weight: 700;
   white-space: nowrap;
+  font-size: 0.78rem;
+  min-width: 42px;
+  text-align: right;
 }
 
 .filters {
