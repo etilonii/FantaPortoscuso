@@ -21,6 +21,14 @@ const EVENT_COLUMNS = [
   { key: "gol_pareggio", label: "GP", title: "Gol pareggio" },
 ];
 
+const LIVE_LEGEND = [
+  { key: "V", title: "Voto base" },
+  { key: "FV", title: "Fantavoto" },
+  { key: "X", title: "Non presente (assenza)" },
+  { key: "SV", title: "Senza voto" },
+  ...EVENT_COLUMNS.map((item) => ({ key: item.label, title: item.title })),
+];
+
 const roleRank = (role) => {
   const raw = String(role || "").toUpperCase();
   for (const token of ROLE_ORDER) {
@@ -93,6 +101,7 @@ export default function LiveSection({
         const payload = {
           vote: toEditNumber(player.vote, "6"),
           is_sv: Boolean(player.is_sv),
+          is_absent: Boolean(player.is_absent),
         };
         EVENT_COLUMNS.forEach((column) => {
           const eventValue = player?.events?.[column.key] ?? player?.[column.key] ?? 0;
@@ -172,7 +181,7 @@ export default function LiveSection({
 
   const updateEdit = (key, patch) => {
     setEdits((prev) => {
-      const base = prev[key] || { vote: "6", is_sv: false };
+      const base = prev[key] || { vote: "6", is_sv: false, is_absent: false };
       return {
         ...prev,
         [key]: {
@@ -184,6 +193,7 @@ export default function LiveSection({
   };
 
   const computePreviewFantavote = (row, fallbackLabel) => {
+    if (row?.is_absent) return "X";
     if (row?.is_sv) return "SV";
     const voteNumber = Number(row?.vote);
     if (!Number.isFinite(voteNumber)) return fallbackLabel || "-";
@@ -207,6 +217,7 @@ export default function LiveSection({
       role: role || "",
       vote: row.vote,
       is_sv: Boolean(row.is_sv),
+      is_absent: Boolean(row.is_absent),
     };
     EVENT_COLUMNS.forEach((column) => {
       payload[column.key] = row[column.key] || "0";
@@ -248,6 +259,15 @@ export default function LiveSection({
           <button type="button" className="ghost" onClick={onReload} disabled={liveLoading}>
             Aggiorna
           </button>
+        </div>
+
+        <div className="live-legend" aria-label="Legenda live">
+          {LIVE_LEGEND.map((item) => (
+            <span key={item.key} className="live-legend-item">
+              <strong>{item.key}</strong>
+              <span>{item.title}</span>
+            </span>
+          ))}
         </div>
 
         {liveError ? <p className="error">{liveError}</p> : null}
@@ -308,14 +328,21 @@ export default function LiveSection({
                             <div className="live-player-list">
                               {players.map((player) => {
                                 const rowKey = makeRowKey(teamName, player.name);
-                                const row = edits[rowKey] || { vote: "6", is_sv: false };
+                                const row = edits[rowKey] || {
+                                  vote: "6",
+                                  is_sv: false,
+                                  is_absent: false,
+                                };
                                 const rowSaving = liveSavingKey === rowKey;
                                 const previewFV = isTeamSix
                                   ? player.fantavote_label
                                   : computePreviewFantavote(row, player.fantavote_label || "-");
 
                                 return (
-                                  <div key={rowKey} className="live-player-row">
+                                  <div
+                                    key={rowKey}
+                                    className={`live-player-row${row.is_absent ? " absent" : ""}`}
+                                  >
                                     <div className="live-player-main">
                                       <span className="live-player-name" title={player.name}>
                                         {player.name}
@@ -325,15 +352,32 @@ export default function LiveSection({
                                         className="input live-input live-input-compact"
                                         value={row.vote}
                                         onChange={(e) => updateEdit(rowKey, { vote: e.target.value })}
-                                        disabled={isTeamSix || row.is_sv}
+                                        disabled={isTeamSix || row.is_sv || row.is_absent}
                                       />
                                       <span className="live-fv-preview">{previewFV}</span>
+                                      <label className="live-absent-toggle" title="Segna non presenza">
+                                        <input
+                                          type="checkbox"
+                                          checked={Boolean(row.is_absent)}
+                                          onChange={(e) =>
+                                            updateEdit(rowKey, {
+                                              is_absent: e.target.checked,
+                                              is_sv: e.target.checked ? false : row.is_sv,
+                                            })
+                                          }
+                                          disabled={isTeamSix}
+                                        />
+                                        <span>X</span>
+                                      </label>
                                       <label className="live-sv-toggle">
                                         <input
                                           type="checkbox"
                                           checked={Boolean(row.is_sv)}
                                           onChange={(e) =>
-                                            updateEdit(rowKey, { is_sv: e.target.checked })
+                                            updateEdit(rowKey, {
+                                              is_sv: e.target.checked,
+                                              is_absent: e.target.checked ? false : row.is_absent,
+                                            })
                                           }
                                           disabled={isTeamSix}
                                         />
@@ -377,7 +421,7 @@ export default function LiveSection({
                                               onChange={(e) =>
                                                 updateEdit(rowKey, { [column.key]: e.target.value })
                                               }
-                                              disabled={isTeamSix || row.is_sv}
+                                              disabled={isTeamSix || row.is_sv || row.is_absent}
                                             />
                                           </label>
                                         );

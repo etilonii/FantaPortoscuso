@@ -8,6 +8,7 @@ from typing import Dict, List, Optional, Set, Tuple
 
 from fastapi import APIRouter, Query, Body, Depends, Header, HTTPException
 from pydantic import BaseModel, Field
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
 from apps.api.app.backup import run_backup_fail_fast
@@ -47,10 +48,56 @@ REAL_FORMATIONS_DIR_CANDIDATES = [
     DATA_DIR / "incoming" / "formazioni",
     DATA_DIR / "incoming" / "lineups",
 ]
+REAL_FORMATIONS_TMP_DIR = DATA_DIR / "tmp"
+REAL_FORMATIONS_APPKEY_GLOB = "formazioni*_appkey.json"
+REAL_FORMATIONS_CONTEXT_HTML_CANDIDATES = [
+    REAL_FORMATIONS_TMP_DIR / "formazioni_page.html",
+]
 STATUS_PATH = DATA_DIR / "status.json"
 MARKET_REPORT_GLOB = "rose_changes_*.csv"
 ROSE_DIFF_GLOB = "diff_rose_*.txt"
 STATS_DIR = DATA_DIR / "stats"
+STATS_MASTER_HEADERS: Tuple[str, ...] = (
+    "Giocatore",
+    "Squadra",
+    "Gol",
+    "Autogol",
+    "RigoriParati",
+    "RigoriSegnati",
+    "RigoriSbagliati",
+    "Assist",
+    "Ammonizioni",
+    "Espulsioni",
+    "Cleansheet",
+    "Partite",
+    "Mediavoto",
+    "Fantamedia",
+    "GolVittoria",
+    "GolPareggio",
+    "GolSubiti",
+)
+STATS_RANK_FILE_MAP: Tuple[Tuple[str, str], ...] = (
+    ("Gol", "gol.csv"),
+    ("Assist", "assist.csv"),
+    ("Ammonizioni", "ammonizioni.csv"),
+    ("Espulsioni", "espulsioni.csv"),
+    ("Cleansheet", "cleansheet.csv"),
+    ("Autogol", "autogol.csv"),
+)
+LIVE_EVENT_TO_STATS_COLUMN: Dict[str, str] = {
+    "goal": "Gol",
+    "assist": "Assist",
+    "assist_da_fermo": "Assist",
+    "rigore_segnato": "RigoriSegnati",
+    "rigore_parato": "RigoriParati",
+    "rigore_sbagliato": "RigoriSbagliati",
+    "autogol": "Autogol",
+    "gol_subito_portiere": "GolSubiti",
+    "ammonizione": "Ammonizioni",
+    "espulsione": "Espulsioni",
+    "gol_vittoria": "GolVittoria",
+    "gol_pareggio": "GolPareggio",
+}
 PLAYER_CARDS_PATH = DATA_DIR / "db" / "quotazioni_master.csv"
 PLAYER_STATS_PATH = DATA_DIR / "db" / "player_stats.csv"
 TEAMS_PATH = DATA_DIR / "db" / "teams.csv"
@@ -78,6 +125,57 @@ LIVE_EVENT_FIELDS: Tuple[str, ...] = (
     "gol_vittoria",
     "gol_pareggio",
 )
+
+FORMATION_ROLE_ORDER: Tuple[str, ...] = ("P", "D", "C", "A")
+FORMATION_OUTFIELD_ROLES: Tuple[str, ...] = ("D", "C", "A")
+RESERVE_GENERIC_COLUMNS: Tuple[str, ...] = (
+    "panchina",
+    "panchinari",
+    "panchina_ordine",
+    "riserve",
+    "riserva",
+    "bench",
+    "reserves",
+)
+RESERVE_ROLE_COLUMNS: Dict[str, Tuple[str, ...]] = {
+    "P": (
+        "panchina_portieri",
+        "panchina_portiere",
+        "panchina_p",
+        "riserve_portieri",
+        "riserva_portieri",
+        "bench_gk",
+        "bench_goalkeepers",
+    ),
+    "D": (
+        "panchina_difensori",
+        "panchina_difensore",
+        "panchina_d",
+        "riserve_difensori",
+        "riserva_difensori",
+        "bench_defenders",
+        "bench_d",
+    ),
+    "C": (
+        "panchina_centrocampisti",
+        "panchina_centrocampista",
+        "panchina_c",
+        "riserve_centrocampisti",
+        "riserva_centrocampisti",
+        "bench_midfielders",
+        "bench_c",
+    ),
+    "A": (
+        "panchina_attaccanti",
+        "panchina_attaccante",
+        "panchina_a",
+        "riserve_attaccanti",
+        "riserva_attaccanti",
+        "bench_forwards",
+        "bench_attackers",
+        "bench_a",
+    ),
+}
 
 
 def _default_regulation() -> Dict[str, object]:
@@ -156,6 +254,7 @@ class LivePlayerVoteRequest(BaseModel):
     gol_vittoria: Optional[int] = Field(default=0, ge=0, le=20)
     gol_pareggio: Optional[int] = Field(default=0, ge=0, le=20)
     is_sv: bool = False
+    is_absent: bool = False
 
 
 def _read_csv(path: Path) -> List[Dict[str, str]]:
@@ -239,6 +338,161 @@ def _split_players_cell(value: str | None) -> List[str]:
     if not raw:
         return []
     return [item.strip() for item in re.split(r"[;\n|]+", raw) if item and item.strip()]
+
+
+def _normalize_module(value: object) -> str:
+    raw = re.sub(r"[^0-9]", "", str(value or ""))
+    if len(raw) != 3:
+        return ""
+    try:
+        if sum(int(ch) for ch in raw) != 10:
+            return ""
+    except ValueError:
+        return ""
+    return raw
+
+
+def _format_module(value: object) -> str:
+    normalized = _normalize_module(value)
+    if not normalized:
+        return str(value or "").strip()
+    return f"{normalized[0]}-{normalized[1]}-{normalized[2]}"
+
+
+def _role_from_text(value: object) -> str:
+    raw = str(value or "").strip().upper()
+    if not raw:
+        return ""
+    if raw in FORMATION_ROLE_ORDER:
+        return raw
+    if "POR" in raw or "GK" in raw:
+        return "P"
+    if "DIF" in raw or "DEF" in raw:
+        return "D"
+    if "CEN" in raw or "MID" in raw:
+        return "C"
+    if "ATT" in raw or "FWD" in raw or "ST" in raw:
+        return "A"
+
+    first_hits: List[Tuple[int, str]] = []
+    for role in FORMATION_ROLE_ORDER:
+        idx = raw.find(role)
+        if idx >= 0:
+            first_hits.append((idx, role))
+    if first_hits:
+        first_hits.sort(key=lambda item: item[0])
+        return first_hits[0][1]
+    return ""
+
+
+def _module_counts_from_str(module_value: object) -> Optional[Dict[str, int]]:
+    module = _normalize_module(module_value)
+    if not module:
+        return None
+    return {
+        "P": 1,
+        "D": int(module[0]),
+        "C": int(module[1]),
+        "A": int(module[2]),
+    }
+
+
+def _module_from_role_counts(counts: Dict[str, int]) -> str:
+    p_count = int(counts.get("P", 0))
+    d_count = int(counts.get("D", 0))
+    c_count = int(counts.get("C", 0))
+    a_count = int(counts.get("A", 0))
+    if p_count != 1:
+        return ""
+    if d_count + c_count + a_count != 10:
+        return ""
+    return f"{d_count}{c_count}{a_count}"
+
+
+def _allowed_modules_from_regulation(regulation: Dict[str, object]) -> List[str]:
+    formation_rules = regulation.get("formation_rules") if isinstance(regulation, dict) else {}
+    formation_rules = formation_rules if isinstance(formation_rules, dict) else {}
+    allowed_raw = formation_rules.get("allowed_modules")
+    if not isinstance(allowed_raw, list):
+        allowed_raw = []
+    allowed: List[str] = []
+    for value in allowed_raw:
+        normalized = _normalize_module(value)
+        if normalized and normalized not in allowed:
+            allowed.append(normalized)
+    return allowed
+
+
+def _lineup_role_counts(entries: List[Dict[str, str]]) -> Dict[str, int]:
+    counts = {role: 0 for role in FORMATION_ROLE_ORDER}
+    for entry in entries:
+        role = _role_from_text(entry.get("role"))
+        if role:
+            counts[role] = int(counts.get(role, 0)) + 1
+    return counts
+
+
+def _extract_reserve_players(
+    normalized_row: Dict[str, str],
+    role_map: Dict[str, str],
+) -> List[Dict[str, str]]:
+    entries: List[Dict[str, str]] = []
+    by_key: Dict[str, Dict[str, str]] = {}
+    order = 0
+
+    def add_names(raw_value: str, role_hint: str = "") -> None:
+        nonlocal order
+        for raw_name in _split_players_cell(raw_value):
+            player_name = _canonicalize_name(raw_name)
+            if not player_name:
+                continue
+            player_key = normalize_name(player_name)
+            role = _role_from_text(role_hint) or _role_from_text(role_map.get(player_key, ""))
+            existing = by_key.get(player_key)
+            if existing is not None:
+                if not existing.get("role") and role:
+                    existing["role"] = role
+                continue
+
+            payload = {
+                "name": player_name,
+                "role": role,
+                "order": str(order),
+            }
+            entries.append(payload)
+            by_key[player_key] = payload
+            order += 1
+
+    indexed_columns: List[Tuple[int, str, str]] = []
+    for key, value in normalized_row.items():
+        current_value = str(value or "").strip()
+        if not current_value:
+            continue
+        has_bench_token = any(token in key for token in ("panchina", "riserva", "riserve", "bench", "reserve"))
+        simple_index = re.match(r"^(?:p|r|b)(\d{1,2})$", key)
+        if not has_bench_token and simple_index is None:
+            continue
+        index_match = re.search(r"(\d{1,2})$", key)
+        if index_match is None:
+            continue
+        indexed_columns.append((int(index_match.group(1)), key, current_value))
+    indexed_columns.sort(key=lambda item: (item[0], item[1]))
+    for _, _, value in indexed_columns:
+        add_names(value)
+
+    for candidate in RESERVE_GENERIC_COLUMNS:
+        value = normalized_row.get(normalize_name(candidate), "")
+        if value:
+            add_names(value)
+
+    for role, candidates in RESERVE_ROLE_COLUMNS.items():
+        for candidate in candidates:
+            value = normalized_row.get(normalize_name(candidate), "")
+            if value:
+                add_names(value, role)
+
+    entries.sort(key=lambda item: _parse_int(item.get("order")) or 0)
+    return entries
 
 
 def _read_csv_fallback(path: Path, fallback: Path) -> List[Dict[str, str]]:
@@ -2077,6 +2331,162 @@ def _live_event_counts(raw: Dict[str, object]) -> Dict[str, int]:
     return counts
 
 
+def _stats_counts_from_live_events(event_counts: Dict[str, int]) -> Dict[str, int]:
+    counters: Dict[str, int] = {column: 0 for column in set(LIVE_EVENT_TO_STATS_COLUMN.values())}
+    for event_key, column_name in LIVE_EVENT_TO_STATS_COLUMN.items():
+        counters[column_name] = int(counters.get(column_name, 0)) + int(event_counts.get(event_key, 0) or 0)
+    return counters
+
+
+def _stats_delta_from_live_events(
+    old_event_counts: Dict[str, int],
+    new_event_counts: Dict[str, int],
+) -> Dict[str, int]:
+    old_counts = _stats_counts_from_live_events(old_event_counts)
+    new_counts = _stats_counts_from_live_events(new_event_counts)
+    deltas: Dict[str, int] = {}
+    for column_name in set(old_counts.keys()) | set(new_counts.keys()):
+        old_value = int(old_counts.get(column_name, 0))
+        new_value = int(new_counts.get(column_name, 0))
+        if new_value != old_value:
+            deltas[column_name] = new_value - old_value
+    return deltas
+
+
+def _live_has_appearance(
+    vote_value: Optional[float],
+    fantavote_value: Optional[float],
+    is_sv: bool,
+    is_absent: bool,
+    event_counts: Dict[str, int],
+) -> bool:
+    if bool(is_absent):
+        return False
+    if bool(is_sv):
+        return True
+    if vote_value is not None or fantavote_value is not None:
+        return True
+    return any(int(event_counts.get(field, 0)) > 0 for field in LIVE_EVENT_FIELDS)
+
+
+def _is_nonzero_stats_delta(delta: Dict[str, int]) -> bool:
+    return any(int(value or 0) != 0 for value in delta.values())
+
+
+def _write_csv_rows(path: Path, fieldnames: List[str], rows: List[Dict[str, object]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({field: row.get(field, "") for field in fieldnames})
+
+
+def _normalize_stat_counter(value: object) -> int:
+    parsed_int = _parse_int(value)
+    if parsed_int is not None:
+        return max(0, parsed_int)
+    parsed_float = _parse_float(value)
+    if parsed_float is None:
+        return 0
+    return max(0, int(round(parsed_float)))
+
+
+def _build_default_stats_row(player_name: str, team_name: str) -> Dict[str, object]:
+    row = {field: "0" for field in STATS_MASTER_HEADERS}
+    row["Giocatore"] = player_name
+    row["Squadra"] = team_name
+    row["Mediavoto"] = "0.0"
+    row["Fantamedia"] = "0.0"
+    return row
+
+
+def _rebuild_rank_stats_files(stats_rows: List[Dict[str, object]], fallback_roles: Dict[str, str]) -> None:
+    role_map = _load_role_map()
+    STATS_DIR.mkdir(parents=True, exist_ok=True)
+
+    for stat_column, filename in STATS_RANK_FILE_MAP:
+        ranking_rows: List[Dict[str, object]] = []
+        for row in stats_rows:
+            player_name = _canonicalize_name(str(row.get("Giocatore") or ""))
+            if not player_name:
+                continue
+            stat_value = _normalize_stat_counter(row.get(stat_column))
+            if stat_value <= 0:
+                continue
+            key = normalize_name(player_name)
+            role = role_map.get(key) or fallback_roles.get(key) or ""
+            ranking_rows.append(
+                {
+                    "Giocatore": player_name,
+                    "Posizione": role,
+                    "Squadra": str(row.get("Squadra") or "").strip(),
+                    stat_column: stat_value,
+                }
+            )
+
+        ranking_rows.sort(
+            key=lambda item: (
+                -_normalize_stat_counter(item.get(stat_column)),
+                normalize_name(str(item.get("Giocatore") or "")),
+            )
+        )
+        _write_csv_rows(
+            STATS_DIR / filename,
+            ["Giocatore", "Posizione", "Squadra", stat_column],
+            ranking_rows,
+        )
+
+
+def _sync_live_stats_for_player(
+    player_name: str,
+    team_name: str,
+    role_value: Optional[str],
+    stats_delta: Dict[str, int],
+) -> None:
+    if not _is_nonzero_stats_delta(stats_delta):
+        return
+
+    stats_rows = _read_csv(STATS_PATH)
+    player_key = normalize_name(_canonicalize_name(player_name))
+
+    headers = list(stats_rows[0].keys()) if stats_rows else []
+    if not headers:
+        headers = list(STATS_MASTER_HEADERS)
+    for required in STATS_MASTER_HEADERS:
+        if required not in headers:
+            headers.append(required)
+
+    target_row = None
+    for row in stats_rows:
+        row_name = _canonicalize_name(str(row.get("Giocatore") or ""))
+        if normalize_name(row_name) == player_key:
+            target_row = row
+            break
+
+    if target_row is None:
+        target_row = _build_default_stats_row(_canonicalize_name(player_name), team_name)
+        stats_rows.append(target_row)
+
+    target_row["Giocatore"] = _canonicalize_name(player_name)
+    target_row["Squadra"] = team_name
+
+    for counter_name, delta_value in stats_delta.items():
+        if counter_name not in headers:
+            headers.append(counter_name)
+        previous = _normalize_stat_counter(target_row.get(counter_name))
+        updated = max(0, previous + int(delta_value))
+        target_row[counter_name] = str(updated)
+
+    stats_rows.sort(key=lambda row: normalize_name(str(row.get("Giocatore") or "")))
+    _write_csv_rows(STATS_PATH, headers, stats_rows)
+
+    fallback_roles: Dict[str, str] = {}
+    if role_value:
+        fallback_roles[player_key] = str(role_value).strip().upper()[:1]
+    _rebuild_rank_stats_files(stats_rows, fallback_roles)
+
+
 def _compute_live_fantavote(
     vote_value: Optional[float],
     event_counts: Dict[str, int],
@@ -2165,11 +2575,14 @@ def _load_live_round_context(db: Session, round_value: Optional[int]) -> Dict[st
     target_round = int(target_round) if target_round else 1
     matches = _build_round_matches(fixture_rows, target_round)
 
-    fixture_flags = (
-        db.query(LiveFixtureFlag).filter(LiveFixtureFlag.round == target_round).all()
-        if target_round
-        else []
-    )
+    try:
+        fixture_flags = (
+            db.query(LiveFixtureFlag).filter(LiveFixtureFlag.round == target_round).all()
+            if target_round
+            else []
+        )
+    except OperationalError:
+        fixture_flags = []
     flag_map: Dict[Tuple[str, str], bool] = {}
     for row in fixture_flags:
         pair_key = tuple(
@@ -2204,11 +2617,14 @@ def _load_live_round_context(db: Session, round_value: Optional[int]) -> Dict[st
     catalog = _load_player_catalog_for_teams(team_names, club_index)
     player_team_map = _build_player_team_map(club_index)
 
-    vote_rows = (
-        db.query(LivePlayerVote).filter(LivePlayerVote.round == target_round).all()
-        if target_round
-        else []
-    )
+    try:
+        vote_rows = (
+            db.query(LivePlayerVote).filter(LivePlayerVote.round == target_round).all()
+            if target_round
+            else []
+        )
+    except OperationalError:
+        vote_rows = []
     votes_by_team_player: Dict[Tuple[str, str], Dict[str, object]] = {}
     votes_by_player: Dict[str, List[Dict[str, object]]] = defaultdict(list)
     for row in vote_rows:
@@ -2233,6 +2649,7 @@ def _load_live_round_context(db: Session, round_value: Optional[int]) -> Dict[st
                 }
             ),
             "is_sv": bool(row.is_sv),
+            "is_absent": bool(getattr(row, "is_absent", False)),
             "updated_at": row.updated_at.isoformat() if row.updated_at else "",
         }
         votes_by_team_player[(team_key, player_key)] = payload
@@ -2278,6 +2695,7 @@ def _resolve_live_player_score(player_name: str, context: Dict[str, object]) -> 
             "events": {field: 0 for field in LIVE_EVENT_FIELDS},
             "bonus_total": round(six_fantavote - six_vote, 2),
             "is_sv": False,
+            "is_absent": False,
             "source": "six_politico",
             "manual": False,
         }
@@ -2295,6 +2713,20 @@ def _resolve_live_player_score(player_name: str, context: Dict[str, object]) -> 
 
     if vote_row is not None:
         event_counts = _live_event_counts(vote_row)
+        is_absent = bool(vote_row.get("is_absent"))
+        if is_absent:
+            return {
+                "vote": None,
+                "fantavote": None,
+                "vote_label": "X",
+                "fantavote_label": "X",
+                "events": {field: 0 for field in LIVE_EVENT_FIELDS},
+                "bonus_total": None,
+                "is_sv": False,
+                "is_absent": True,
+                "source": "manual",
+                "manual": True,
+            }
         is_sv = bool(vote_row.get("is_sv"))
         if is_sv:
             return {
@@ -2305,6 +2737,7 @@ def _resolve_live_player_score(player_name: str, context: Dict[str, object]) -> 
                 "events": event_counts,
                 "bonus_total": None,
                 "is_sv": True,
+                "is_absent": False,
                 "source": "manual",
                 "manual": True,
             }
@@ -2329,6 +2762,7 @@ def _resolve_live_player_score(player_name: str, context: Dict[str, object]) -> 
             "events": event_counts,
             "bonus_total": round(fantavote_number - vote_number, 2),
             "is_sv": False,
+            "is_absent": False,
             "source": "manual",
             "manual": True,
         }
@@ -2341,6 +2775,7 @@ def _resolve_live_player_score(player_name: str, context: Dict[str, object]) -> 
         "events": {field: 0 for field in LIVE_EVENT_FIELDS},
         "bonus_total": round(default_fantavote - default_vote, 2),
         "is_sv": False,
+        "is_absent": False,
         "source": "default",
         "manual": False,
     }
@@ -2364,6 +2799,259 @@ def _player_score_lookup(
         if normalize_name(candidate_name) == key:
             return payload
     return None
+
+
+def _score_has_live_vote(score: Optional[Dict[str, object]]) -> bool:
+    if not isinstance(score, dict):
+        return False
+    return _safe_number(score.get("fantavote")) is not None
+
+
+def _lineup_starters(item: Dict[str, object]) -> List[Dict[str, str]]:
+    starters: List[Dict[str, str]] = []
+    goalkeeper = str(item.get("portiere") or "").strip()
+    if goalkeeper:
+        starters.append({"name": goalkeeper, "role": "P"})
+
+    role_fields = [
+        ("difensori", "D"),
+        ("centrocampisti", "C"),
+        ("attaccanti", "A"),
+    ]
+    for field, role in role_fields:
+        values = item.get(field) if isinstance(item.get(field), list) else []
+        for value in values:
+            player_name = str(value or "").strip()
+            if not player_name:
+                continue
+            starters.append({"name": player_name, "role": role})
+    return starters
+
+
+def _lineup_reserves(item: Dict[str, object], role_map: Dict[str, str]) -> List[Dict[str, str]]:
+    reserves: List[Dict[str, str]] = []
+    raw_details = item.get("panchina_details")
+    if isinstance(raw_details, list):
+        for idx, reserve in enumerate(raw_details):
+            if not isinstance(reserve, dict):
+                continue
+            player_name = _canonicalize_name(str(reserve.get("name") or ""))
+            if not player_name:
+                continue
+            role = _role_from_text(reserve.get("role"))
+            if not role:
+                role = _role_from_text(role_map.get(normalize_name(player_name), ""))
+            reserve_id = str(reserve.get("id") or f"r{idx}")
+            reserves.append(
+                {
+                    "id": reserve_id,
+                    "name": player_name,
+                    "role": role,
+                }
+            )
+    if reserves:
+        return reserves
+
+    fallback = item.get("panchina")
+    if isinstance(fallback, list):
+        for idx, value in enumerate(fallback):
+            player_name = _canonicalize_name(str(value or ""))
+            if not player_name:
+                continue
+            role = _role_from_text(role_map.get(normalize_name(player_name), ""))
+            reserves.append(
+                {
+                    "id": f"r{idx}",
+                    "name": player_name,
+                    "role": role,
+                }
+            )
+    return reserves
+
+
+def _is_valid_module_counts(counts: Dict[str, int], allowed_modules: List[str]) -> bool:
+    module = _module_from_role_counts(counts)
+    if not module:
+        return False
+    if not allowed_modules:
+        return True
+    return module in allowed_modules
+
+
+def _pick_reserve_same_role(
+    target_role: str,
+    reserves: List[Dict[str, str]],
+    used_reserve_ids: Set[str],
+    player_scores: Dict[str, Dict[str, object]],
+) -> Optional[Dict[str, str]]:
+    for reserve in reserves:
+        reserve_id = str(reserve.get("id") or "")
+        if reserve_id in used_reserve_ids:
+            continue
+        reserve_role = _role_from_text(reserve.get("role"))
+        if reserve_role != target_role:
+            continue
+        reserve_name = str(reserve.get("name") or "").strip()
+        if not reserve_name:
+            continue
+        if not _score_has_live_vote(_player_score_lookup(player_scores, reserve_name)):
+            continue
+        return reserve
+    return None
+
+
+def _pick_reserve_flexible(
+    target_role: str,
+    target_index: int,
+    effective_entries: List[Dict[str, str]],
+    reserves: List[Dict[str, str]],
+    used_reserve_ids: Set[str],
+    player_scores: Dict[str, Dict[str, object]],
+    allowed_modules: List[str],
+) -> Optional[Dict[str, str]]:
+    for reserve in reserves:
+        reserve_id = str(reserve.get("id") or "")
+        if reserve_id in used_reserve_ids:
+            continue
+
+        reserve_name = str(reserve.get("name") or "").strip()
+        reserve_role = _role_from_text(reserve.get("role"))
+        if not reserve_name or not reserve_role:
+            continue
+        if not _score_has_live_vote(_player_score_lookup(player_scores, reserve_name)):
+            continue
+
+        if target_role == "P" and reserve_role != "P":
+            continue
+
+        simulated = [dict(entry) for entry in effective_entries]
+        if target_index < 0 or target_index >= len(simulated):
+            continue
+        simulated[target_index]["role"] = reserve_role
+
+        counts = _lineup_role_counts(simulated)
+        if not _is_valid_module_counts(counts, allowed_modules):
+            continue
+        return reserve
+    return None
+
+
+def _apply_live_substitutions(
+    item: Dict[str, object],
+    player_scores: Dict[str, Dict[str, object]],
+    regulation: Dict[str, object],
+    role_map: Dict[str, str],
+) -> Dict[str, object]:
+    starters = _lineup_starters(item)
+    reserves = _lineup_reserves(item, role_map)
+
+    formation_rules = regulation.get("formation_rules") if isinstance(regulation, dict) else {}
+    formation_rules = formation_rules if isinstance(formation_rules, dict) else {}
+    max_substitutions = _parse_int(formation_rules.get("max_substitutions"))
+    if max_substitutions is None:
+        max_substitutions = 4
+    max_substitutions = max(0, max_substitutions)
+
+    allowed_modules = _allowed_modules_from_regulation(regulation)
+    if not allowed_modules:
+        fallback_module = _normalize_module(item.get("modulo"))
+        if fallback_module:
+            allowed_modules = [fallback_module]
+
+    effective_entries = [dict(entry) for entry in starters]
+    substitutions: List[Dict[str, str]] = []
+    missing_players: List[str] = []
+    used_reserve_ids: Set[str] = set()
+
+    substitutions_used = 0
+    for idx, starter in enumerate(starters):
+        starter_name = str(starter.get("name") or "").strip()
+        starter_role = _role_from_text(starter.get("role"))
+        if not starter_name or not starter_role:
+            continue
+
+        starter_score = _player_score_lookup(player_scores, starter_name)
+        if _score_has_live_vote(starter_score):
+            continue
+
+        if substitutions_used >= max_substitutions:
+            missing_players.append(starter_name)
+            continue
+
+        reserve = _pick_reserve_same_role(
+            starter_role,
+            reserves,
+            used_reserve_ids,
+            player_scores,
+        )
+
+        source = "same_role"
+        if reserve is None:
+            reserve = _pick_reserve_flexible(
+                starter_role,
+                idx,
+                effective_entries,
+                reserves,
+                used_reserve_ids,
+                player_scores,
+                allowed_modules,
+            )
+            source = "flex"
+
+        if reserve is None:
+            missing_players.append(starter_name)
+            continue
+
+        reserve_name = str(reserve.get("name") or "").strip()
+        reserve_role = _role_from_text(reserve.get("role"))
+        reserve_id = str(reserve.get("id") or "")
+        if not reserve_name or not reserve_role or not reserve_id:
+            missing_players.append(starter_name)
+            continue
+
+        effective_entries[idx] = {"name": reserve_name, "role": reserve_role}
+        used_reserve_ids.add(reserve_id)
+        substitutions_used += 1
+        substitutions.append(
+            {
+                "out": starter_name,
+                "out_role": starter_role,
+                "in": reserve_name,
+                "in_role": reserve_role,
+                "source": source,
+            }
+        )
+
+    by_role = {role: [] for role in FORMATION_ROLE_ORDER}
+    for entry in effective_entries:
+        player_name = str(entry.get("name") or "").strip()
+        role = _role_from_text(entry.get("role"))
+        if not player_name or not role:
+            continue
+        by_role[role].append(player_name)
+
+    role_counts = _lineup_role_counts(effective_entries)
+    effective_module = _module_from_role_counts(role_counts)
+    players_with_vote = 0
+    for entry in effective_entries:
+        player_name = str(entry.get("name") or "").strip()
+        if not player_name:
+            continue
+        score = _player_score_lookup(player_scores, player_name)
+        if _score_has_live_vote(score):
+            players_with_vote += 1
+
+    return {
+        "portiere": by_role["P"][0] if by_role["P"] else "",
+        "difensori": by_role["D"],
+        "centrocampisti": by_role["C"],
+        "attaccanti": by_role["A"],
+        "module": _format_module(effective_module),
+        "module_raw": effective_module,
+        "substitutions": substitutions,
+        "missing_players": missing_players,
+        "players_with_vote": players_with_vote,
+    }
 
 
 def _compute_defense_modifier(
@@ -2458,34 +3146,93 @@ def _attach_live_scores_to_formations(
     if not isinstance(regulation, dict):
         regulation = _default_regulation()
 
+    role_map = _load_role_map()
     for item in items:
-        player_scores: Dict[str, Dict[str, object]] = {}
-        players: List[str] = []
-        portiere = str(item.get("portiere") or "").strip()
-        if portiere:
-            players.append(portiere)
-        for field in ("difensori", "centrocampisti", "attaccanti"):
+        original_lineup = {
+            "modulo": _format_module(item.get("modulo")),
+            "portiere": str(item.get("portiere") or "").strip(),
+            "difensori": [str(value).strip() for value in (item.get("difensori") or []) if str(value).strip()],
+            "centrocampisti": [
+                str(value).strip() for value in (item.get("centrocampisti") or []) if str(value).strip()
+            ],
+            "attaccanti": [str(value).strip() for value in (item.get("attaccanti") or []) if str(value).strip()],
+        }
+
+        players_set: Set[str] = set()
+        for value in (
+            original_lineup["portiere"],
+            str(item.get("capitano") or "").strip(),
+            str(item.get("vice_capitano") or "").strip(),
+        ):
+            if value:
+                players_set.add(value)
+        for field in ("difensori", "centrocampisti", "attaccanti", "panchina"):
             values = item.get(field) or []
             if isinstance(values, list):
-                players.extend(str(value).strip() for value in values if str(value).strip())
+                for value in values:
+                    player_name = str(value).strip()
+                    if player_name:
+                        players_set.add(player_name)
+        if isinstance(item.get("panchina_details"), list):
+            for reserve in item.get("panchina_details") or []:
+                if isinstance(reserve, dict):
+                    player_name = str(reserve.get("name") or "").strip()
+                    if player_name:
+                        players_set.add(player_name)
+
+        player_scores: Dict[str, Dict[str, object]] = {}
+        for player_name in sorted(players_set, key=lambda value: normalize_name(value)):
+            player_scores[player_name] = _resolve_live_player_score(player_name, context)
+
+        effective_lineup = _apply_live_substitutions(item, player_scores, regulation, role_map)
+        effective_item = {
+            **item,
+            "portiere": effective_lineup.get("portiere") or "",
+            "difensori": effective_lineup.get("difensori") or [],
+            "centrocampisti": effective_lineup.get("centrocampisti") or [],
+            "attaccanti": effective_lineup.get("attaccanti") or [],
+        }
 
         base_total = 0.0
         base_count = 0
-        for player_name in players:
-            score = _resolve_live_player_score(player_name, context)
-            player_scores[player_name] = score
-            fantavote_value = _safe_number(score.get("fantavote"))
+        effective_players: List[str] = []
+        for value in (
+            str(effective_item.get("portiere") or "").strip(),
+            *[str(x).strip() for x in effective_item.get("difensori", [])],
+            *[str(x).strip() for x in effective_item.get("centrocampisti", [])],
+            *[str(x).strip() for x in effective_item.get("attaccanti", [])],
+        ):
+            if value:
+                effective_players.append(value)
+
+        for player_name in effective_players:
+            score = _player_score_lookup(player_scores, player_name)
+            fantavote_value = _safe_number(score.get("fantavote")) if isinstance(score, dict) else None
             if fantavote_value is not None:
                 base_total += fantavote_value
                 base_count += 1
 
-        defense_modifier = _compute_defense_modifier(item, player_scores, regulation)
-        captain_modifier = _compute_captain_modifier(item, player_scores, regulation)
+        defense_modifier = _compute_defense_modifier(effective_item, player_scores, regulation)
+        captain_modifier = _compute_captain_modifier(effective_item, player_scores, regulation)
         mod_difesa = float(defense_modifier.get("value") or 0.0)
         mod_capitano = float(captain_modifier.get("value") or 0.0)
         live_total = round(base_total + mod_difesa + mod_capitano, 2) if base_count else None
         base_total_value = round(base_total, 2) if base_count else None
 
+        effective_module = str(effective_lineup.get("module") or "").strip()
+        if effective_module:
+            item["modulo"] = effective_module
+        else:
+            item["modulo"] = original_lineup["modulo"]
+        item["modulo_originale"] = original_lineup["modulo"]
+        item["original_lineup"] = original_lineup
+        item["portiere"] = effective_item["portiere"]
+        item["difensori"] = effective_item["difensori"]
+        item["centrocampisti"] = effective_item["centrocampisti"]
+        item["attaccanti"] = effective_item["attaccanti"]
+        item["substitutions"] = effective_lineup.get("substitutions", [])
+        item["missing_players"] = effective_lineup.get("missing_players", [])
+        item["players_with_vote"] = int(effective_lineup.get("players_with_vote") or 0)
         item["player_scores"] = player_scores
         item["fantavote_total"] = base_total_value
         item["totale_live_base"] = base_total_value
@@ -2531,12 +3278,14 @@ def _load_projected_formazioni_rows(
                 "pos": standing_pos if standing_pos is not None else (csv_pos if csv_pos is not None else idx + 1),
                 "standing_pos": standing_pos,
                 "team": resolved_team or team_name_raw,
-                "modulo": str(row.get("ModuloMigliore") or row.get("Modulo") or "").strip(),
+                "modulo": _format_module(str(row.get("ModuloMigliore") or row.get("Modulo") or "").strip()),
                 "forza_titolari": forza_titolari,
                 "portiere": portiere[0] if portiere else "",
                 "difensori": _split_players_cell(row.get("Difensori")),
                 "centrocampisti": _split_players_cell(row.get("Centrocampisti")),
                 "attaccanti": _split_players_cell(row.get("Attaccanti")),
+                "panchina": [],
+                "panchina_details": [],
                 "capitano": "",
                 "vice_capitano": "",
                 "round": None,
@@ -2547,9 +3296,404 @@ def _load_projected_formazioni_rows(
     return items
 
 
-def _load_real_formazioni_rows(
+def _latest_formazioni_appkey_path() -> Optional[Path]:
+    if not REAL_FORMATIONS_TMP_DIR.exists() or not REAL_FORMATIONS_TMP_DIR.is_dir():
+        return None
+    files = [p for p in REAL_FORMATIONS_TMP_DIR.glob(REAL_FORMATIONS_APPKEY_GLOB) if p.is_file()]
+    if not files:
+        return None
+    return max(files, key=lambda p: p.stat().st_mtime)
+
+
+def _extract_js_object_literal(source: str, key: str) -> str:
+    if not source:
+        return ""
+    match = re.search(rf"\b{re.escape(key)}\s*:\s*\{{", source)
+    if match is None:
+        return ""
+    start = match.end() - 1
+    depth = 0
+    in_string = False
+    escape = False
+    quote = ""
+    for idx in range(start, len(source)):
+        ch = source[idx]
+        if in_string:
+            if escape:
+                escape = False
+            elif ch == "\\":
+                escape = True
+            elif ch == quote:
+                in_string = False
+            continue
+        if ch == '"' or ch == "'":
+            in_string = True
+            quote = ch
+            continue
+        if ch == "{":
+            depth += 1
+            continue
+        if ch == "}":
+            depth -= 1
+            if depth == 0:
+                return source[start : idx + 1]
+    return ""
+
+
+def _load_team_id_position_index_from_formazioni_html() -> Dict[int, int]:
+    for candidate in REAL_FORMATIONS_CONTEXT_HTML_CANDIDATES:
+        if not candidate.exists():
+            continue
+        try:
+            raw = candidate.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        if not raw:
+            continue
+
+        competition_literal = _extract_js_object_literal(raw, "currentCompetition")
+        if not competition_literal:
+            continue
+
+        try:
+            parsed = json.loads(competition_literal)
+        except Exception:
+            continue
+
+        squads = parsed.get("squadre") if isinstance(parsed, dict) else []
+        if not isinstance(squads, list):
+            continue
+
+        index: Dict[int, int] = {}
+        for squad in squads:
+            if not isinstance(squad, dict):
+                continue
+            team_id = _parse_int(squad.get("id"))
+            pos = _parse_int(squad.get("pos"))
+            if team_id is None or pos is None:
+                continue
+            index[team_id] = pos
+        if index:
+            return index
+    return {}
+
+
+def _build_standings_team_by_pos(
+    standings_index: Optional[Dict[str, Dict[str, object]]],
+) -> Dict[int, str]:
+    if not isinstance(standings_index, dict):
+        return {}
+    team_by_pos: Dict[int, str] = {}
+    for entry in standings_index.values():
+        if not isinstance(entry, dict):
+            continue
+        pos = _parse_int(entry.get("pos"))
+        team = str(entry.get("team") or "").strip()
+        if pos is None or not team:
+            continue
+        team_by_pos[pos] = team
+    return team_by_pos
+
+
+def _extract_appkey_captains(cap_raw: object, players: List[Dict[str, object]]) -> tuple[str, str]:
+    by_id: Dict[str, str] = {}
+    for player in players:
+        if not isinstance(player, dict):
+            continue
+        player_name = _canonicalize_name(str(player.get("n") or ""))
+        if not player_name:
+            continue
+        for key in ("id", "i", "id_s"):
+            value = str(player.get(key) or "").strip()
+            if value:
+                by_id[value] = player_name
+
+    names: List[str] = []
+    for token in re.split(r"[;,|]+", str(cap_raw or "")):
+        current = token.strip()
+        if not current:
+            continue
+        player_name = by_id.get(current)
+        if not player_name:
+            player_name = _canonicalize_name(current)
+        if not player_name:
+            continue
+        if player_name not in names:
+            names.append(player_name)
+
+    captain = names[0] if names else ""
+    vice = names[1] if len(names) > 1 else ""
+    return captain, vice
+
+
+def _parse_appkey_lineup(
+    players: List[Dict[str, object]],
+    module_raw: object,
+    role_map: Dict[str, str],
+) -> Dict[str, object]:
+    normalized_players: List[Dict[str, str]] = []
+    for idx, player in enumerate(players):
+        if not isinstance(player, dict):
+            continue
+        player_name = _canonicalize_name(str(player.get("n") or ""))
+        if not player_name:
+            continue
+        player_key = normalize_name(player_name)
+        role = _role_from_text(player.get("r")) or _role_from_text(role_map.get(player_key, ""))
+        player_id = str(player.get("id") or player.get("i") or f"p{idx}").strip()
+        normalized_players.append(
+            {
+                "id": player_id or f"p{idx}",
+                "name": player_name,
+                "role": role,
+                "order": str(idx),
+            }
+        )
+
+    module_counts = _module_counts_from_str(module_raw)
+    if module_counts is None:
+        inferred = {"P": 0, "D": 0, "C": 0, "A": 0}
+        for player in normalized_players[:11]:
+            role = _role_from_text(player.get("role"))
+            if role:
+                inferred[role] = int(inferred.get(role, 0)) + 1
+        if inferred["P"] == 1 and sum(int(inferred.get(role, 0)) for role in FORMATION_ROLE_ORDER) == 11:
+            module_counts = inferred
+        else:
+            module_counts = {"P": 1, "D": 3, "C": 4, "A": 3}
+
+    starters_by_role: Dict[str, List[str]] = {role: [] for role in FORMATION_ROLE_ORDER}
+    remaining = {role: int(module_counts.get(role, 0)) for role in FORMATION_ROLE_ORDER}
+    selected_indexes: Set[int] = set()
+
+    for idx, player in enumerate(normalized_players):
+        role = _role_from_text(player.get("role"))
+        if not role:
+            continue
+        if remaining.get(role, 0) <= 0:
+            continue
+        starters_by_role[role].append(str(player.get("name") or ""))
+        remaining[role] = int(remaining.get(role, 0)) - 1
+        selected_indexes.add(idx)
+
+    for role in FORMATION_ROLE_ORDER:
+        while remaining.get(role, 0) > 0:
+            candidate_idx = next(
+                (
+                    idx
+                    for idx, player in enumerate(normalized_players)
+                    if idx not in selected_indexes and _role_from_text(player.get("role")) == role
+                ),
+                None,
+            )
+            if candidate_idx is None:
+                break
+            candidate = normalized_players[candidate_idx]
+            starters_by_role[role].append(str(candidate.get("name") or ""))
+            remaining[role] = int(remaining.get(role, 0)) - 1
+            selected_indexes.add(candidate_idx)
+
+    for role in FORMATION_ROLE_ORDER:
+        while remaining.get(role, 0) > 0:
+            candidate_idx = next(
+                (idx for idx in range(len(normalized_players)) if idx not in selected_indexes),
+                None,
+            )
+            if candidate_idx is None:
+                break
+            candidate = normalized_players[candidate_idx]
+            starters_by_role[role].append(str(candidate.get("name") or ""))
+            remaining[role] = int(remaining.get(role, 0)) - 1
+            selected_indexes.add(candidate_idx)
+
+    reserves: List[Dict[str, str]] = []
+    for idx, player in enumerate(normalized_players):
+        if idx in selected_indexes:
+            continue
+        reserves.append(
+            {
+                "id": str(player.get("id") or f"r{idx}"),
+                "name": str(player.get("name") or ""),
+                "role": _role_from_text(player.get("role")),
+                "order": str(len(reserves)),
+            }
+        )
+
+    return {
+        "portiere": starters_by_role["P"][0] if starters_by_role["P"] else "",
+        "difensori": starters_by_role["D"],
+        "centrocampisti": starters_by_role["C"],
+        "attaccanti": starters_by_role["A"],
+        "panchina_details": reserves,
+    }
+
+
+def _load_real_formazioni_rows_from_appkey_json(
     standings_index: Dict[str, Dict[str, object]],
 ) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
+    source_path = _latest_formazioni_appkey_path()
+    if source_path is None:
+        return [], [], None
+
+    try:
+        payload = json.loads(source_path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return [], [], None
+
+    data_section = payload.get("data") if isinstance(payload, dict) else None
+    if not isinstance(data_section, dict):
+        return [], [], None
+
+    formations = data_section.get("formazioni")
+    if not isinstance(formations, list):
+        return [], [], None
+
+    global_round = _parse_int(data_section.get("giornataLega") or payload.get("giornataLega"))
+    role_map = _load_role_map()
+    team_id_to_pos = _load_team_id_position_index_from_formazioni_html()
+    standings_team_by_pos = _build_standings_team_by_pos(standings_index)
+
+    items_by_key: Dict[tuple[Optional[int], str], Dict[str, object]] = {}
+    rounds = set()
+
+    for formation in formations:
+        if not isinstance(formation, dict):
+            continue
+        squads = formation.get("sq")
+        if not isinstance(squads, list):
+            continue
+
+        round_value = _parse_int(formation.get("giornata") or formation.get("round") or formation.get("turno"))
+        if round_value is None:
+            round_value = global_round
+        if round_value is not None:
+            rounds.add(round_value)
+
+        for squad in squads:
+            if not isinstance(squad, dict):
+                continue
+            team_id = _parse_int(squad.get("id"))
+            if team_id is None:
+                continue
+
+            standing_pos = team_id_to_pos.get(team_id)
+            team_name = standings_team_by_pos.get(standing_pos, "") if standing_pos is not None else ""
+            if not team_name:
+                continue
+
+            resolved_team, resolved_pos = _resolve_team_name_with_standings(team_name, standings_index)
+            players = squad.get("pl") if isinstance(squad.get("pl"), list) else []
+            lineup = _parse_appkey_lineup(players, squad.get("m"), role_map)
+            captain, vice_captain = _extract_appkey_captains(squad.get("cap"), players)
+
+            item = {
+                "pos": resolved_pos if resolved_pos is not None else (standing_pos if standing_pos is not None else 9999),
+                "standing_pos": resolved_pos if resolved_pos is not None else standing_pos,
+                "team": resolved_team or team_name,
+                "modulo": _format_module(squad.get("m")),
+                "forza_titolari": _parse_float(squad.get("t")),
+                "portiere": lineup.get("portiere") or "",
+                "difensori": lineup.get("difensori") or [],
+                "centrocampisti": lineup.get("centrocampisti") or [],
+                "attaccanti": lineup.get("attaccanti") or [],
+                "panchina_details": lineup.get("panchina_details") or [],
+                "capitano": captain,
+                "vice_capitano": vice_captain,
+                "round": round_value,
+                "source": "real",
+            }
+            item["panchina"] = [str(reserve.get("name") or "").strip() for reserve in item["panchina_details"]]
+            dedupe_key = (round_value, normalize_name(str(item.get("team") or "")))
+            items_by_key[dedupe_key] = item
+
+    if not items_by_key:
+        return [], [], None
+
+    return list(items_by_key.values()), sorted(rounds), source_path
+
+
+def _formation_lineup_size(item: Dict[str, object]) -> int:
+    total = 0
+    if str(item.get("portiere") or "").strip():
+        total += 1
+    for field in ("difensori", "centrocampisti", "attaccanti"):
+        values = item.get(field) if isinstance(item.get(field), list) else []
+        total += len([value for value in values if str(value).strip()])
+    return total
+
+
+def _merge_real_formations_with_appkey(
+    items: List[Dict[str, object]],
+    appkey_items: List[Dict[str, object]],
+    appkey_rounds: List[int],
+) -> List[Dict[str, object]]:
+    if not appkey_items:
+        return items
+
+    appkey_by_key: Dict[tuple[Optional[int], str], Dict[str, object]] = {}
+    for candidate in appkey_items:
+        team_key = normalize_name(str(candidate.get("team") or ""))
+        if not team_key:
+            continue
+        key = (_parse_int(candidate.get("round")), team_key)
+        appkey_by_key[key] = candidate
+
+    single_round = appkey_rounds[0] if len(appkey_rounds) == 1 else None
+    merged_by_key: Dict[tuple[Optional[int], str], Dict[str, object]] = {}
+
+    for item in items:
+        team_key = normalize_name(str(item.get("team") or ""))
+        if not team_key:
+            continue
+
+        current_round = _parse_int(item.get("round"))
+        lookup_key = (current_round, team_key)
+        candidate = appkey_by_key.get(lookup_key)
+        if candidate is None and current_round is None and single_round is not None:
+            candidate = appkey_by_key.get((single_round, team_key))
+            if candidate is not None:
+                item["round"] = single_round
+                current_round = single_round
+
+        if candidate is not None:
+            if _formation_lineup_size(item) < 11:
+                for field in ("modulo", "portiere", "difensori", "centrocampisti", "attaccanti"):
+                    item[field] = candidate.get(field)
+            if not isinstance(item.get("panchina_details"), list) or not item.get("panchina_details"):
+                item["panchina_details"] = candidate.get("panchina_details") or []
+                item["panchina"] = candidate.get("panchina") or []
+            elif not isinstance(item.get("panchina"), list) or not item.get("panchina"):
+                item["panchina"] = [
+                    str(reserve.get("name") or "").strip()
+                    for reserve in item.get("panchina_details") or []
+                    if isinstance(reserve, dict)
+                ]
+            if not str(item.get("capitano") or "").strip():
+                item["capitano"] = str(candidate.get("capitano") or "").strip()
+            if not str(item.get("vice_capitano") or "").strip():
+                item["vice_capitano"] = str(candidate.get("vice_capitano") or "").strip()
+            if _parse_int(item.get("standing_pos")) is None and _parse_int(candidate.get("standing_pos")) is not None:
+                item["standing_pos"] = _parse_int(candidate.get("standing_pos"))
+                item["pos"] = _parse_int(candidate.get("pos"))
+            if _parse_float(item.get("forza_titolari")) is None and _parse_float(
+                candidate.get("forza_titolari")
+            ) is not None:
+                item["forza_titolari"] = _parse_float(candidate.get("forza_titolari"))
+
+        merged_by_key[(current_round, team_key)] = item
+
+    for key, candidate in appkey_by_key.items():
+        if key in merged_by_key:
+            continue
+        merged_by_key[key] = candidate
+
+    return list(merged_by_key.values())
+
+
+def _load_real_formazioni_rows(
+    standings_index: Optional[Dict[str, Dict[str, object]]],
+) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
+    standings_index = standings_index or {}
     candidate_paths: List[Path] = []
     for folder in REAL_FORMATIONS_DIR_CANDIDATES:
         latest = _latest_supported_file(folder)
@@ -2566,6 +3710,9 @@ def _load_real_formazioni_rows(
             continue
         seen_paths.add(key)
         ordered_paths.append(path)
+
+    role_map = _load_role_map()
+    appkey_items, appkey_rounds, appkey_source = _load_real_formazioni_rows_from_appkey_json(standings_index)
 
     for source_path in ordered_paths:
         rows = _read_tabular_rows(source_path)
@@ -2597,7 +3744,7 @@ def _load_real_formazioni_rows(
                 "pos": standing_pos if standing_pos is not None else 9999,
                 "standing_pos": standing_pos,
                 "team": resolved_team or team_name_raw,
-                "modulo": _pick_row_value(normalized_row, ["modulo", "formation", "schema"]),
+                "modulo": _format_module(_pick_row_value(normalized_row, ["modulo", "formation", "schema"])),
                 "forza_titolari": _parse_float(
                     _pick_row_value(
                         normalized_row,
@@ -2614,6 +3761,7 @@ def _load_real_formazioni_rows(
                 "attaccanti": _split_players_cell(
                     _pick_row_value(normalized_row, ["attaccanti", "attacco", "a"])
                 ),
+                "panchina_details": _extract_reserve_players(normalized_row, role_map),
                 "capitano": _pick_row_value(
                     normalized_row,
                     ["capitano", "captain", "cpt", "cap"],
@@ -2625,13 +3773,24 @@ def _load_real_formazioni_rows(
                 "round": round_value,
                 "source": "real",
             }
+            item["panchina"] = [str(reserve.get("name") or "").strip() for reserve in item["panchina_details"]]
 
             dedupe_key = (round_value, normalize_name(str(item["team"])))
             items_by_key[dedupe_key] = item
 
         items = list(items_by_key.values())
-        available_rounds = sorted(rounds)
-        return items, available_rounds, source_path
+        merged_items = _merge_real_formations_with_appkey(items, appkey_items, appkey_rounds)
+        rounds_in_items = {
+            round_value
+            for round_value in (_parse_int(item.get("round")) for item in merged_items)
+            if round_value is not None
+        }
+        rounds_in_items.update(rounds)
+        available_rounds = sorted(rounds_in_items)
+        return merged_items, available_rounds, source_path
+
+    if appkey_items:
+        return appkey_items, appkey_rounds, appkey_source
 
     return [], [], None
 
@@ -2783,6 +3942,7 @@ def upsert_live_player_vote(
     vote_value = _parse_live_value(payload.vote)
     fantavote_value = _parse_live_value(payload.fantavote)
     is_sv = bool(payload.is_sv)
+    is_absent = bool(payload.is_absent)
     role_value = str(payload.role or "").strip().upper()[:8] or None
     event_counts = _live_event_counts(
         {
@@ -2798,6 +3958,11 @@ def upsert_live_player_vote(
         vote_value = None
         fantavote_value = None
         event_counts = {field: 0 for field in LIVE_EVENT_FIELDS}
+        is_absent = False
+    elif is_absent:
+        vote_value = None
+        fantavote_value = None
+        event_counts = {field: 0 for field in LIVE_EVENT_FIELDS}
 
     team_key = normalize_name(team_name)
     player_key = normalize_name(player_name)
@@ -2810,9 +3975,38 @@ def upsert_live_player_vote(
         existing = row
         break
 
+    old_event_counts: Dict[str, int]
+    old_vote_value = float(existing.vote) if existing is not None and existing.vote is not None else None
+    old_fantavote_value = (
+        float(existing.fantavote) if existing is not None and existing.fantavote is not None else None
+    )
+    old_is_sv = bool(existing.is_sv) if existing is not None else False
+    old_is_absent = bool(getattr(existing, "is_absent", False)) if existing is not None else False
+    if existing is not None and not old_is_sv and not old_is_absent:
+        old_event_counts = _live_event_counts(
+            {field: getattr(existing, field, 0) for field in LIVE_EVENT_FIELDS}
+        )
+    else:
+        old_event_counts = {field: 0 for field in LIVE_EVENT_FIELDS}
+    old_has_appearance = _live_has_appearance(
+        old_vote_value,
+        old_fantavote_value,
+        old_is_sv,
+        old_is_absent,
+        old_event_counts,
+    )
+
     has_events = any(int(event_counts.get(field, 0)) > 0 for field in LIVE_EVENT_FIELDS)
-    if not is_sv and vote_value is None and fantavote_value is None and not has_events:
+    if not is_sv and not is_absent and vote_value is None and fantavote_value is None and not has_events:
         if existing is not None:
+            delta = _stats_delta_from_live_events(
+                old_event_counts,
+                {field: 0 for field in LIVE_EVENT_FIELDS},
+            )
+            if old_has_appearance:
+                delta["Partite"] = int(delta.get("Partite", 0)) - 1
+            if _is_nonzero_stats_delta(delta):
+                _sync_live_stats_for_player(player_name, team_name, role_value, delta)
             db.delete(existing)
             db.commit()
         return {
@@ -2833,6 +4027,7 @@ def upsert_live_player_vote(
             fantavote=fantavote_value,
             **event_counts,
             is_sv=is_sv,
+            is_absent=is_absent,
             updated_at=datetime.utcnow(),
         )
         db.add(existing)
@@ -2846,20 +4041,37 @@ def upsert_live_player_vote(
         for field in LIVE_EVENT_FIELDS:
             setattr(existing, field, int(event_counts.get(field, 0)))
         existing.is_sv = is_sv
+        existing.is_absent = is_absent
         existing.updated_at = datetime.utcnow()
+
+    new_has_appearance = _live_has_appearance(
+        vote_value,
+        fantavote_value,
+        is_sv,
+        is_absent,
+        event_counts,
+    )
+    delta = _stats_delta_from_live_events(old_event_counts, event_counts)
+    appearance_delta = int(new_has_appearance) - int(old_has_appearance)
+    if appearance_delta != 0:
+        delta["Partite"] = int(delta.get("Partite", 0)) + appearance_delta
+    if _is_nonzero_stats_delta(delta):
+        _sync_live_stats_for_player(player_name, team_name, role_value, delta)
 
     db.commit()
 
     default_vote = _safe_float_value(scoring_defaults.get("default_vote"), 6.0)
     vote_number = default_vote if vote_value is None else float(vote_value)
-    computed_fantavote = _compute_live_fantavote(
-        vote_number,
-        event_counts,
-        bonus_map,
-        fantavote_override=fantavote_value,
-    )
-    if computed_fantavote is None:
-        computed_fantavote = _safe_float_value(scoring_defaults.get("default_fantavote"), default_vote)
+    computed_fantavote: Optional[float] = None
+    if not is_sv and not is_absent:
+        computed_fantavote = _compute_live_fantavote(
+            vote_number,
+            event_counts,
+            bonus_map,
+            fantavote_override=fantavote_value,
+        )
+        if computed_fantavote is None:
+            computed_fantavote = _safe_float_value(scoring_defaults.get("default_fantavote"), default_vote)
 
     return {
         "ok": True,
@@ -2867,14 +4079,17 @@ def upsert_live_player_vote(
         "team": team_name,
         "player": player_name,
         "is_sv": is_sv,
+        "is_absent": is_absent,
         "vote": vote_value,
-        "fantavote": computed_fantavote if not is_sv else None,
+        "fantavote": computed_fantavote if (not is_sv and not is_absent) else None,
         "events": event_counts,
-        "bonus_total": None if is_sv else round(float(computed_fantavote) - vote_number, 2),
-        "vote_label": "SV" if is_sv else _format_live_number(vote_number),
-        "fantavote_label": "SV"
-        if is_sv
-        else _format_live_number(computed_fantavote),
+        "bonus_total": None
+        if (is_sv or is_absent or computed_fantavote is None)
+        else round(float(computed_fantavote) - vote_number, 2),
+        "vote_label": "X" if is_absent else ("SV" if is_sv else _format_live_number(vote_number)),
+        "fantavote_label": "X"
+        if is_absent
+        else ("SV" if is_sv else _format_live_number(computed_fantavote)),
     }
 
 

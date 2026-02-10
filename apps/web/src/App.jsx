@@ -739,6 +739,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         role: payload?.role || "",
         vote: payload?.vote,
         is_sv: Boolean(payload?.is_sv),
+        is_absent: Boolean(payload?.is_absent),
       };
       eventFields.forEach((field) => {
         body[field] = payload?.[field] ?? 0;

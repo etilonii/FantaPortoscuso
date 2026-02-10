@@ -165,6 +165,7 @@ class LivePlayerVote(Base):
     gol_vittoria = Column(Integer, default=0, nullable=False)
     gol_pareggio = Column(Integer, default=0, nullable=False)
     is_sv = Column(Boolean, default=False, nullable=False)
+    is_absent = Column(Boolean, default=False, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 
@@ -301,6 +302,7 @@ def ensure_schema(engine) -> None:
                     gol_vittoria INTEGER NOT NULL DEFAULT 0,
                     gol_pareggio INTEGER NOT NULL DEFAULT 0,
                     is_sv BOOLEAN NOT NULL DEFAULT 0,
+                    is_absent BOOLEAN NOT NULL DEFAULT 0,
                     updated_at DATETIME NOT NULL
                 )
                 """
@@ -331,4 +333,10 @@ def ensure_schema(engine) -> None:
                         f"ALTER TABLE live_player_votes ADD COLUMN {column} INTEGER NOT NULL DEFAULT 0"
                     )
                 )
+        if "is_absent" not in live_columns:
+            conn.execute(
+                text(
+                    "ALTER TABLE live_player_votes ADD COLUMN is_absent BOOLEAN NOT NULL DEFAULT 0"
+                )
+            )
         conn.commit()

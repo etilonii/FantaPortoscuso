@@ -46,22 +46,44 @@ export default function FormazioniSection({
           (item) => String(item.team || "").trim() === String(formationTeam || "").trim()
         );
 
-  const renderPlayerPills = (players, scoreMap) => {
-    if (!players || !players.length) return <span className="muted">-</span>;
+  const toPlayerEntry = (entry) => {
+    if (typeof entry === "string") {
+      return { name: entry.trim(), role: "" };
+    }
+    if (entry && typeof entry === "object") {
+      return {
+        name: String(entry.name || "").trim(),
+        role: String(entry.role || "").trim().toUpperCase(),
+      };
+    }
+    return { name: "", role: "" };
+  };
+
+  const renderPlayerPills = (players, scoreMap, options = {}) => {
+    const showRole = Boolean(options.showRole);
+    const normalizedPlayers = (players || [])
+      .map((entry) => toPlayerEntry(entry))
+      .filter((entry) => entry.name);
+    if (!normalizedPlayers.length) return <span className="muted">-</span>;
+
     return (
       <div className="formation-pills">
-        {players.map((name) => {
+        {normalizedPlayers.map((player, idx) => {
+          const name = player.name;
           const score = scoreMap?.[name] || null;
           const voteLabel = score?.vote_label || "-";
           const fantavoteLabel = score?.fantavote_label || "-";
           const scoreClass = score?.is_sv ? "formation-pill-metrics sv" : "formation-pill-metrics";
           return (
             <button
-              key={name}
+              key={`${name}-${idx}`}
               type="button"
               className="formation-pill"
               onClick={() => openPlayer(name)}
             >
+              {showRole && player.role ? (
+                <span className="formation-pill-role">{player.role}</span>
+              ) : null}
               <span className="formation-pill-name">{name}</span>
               <span className={scoreClass}>
                 V {voteLabel} | FV {fantavoteLabel}
@@ -159,6 +181,11 @@ export default function FormazioniSection({
                 standingPos === 1 || standingPos === 2 || standingPos === 3
                   ? `rank-${standingPos}`
                   : "";
+              const benchDetails = Array.isArray(item.panchina_details)
+                ? item.panchina_details
+                : Array.isArray(item.panchina)
+                  ? item.panchina
+                  : [];
               return (
               <article key={`${item.team}-${index}`} className="formation-card">
                 <header className="formation-card-head">
@@ -198,6 +225,10 @@ export default function FormazioniSection({
                   <div className="formation-line">
                     <span className="formation-label">A</span>
                     {renderPlayerPills(item.attaccanti, item.player_scores)}
+                  </div>
+                  <div className="formation-line formation-line-bench">
+                    <span className="formation-label bench">B</span>
+                    {renderPlayerPills(benchDetails, item.player_scores, { showRole: true })}
                   </div>
                 </div>
                 <div className="formation-live-breakdown">

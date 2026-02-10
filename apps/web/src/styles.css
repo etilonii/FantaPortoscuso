@@ -1966,11 +1966,20 @@ body.menu-open .menu-overlay {
   gap: 8px;
 }
 
+.formation-line-bench {
+  padding-top: 2px;
+  border-top: 1px dashed var(--border);
+}
+
 .formation-label {
   font-size: 0.72rem;
   font-weight: 800;
   color: var(--accent);
   padding-top: 4px;
+}
+
+.formation-label.bench {
+  color: var(--accent-2);
 }
 
 .formation-pills {
@@ -2000,6 +2009,16 @@ body.menu-open .menu-overlay {
 
 .formation-pill-name {
   font-weight: 700;
+}
+
+.formation-pill-role {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 6px;
+  line-height: 1.1;
 }
 
 .formation-pill-metrics {
@@ -2737,6 +2756,30 @@ body.menu-open .menu-overlay {
   font-size: 0.78rem;
 }
 
+.live-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.live-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.live-legend-item strong {
+  color: var(--text);
+  font-size: 0.68rem;
+}
+
 .live-match-list {
   display: grid;
   gap: 10px;
@@ -2790,9 +2833,14 @@ body.menu-open .menu-overlay {
   background: rgba(255, 255, 255, 0.02);
 }
 
+.live-player-row.absent {
+  border-color: rgba(255, 112, 112, 0.6);
+  background: rgba(255, 112, 112, 0.08);
+}
+
 .live-player-main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto auto auto auto auto;
   align-items: center;
   gap: 6px;
 }
@@ -2824,6 +2872,26 @@ body.menu-open .menu-overlay {
   gap: 4px;
   font-size: 0.72rem;
   color: var(--muted);
+}
+
+.live-absent-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: #ffb0b0;
+}
+
+.live-absent-toggle span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 120, 120, 0.55);
+  background: rgba(255, 120, 120, 0.15);
+  font-weight: 700;
 }
 
 .live-save-btn {
