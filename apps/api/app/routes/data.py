@@ -562,6 +562,25 @@ def _strip_leading_initial(value: str) -> str:
     return re.sub(r"^[A-Za-z]\.?\s+", "", value or "")
 
 
+def _repair_mojibake(value: str) -> str:
+    text = str(value or "")
+    if not text:
+        return text
+
+    repaired = text
+    for _ in range(2):
+        if not any(token in repaired for token in ("Ã", "Â", "Ð", "Ñ")):
+            break
+        try:
+            candidate = repaired.encode("latin-1").decode("utf-8")
+        except Exception:
+            break
+        if candidate == repaired:
+            break
+        repaired = candidate
+    return repaired
+
+
 def _load_listone_name_map() -> Dict[str, str]:
     if not QUOT_PATH.exists():
         return {}
@@ -591,7 +610,7 @@ def _load_listone_name_map() -> Dict[str, str]:
 
 
 def _canonicalize_name(value: str) -> str:
-    raw = (value or "").strip()
+    raw = _repair_mojibake((value or "").strip()).strip()
     if not raw:
         return raw
     mapping = _load_listone_name_map()
@@ -3695,12 +3714,12 @@ def _load_real_formazioni_rows(
 ) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
     standings_index = standings_index or {}
     candidate_paths: List[Path] = []
+    for path in REAL_FORMATIONS_FILE_CANDIDATES:
+        candidate_paths.append(path)
     for folder in REAL_FORMATIONS_DIR_CANDIDATES:
         latest = _latest_supported_file(folder)
         if latest is not None:
             candidate_paths.append(latest)
-    for path in REAL_FORMATIONS_FILE_CANDIDATES:
-        candidate_paths.append(path)
 
     seen_paths = set()
     ordered_paths: List[Path] = []
