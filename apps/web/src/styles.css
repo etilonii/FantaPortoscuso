@@ -245,6 +245,30 @@ body.theme-light {
   z-index: 20;
 }
 
+.admin-sidebar {
+  display: none;
+  background: var(--bg-2);
+  border-left: 1px solid var(--border);
+  padding: 28px 22px;
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: 250px;
+  z-index: 19;
+}
+
+.admin-sidebar .menu-item.active::after {
+  left: 12px;
+  right: auto;
+}
+
+.admin-sidebar .menu-item:hover {
+  transform: translateX(-4px);
+}
+
+.admin-sidebar .menu-item.active:hover {
+  transform: translateX(-2px);
+}
+
 .brand h2 {
   font-size: 1.4rem;
 }
@@ -3070,6 +3094,7 @@ body.theme-light .top-column,
 body.theme-light .podium-card,
 body.theme-light .dashboard,
 body.theme-light .sidebar,
+body.theme-light .admin-sidebar,
 body.theme-light .mobile-topbar {
   background: var(--surface);
   color: var(--text);
@@ -3310,5 +3335,21 @@ body.theme-light .login-shell .select {
   }
   .filters {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 901px) {
+  .admin-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .admin-mobile-item {
+    display: none;
+  }
+
+  .content.with-admin-menu {
+    padding-right: 286px;
   }
 }

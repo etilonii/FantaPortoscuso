@@ -2000,7 +2000,11 @@ useEffect(() => {
 
               {isAdmin && (
                 <button
-                  className={activeMenu === "live" ? "menu-item active" : "menu-item"}
+                  className={
+                    activeMenu === "live"
+                      ? "menu-item active admin-mobile-item"
+                      : "menu-item admin-mobile-item"
+                  }
                   onClick={() => {
                     setActiveMenu("live");
                     setMenuOpen(false);
@@ -2055,17 +2059,50 @@ useEffect(() => {
 
               {isAdmin && (
                 <button
+                  className={
+                    activeMenu === "admin"
+                      ? "menu-item active admin-mobile-item"
+                      : "menu-item admin-mobile-item"
+                  }
+                  onClick={() => {
+                    setActiveMenu("admin");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Gestione
+                </button>
+              )}
+            </nav>
+          </aside>
+          {isAdmin && (
+            <aside className="admin-sidebar" aria-label="Menu admin">
+              <div className="brand">
+                <span className="eyebrow">Admin</span>
+                <h2>Gestione</h2>
+              </div>
+
+              <nav className="menu">
+                <button
+                  className={activeMenu === "live" ? "menu-item active" : "menu-item"}
+                  onClick={() => {
+                    setActiveMenu("live");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Live
+                </button>
+                <button
                   className={activeMenu === "admin" ? "menu-item active" : "menu-item"}
                   onClick={() => {
                     setActiveMenu("admin");
                     setMenuOpen(false);
                   }}
                 >
-                  Admin
+                  Gestione
                 </button>
-              )}
-            </nav>
-          </aside>
+              </nav>
+            </aside>
+          )}
 
           <header className="mobile-topbar">
             <button
@@ -2103,7 +2140,7 @@ useEffect(() => {
                   ? "Mercato"
                   : activeMenu === "player"
                   ? "Scheda giocatore"
-                  : "Admin"}
+                  : "Gestione"}
               </strong>
             </div>
 
@@ -2114,7 +2151,7 @@ useEffect(() => {
 
           <div className="menu-overlay" onClick={() => setMenuOpen(false)} />
 
-          <main className="content">
+          <main className={isAdmin ? "content with-admin-menu" : "content"}>
             {/* ===========================
                 HOME (placeholder minimale)
             =========================== */}
@@ -2400,13 +2437,13 @@ useEffect(() => {
             )}
 
             {/* ===========================
-                ADMIN
+                GESTIONE
             =========================== */}
             {activeMenu === "admin" && isAdmin && (
               <section className="dashboard">
                 <div className="dashboard-header">
                   <div>
-                    <p className="eyebrow">Admin</p>
+                    <p className="eyebrow">Gestione</p>
                     <h2>Gestione Key</h2>
                   </div>
                 </div>
