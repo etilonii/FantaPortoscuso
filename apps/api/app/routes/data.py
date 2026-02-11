@@ -650,13 +650,24 @@ def _canonicalize_name(value: str) -> str:
 
 
 def _load_role_map() -> Dict[str, str]:
-    roles = {}
-    for row in _read_csv(ROSE_PATH):
-        name = row.get("Giocatore", "")
-        role = row.get("Ruolo", "")
+    roles: Dict[str, str] = {}
+
+    # Primary source: full quotazioni list (covers players not present in fantasy rosters).
+    for row in _read_csv(QUOT_PATH):
+        name = (row.get("Giocatore") or "").strip()
+        role = (row.get("Ruolo") or "").strip().upper()
         if not name or not role:
             continue
-        roles[normalize_name(name)] = role.strip().upper()
+        roles[normalize_name(name)] = role
+
+    # Fallback/override: league rosters (can contain the most up-to-date local corrections).
+    for row in _read_csv(ROSE_PATH):
+        name = (row.get("Giocatore") or "").strip()
+        role = (row.get("Ruolo") or "").strip().upper()
+        if not name or not role:
+            continue
+        roles[normalize_name(name)] = role
+
     return roles
 
 
