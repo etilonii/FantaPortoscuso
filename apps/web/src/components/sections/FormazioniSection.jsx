@@ -46,6 +46,28 @@ export default function FormazioniSection({
           (item) => String(item.team || "").trim() === String(formationTeam || "").trim()
         );
 
+  const parseLiveTotal = (value) => {
+    if (typeof value === "number" && Number.isFinite(value)) return value;
+    if (typeof value !== "string") return null;
+    const parsed = Number(value.replace(",", "."));
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+
+  const orderedItems = [...visibleItems].sort((a, b) => {
+    if (orderValue !== "live_total") return 0;
+    const left = parseLiveTotal(a?.totale_live);
+    const right = parseLiveTotal(b?.totale_live);
+    if (left !== null && right !== null && left !== right) return right - left;
+    if (left !== null && right === null) return -1;
+    if (left === null && right !== null) return 1;
+    const posA = Number(a?.standing_pos ?? a?.pos ?? 9999);
+    const posB = Number(b?.standing_pos ?? b?.pos ?? 9999);
+    if (Number.isFinite(posA) && Number.isFinite(posB) && posA !== posB) return posA - posB;
+    return String(a?.team || "").localeCompare(String(b?.team || ""), "it", {
+      sensitivity: "base",
+    });
+  });
+
   const normalizePlayerKey = (value) => String(value || "").trim().toLowerCase();
 
   const toPlayerEntry = (entry) => {
@@ -178,11 +200,11 @@ export default function FormazioniSection({
         </div>
         {formationMeta?.note ? <p className="muted compact">{formationMeta.note}</p> : null}
 
-        {visibleItems.length === 0 ? (
+        {orderedItems.length === 0 ? (
           <p className="muted">Nessuna formazione disponibile.</p>
         ) : (
           <div className="formations-grid">
-            {visibleItems.map((item, index) => {
+            {orderedItems.map((item, index) => {
               const standingPos = Number.isFinite(Number(item.standing_pos))
                 ? Number(item.standing_pos)
                 : Number.isFinite(Number(item.pos))

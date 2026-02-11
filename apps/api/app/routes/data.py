@@ -2208,9 +2208,14 @@ def _formations_sort_key(item: Dict[str, object]) -> tuple[int, str]:
 
 def _formations_sort_live_key(item: Dict[str, object]) -> tuple[int, float, int, str]:
     total = item.get("totale_live")
+    numeric_total: Optional[float]
     if isinstance(total, (int, float)):
+        numeric_total = float(total)
+    else:
+        numeric_total = _parse_float(total)
+    if numeric_total is not None:
         base = _formations_sort_key(item)
-        return (0, -float(total), base[0], base[1])
+        return (0, -numeric_total, base[0], base[1])
     base = _formations_sort_key(item)
     return (1, 0.0, base[0], base[1])
 
@@ -2518,6 +2523,15 @@ def _event_key_from_bonus_title(title: str, role: str) -> str:
     cleaned = _strip_html_tags(title).lower()
     if not cleaned:
         return ""
+    if "decisiv" in cleaned:
+        if "vittori" in cleaned:
+            return "gol_vittoria"
+        if "pareggi" in cleaned:
+            return "gol_pareggio"
+    if "gol vittoria" in cleaned:
+        return "gol_vittoria"
+    if "gol pareggio" in cleaned or "gol del pareggio" in cleaned:
+        return "gol_pareggio"
     if "gol segn" in cleaned:
         return "goal"
     if "gol subit" in cleaned:
