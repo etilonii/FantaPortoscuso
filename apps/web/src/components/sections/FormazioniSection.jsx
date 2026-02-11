@@ -46,6 +46,8 @@ export default function FormazioniSection({
           (item) => String(item.team || "").trim() === String(formationTeam || "").trim()
         );
 
+  const normalizePlayerKey = (value) => String(value || "").trim().toLowerCase();
+
   const toPlayerEntry = (entry) => {
     if (typeof entry === "string") {
       return { name: entry.trim(), role: "" };
@@ -61,6 +63,8 @@ export default function FormazioniSection({
 
   const renderPlayerPills = (players, scoreMap, options = {}) => {
     const showRole = Boolean(options.showRole);
+    const captainKey = normalizePlayerKey(options.captainName);
+    const viceCaptainKey = normalizePlayerKey(options.viceCaptainName);
     const normalizedPlayers = (players || [])
       .map((entry) => toPlayerEntry(entry))
       .filter((entry) => entry.name);
@@ -70,6 +74,9 @@ export default function FormazioniSection({
       <div className="formation-pills">
         {normalizedPlayers.map((player, idx) => {
           const name = player.name;
+          const playerKey = normalizePlayerKey(name);
+          const isCaptain = Boolean(captainKey) && playerKey === captainKey;
+          const isViceCaptain = Boolean(viceCaptainKey) && playerKey === viceCaptainKey;
           const score = scoreMap?.[name] || null;
           const voteLabel = score?.vote_label || "-";
           const fantavoteLabel = score?.fantavote_label || "-";
@@ -84,7 +91,11 @@ export default function FormazioniSection({
               {showRole && player.role ? (
                 <span className="formation-pill-role">{player.role}</span>
               ) : null}
-              <span className="formation-pill-name">{name}</span>
+              <span className="formation-pill-name-wrap">
+                <span className="formation-pill-name">{name}</span>
+                {isCaptain ? <span className="formation-pill-badge captain">C</span> : null}
+                {isViceCaptain ? <span className="formation-pill-badge vice">VC</span> : null}
+              </span>
               <span className={scoreClass}>
                 V {voteLabel} | FV {fantavoteLabel}
               </span>
@@ -187,6 +198,10 @@ export default function FormazioniSection({
                 : Array.isArray(item.panchina)
                   ? item.panchina
                   : [];
+              const playerTagOptions = {
+                captainName: item.capitano,
+                viceCaptainName: item.vice_capitano,
+              };
               return (
               <article key={`${item.team}-${index}`} className="formation-card">
                 <header className="formation-card-head">
@@ -213,23 +228,30 @@ export default function FormazioniSection({
                 <div className="formation-lines">
                   <div className="formation-line">
                     <span className="formation-label">P</span>
-                    {renderPlayerPills(item.portiere ? [item.portiere] : [], item.player_scores)}
+                    {renderPlayerPills(
+                      item.portiere ? [item.portiere] : [],
+                      item.player_scores,
+                      playerTagOptions
+                    )}
                   </div>
                   <div className="formation-line">
                     <span className="formation-label">D</span>
-                    {renderPlayerPills(item.difensori, item.player_scores)}
+                    {renderPlayerPills(item.difensori, item.player_scores, playerTagOptions)}
                   </div>
                   <div className="formation-line">
                     <span className="formation-label">C</span>
-                    {renderPlayerPills(item.centrocampisti, item.player_scores)}
+                    {renderPlayerPills(item.centrocampisti, item.player_scores, playerTagOptions)}
                   </div>
                   <div className="formation-line">
                     <span className="formation-label">A</span>
-                    {renderPlayerPills(item.attaccanti, item.player_scores)}
+                    {renderPlayerPills(item.attaccanti, item.player_scores, playerTagOptions)}
                   </div>
                   <div className="formation-line formation-line-bench">
                     <span className="formation-label bench">B</span>
-                    {renderPlayerPills(benchDetails, item.player_scores, { showRole: true })}
+                    {renderPlayerPills(benchDetails, item.player_scores, {
+                      showRole: true,
+                      ...playerTagOptions,
+                    })}
                   </div>
                 </div>
                 <div className="formation-live-breakdown">

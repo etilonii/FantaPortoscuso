@@ -1,3 +1,3 @@
-giornata,team,modulo,portiere,difensori,centrocampisti,attaccanti
-24,EquipoA,3-4-3,Svilar,Dimarco;Rrahmani;Martin,Pulisic;Paz N.;Orsolini;Zaccagni,Martinez L.;Yildiz;Berardi
-24,SPARROW,4-4-2,Maignan,Dimarco;Palestra;Wesley;Martin,Paz N.;McTominay;Gudmundsson A.;McKennie,Martinez L.;Esposito F.P.
+giornata,team,modulo,portiere,difensori,centrocampisti,attaccanti,panchina,capitano,vice_capitano
+24,EquipoA,4-3-3,Meret,Zappacosta;Rrahmani;Ramon;Palestra,Orsolini;Paz N.;Pulisic,Malen;Martinez L.;Yildiz,Milinkovic-Savic V.;Berardi;Ndour;Ilkhan;Maldini;Bellanova;Zemura,Pulisic,Orsolini
+24,SPARROW,4-3-3,Maignan,Dodò;Palestra;Wesley;Dimarco,McTominay;Paz N.;McKennie,Malen;Martinez L.;David,Terracciano;Valeri;Bellanova;Gudmundsson A.;Maldini;Esposito F.P.;Martin,Martinez L.,Dimarco
