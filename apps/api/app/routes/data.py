@@ -2595,6 +2595,18 @@ def _extract_fantacalcio_voti_rows(
             has_events = any(int(events.get(field, 0)) > 0 for field in LIVE_EVENT_FIELDS)
             if vote_value is None and not is_sv and not has_events:
                 skipped_rows += 1
+                rows.append(
+                    {
+                        "team": team_name,
+                        "player": player_name,
+                        "role": role,
+                        "vote": None,
+                        "fantavote": None,
+                        "is_sv": False,
+                        "is_absent": True,
+                        **events,
+                    }
+                )
                 continue
 
             rows.append(
@@ -2986,6 +2998,7 @@ def _load_live_round_context(db: Session, round_value: Optional[int]) -> Dict[st
         vote_rows = []
     votes_by_team_player: Dict[Tuple[str, str], Dict[str, object]] = {}
     votes_by_player: Dict[str, List[Dict[str, object]]] = defaultdict(list)
+    teams_with_votes: Set[str] = set()
     for row in vote_rows:
         team_name = _display_team_name(str(row.team or ""), club_index)
         player_name = _canonicalize_name(str(row.player_name or ""))
@@ -3013,6 +3026,7 @@ def _load_live_round_context(db: Session, round_value: Optional[int]) -> Dict[st
         }
         votes_by_team_player[(team_key, player_key)] = payload
         votes_by_player[player_key].append(payload)
+        teams_with_votes.add(team_key)
 
     return {
         "round": target_round,
@@ -3022,6 +3036,7 @@ def _load_live_round_context(db: Session, round_value: Optional[int]) -> Dict[st
         "player_team_map": player_team_map,
         "votes_by_team_player": votes_by_team_player,
         "votes_by_player": votes_by_player,
+        "teams_with_votes": teams_with_votes,
         "six_team_keys": six_team_keys,
         "regulation": regulation,
         "scoring_defaults": scoring_defaults,
@@ -3124,6 +3139,26 @@ def _resolve_live_player_score(player_name: str, context: Dict[str, object]) -> 
             "is_absent": False,
             "source": "manual",
             "manual": True,
+        }
+
+    teams_with_votes_raw = context.get("teams_with_votes", set())
+    teams_with_votes = (
+        teams_with_votes_raw
+        if isinstance(teams_with_votes_raw, set)
+        else {normalize_name(str(value or "")) for value in (teams_with_votes_raw or [])}
+    )
+    if club_key and club_key in teams_with_votes:
+        return {
+            "vote": None,
+            "fantavote": None,
+            "vote_label": "X",
+            "fantavote_label": "X",
+            "events": {field: 0 for field in LIVE_EVENT_FIELDS},
+            "bonus_total": None,
+            "is_sv": False,
+            "is_absent": True,
+            "source": "import_absent",
+            "manual": False,
         }
 
     return {
@@ -4757,6 +4792,8 @@ def formazioni(
 
     target_round = round if round is not None else default_matchday
     if target_round is None and available_rounds:
+        target_round = max(available_rounds)
+    if round is None and target_round is not None and available_rounds and target_round not in available_rounds:
         target_round = max(available_rounds)
 
     real_items = []
