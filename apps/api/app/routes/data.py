@@ -133,6 +133,8 @@ LIVE_EVENT_FIELDS: Tuple[str, ...] = (
     "gol_vittoria",
     "gol_pareggio",
 )
+APPKEY_BONUS_GV_DEFAULT_INDEX = 8
+APPKEY_BONUS_GP_DEFAULT_INDEX = 9
 
 FORMATION_ROLE_ORDER: Tuple[str, ...] = ("P", "D", "C", "A")
 FORMATION_OUTFIELD_ROLES: Tuple[str, ...] = ("D", "C", "A")
@@ -2492,7 +2494,7 @@ def _strip_html_tags(value: str) -> str:
     return re.sub(r"\s+", " ", decoded).strip()
 
 
-def _parse_fc_grade_value(raw_value: str) -> Tuple[Optional[float], bool]:
+def _parse_fc_grade_value(raw_value: str, max_value: float = 10.0) -> Tuple[Optional[float], bool]:
     raw = html_unescape(str(raw_value or "")).strip()
     if not raw:
         return None, False
@@ -2513,7 +2515,7 @@ def _parse_fc_grade_value(raw_value: str) -> Tuple[Optional[float], bool]:
         if abs(parsed - rounded) < 0.0001 and rounded % 5 == 0:
             parsed = parsed / 10.0
 
-    if parsed < 0 or parsed > 10:
+    if parsed < 0 or parsed > float(max_value):
         return None, False
 
     return round(parsed, 2), False
@@ -2621,8 +2623,8 @@ def _extract_fantacalcio_voti_rows(
             grade_classes = str(grade_match.group(1) if grade_match else "")
             raw_vote = str(grade_match.group(2) if grade_match else "")
             raw_fantavote = str(fanta_match.group(1) if fanta_match else "")
-            vote_value, vote_is_sv = _parse_fc_grade_value(raw_vote)
-            fantavote_value, fantavote_is_sv = _parse_fc_grade_value(raw_fantavote)
+            vote_value, vote_is_sv = _parse_fc_grade_value(raw_vote, max_value=10.0)
+            fantavote_value, fantavote_is_sv = _parse_fc_grade_value(raw_fantavote, max_value=30.0)
             is_sv = bool(vote_is_sv or fantavote_is_sv)
 
             events = {field: 0 for field in LIVE_EVENT_FIELDS}
@@ -2746,6 +2748,28 @@ def _reg_bonus_map(regulation: Dict[str, object]) -> Dict[str, float]:
         fallback = _safe_float_value(default_bonus.get(field), 0.0)
         bonus_map[field] = _safe_float_value(raw_bonus.get(field), fallback)
     return bonus_map
+
+
+def _reg_appkey_bonus_indexes(regulation: Dict[str, object]) -> Dict[str, int]:
+    defaults = {
+        "gol_vittoria": APPKEY_BONUS_GV_DEFAULT_INDEX,
+        "gol_pareggio": APPKEY_BONUS_GP_DEFAULT_INDEX,
+    }
+    live_import = regulation.get("live_import") if isinstance(regulation, dict) else {}
+    live_import = live_import if isinstance(live_import, dict) else {}
+    raw_map = (
+        live_import.get("appkey_bonus_indexes")
+        if isinstance(live_import.get("appkey_bonus_indexes"), dict)
+        else {}
+    )
+
+    resolved = dict(defaults)
+    for key in ("gol_vittoria", "gol_pareggio"):
+        parsed = _parse_int(raw_map.get(key))
+        if parsed is None or parsed < 0:
+            continue
+        resolved[key] = int(parsed)
+    return resolved
 
 
 def _live_event_counts(raw: Dict[str, object]) -> Dict[str, int]:
@@ -2932,6 +2956,80 @@ def _compute_live_fantavote(
             continue
         total += float(bonus_map.get(field, 0.0)) * count
     return round(total, 2)
+
+
+def _infer_decisive_events_from_fantavote(
+    vote_value: Optional[float],
+    fantavote_value: Optional[float],
+    event_counts: Dict[str, int],
+    bonus_map: Dict[str, float],
+) -> Dict[str, int]:
+    if vote_value is None or fantavote_value is None:
+        return event_counts
+
+    current_gv = max(0, int(event_counts.get("gol_vittoria", 0) or 0))
+    current_gp = max(0, int(event_counts.get("gol_pareggio", 0) or 0))
+    # Do not overwrite explicit manual decisive-goal input.
+    if current_gv > 0 or current_gp > 0:
+        return event_counts
+
+    scored_total = max(
+        0,
+        int(event_counts.get("goal", 0) or 0) + int(event_counts.get("rigore_segnato", 0) or 0),
+    )
+    if scored_total <= 0:
+        return event_counts
+
+    gv_bonus = float(bonus_map.get("gol_vittoria", 0.0))
+    gp_bonus = float(bonus_map.get("gol_pareggio", 0.0))
+    if gv_bonus <= 0.0 and gp_bonus <= 0.0:
+        return event_counts
+
+    base_total = float(vote_value)
+    for field in LIVE_EVENT_FIELDS:
+        if field in {"gol_vittoria", "gol_pareggio"}:
+            continue
+        count = max(0, int(event_counts.get(field, 0) or 0))
+        if count <= 0:
+            continue
+        base_total += float(bonus_map.get(field, 0.0)) * count
+
+    target_extra = float(fantavote_value) - base_total
+    if target_extra <= 0.10:
+        return event_counts
+
+    best_gv = 0
+    best_gp = 0
+    best_error = float("inf")
+    for gv_count in range(0, scored_total + 1):
+        for gp_count in range(0, scored_total - gv_count + 1):
+            if gv_count == 0 and gp_count == 0:
+                continue
+            extra = (float(gv_count) * gv_bonus) + (float(gp_count) * gp_bonus)
+            error = abs(extra - target_extra)
+            if error + 1e-9 < best_error:
+                best_error = error
+                best_gv = gv_count
+                best_gp = gp_count
+                continue
+            if abs(error - best_error) <= 1e-9:
+                # Prefer fewer inferred events, then prefer GV over GP.
+                current_total = best_gv + best_gp
+                candidate_total = gv_count + gp_count
+                if candidate_total < current_total:
+                    best_gv = gv_count
+                    best_gp = gp_count
+                elif candidate_total == current_total and gv_count > best_gv:
+                    best_gv = gv_count
+                    best_gp = gp_count
+
+    if best_error > 0.15:
+        return event_counts
+
+    inferred = dict(event_counts)
+    inferred["gol_vittoria"] = int(best_gv)
+    inferred["gol_pareggio"] = int(best_gp)
+    return inferred
 
 
 def _evaluate_bands(value: float, bands: List[Dict[str, object]]) -> float:
@@ -3874,6 +3972,138 @@ def _extract_appkey_captains(cap_raw: object, players: List[Dict[str, object]]) 
     return captain, vice
 
 
+def _appkey_bonus_event_counts(
+    bonus_raw: object,
+    bonus_indexes: Dict[str, int],
+) -> Dict[str, int]:
+    counts = {"gol_vittoria": 0, "gol_pareggio": 0}
+    if not isinstance(bonus_raw, list):
+        return counts
+
+    for field in ("gol_vittoria", "gol_pareggio"):
+        index = _parse_int(bonus_indexes.get(field))
+        if index is None or index < 0 or index >= len(bonus_raw):
+            continue
+        parsed = _parse_int(bonus_raw[index])
+        counts[field] = max(0, int(parsed or 0))
+    return counts
+
+
+def _load_live_decisive_badges_from_appkey(
+    round_value: Optional[int],
+    standings_index: Optional[Dict[str, Dict[str, object]]],
+    regulation: Dict[str, object],
+) -> tuple[Dict[str, Dict[str, int]], Optional[Path]]:
+    source_path = _latest_formazioni_appkey_path()
+    if source_path is None:
+        return {}, None
+
+    try:
+        payload = json.loads(source_path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return {}, source_path
+
+    data_section = payload.get("data") if isinstance(payload, dict) else None
+    if not isinstance(data_section, dict):
+        return {}, source_path
+
+    formations = data_section.get("formazioni")
+    if not isinstance(formations, list):
+        return {}, source_path
+
+    requested_round = _parse_int(round_value)
+    global_round = _parse_int(data_section.get("giornataLega") or payload.get("giornataLega"))
+    bonus_indexes = _reg_appkey_bonus_indexes(regulation)
+    _ = standings_index
+
+    decisive_map: Dict[str, Dict[str, int]] = {}
+    for formation in formations:
+        if not isinstance(formation, dict):
+            continue
+        formation_round = _parse_int(
+            formation.get("giornata") or formation.get("round") or formation.get("turno")
+        )
+        if formation_round is None:
+            formation_round = global_round
+        if requested_round is not None and formation_round is not None and formation_round != requested_round:
+            continue
+
+        squads = formation.get("sq")
+        if not isinstance(squads, list):
+            continue
+
+        for squad in squads:
+            if not isinstance(squad, dict):
+                continue
+
+            players = squad.get("pl")
+            if not isinstance(players, list):
+                continue
+            for player in players:
+                if not isinstance(player, dict):
+                    continue
+                player_name = _canonicalize_name(str(player.get("n") or ""))
+                player_key = normalize_name(player_name)
+                if not player_key:
+                    continue
+                event_counts = _appkey_bonus_event_counts(player.get("b"), bonus_indexes)
+                gv_count = max(0, int(event_counts.get("gol_vittoria", 0) or 0))
+                gp_count = max(0, int(event_counts.get("gol_pareggio", 0) or 0))
+                if gv_count <= 0 and gp_count <= 0:
+                    continue
+                key = player_key
+                current = decisive_map.get(key)
+                if current is None:
+                    decisive_map[key] = {
+                        "gol_vittoria": gv_count,
+                        "gol_pareggio": gp_count,
+                    }
+                else:
+                    current["gol_vittoria"] = max(int(current.get("gol_vittoria", 0)), gv_count)
+                    current["gol_pareggio"] = max(int(current.get("gol_pareggio", 0)), gp_count)
+
+    return decisive_map, source_path
+
+
+def _overlay_decisive_badges_from_appkey(
+    rows: List[Dict[str, object]],
+    decisive_map: Dict[str, Dict[str, int]],
+) -> int:
+    if not rows or not decisive_map:
+        return 0
+
+    player_occurrences: Dict[str, int] = defaultdict(int)
+    for row in rows:
+        player_key = normalize_name(str(row.get("player") or ""))
+        if player_key:
+            player_occurrences[player_key] += 1
+
+    applied = 0
+    for row in rows:
+        player_key = normalize_name(str(row.get("player") or ""))
+        if not player_key:
+            continue
+        # Avoid bad matches for omonimi across different teams.
+        if int(player_occurrences.get(player_key, 0)) != 1:
+            continue
+
+        appkey_counts = decisive_map.get(player_key)
+        if not appkey_counts:
+            continue
+
+        current_gv = max(0, int(_parse_int(row.get("gol_vittoria")) or 0))
+        current_gp = max(0, int(_parse_int(row.get("gol_pareggio")) or 0))
+        merged_gv = max(current_gv, max(0, int(appkey_counts.get("gol_vittoria", 0) or 0)))
+        merged_gp = max(current_gp, max(0, int(appkey_counts.get("gol_pareggio", 0) or 0)))
+
+        if merged_gv != current_gv or merged_gp != current_gp:
+            row["gol_vittoria"] = merged_gv
+            row["gol_pareggio"] = merged_gp
+            applied += 1
+
+    return applied
+
+
 def _parse_appkey_lineup(
     players: List[Dict[str, object]],
     module_raw: object,
@@ -4505,6 +4735,13 @@ def _upsert_live_player_vote_internal(
         vote_value = None
         fantavote_value = None
         event_counts = {field: 0 for field in LIVE_EVENT_FIELDS}
+    elif vote_value is not None and fantavote_value is not None:
+        event_counts = _infer_decisive_events_from_fantavote(
+            vote_value,
+            fantavote_value,
+            event_counts,
+            bonus_map,
+        )
 
     team_key = normalize_name(team_name)
     player_key = normalize_name(player_name)
@@ -4696,6 +4933,15 @@ def _import_live_votes_internal(
             detail="Nessun voto giocatore rilevato dalla pagina voti",
         )
 
+    regulation = _load_regulation()
+    standings_index = _build_standings_index()
+    decisive_badges, decisive_source_path = _load_live_decisive_badges_from_appkey(
+        resolved_round,
+        standings_index,
+        regulation,
+    )
+    appkey_badges_applied = _overlay_decisive_badges_from_appkey(rows, decisive_badges)
+
     imported = 0
     for item in rows:
         request_payload = LivePlayerVoteRequest(
@@ -4736,6 +4982,9 @@ def _import_live_votes_internal(
         "raw_rows": int(parsed.get("raw_row_count", imported)) if isinstance(parsed, dict) else imported,
         "teams_detected": int(parsed.get("team_count", 0)) if isinstance(parsed, dict) else 0,
         "skipped_rows": int(parsed.get("skipped_rows", 0)) if isinstance(parsed, dict) else 0,
+        "appkey_decisive_source": str(decisive_source_path) if decisive_source_path else None,
+        "appkey_decisive_players": len(decisive_badges),
+        "appkey_decisive_applied": appkey_badges_applied,
     }
 
 
