@@ -311,15 +311,18 @@ def _read_tabular_rows(path: Path) -> List[Dict[str, str]]:
     try:
         import pandas as pd
 
-        frame = pd.read_excel(path)
-        if frame is None or frame.empty:
-            return []
-        frame = frame.fillna("")
         rows: List[Dict[str, str]] = []
-        for _, row in frame.iterrows():
-            cleaned = _clean_row_keys(row.to_dict())
-            if any(str(v).strip() for v in cleaned.values()):
-                rows.append(cleaned)
+        sheets = pd.read_excel(path, sheet_name=None)
+        if not isinstance(sheets, dict):
+            return []
+        for _, frame in sheets.items():
+            if frame is None or frame.empty:
+                continue
+            frame = frame.fillna("")
+            for _, row in frame.iterrows():
+                cleaned = _clean_row_keys(row.to_dict())
+                if any(str(v).strip() for v in cleaned.values()):
+                    rows.append(cleaned)
         return rows
     except Exception:
         return []
@@ -2037,6 +2040,40 @@ def _pick_row_value(normalized_row: Dict[str, str], candidates: List[str]) -> st
         if value:
             return value
     return ""
+
+
+def _extract_starters_from_titolari_columns(
+    normalized_row: Dict[str, str],
+    module_raw: str,
+) -> Tuple[str, List[str], List[str], List[str]]:
+    titolari: List[str] = []
+    for idx in range(1, 12):
+        raw_value = _pick_row_value(
+            normalized_row,
+            [f"titolare_{idx}", f"titolare{idx}", f"starter_{idx}", f"starter{idx}"],
+        )
+        for name in _split_players_cell(raw_value):
+            normalized_name = _canonicalize_name(name)
+            if normalized_name:
+                titolari.append(normalized_name)
+
+    if not titolari:
+        return "", [], [], []
+
+    module_counts = _module_counts_from_str(module_raw)
+    if module_counts is None:
+        module_counts = {"P": 1, "D": 3, "C": 4, "A": 3}
+
+    portiere = titolari[0] if titolari else ""
+    outfield = titolari[1:]
+    d_count = int(module_counts.get("D", 0))
+    c_count = int(module_counts.get("C", 0))
+    a_count = int(module_counts.get("A", 0))
+
+    difensori = outfield[:d_count]
+    centrocampisti = outfield[d_count : d_count + c_count]
+    attaccanti = outfield[d_count + c_count : d_count + c_count + a_count]
+    return portiere, difensori, centrocampisti, attaccanti
 
 
 def _load_status_matchday() -> Optional[int]:
@@ -4205,14 +4242,41 @@ def _load_real_formazioni_rows(
                 rounds.add(round_value)
 
             resolved_team, standing_pos = _resolve_team_name_with_standings(team_name_raw, standings_index)
-            portiere_values = _split_players_cell(
-                _pick_row_value(normalized_row, ["portiere", "p", "gk"])
+            module_raw = _pick_row_value(normalized_row, ["modulo", "formation", "schema"])
+            portiere_values = _split_players_cell(_pick_row_value(normalized_row, ["portiere", "p", "gk"]))
+            difensori_values = _split_players_cell(
+                _pick_row_value(normalized_row, ["difensori", "difesa", "d"])
             )
+            centrocampisti_values = _split_players_cell(
+                _pick_row_value(normalized_row, ["centrocampisti", "centrocampo", "c"])
+            )
+            attaccanti_values = _split_players_cell(
+                _pick_row_value(normalized_row, ["attaccanti", "attacco", "a"])
+            )
+
+            if (
+                not portiere_values
+                and not difensori_values
+                and not centrocampisti_values
+                and not attaccanti_values
+            ):
+                (
+                    fallback_portiere,
+                    fallback_difensori,
+                    fallback_centrocampisti,
+                    fallback_attaccanti,
+                ) = _extract_starters_from_titolari_columns(normalized_row, module_raw)
+                if fallback_portiere:
+                    portiere_values = [fallback_portiere]
+                    difensori_values = fallback_difensori
+                    centrocampisti_values = fallback_centrocampisti
+                    attaccanti_values = fallback_attaccanti
+
             item = {
                 "pos": standing_pos if standing_pos is not None else 9999,
                 "standing_pos": standing_pos,
                 "team": resolved_team or team_name_raw,
-                "modulo": _format_module(_pick_row_value(normalized_row, ["modulo", "formation", "schema"])),
+                "modulo": _format_module(module_raw),
                 "forza_titolari": _parse_float(
                     _pick_row_value(
                         normalized_row,
@@ -4220,15 +4284,9 @@ def _load_real_formazioni_rows(
                     )
                 ),
                 "portiere": portiere_values[0] if portiere_values else "",
-                "difensori": _split_players_cell(
-                    _pick_row_value(normalized_row, ["difensori", "difesa", "d"])
-                ),
-                "centrocampisti": _split_players_cell(
-                    _pick_row_value(normalized_row, ["centrocampisti", "centrocampo", "c"])
-                ),
-                "attaccanti": _split_players_cell(
-                    _pick_row_value(normalized_row, ["attaccanti", "attacco", "a"])
-                ),
+                "difensori": difensori_values,
+                "centrocampisti": centrocampisti_values,
+                "attaccanti": attaccanti_values,
                 "panchina_details": _extract_reserve_players(normalized_row, role_map),
                 "capitano": _pick_row_value(
                     normalized_row,
