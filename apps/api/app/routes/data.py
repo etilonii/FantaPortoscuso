@@ -41,6 +41,7 @@ RESIDUAL_CREDITS_PATH = DATA_DIR / "rose_nuovo_credits.csv"
 STATS_PATH = DATA_DIR / "statistiche_giocatori.csv"
 MARKET_PATH = DATA_DIR / "market_latest.json"
 STARTING_XI_REPORT_PATH = DATA_DIR / "reports" / "team_starting_xi.csv"
+PLAYER_STRENGTH_REPORT_PATH = DATA_DIR / "reports" / "team_strength_players.csv"
 REAL_FORMATIONS_FILE_CANDIDATES = [
     DATA_DIR / "reports" / "formazioni_giornata.csv",
     DATA_DIR / "reports" / "formazioni_giornata.xlsx",
@@ -115,6 +116,7 @@ TABULAR_EXTENSIONS = {".csv", ".xlsx", ".xls"}
 _RESIDUAL_CREDITS_CACHE: Dict[str, object] = {}
 _NAME_LIST_CACHE: Dict[str, object] = {}
 _LISTONE_NAME_CACHE: Dict[str, object] = {}
+_PLAYER_FORCE_CACHE: Dict[str, object] = {}
 _REGULATION_CACHE: Dict[str, object] = {}
 
 LIVE_EVENT_FIELDS: Tuple[str, ...] = (
@@ -663,6 +665,79 @@ def _load_qa_map() -> Dict[str, float]:
             continue
         qa_map[normalize_name(name)] = qa
     return qa_map
+
+
+def _load_player_force_map() -> Dict[str, float]:
+    if not PLAYER_STRENGTH_REPORT_PATH.exists():
+        return {}
+    mtime = PLAYER_STRENGTH_REPORT_PATH.stat().st_mtime
+    cache_key = str(PLAYER_STRENGTH_REPORT_PATH)
+    cached = _PLAYER_FORCE_CACHE.get(cache_key)
+    if cached and cached.get("mtime") == mtime:
+        return cached.get("data", {})
+
+    force_map: Dict[str, float] = {}
+    for row in _read_csv(PLAYER_STRENGTH_REPORT_PATH):
+        raw_name = str(row.get("Giocatore") or "").strip()
+        if not raw_name:
+            continue
+        force = _parse_float(row.get("ForzaGiocatore"))
+        if force is None:
+            continue
+        canonical = _canonicalize_name(raw_name)
+        keys = {
+            normalize_name(strip_star(raw_name)),
+            normalize_name(strip_star(canonical)),
+            normalize_name(raw_name),
+            normalize_name(canonical),
+        }
+        for key in keys:
+            if not key:
+                continue
+            existing = force_map.get(key)
+            if existing is None or force > existing:
+                force_map[key] = force
+
+    _PLAYER_FORCE_CACHE[cache_key] = {"mtime": mtime, "data": force_map}
+    return force_map
+
+
+def _lineup_player_names(item: Dict[str, object]) -> List[str]:
+    players: List[str] = []
+    goalkeeper = str(item.get("portiere") or "").strip()
+    if goalkeeper:
+        players.append(goalkeeper)
+    for field in ("difensori", "centrocampisti", "attaccanti"):
+        values = item.get(field) if isinstance(item.get(field), list) else []
+        for value in values:
+            name = str(value or "").strip()
+            if name:
+                players.append(name)
+    return players
+
+
+def _recompute_forza_titolari(items: List[Dict[str, object]]) -> None:
+    force_map = _load_player_force_map()
+    if not force_map:
+        return
+
+    for item in items:
+        total = 0.0
+        hits = 0
+        for raw_name in _lineup_player_names(item):
+            canonical = _canonicalize_name(raw_name)
+            key = normalize_name(strip_star(canonical))
+            if not key:
+                key = normalize_name(strip_star(raw_name))
+            force = force_map.get(key)
+            if force is None and canonical != raw_name:
+                force = force_map.get(normalize_name(strip_star(raw_name)))
+            if force is None:
+                continue
+            total += float(force)
+            hits += 1
+        if hits > 0:
+            item["forza_titolari"] = round(total, 2)
 
 
 def _load_last_quotazioni_map() -> Dict[str, Dict[str, str]]:
@@ -3979,12 +4054,12 @@ def _load_real_formazioni_rows(
 ) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
     standings_index = standings_index or {}
     candidate_paths: List[Path] = []
-    for path in REAL_FORMATIONS_FILE_CANDIDATES:
-        candidate_paths.append(path)
     for folder in REAL_FORMATIONS_DIR_CANDIDATES:
         latest = _latest_supported_file(folder)
         if latest is not None:
             candidate_paths.append(latest)
+    for path in REAL_FORMATIONS_FILE_CANDIDATES:
+        candidate_paths.append(path)
 
     seen_paths = set()
     ordered_paths: List[Path] = []
@@ -4071,9 +4146,11 @@ def _load_real_formazioni_rows(
         }
         rounds_in_items.update(rounds)
         available_rounds = sorted(rounds_in_items)
+        _recompute_forza_titolari(merged_items)
         return merged_items, available_rounds, source_path
 
     if appkey_items:
+        _recompute_forza_titolari(appkey_items)
         return appkey_items, appkey_rounds, appkey_source
 
     return [], [], None
