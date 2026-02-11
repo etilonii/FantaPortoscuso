@@ -1,9 +1,22 @@
+import asyncio
+import logging
+from contextlib import suppress
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from .config import APP_NAME, RATE_LIMIT_REQUESTS, RATE_LIMIT_WINDOW_SECONDS
-from .db import Base, engine
+from .config import (
+    APP_NAME,
+    RATE_LIMIT_REQUESTS,
+    RATE_LIMIT_WINDOW_SECONDS,
+    AUTO_LIVE_IMPORT_ENABLED,
+    AUTO_LIVE_IMPORT_INTERVAL_HOURS,
+    AUTO_LIVE_IMPORT_ON_START,
+    AUTO_LIVE_IMPORT_ROUND,
+    AUTO_LIVE_IMPORT_SEASON,
+)
+from .db import Base, engine, SessionLocal
 from .migrations import apply_pending_migrations
 from .models import ensure_schema
 from .rate_limit import (
@@ -13,6 +26,9 @@ from .rate_limit import (
     rate_limit_identity_key,
 )
 from .routes import auth, health, data, meta
+
+
+logger = logging.getLogger("uvicorn.error")
 
 
 def create_app() -> FastAPI:
@@ -64,6 +80,70 @@ def create_app() -> FastAPI:
     app.include_router(meta.router)
     app.include_router(auth.router)
     app.include_router(data.router)
+
+    if AUTO_LIVE_IMPORT_ENABLED:
+        interval_seconds = max(1, int(AUTO_LIVE_IMPORT_INTERVAL_HOURS)) * 3600
+
+        def _run_auto_live_import_once() -> None:
+            db = SessionLocal()
+            try:
+                result = data.run_auto_live_import(
+                    db,
+                    configured_round=AUTO_LIVE_IMPORT_ROUND,
+                    season=(AUTO_LIVE_IMPORT_SEASON or None),
+                    min_interval_seconds=interval_seconds,
+                )
+                if result.get("skipped"):
+                    logger.info("Auto live import skipped: %s", result.get("reason", "not_due"))
+                    return
+                logger.info(
+                    "Auto live import ok: round=%s imported=%s source=%s",
+                    result.get("round"),
+                    result.get("imported_rows"),
+                    result.get("source"),
+                )
+            except Exception:
+                with suppress(Exception):
+                    db.rollback()
+                logger.exception("Auto live import failed")
+            finally:
+                db.close()
+
+        async def _auto_live_import_loop(stop_event: asyncio.Event) -> None:
+            if AUTO_LIVE_IMPORT_ON_START and not stop_event.is_set():
+                await asyncio.to_thread(_run_auto_live_import_once)
+
+            while not stop_event.is_set():
+                try:
+                    await asyncio.wait_for(stop_event.wait(), timeout=interval_seconds)
+                    break
+                except asyncio.TimeoutError:
+                    await asyncio.to_thread(_run_auto_live_import_once)
+
+        @app.on_event("startup")
+        async def _startup_auto_live_import() -> None:
+            stop_event = asyncio.Event()
+            task = asyncio.create_task(_auto_live_import_loop(stop_event))
+            app.state.auto_live_import_stop_event = stop_event
+            app.state.auto_live_import_task = task
+            logger.info(
+                "Auto live import scheduler enabled (interval=%sh, on_start=%s, fixed_round=%s)",
+                AUTO_LIVE_IMPORT_INTERVAL_HOURS,
+                AUTO_LIVE_IMPORT_ON_START,
+                AUTO_LIVE_IMPORT_ROUND if AUTO_LIVE_IMPORT_ROUND is not None else "auto",
+            )
+
+        @app.on_event("shutdown")
+        async def _shutdown_auto_live_import() -> None:
+            stop_event = getattr(app.state, "auto_live_import_stop_event", None)
+            task = getattr(app.state, "auto_live_import_task", None)
+            if stop_event is not None:
+                stop_event.set()
+            if task is not None:
+                task.cancel()
+                with suppress(asyncio.CancelledError):
+                    await task
+
     return app
 
 

@@ -248,6 +248,7 @@ export default function App() {
   const [liveError, setLiveError] = useState("");
   const [liveLoading, setLiveLoading] = useState(false);
   const [liveSavingKey, setLiveSavingKey] = useState("");
+  const [liveImporting, setLiveImporting] = useState(false);
   const [roleFilter, setRoleFilter] = useState("all");
   const [squadraFilter, setSquadraFilter] = useState("all");
   const [rosterQuery, setRosterQuery] = useState("");
@@ -765,6 +766,36 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setLiveError(err?.message || "Errore salvataggio voto live");
     } finally {
       setLiveSavingKey("");
+    }
+  };
+
+  const importLiveVotes = async (roundValue = null) => {
+    if (!loggedIn || !isAdmin) return;
+    try {
+      setLiveImporting(true);
+      setLiveError("");
+      const roundNumber = Number(roundValue || livePayload?.round || formationRound || 0);
+      if (!Number.isFinite(roundNumber) || roundNumber <= 0) {
+        throw new Error("Giornata non valida per import voti");
+      }
+      const res = await fetchWithAuth(`${API_BASE}/data/live/import-voti`, {
+        method: "POST",
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
+        body: JSON.stringify({ round: roundNumber }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.detail || "Errore import voti live");
+      }
+      await loadLivePayload(roundNumber);
+      await loadFormazioni(formationRound || roundNumber, formationOrder);
+    } catch (err) {
+      setLiveError(err?.message || "Errore import voti live");
+    } finally {
+      setLiveImporting(false);
     }
   };
 
@@ -2189,7 +2220,9 @@ useEffect(() => {
                 liveLoading={liveLoading}
                 liveError={liveError}
                 liveSavingKey={liveSavingKey}
+                liveImporting={liveImporting}
                 onReload={() => loadLivePayload(livePayload?.round || null)}
+                onImportVotes={() => importLiveVotes(livePayload?.round || null)}
                 onRoundChange={onLiveRoundChange}
                 onToggleSixPolitico={saveLiveMatchSix}
                 onSavePlayer={saveLivePlayerVote}

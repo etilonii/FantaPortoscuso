@@ -169,6 +169,14 @@ class LivePlayerVote(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 
+class ScheduledJobState(Base):
+    __tablename__ = "scheduled_job_state"
+
+    job_name = Column(String(64), primary_key=True)
+    last_run_ts = Column(Integer, default=0, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
 class KeyReset(Base):
     __tablename__ = "key_resets"
 

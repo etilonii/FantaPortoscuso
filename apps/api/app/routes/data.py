@@ -3,8 +3,11 @@ import json
 import re
 from collections import defaultdict
 from datetime import datetime
+from html import unescape as html_unescape
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
+from urllib.error import URLError, HTTPError
+from urllib.request import Request, urlopen
 
 from fastapi import APIRouter, Query, Body, Depends, Header, HTTPException
 from pydantic import BaseModel, Field
@@ -22,6 +25,7 @@ from apps.api.app.models import (
     LivePlayerVote,
     Player,
     PlayerStats,
+    ScheduledJobState,
     Team,
     TeamKey,
 )
@@ -53,6 +57,8 @@ REAL_FORMATIONS_APPKEY_GLOB = "formazioni*_appkey.json"
 REAL_FORMATIONS_CONTEXT_HTML_CANDIDATES = [
     REAL_FORMATIONS_TMP_DIR / "formazioni_page.html",
 ]
+VOTI_PAGE_CACHE_PATH = DATA_DIR / "tmp" / "voti_page.html"
+VOTI_BASE_URL = "https://www.fantacalcio.it/voti-fantacalcio-serie-a"
 STATUS_PATH = DATA_DIR / "status.json"
 MARKET_REPORT_GLOB = "rose_changes_*.csv"
 ROSE_DIFF_GLOB = "diff_rose_*.txt"
@@ -255,6 +261,13 @@ class LivePlayerVoteRequest(BaseModel):
     gol_pareggio: Optional[int] = Field(default=0, ge=0, le=20)
     is_sv: bool = False
     is_absent: bool = False
+
+
+class LiveImportVotesRequest(BaseModel):
+    round: int = Field(ge=1, le=99)
+    season: Optional[str] = Field(default=None, max_length=16)
+    source_url: Optional[str] = Field(default=None, max_length=512)
+    source_html: Optional[str] = Field(default=None, max_length=3_000_000)
 
 
 def _read_csv(path: Path) -> List[Dict[str, str]]:
@@ -2288,6 +2301,258 @@ def _build_player_team_map(club_index: Dict[str, str]) -> Dict[str, str]:
     return player_map
 
 
+def _infer_current_season_slug(reference: Optional[datetime] = None) -> str:
+    current = reference or datetime.utcnow()
+    start_year = current.year if current.month >= 7 else current.year - 1
+    return f"{start_year}-{str(start_year + 1)[-2:]}"
+
+
+def _normalize_season_slug(value: Optional[str]) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return _infer_current_season_slug()
+
+    match = re.search(r"(20\d{2})\s*[-/]\s*(\d{2,4})", raw)
+    if not match:
+        return _infer_current_season_slug()
+
+    start_year = int(match.group(1))
+    end_part = match.group(2)
+    if len(end_part) == 4:
+        end_year = int(end_part)
+        suffix = str(end_year)[-2:]
+    else:
+        suffix = end_part[-2:]
+    return f"{start_year}-{suffix}"
+
+
+def _build_default_voti_url(round_value: int, season_slug: str) -> str:
+    return f"{VOTI_BASE_URL}/{season_slug}/{int(round_value)}"
+
+
+def _fetch_text_url(url: str, timeout_seconds: float = 20.0) -> str:
+    request = Request(
+        str(url),
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
+            ),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "it-IT,it;q=0.9,en-US;q=0.7,en;q=0.6",
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache",
+        },
+    )
+    try:
+        with urlopen(request, timeout=timeout_seconds) as response:
+            raw = response.read()
+            encoding = response.headers.get_content_charset() or "utf-8"
+            try:
+                return raw.decode(encoding, errors="replace")
+            except LookupError:
+                return raw.decode("utf-8", errors="replace")
+    except HTTPError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Import voti non riuscito (HTTP {exc.code}) da {url}",
+        ) from exc
+    except URLError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Import voti non riuscito: {exc.reason}",
+        ) from exc
+    except Exception as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Import voti non riuscito: {exc}",
+        ) from exc
+
+
+def _strip_html_tags(value: str) -> str:
+    without_tags = re.sub(r"<[^>]+>", " ", str(value or ""), flags=re.DOTALL)
+    decoded = html_unescape(without_tags)
+    return re.sub(r"\s+", " ", decoded).strip()
+
+
+def _parse_fc_grade_value(raw_value: str) -> Tuple[Optional[float], bool]:
+    raw = html_unescape(str(raw_value or "")).strip()
+    if not raw:
+        return None, False
+
+    compact = raw.upper().replace(" ", "")
+    if compact in {"SV", "S.V.", "S/V"}:
+        return None, True
+    if compact in {"-", "--", "N/A", "N.A."}:
+        return None, False
+
+    normalized = raw.replace(",", ".")
+    parsed = _parse_float(normalized)
+    if parsed is None:
+        return None, False
+
+    if parsed > 20 and parsed <= 100:
+        rounded = round(parsed)
+        if abs(parsed - rounded) < 0.0001 and rounded % 5 == 0:
+            parsed = parsed / 10.0
+
+    if parsed < 0 or parsed > 10:
+        return None, False
+
+    return round(parsed, 2), False
+
+
+def _event_key_from_bonus_title(title: str, role: str) -> str:
+    cleaned = _strip_html_tags(title).lower()
+    if not cleaned:
+        return ""
+    if "gol segn" in cleaned:
+        return "goal"
+    if "gol subit" in cleaned:
+        return "gol_subito_portiere" if str(role or "").upper() == "P" else ""
+    if "autore" in cleaned or "autogol" in cleaned:
+        return "autogol"
+    if "rigori segnat" in cleaned:
+        return "rigore_segnato"
+    if "rigori sbagliat" in cleaned:
+        return "rigore_sbagliato"
+    if "rigori parat" in cleaned:
+        return "rigore_parato"
+    if "assist" in cleaned:
+        return "assist"
+    return ""
+
+
+def _extract_fantacalcio_voti_rows(
+    html_text: str,
+    club_index: Dict[str, str],
+) -> Dict[str, object]:
+    team_blocks = re.findall(
+        r'<li\s+id="team-\d+"\s+class="team-table">\s*(.*?)</li>',
+        str(html_text or ""),
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    rows: List[Dict[str, object]] = []
+    skipped_rows = 0
+    teams_seen: Set[str] = set()
+
+    for block in team_blocks:
+        team_name_match = re.search(
+            r'<div class="team-info">.*?<a class="team-name team-link[^"]*"[^>]*>(.*?)</a>',
+            block,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        if not team_name_match:
+            continue
+
+        team_name = _display_team_name(_strip_html_tags(team_name_match.group(1)), club_index)
+        if not team_name:
+            continue
+        teams_seen.add(team_name)
+
+        for row_html in re.findall(r"<tr>(.*?)</tr>", block, flags=re.IGNORECASE | re.DOTALL):
+            role_match = re.search(
+                r'<span class="role" data-value="([^"]+)"',
+                row_html,
+                flags=re.IGNORECASE,
+            )
+            role = str(role_match.group(1)).strip().upper()[:1] if role_match else ""
+            if role not in FORMATION_ROLE_ORDER:
+                continue
+
+            player_name_match = re.search(
+                r'<a class="player-name player-link[^"]*"[^>]*>(.*?)</a>',
+                row_html,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            if player_name_match:
+                player_name = _canonicalize_name(_strip_html_tags(player_name_match.group(1)))
+            else:
+                fallback_name = re.search(
+                    r'<span class="player-name">([^<]+)</span>',
+                    row_html,
+                    flags=re.IGNORECASE | re.DOTALL,
+                )
+                player_name = _canonicalize_name(_strip_html_tags(fallback_name.group(1))) if fallback_name else ""
+
+            if not player_name:
+                continue
+
+            grade_match = re.search(
+                r'<span class="([^"]*player-grade[^"]*)"[^>]*data-value="([^"]*)"',
+                row_html,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            fanta_match = re.search(
+                r'<span class="[^"]*player-fanta-grade[^"]*"[^>]*data-value="([^"]*)"',
+                row_html,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+
+            grade_classes = str(grade_match.group(1) if grade_match else "")
+            raw_vote = str(grade_match.group(2) if grade_match else "")
+            raw_fantavote = str(fanta_match.group(1) if fanta_match else "")
+            vote_value, vote_is_sv = _parse_fc_grade_value(raw_vote)
+            fantavote_value, fantavote_is_sv = _parse_fc_grade_value(raw_fantavote)
+            is_sv = bool(vote_is_sv or fantavote_is_sv)
+
+            events = {field: 0 for field in LIVE_EVENT_FIELDS}
+            grade_class_normalized = str(grade_classes or "").lower()
+            if "red-card" in grade_class_normalized:
+                events["espulsione"] = 1
+            elif "yellow-card" in grade_class_normalized:
+                events["ammonizione"] = 1
+
+            bonus_matches = re.findall(
+                r'<span class="[^"]*player-bonus[^"]*"[^>]*data-value="([^"]*)"[^>]*title="([^"]*)"',
+                row_html,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            for raw_count, raw_title in bonus_matches:
+                event_key = _event_key_from_bonus_title(raw_title, role)
+                if not event_key:
+                    continue
+                parsed_count = _parse_int(_strip_html_tags(raw_count))
+                if parsed_count is None:
+                    continue
+                events[event_key] = max(0, int(parsed_count))
+
+            has_events = any(int(events.get(field, 0)) > 0 for field in LIVE_EVENT_FIELDS)
+            if vote_value is None and not is_sv and not has_events:
+                skipped_rows += 1
+                continue
+
+            rows.append(
+                {
+                    "team": team_name,
+                    "player": player_name,
+                    "role": role,
+                    "vote": vote_value,
+                    "fantavote": fantavote_value,
+                    "is_sv": is_sv,
+                    "is_absent": False,
+                    **events,
+                }
+            )
+
+    deduped: Dict[Tuple[str, str], Dict[str, object]] = {}
+    for item in rows:
+        deduped[
+            (
+                normalize_name(str(item.get("team") or "")),
+                normalize_name(str(item.get("player") or "")),
+            )
+        ] = item
+
+    return {
+        "rows": list(deduped.values()),
+        "team_count": len(teams_seen),
+        "raw_row_count": len(rows),
+        "row_count": len(deduped),
+        "skipped_rows": skipped_rows,
+    }
+
+
 def _parse_live_value(value: Optional[str]) -> Optional[float]:
     raw = str(value or "").strip()
     if not raw or raw.upper() == "SV":
@@ -3943,15 +4208,12 @@ def set_live_match_six(
     }
 
 
-@router.post("/live/player")
-def upsert_live_player_vote(
+def _upsert_live_player_vote_internal(
     payload: LivePlayerVoteRequest,
-    db: Session = Depends(get_db),
-    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
-    authorization: str | None = Header(default=None, alias="Authorization"),
-):
-    _require_admin_key(x_admin_key, db, authorization)
-
+    db: Session,
+    *,
+    commit: bool = True,
+) -> Dict[str, object]:
     club_index = _load_club_name_index()
     team_name = _display_team_name(payload.team, club_index)
     player_name = _canonicalize_name(payload.player)
@@ -4027,7 +4289,8 @@ def upsert_live_player_vote(
             if _is_nonzero_stats_delta(delta):
                 _sync_live_stats_for_player(player_name, team_name, role_value, delta)
             db.delete(existing)
-            db.commit()
+            if commit:
+                db.commit()
         return {
             "ok": True,
             "round": payload.round,
@@ -4077,7 +4340,8 @@ def upsert_live_player_vote(
     if _is_nonzero_stats_delta(delta):
         _sync_live_stats_for_player(player_name, team_name, role_value, delta)
 
-    db.commit()
+    if commit:
+        db.commit()
 
     default_vote = _safe_float_value(scoring_defaults.get("default_vote"), 6.0)
     vote_number = default_vote if vote_value is None else float(vote_value)
@@ -4110,6 +4374,204 @@ def upsert_live_player_vote(
         if is_absent
         else ("SV" if is_sv else _format_live_number(computed_fantavote)),
     }
+
+
+@router.post("/live/player")
+def upsert_live_player_vote(
+    payload: LivePlayerVoteRequest,
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+    return _upsert_live_player_vote_internal(payload, db, commit=True)
+
+
+def _import_live_votes_internal(
+    db: Session,
+    *,
+    round_value: Optional[int],
+    season: Optional[str] = None,
+    source_url: Optional[str] = None,
+    source_html: Optional[str] = None,
+) -> Dict[str, object]:
+    resolved_round = _parse_int(round_value)
+    if resolved_round is None or resolved_round <= 0:
+        live_context = _load_live_round_context(db, None)
+        resolved_round = _parse_int(live_context.get("round")) or 1
+
+    season_slug = _normalize_season_slug(season)
+    effective_source_url = str(source_url or "").strip() or _build_default_voti_url(resolved_round, season_slug)
+    html_text = str(source_html or "").strip()
+    source = "inline_html"
+
+    if not html_text:
+        source = "remote_url"
+        try:
+            html_text = _fetch_text_url(effective_source_url)
+        except HTTPException as exc:
+            if VOTI_PAGE_CACHE_PATH.exists():
+                html_text = VOTI_PAGE_CACHE_PATH.read_text(encoding="utf-8", errors="replace")
+                source = "cache_file"
+            else:
+                raise exc
+
+    if not html_text:
+        raise HTTPException(status_code=422, detail="HTML voti non disponibile")
+
+    try:
+        VOTI_PAGE_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        VOTI_PAGE_CACHE_PATH.write_text(html_text, encoding="utf-8")
+    except Exception:
+        pass
+
+    club_index = _load_club_name_index()
+    parsed = _extract_fantacalcio_voti_rows(html_text, club_index)
+    rows = parsed.get("rows") if isinstance(parsed, dict) else []
+    rows = rows if isinstance(rows, list) else []
+    if not rows:
+        raise HTTPException(
+            status_code=422,
+            detail="Nessun voto giocatore rilevato dalla pagina voti",
+        )
+
+    imported = 0
+    for item in rows:
+        request_payload = LivePlayerVoteRequest(
+            round=resolved_round,
+            team=str(item.get("team") or ""),
+            player=str(item.get("player") or ""),
+            role=str(item.get("role") or ""),
+            vote=None if item.get("vote") is None else str(item.get("vote")),
+            fantavote=None if item.get("fantavote") is None else str(item.get("fantavote")),
+            goal=int(item.get("goal") or 0),
+            assist=int(item.get("assist") or 0),
+            assist_da_fermo=int(item.get("assist_da_fermo") or 0),
+            rigore_segnato=int(item.get("rigore_segnato") or 0),
+            rigore_parato=int(item.get("rigore_parato") or 0),
+            rigore_sbagliato=int(item.get("rigore_sbagliato") or 0),
+            autogol=int(item.get("autogol") or 0),
+            gol_subito_portiere=int(item.get("gol_subito_portiere") or 0),
+            ammonizione=int(item.get("ammonizione") or 0),
+            espulsione=int(item.get("espulsione") or 0),
+            gol_vittoria=int(item.get("gol_vittoria") or 0),
+            gol_pareggio=int(item.get("gol_pareggio") or 0),
+            is_sv=bool(item.get("is_sv")),
+            is_absent=bool(item.get("is_absent")),
+        )
+        _upsert_live_player_vote_internal(request_payload, db, commit=False)
+        imported += 1
+
+    db.commit()
+
+    return {
+        "ok": True,
+        "round": resolved_round,
+        "season": season_slug,
+        "source": source,
+        "source_url": effective_source_url,
+        "imported_rows": imported,
+        "parsed_rows": int(parsed.get("row_count", imported)) if isinstance(parsed, dict) else imported,
+        "raw_rows": int(parsed.get("raw_row_count", imported)) if isinstance(parsed, dict) else imported,
+        "teams_detected": int(parsed.get("team_count", 0)) if isinstance(parsed, dict) else 0,
+        "skipped_rows": int(parsed.get("skipped_rows", 0)) if isinstance(parsed, dict) else 0,
+    }
+
+
+def _claim_scheduled_job_run(
+    db: Session,
+    *,
+    job_name: str,
+    min_interval_seconds: int,
+) -> bool:
+    now_ts = int(datetime.utcnow().timestamp())
+    interval = max(1, int(min_interval_seconds))
+
+    state = db.query(ScheduledJobState).filter(ScheduledJobState.job_name == job_name).first()
+    if state is None:
+        db.add(
+            ScheduledJobState(
+                job_name=job_name,
+                last_run_ts=0,
+                updated_at=datetime.utcnow(),
+            )
+        )
+        try:
+            db.commit()
+        except Exception:
+            db.rollback()
+        state = db.query(ScheduledJobState).filter(ScheduledJobState.job_name == job_name).first()
+        if state is None:
+            return False
+
+    previous_ts = int(state.last_run_ts or 0)
+    if now_ts - previous_ts < interval:
+        return False
+
+    try:
+        updated = (
+            db.query(ScheduledJobState)
+            .filter(
+                ScheduledJobState.job_name == job_name,
+                ScheduledJobState.last_run_ts == previous_ts,
+            )
+            .update(
+                {
+                    ScheduledJobState.last_run_ts: now_ts,
+                    ScheduledJobState.updated_at: datetime.utcnow(),
+                },
+                synchronize_session=False,
+            )
+        )
+        db.commit()
+        return bool(updated == 1)
+    except Exception:
+        db.rollback()
+        return False
+
+
+def run_auto_live_import(
+    db: Session,
+    *,
+    configured_round: Optional[int] = None,
+    season: Optional[str] = None,
+    min_interval_seconds: Optional[int] = None,
+) -> Dict[str, object]:
+    if min_interval_seconds is not None:
+        claimed = _claim_scheduled_job_run(
+            db,
+            job_name="auto_live_import",
+            min_interval_seconds=int(min_interval_seconds),
+        )
+        if not claimed:
+            return {
+                "ok": True,
+                "skipped": True,
+                "reason": "not_due_or_claimed_by_other_instance",
+            }
+
+    return _import_live_votes_internal(
+        db,
+        round_value=configured_round,
+        season=season,
+    )
+
+
+@router.post("/live/import-voti")
+def import_live_votes(
+    payload: LiveImportVotesRequest,
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+    return _import_live_votes_internal(
+        db,
+        round_value=payload.round,
+        season=payload.season,
+        source_url=payload.source_url,
+        source_html=payload.source_html,
+    )
 
 
 @router.get("/formazioni")
