@@ -2523,6 +2523,10 @@ def _event_key_from_bonus_title(title: str, role: str) -> str:
     cleaned = _strip_html_tags(title).lower()
     if not cleaned:
         return ""
+    # Fantacalcio live exposes "Player of the match" as an extra +1.
+    # In this project we map that bonus to decisive winning goal (GV).
+    if "player of the match" in cleaned or "man of the match" in cleaned:
+        return "gol_vittoria"
     if "decisiv" in cleaned:
         if "vittori" in cleaned:
             return "gol_vittoria"
