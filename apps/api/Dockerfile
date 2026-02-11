@@ -7,7 +7,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 COPY apps/api/requirements.txt /tmp/requirements.txt
-RUN pip install -r /tmp/requirements.txt
+RUN grep -Ev "^\s*(#|$)|pytest==" /tmp/requirements.txt > /tmp/requirements.runtime.txt \
+    && pip install -r /tmp/requirements.runtime.txt
 
 COPY apps/api /app/apps/api
 COPY data /app/data
