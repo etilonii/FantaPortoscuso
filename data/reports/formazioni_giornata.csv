@@ -1,85 +1,85 @@
-giornata,squadra,modulo,forza_titolari,portiere,difensori,centrocampisti,attaccanti,panchina_ordine,panchina_portieri,panchina_difensori,panchina_centrocampisti,panchina_attaccanti,capitano,vice_capitano
-24,EquipoA,4-3-3,32.0,Meret,Zappacosta;Rrahmani;Ramon;Palestra,Orsolini;Paz N.;Pulisic,Malen;Martinez L.;Yildiz,Milinkovic-Savic V.;Berardi;Ndour;Ilkhan;Maldini;Bellanova;Zemura,Milinkovic-Savic V.,Bellanova;Zemura,Ndour;Ilkhan;Maldini,Berardi,Pulisic,Orsolini
-24,SPARROW,4-3-3,51.5,Maignan,Dodò;Palestra;Wesley;Dimarco,McTominay;Paz N.;McKennie,Malen;Martinez L.;David,Terracciano;Valeri;Bellanova;Gudmundsson A.;Maldini;Esposito F.P.;Martin,Terracciano,Valeri;Bellanova;Martin,Gudmundsson A.;Maldini,Esposito F.P.,Martinez L.,Dimarco
-24,Fc Cortomuso,4-3-3,58.5,Meret,Tiago Gabriel;Bellanova;Dodò;Palestra,Maldini;Orsolini;McTominay,Kean;Martinez L.;Malen,Milinkovic-Savic V.;Martin;Pavlovic;Malinovskyi;Paz N.;Kulenovic;Leao,Milinkovic-Savic V.,Martin;Pavlovic,Malinovskyi;Paz N.,Kulenovic;Leao,Martinez L.,Kean
-24,Tana delle Tigri,4-3-3,63.5,Carnesecchi,Bellanova;Solet;Martin;Dimarco,Pulisic;McTominay;Atta,Berardi;Martinez L.;David,Sportiello;Leao;Paz N.;Maldini;Ilkhan;Tiago Gabriel;Barbieri,Sportiello,Tiago Gabriel;Barbieri,Paz N.;Maldini;Ilkhan,Leao,Martinez L.,Solet
-24,F.C Pennic Hellas,4-3-3,70.5,Caprile,Dimarco;Dodò;Tiago Gabriel;Norton-Cuffy,Atta;Ederson D.S.;Zaniolo,Hojlund;David;Martinez L.,Sherri;Valle;Muharemovic;Basic;Adopo;Esposito F.P.;Giovane,Sherri,Valle;Muharemovic,Basic;Adopo,Esposito F.P.;Giovane,Martinez L.,David
-24,Scarzooka,3-4-3,36.0,Di Gregorio,Gosens;Palestra;Hermoso,Pulisic;McTominay;Orsolini;Paz N.,Martinez L.;Malen;Berardi,Casale;Muharemovic;Obert;Maldini;Ilkhan;Solomon;Perin,Perin,Casale;Muharemovic;Obert,Maldini;Ilkhan,Solomon,Malen,Palestra
-24,MARCIO TEAM,4-3-3,45.0,Di Gregorio,Tiago Gabriel;Vojvoda;Akanji;Dodò,Pulisic;Zalewski;Da Cunha,Kean;Martinez L.;Malen,Perin;Norton-Cuffy;Lazaro;Adopo;Isaksen;Douvikas;Njie,Perin,Norton-Cuffy;Lazaro,Adopo;Isaksen,Douvikas;Njie,Martinez L.,Malen
-24,Collocolo Team,4-3-3,71.5,Sommer,Norton-Cuffy;N'Dicka;Rrahmani;Valeri,Basic;McTominay;Gudmundsson A.,Kean;Martinez L.;Pellegrino M.,Martinez Jo.;Pierotti;Baturina;Pulisic;Joao Mario;Leao;Doig,Martinez Jo.,Joao Mario;Doig,Pierotti;Baturina;Pulisic,Leao,Martinez L.,McTominay
-24,TomMat-iga,4-3-3,25.5,Di Gregorio,Bellanova;Bernasconi;Martin;Wesley,Pulisic;Saelemaekers;Orsolini,Bonny;Martinez L.;Esposito F.P.,Gosens;Bartesaghi;Perin;Da Cunha;Zerbin;Elphege;Frese,Perin,Gosens;Bartesaghi;Frese,Da Cunha;Zerbin,Elphege,Martinez L.,Orsolini
-24,FC Plasmon,4-3-3,68.0,Svilar,Martin;Dodò;Cambiaso;Dimarco,Paz N.;Malinovskyi;Aebischer,Berardi;Martinez L.;Pedro,Vasquez;Tavares N.;Keita M.;Estevez;Vasquez D. *;Esposito Se.;Meister,Vasquez D. *,Vasquez;Tavares N.,Keita M.;Estevez,Esposito Se.;Meister,Martinez L.,Paz N.
-24,Antibro,4-3-3,45.5,Maignan,Martin;Ramon;Tiago Gabriel;Gosens,Vergara;McTominay;Orsolini,Martinez L.;Scamacca;Malen,Terracciano;Thuram;Maldini;Pulisic;Bellanova;Veiga D.;Paz N.,Terracciano,Bellanova;Veiga D.,Maldini;Pulisic;Paz N.,Thuram,Scamacca,McTominay
-24,FC Galli,4-3-3,58.0,Di Gregorio,Dimarco;Norton-Cuffy;Tiago Gabriel;Palestra,Vergara;Pulisic;Paz N.,Hojlund;Martinez L.;De Ketelaere,Pellegrini Lu.;Beukema;Bernede;Leris;Ricci S.;Rodriguez Je.;Perin,Perin,Pellegrini Lu.;Beukema,Bernede;Leris;Ricci S.,Rodriguez Je.,Martinez L.,De Ketelaere
-24,FC Spiaze,3-4-3,63.0,De Gea,Gallo;Tiago Gabriel;Norton-Cuffy,Maldini;Zielinski;McTominay;Ondrejka,Zapata D.;Martinez L.;Berardi,Christensen O.;Douvikas;Paz N.;Pavlovic;Leao;Saelemaekers;Ramon,Christensen O.,Pavlovic;Ramon,Paz N.;Saelemaekers,Douvikas;Leao,Martinez L.,McTominay
-24,Plu-Team,4-3-3,53.5,Di Gregorio,Bastoni;Pavlovic;Bremer;Djimsiti,Basic;Vergara;McTominay,Cancellieri;Soulè;Martinez L.,Perin;Stulic;Leao;Ndour;Pulisic;Dodò;Canestrelli,Perin,Dodò;Canestrelli,Ndour;Pulisic,Stulic;Leao,Martinez L.,Bastoni
-24,Non troppo cattivi,4-3-3,75.0,Provedel,Martin;Dodò;Cambiaso;Dimarco,Maldini;Ndour;Malinovskyi,Martinez L.;Malen;Kean,Perin;Miranda J.;Tiago Gabriel;Pulisic;Venturino;Paz N.;David,Perin,Miranda J.;Tiago Gabriel,Pulisic;Venturino;Paz N.,David,Martinez L.,Malen
-24,I COMPARI,3-4-3,61.5,Svilar,Kalulu;Akanji;Bellanova,Pasalic;Zielinski;Malinovskyi;Pulisic,Martinez L.;Hojlund;Leao,Scuffet;Juan Jesus;Kristensen T.;Basic;Zarraga;Pedro;Moro L.,Scuffet,Juan Jesus;Kristensen T.,Basic;Zarraga,Pedro;Moro L.,Martinez L.,Zielinski
-24,Pro secco,3-4-3,53.5,Maignan,Tiago Gabriel;Hien;Ehizibue,Paz N.;Pulisic;McTominay;Orsolini,Douvikas;Hojlund;Martinez L.,Terracciano;Nicolussi Caviglia;Zerbin;Vojvoda;Terracciano F.;Doig;Zappa,Terracciano,Vojvoda;Terracciano F.;Doig;Zappa,Nicolussi Caviglia;Zerbin,,Martinez L.,Hojlund
-24,Ipa Bali,3-4-3,43.0,Carnesecchi,Gosens;Palestra;Martin,Zaniolo;Thuram K.;Pulisic;McTominay,Leao;Thuram;Berardi,Sportiello;Lukaku;Mina;Dodò;Adopo;Terracciano F.;Ilkhan,Sportiello,Mina;Dodò;Terracciano F.,Adopo;Ilkhan,Lukaku,Pulisic,McTominay
-24,Lunarossa,4-3-3,55.5,Svilar,Vojvoda;Kalulu;Dodò;Rrahmani,Maldini;Gudmundsson A.;McTominay,Kean;Scamacca;Soulè,Vasquez D. *;Tiago Gabriel;Lucumì;Paz N.;Adopo;David;Bonny,Vasquez D. *,Tiago Gabriel;Lucumì,Paz N.;Adopo,David;Bonny,Scamacca,Soulè
-24,DonBosko46,3-4-3,53.5,Scuffet,Valeri;Dodò;Solet,Vergara;Paz N.;McTominay;Zaragoza,Soulè;Martinez L.;Malen,Caprile;Leao;Baturina;Pulisic;Tiago Gabriel;Terracciano F.;Martin,Caprile,Tiago Gabriel;Terracciano F.;Martin,Baturina;Pulisic,Leao,Martinez L.,McTominay
-24,LE 4 M,3-4-3,31.0,Svilar,Terracciano F.;Valle;Palestra,Saelemaekers;Atta;Pulisic;Paz N.,Esposito Se.;Thuram;Hojlund,Vasquez D. *;Pezzella Giu.;Kempf;Prati;Zarraga;Leao;Bonazzoli,Vasquez D. *,Pezzella Giu.;Kempf,Prati;Zarraga,Leao;Bonazzoli,Hojlund,Thuram
-24,SPERA EBBASTA,3-4-3,53.0,Maignan,Ostigard;Ramon;Martin,Zaragoza;Malinovskyi;McTominay;Vergara,Berardi;Martinez L.;Malen,Terracciano;Meister;Maldini;Frattesi;Gallo;Bianchetti;Doig,Terracciano,Gallo;Bianchetti;Doig,Maldini;Frattesi,Meister,Martinez L.,Berardi
-24,BOBONE32,4-4-2,47.5,Svilar,Bianchetti;Martin;Muharemovic;Dimarco,Pulisic;Paz N.;McTominay;Orsolini,Malen;Martinez L.,Vasquez D. *;Zemura;Norton-Cuffy;Ndour;Niasse;Morata;Moro L.,Vasquez D. *,Zemura;Norton-Cuffy,Ndour;Niasse,Morata;Moro L.,Martinez L.,Malen
-24,Imperatori del culo,3-4-3,73.5,Sommer,Bartesaghi;Tavares N.;Wesley,Elmas;McTominay;Ilkhan;Strefezza,Martinez L.;Hojlund;Yildiz,Paz N.;Pulisic;Baturina;Mina;Tiago Gabriel;Lazaro;Martinez Jo.,Martinez Jo.,Mina;Tiago Gabriel;Lazaro,Paz N.;Pulisic;Baturina,,Martinez L.,Hojlund
-24,ISGOPPAISI2,4-3-3,71.5,Sommer,Dodò;Wesley;Tiago Gabriel;Bellanova,Nicolussi Caviglia;Konè I.;Ilkhan,Kean;Martinez L.;Hojlund,Martinez Jo.;Gueye;Marianucci;Obert;Valeri;Pulisic;Rabiot,Martinez Jo.,Marianucci;Obert;Valeri,Pulisic;Rabiot,Gueye,Kean,Hojlund
-24,Leonte FC,3-4-3,81.0,Di Gregorio,Martin;Solet;Palestra,Zaniolo;Ndour;Zielinski;McKennie,Hojlund;Martinez L.;Kean,Perin;Delprato;Paz N.;Morata;Dossena;Pulisic;Joao Mario,Perin,Delprato;Dossena;Joao Mario,Paz N.;Pulisic,Morata,McKennie,Martinez L.
-24,XLiverpuh,4-3-3,60.0,Sommer,Bellanova;Mancini;Vojvoda;Cambiaso,McTominay;Vergara;Orsolini,Martinez L.;Hojlund;De Ketelaere,Perin;Morata;Maldini;Tiago Gabriel;Pulisic;Lykogiannis;Saelemaekers,Perin,Tiago Gabriel;Lykogiannis,Maldini;Pulisic;Saelemaekers,Morata,Martinez L.,Hojlund
-24,OnlyFans,4-3-3,57.5,Maignan,Bellanova;Tiago Gabriel;Bastoni;Cambiaso,Vergara;Gudmundsson A.;Orsolini,Kean;Martinez L.;Malen,Terracciano;Dossena;Ostigard;Tramoni M.;Pulisic;David;Morata,Terracciano,Dossena;Ostigard,Tramoni M.;Pulisic,David;Morata,Martinez L.,Orsolini
-24,Temptation Haaland,4-3-3,53.0,Maignan,Bellanova;Mancini;Bremer;Gutierrez,Ondrejka;McTominay;Atta,David;Colombo;Martinez L.,Terracciano;Tiago Gabriel;Martin;Paz N.;Rabiot;Esposito Se.;Douvikas,Terracciano,Tiago Gabriel;Martin,Paz N.;Rabiot,Esposito Se.;Douvikas,Martinez L.,McTominay
-24,Pi-Ciaccio,3-4-3,47.0,Provedel,Palestra;Gosens;Norton-Cuffy,Strefezza;Rowe;Nicolussi Caviglia;Orsolini,Scamacca;Malen;Kean,Bellanova;Cambiaso;Ilkhan;Doig;Lykogiannis;Motta;Cremaschi,Motta,Bellanova;Cambiaso;Doig;Lykogiannis,Ilkhan;Cremaschi,,Malen,Strefezza
-24,AC DENTI,3-4-3,38.0,Provedel,Akanji;Palestra;Dimarco,Pulisic;Akinsanmiro;Tourè I.;Paz N.,Douvikas;Esposito Se.;David,Furlanetto;Mina;Baschirotto;Vranckx;Bonazzoli;Valle;Canestrelli,Furlanetto,Mina;Baschirotto;Valle;Canestrelli,Vranckx,Bonazzoli,Paz N.,Dimarco
-24,BARAKALLAHOUFIK,4-3-3,43.0,Maignan,Vasquez;Terracciano F.;Palestra;Dodò,Paz N.;Orsolini;Zaniolo,Martinez L.;Berardi;David,Idrissi R.;Grassi;Pisilli;Koopmeiners;Lukaku;Terracciano;Djimsiti,Terracciano,Idrissi R.;Djimsiti,Grassi;Pisilli;Koopmeiners,Lukaku,David,Zaniolo
-24,Due Amici al Var,3-4-3,49.5,Sommer,Martin;Kempf;Valeri,Zaniolo;Paz N.;McKennie;Pulisic,Leao;Martinez L.;Yildiz,Scuffet;Tiago Gabriel;Marcandalli;Rodriguez Ju.;Barbieri;Ilkhan;Elphege,Scuffet,Tiago Gabriel;Marcandalli;Rodriguez Ju.;Barbieri,Ilkhan,Elphege,Martinez L.,Zaniolo
-24,Concali Craboni FC,3-4-3,43.5,Di Gregorio,Terracciano F.;Tiago Gabriel;Bastoni,Lovric;Konè I.;Pulisic;Paz N.,Leao;Martinez L.;Yildiz,Perin;Pavoletti;Meister;Tameze;Zarraga;Obert;Angori,Perin,Obert;Angori,Tameze;Zarraga,Pavoletti;Meister,Martinez L.,Paz N.
-24,Boiali,3-4-3,65.0,Di Gregorio,Dodò;Tiago Gabriel;Wesley,Maldini;Zaniolo;McTominay;Orsolini,Martinez L.;Malen;Kean,Perin;Tomori;Lazaro;Paz N.;Gineitis;David;Pavoletti,Perin,Tomori;Lazaro,Paz N.;Gineitis,David;Pavoletti,Malen,Martinez L.
-24,A.C.TUA CUCS,4-3-3,60.5,Maignan,Dimarco;Frese;Valeri;Bellanova,Ndour;McTominay;Vergara,David;Martinez L.;Malen,Terracciano;Lazaro;Barbieri;Walukiewicz;Baturina;Pulisic;Pavoletti,Terracciano,Lazaro;Barbieri;Walukiewicz,Baturina;Pulisic,Pavoletti,Malen,Martinez L.
-24,coach 71,3-4-3,76.0,Sommer,Tiago Gabriel;Cambiaso;Gosens,McKennie;Orsolini;Pulisic;McTominay,Yildiz;Hojlund;Martinez L.,Scuffet;Paz N.;Meister;Karlstrom;Veiga D.;Aebischer;Terracciano F.,Scuffet,Veiga D.;Terracciano F.,Paz N.;Karlstrom;Aebischer,Meister,Martinez L.,McTominay
-24,Hellas merdona,4-3-3,68.5,Di Gregorio,Martin;Bellanova;Dodò;Frese,Sorensen O.;Maldini;Zaniolo,Hojlund;Martinez L.;David,Perin;Norton-Cuffy;Valeri;Barbieri;Rabiot;Paz N.;Adopo,Perin,Norton-Cuffy;Valeri;Barbieri,Rabiot;Paz N.;Adopo,,Martinez L.,David
-24,PEAKY BLINDERS,3-4-3,45.5,Maignan,Ramon;Delprato;Tiago Gabriel,McTominay;Paz N.;Orsolini;Zaniolo,Douvikas;Malen;Martinez L.,Kean;Tramoni M.;Zerbin;Frese;Vasquez;Canestrelli;Terracciano,Terracciano,Frese;Vasquez;Canestrelli,Tramoni M.;Zerbin,Kean,Martinez L.,Paz N.
-24,i bro,4-3-3,41.5,De Gea,Norton-Cuffy;Valeri;Martin;Muharemovic,Paz N.;Aebischer;Rabiot,Martinez L.;Soulè;Douvikas,Canestrelli;Prati;Lezzerini;Frese;Pulisic;Joao Mario;Hojholt,Lezzerini,Canestrelli;Frese;Joao Mario,Prati;Pulisic;Hojholt,,Martinez L.,Soulè
-24,scarsenal,3-4-3,43.0,Di Gregorio,Buongiorno;Wesley;Terracciano F.,Zaragoza;McTominay;Modric;Malinovskyi,Esposito Se.;Berardi;Martinez L.,Bonny;Piccoli;Coulibaly L.;Ekkelenkamp;Gila;De Winter;Perin,Perin,Gila;De Winter,Coulibaly L.;Ekkelenkamp,Bonny;Piccoli,Modric,Esposito Se.
-24,Peaky Tunas,433;433,54.5,Maignan,Canestrelli;Bozhinov;Smolcic I.;Tiago Gabriel,Aebischer;Zaniolo;McKennie,Scamacca;Martinez L.;David,Stulic;Akpa Akpro;Obert;Norton-Cuffy;Veiga D.;Pulisic;Terracciano,Terracciano,Obert;Norton-Cuffy;Veiga D.,Akpa Akpro;Pulisic,Stulic,Martinez L.,Scamacca
-24,SILVEDO,4-3-3,41.5,De Gea,Norton-Cuffy;Lazaro;Mancini;Tiago Gabriel,Pulisic;Malinovskyi;Paz N.,Kilicsoy;Martinez L.;Malen,Christensen O.;Terracciano F.;Marusic;Adopo;Ilkhan;Leao;Elmas,Christensen O.,Terracciano F.;Marusic,Adopo;Ilkhan;Elmas,Leao,Martinez L.,Paz N.
-24,SPOSTATI,4-3-3,41.0,Maignan,Angori;Martin;Wesley;Miranda J.,Paz N.;Adopo;Atta,Martinez L.;Yildiz;Esposito F.P.,Barbieri;Scalvini;Sucic P.;Pasalic;Esposito Se.;Casadei;Ekkelenkamp,,Barbieri;Scalvini,Sucic P.;Pasalic;Casadei;Ekkelenkamp,Esposito Se.,Martinez L.,Esposito F.P.
-24,Giubbentus,4-3-3,51.0,De Gea,Palestra;Valle;Mina;Martin,Vergara;Isaksen;Mazzitelli,Hojlund;Martinez L.;Leao,Lezzerini;Pezzella Giu.;Bellanova;Pulisic;Paz N.;Kuhn;Meister,Lezzerini,Pezzella Giu.;Bellanova,Pulisic;Paz N.,Kuhn;Meister,Martinez L.,Palestra
-24,Malmö FF,3-4-3,49.5,Caprile,Norton-Cuffy;Ramon;Pavlovic,McTominay;McKennie;Atta;Orsolini,Scamacca;Malen;Martinez L.,Ciocci;N'Dicka;Dodò;Nicolussi Caviglia;Lobotka;Pinamonti;Rodriguez Je.,Ciocci,N'Dicka;Dodò,Nicolussi Caviglia;Lobotka,Pinamonti;Rodriguez Je.,Martinez L.,McTominay
-24,Sarzanello Team,3-4-3,58.5,Maignan,Norton-Cuffy;Miranda J.;N'Dicka,Zaragoza;Zaniolo;Malinovskyi;Zielinski,Kean;Malen;Hojlund,Terracciano;Tiago Gabriel;Terracciano F.;Adopo;Ilkhan;Giovane;Caracciolo A.,Terracciano,Tiago Gabriel;Terracciano F.;Caracciolo A.,Adopo;Ilkhan,Giovane,Malen,Zaragoza
-24,BinuSpuntu,3-4-3,69.0,Svilar,Zemura;Tiago Gabriel;Dodò,Miretti;Mkhitaryan;McTominay;McKennie,Esposito Se.;Hojlund;Thuram,Vasquez D. *;Bernasconi;Mina;Pulisic;Zerbin;Douvikas;Lazaro,Vasquez D. *,Bernasconi;Mina;Lazaro,Pulisic;Zerbin,Douvikas,Thuram,Hojlund
-24,BANDITI,3-4-3,47.0,Maignan,Smolcic I.;Canestrelli;Tiago Gabriel,Pulisic;Aebischer;Maldini;Zaniolo,Berardi;Martinez L.;Malen,Terracciano;Norton-Cuffy;Marcandalli;Yildiz;Meister;Paz N.;Ilkhan,Terracciano,Norton-Cuffy;Marcandalli,Paz N.;Ilkhan,Yildiz;Meister,Malen,Zaniolo
-24,Real Mellandro,4-4-2,51.0,Skorupski,Gutierrez;Wesley;Palestra;Vojvoda,Gudmundsson A.;Vergara;McTominay;Nicolussi Caviglia,Scamacca;Thuram,Esposito Se.;Walukiewicz;Zemura;Ravaglia F.;Malinovskyi;Troilo;Saelemaekers,Ravaglia F.,Walukiewicz;Zemura;Troilo,Malinovskyi;Saelemaekers,Esposito Se.,Thuram,Gudmundsson A.
-24,Nastro Azzurro,4-4-2,35.5,Maignan,Gosens;Tiago Gabriel;Tavares N.;Valeri,Brescianini;Paz N.;Zaniolo;Pulisic,Kilicsoy;David,Okoye;Doig;Canestrelli;Zaragoza;Isaksen;Douvikas;Bonazzoli,Okoye,Doig;Canestrelli,Zaragoza;Isaksen,Douvikas;Bonazzoli,David,Gosens
-24,LosPollosHermanos,3-4-3,74.5,Sommer,Terracciano F.;Valeri;Canestrelli,Atta;McTominay;McKennie;Paz N.,Martinez L.;Hojlund;David,Caprile;Solomon;Saelemaekers;Da Cunha;Pongracic;Akinsanmiro;Rugani,Caprile,Pongracic;Rugani,Saelemaekers;Da Cunha;Akinsanmiro,Solomon,McKennie,Atta
-24,puerto rosso blu,4-3-3,57.5,Maignan,Akanji;Dodò;Cambiaso;Vasquez,McTominay;Marin M.;Baldanzi,Soulè;Berardi;Kean,Perin;Zemura;Nelsson;Vergara;Paz N.;Solomon;Pezzella Giu.,Perin,Zemura;Nelsson;Pezzella Giu.,Vergara;Paz N.,Solomon,Cambiaso,Dodò
-24,Longobarda,3-4-3,63.5,Okoye,Gosens;Nelsson;Cambiaso,Atta;McKennie;Lovric;Baturina,David;Martinez L.;Kean,Sommer;Pulisic;Zerbin;Canestrelli;Terracciano F.;Doig;Giovane,Sommer,Canestrelli;Terracciano F.;Doig,Pulisic;Zerbin,Giovane,Martinez L.,McKennie
-24,SAGATU,3-4-3,20.5,Meret,Pavlovic;Bremer;Kempf,Atta;Ederson D.S.;Saelemaekers;Paz N.,Kilicsoy;Berardi;Davis K.,Contini;Cambiaso;Bisseck;Adopo;Tramoni M.;Piccoli;Simeone,Contini,Cambiaso;Bisseck,Adopo;Tramoni M.,Piccoli;Simeone,Bremer,Pavlovic
-24,KARABE 1975,3-4-3,42.0,Svilar,Gosens;Gabbia;Obert,McTominay;Paz N.;Vergara;McKennie,David;Malen;Martinez L.,Vasquez D. *;Pezzella Giu.;Veiga D.;Baturina;Pulisic;Kean;Angori,Vasquez D. *,Pezzella Giu.;Veiga D.;Angori,Baturina;Pulisic,Kean,Martinez L.,McTominay
-24,Sciabolata Classica,3-4-3,67.5,Maignan,Tavares N.;Tiago Gabriel;Cambiaso,Mazzitelli;Orsolini;Vergara;McTominay,Berardi;Kean;Martinez L.,Giovane;Sorensen O.;Terracciano F.;Canestrelli;Marcandalli;Paz N.;Terracciano,Terracciano,Terracciano F.;Canestrelli;Marcandalli,Sorensen O.;Paz N.,Giovane,Kean,Martinez L.
-24,SerSi-FC,3-4-3,60.5,Maignan,Dimarco;Lazaro;Delprato,Zielinski;McTominay;McKennie;Orsolini,Malen;Pinamonti;Raspadori,Terracciano;Smolcic I.;Bellanova;Atta;Ekkelenkamp;Boga;Meister,Terracciano,Smolcic I.;Bellanova,Atta;Ekkelenkamp,Boga;Meister,McTominay,Orsolini
-24,Piovra73,5-3-2,42.5,Di Gregorio,Cambiaso;Gosens;Tiago Gabriel;Kristensen T.;Bellanova,Paz N.;Pasalic;McTominay,Thuram;Douvikas,Perin;Cancellieri;Pulisic;Loftus-Cheek;Provstgaard;Ndour;Van Der Brempt,Perin,Provstgaard;Van Der Brempt,Pulisic;Loftus-Cheek;Ndour,Cancellieri,McTominay,Gosens
-24,Riccardigno,3-4-3,52.5,Skorupski,Valeri;Zappacosta;Pavlovic,Baturina;Zielinski;Thorstvedt;Gudmundsson A.,Kean;Scamacca;Hojlund,Ravaglia F.;Tiago Gabriel;Canestrelli;Ederson D.S.;Karlstrom;Colombo;Esposito Se.,Ravaglia F.,Tiago Gabriel;Canestrelli,Ederson D.S.;Karlstrom,Colombo;Esposito Se.,Hojlund,Scamacca
-24,Sisal Palace,3-4-3,49.5,Milinkovic-Savic V.,Valeri;Ramon;Martin,Atta;McKennie;Paz N.;Baturina,Pellegrino M.;Martinez L.;Yildiz,Caprile;Mina;Marcandalli;Strefezza;Zerbin;Hojlund;Arena A.,Caprile,Mina;Marcandalli,Strefezza;Zerbin,Hojlund;Arena A.,Paz N.,Baturina
-24,Lions,4-3-3,71.5,Svilar,Veiga D.;Tavares N.;Angori;Zè Pedro,Zielinski;McTominay;Vergara,David;Kean;Hojlund,Gollini;Berardi;Zapata D.;Martin;Hojholt;Stengs;Bellanova,Gollini,Martin;Bellanova,Hojholt;Stengs,Berardi;Zapata D.,Vergara,Zielinski
-24,buttiglia25,4-3-3,61.0,Carnesecchi,Wesley;Tiago Gabriel;Pongracic;Frese,Strefezza;Zaniolo;Orsolini,Kean;Martinez L.;David,Sportiello;Pinamonti;Nicolussi Caviglia;Pulisic;Adopo;Ramon;Muharemovic,Sportiello,Ramon;Muharemovic,Nicolussi Caviglia;Pulisic;Adopo,Pinamonti,Martinez L.,Orsolini
-24,CuginiDiCampagna,3-4-3,71.0,Sommer,Ostigard;Palestra;Cambiaso,Atta;Malinovskyi;McTominay;Maldini,Scamacca;Hojlund;Gueye,Martinez Jo.;Martin;Tomori;Paz N.;Rabiot;Valle;Douvikas,Martinez Jo.,Martin;Tomori;Valle,Paz N.;Rabiot,Douvikas,McTominay,Palestra
-24,FC Buttarighe,4-3-3,50.5,Svilar,Martin;Juan Jesus;Bellanova;Idrissi R.,McTominay;Zaccagni;Harroui,Thuram;Hojlund;Yildiz,Gollini;Pezzella Giu.;Tiago Gabriel;Ramadani;Tameze;Zerbin;Pulisic,Gollini,Pezzella Giu.;Tiago Gabriel,Ramadani;Tameze;Zerbin;Pulisic,,Hojlund,Yildiz
-24,pacho team,4-3-3,34.0,Meret,Wesley;Tomori;Martin;Palestra,Rabiot;Ederson D.S.;Paz N.,Solomon;Martinez L.;Berardi,Milinkovic-Savic V.;Pavoletti;Douvikas;Frendrup;Ilkhan;Koopmeiners;Norton-Cuffy,Milinkovic-Savic V.,Norton-Cuffy,Frendrup;Ilkhan;Koopmeiners,Pavoletti;Douvikas,Martinez L.,Berardi
-24,LEONE,4-4-2,50.0,Meret,Bremer;Cambiaso;Tiago Gabriel;Norton-Cuffy,Pellegrini Lo.;Paz N.;Mazzitelli;Maldini,Martinez L.;Berardi,Milinkovic-Savic V.;Canestrelli;Doig;Valeri;Aebischer;Pulisic;Ferguson E.,Milinkovic-Savic V.,Canestrelli;Doig;Valeri,Aebischer;Pulisic,Ferguson E.,Martinez L.,Bremer
-24,ROCKY 3,4-4-2,50.5,Meret,Akanji;Di Lorenzo;Solet;Gosens,Paz N.;Orsolini;Thuram K.;Karlstrom,David;Berardi,Milinkovic-Savic V.;Scalvini;Musah;Zarraga;Gineitis;Bonny;Doig,Milinkovic-Savic V.,Scalvini;Doig,Musah;Zarraga;Gineitis,Bonny,Paz N.,Orsolini
-24,SMOG,3-4-3,58.0,Milinkovic-Savic V.,Joao Mario;Martin;Kempf,Zaniolo;Odgaard;Gudmundsson A.;McKennie,Kean;Martinez L.;David,Meret;Delprato;Canestrelli;Paz N.;Tourè I.;Kilicsoy;Esposito Se.,Meret,Delprato;Canestrelli,Paz N.;Tourè I.,Kilicsoy;Esposito Se.,Martinez L.,Milinkovic-Savic V.
-24,lagg,4-3-3,62.5,Svilar,Akanji;Kristensen T.;Cambiaso;Tomori,McKennie;Pulisic;Thuram K.,Hojlund;Scamacca;Thuram,Gollini;Estupinan;Canestrelli;Adopo;Zerbin;Douvikas;Dallinga,Gollini,Estupinan;Canestrelli,Adopo;Zerbin,Douvikas;Dallinga,Scamacca,Hojlund
-24,i fratelli merda,4-3-3,44.0,Carnesecchi,De Winter;Zappa;Tiago Gabriel;Idrissi R.,Bernabè;Iling Junior;Thuram K.,Martinez L.;Yildiz;Solomon,Sportiello;Loftus-Cheek;Da Cunha;Colombo;Casale;Esposito Se.;Paz N.,Sportiello,Casale,Loftus-Cheek;Da Cunha;Paz N.,Colombo;Esposito Se.,Martinez L.,Iling Junior
-24,Fc nipiri,3-4-3,47.0,De Gea,Dodò;Kalulu;Mina,McTominay;Zielinski;Paz N.;Modric,Esposito F.P.;Malen;Martinez L.,Lezzerini;Delprato;Norton-Cuffy;Zalewski;Pulisic;Rodriguez Je.;Boga,Lezzerini,Delprato;Norton-Cuffy,Zalewski;Pulisic,Rodriguez Je.;Boga,Martinez L.,Malen
-24,Mapoitta,4-3-3,52.0,Maignan,Martin;Wesley;Miranda J.;Heggem,Malinovskyi;Paz N.;McKennie,Kean;David;Scamacca,Terracciano;Joao Mario;Olivera;Nkounkou;Maldini;Da Cunha;Zapata D.,Terracciano,Joao Mario;Olivera;Nkounkou,Maldini;Da Cunha,Zapata D.,David,Wesley
-24,kalashnikov,3-4-3,42.5,Svilar,Tavares N.;Mina;Dimarco,Zaniolo;Orsolini;Maldini;Pulisic,David;Kilicsoy;Raspadori,Zalewski;Ilkhan;De Winter;Loftus-Cheek;Muharemovic;Esposito Se.;Berardi,,De Winter;Muharemovic,Zalewski;Ilkhan;Loftus-Cheek,Esposito Se.;Berardi,Orsolini,Zaniolo
-24,CISCO TEAM,3-4-3,44.5,Ravaglia F.,Cambiaso;Pavlovic;Rrahmani,McTominay;Pulisic;Gudmundsson A.;Zaniolo,Kean;Scamacca;Douvikas,Skorupski;Mina;Juan Jesus;Messias;Akpa Akpro;Solomon;Meister,Skorupski,Mina;Juan Jesus,Messias;Akpa Akpro,Solomon;Meister,Scamacca,Pulisic
-24,I Cigni,3-4-3,28.0,Svilar,Wesley;Pezzella Giu.;Ostigard,Aebischer;Pasalic;Thuram K.;Zaniolo,Pellegrino M.;Kilicsoy;Esposito F.P.,Gollini;Pulisic;Krstovic;Nkunku;Vojvoda;Lucumì;Bertola,Gollini,Vojvoda;Lucumì;Bertola,Pulisic,Krstovic;Nkunku,Esposito F.P.,Zaniolo
-24,CLAN,3-4-3,42.5,Sommer,Gosens;Zappacosta;Bellanova,Paz N.;McTominay;McKennie;Zaniolo,Leao;Scamacca;Thuram,Martinez Jo.;Valeri;Tiago Gabriel;Cambiaso;Malinovskyi;Boga;Ekhator,Martinez Jo.,Valeri;Tiago Gabriel;Cambiaso,Malinovskyi,Boga;Ekhator,Scamacca,Zaniolo
-24,Kung-Fu Pandev,4-3-3,49.5,Sommer,Valeri;Valle;Norton-Cuffy;Dodò,Vergara;Isaksen;Baturina,Martinez L.;Zapata D.;Malen,Martinez Jo.;Hermoso;Lykogiannis;Rowe;Tramoni M.;Ndour;Berardi,Martinez Jo.,Hermoso;Lykogiannis,Rowe;Tramoni M.;Ndour,Berardi,Martinez L.,Malen
-24,DEEDPULLY,3-4-3,59.5,Sommer,Bozhinov;Tiago Gabriel;Wesley,Maldini;Zaragoza;McKennie;Conceicao,Kean;Hojlund;Soulè,Martinez Jo.;David;Veiga D.;Norton-Cuffy;Doig;Pezzella Giu.;Paz N.,Martinez Jo.,Veiga D.;Norton-Cuffy;Doig;Pezzella Giu.,Paz N.,David,Hojlund,Soulè
-24,real donk,4-4-2,12.0,Maignan,Barbieri;Kempf;Hermoso;Wesley,Odgaard;Pulisic;Diouf;Ndour,Addai;Leao,Caprile;Beukema,Caprile,Beukema,,,Leao,Pulisic
-24,ProPro Proibito,3-4-3,66.0,Di Gregorio,Tavares N.;Gutierrez;Wesley,Bernardeschi;Zalewski;McTominay;Malinovskyi,Malen;Hojlund;Thuram,Perin;Lazaro;Comuzzo;Nicolussi Caviglia;Modric;Solomon;Zapata D.,Perin,Lazaro;Comuzzo,Nicolussi Caviglia;Modric,Solomon;Zapata D.,Hojlund,Malen
-24,mezzebirre,3-4-3,61.5,Sommer,Rrahmani;Bradaric;Tiago Gabriel,Thuram K.;Paz N.;Zaniolo;McTominay,David;Martinez L.;Vardy,Martinez Jo.;Kilicsoy;Meister;Zalewski;Cristante;Luperto;Pezzella Giu.,Martinez Jo.,Luperto;Pezzella Giu.,Zalewski;Cristante,Kilicsoy;Meister,Martinez L.,Thuram K.
-24,HeineKean,3-4-3,65.0,Svilar,Tiago Gabriel;Cambiaso;Ramon,Gudmundsson A.;McTominay;Conceicao;Vergara,David;Hojlund;Thuram,Prati;Gollini,Gollini,,Prati,,Thuram,David
-24,Evergreen,3-4-3,38.5,De Gea,Dimarco;Palestra;Ostigard,Harroui;Gudmundsson A.;Zielinski;Zalewski,Zapata D.;Lukaku;David,Lezzerini;Ekhator;Hermoso;Buongiorno;Pezzella Giu.;Sucic P.;Ilkhan,Lezzerini,Hermoso;Buongiorno;Pezzella Giu.,Sucic P.;Ilkhan,Ekhator,David,Dimarco
+﻿giornata,team,modulo,portiere,difensori,centrocampisti,attaccanti
+24,EquipoA,4-3-3,Meret,Zappacosta;Rrahmani;Ramon;Palestra,Orsolini;Paz N.;Pulisic,Malen;Martinez L.;Yildiz
+24,SPARROW,4-3-3,Maignan,Dodò;Palestra;Wesley;Dimarco,McTominay;Paz N.;McKennie,Malen;Martinez L.;David
+24,Fc Cortomuso,4-3-3,Meret,Tiago Gabriel;Bellanova;Dodò;Palestra,Maldini;Orsolini;McTominay,Kean;Martinez L.;Malen
+24,Tana delle Tigri,4-3-3,Carnesecchi,Bellanova;Solet;Martin;Dimarco,Pulisic;McTominay;Atta,Berardi;Martinez L.;David
+24,F.C Pennic Hellas,4-3-3,Caprile,Dimarco;Dodò;Tiago Gabriel;Norton-Cuffy,Atta;Ederson D.S.;Zaniolo,Hojlund;David;Martinez L.
+24,MARCIO TEAM,3-4-3,Di Gregorio,Gosens;Palestra;Hermoso,Pulisic;McTominay;Orsolini;Paz N.,Martinez L.;Malen;Berardi
+24,Scarzooka,4-3-3,Di Gregorio,Tiago Gabriel;Vojvoda;Akanji;Dodò,Pulisic;Zalewski;Da Cunha,Kean;Martinez L.;Malen
+24,Collocolo Team,4-3-3,Sommer,Norton-Cuffy;N'Dicka;Rrahmani;Valeri,Basic;McTominay;Gudmundsson A.,Kean;Martinez L.;Pellegrino M.
+24,Plu-Team,4-3-3,Di Gregorio,Bellanova;Bernasconi;Martin;Wesley,Pulisic;Saelemaekers;Orsolini,Bonny;Martinez L.;Esposito F.P.
+24,Antibro,4-3-3,Svilar,Martin;Dodò;Cambiaso;Dimarco,Paz N.;Malinovskyi;Aebischer,Berardi;Martinez L.;Pedro
+24,TomMat-iga,4-3-3,Maignan,Martin;Ramon;Tiago Gabriel;Gosens,Vergara;McTominay;Orsolini,Martinez L.;Scamacca;Malen
+24,FC Spiaze,4-3-3,Di Gregorio,Dimarco;Norton-Cuffy;Tiago Gabriel;Palestra,Vergara;Pulisic;Paz N.,Hojlund;Martinez L.;De Ketelaere
+24,BOBONE32,3-4-3,De Gea,Gallo;Tiago Gabriel;Norton-Cuffy,Maldini;Zielinski;McTominay;Ondrejka,Zapata D.;Martinez L.;Berardi
+24,Leonte FC,4-3-3,Di Gregorio,Bastoni;Pavlovic;Bremer;Djimsiti,Basic;Vergara;McTominay,Cancellieri;Soulè;Martinez L.
+24,FC Plasmon,4-3-3,Provedel,Martin;Dodò;Cambiaso;Dimarco,Maldini;Ndour;Malinovskyi,Martinez L.;Malen;Kean
+24,FC Galli,3-4-3,Svilar,Kalulu;Akanji;Bellanova,Pasalic;Zielinski;Malinovskyi;Pulisic,Martinez L.;Hojlund;Leao
+24,Pro secco,3-4-3,Maignan,Tiago Gabriel;Hien;Ehizibue,Paz N.;Pulisic;McTominay;Orsolini,Douvikas;Hojlund;Martinez L.
+24,OnlyFans,3-4-3,Carnesecchi,Gosens;Palestra;Martin,Zaniolo;Thuram K.;Pulisic;McTominay,Leao;Thuram;Berardi
+24,ISGOPPAISI2,4-3-3,Svilar,Vojvoda;Kalulu;Dodò;Rrahmani,Maldini;Gudmundsson A.;McTominay,Kean;Scamacca;Soulè
+24,I COMPARI,3-4-3,Scuffet,Valeri;Dodò;Solet,Vergara;Paz N.;McTominay;Zaragoza,Soulè;Martinez L.;Malen
+24,XLiverpuh,3-4-3,Svilar,Terracciano F.;Valle;Palestra,Saelemaekers;Atta;Pulisic;Paz N.,Esposito Se.;Thuram;Hojlund
+24,Ipa Bali,3-4-3,Maignan,Ostigard;Ramon;Martin,Zaragoza;Malinovskyi;McTominay;Vergara,Berardi;Martinez L.;Malen
+24,Non troppo cattivi,4-4-2,Svilar,Bianchetti;Martin;Muharemovic;Dimarco,Pulisic;Paz N.;McTominay;Orsolini,Malen;Martinez L.
+24,Lunarossa,3-4-3,Sommer,Bartesaghi;Tavares N.;Wesley,Elmas;McTominay;Ilkhan;Strefezza,Martinez L.;Hojlund;Yildiz
+24,SPERA EBBASTA,4-3-3,Sommer,Dodò;Wesley;Tiago Gabriel;Bellanova,Nicolussi Caviglia;Konè I.;Ilkhan,Kean;Martinez L.;Hojlund
+24,LE 4 M,3-4-3,Di Gregorio,Martin;Solet;Palestra,Zaniolo;Ndour;Zielinski;McKennie,Hojlund;Martinez L.;Kean
+24,DonBosko46,4-3-3,Sommer,Bellanova;Mancini;Vojvoda;Cambiaso,McTominay;Vergara;Orsolini,Martinez L.;Hojlund;De Ketelaere
+24,Imperatori del culo,4-3-3,Maignan,Bellanova;Tiago Gabriel;Bastoni;Cambiaso,Vergara;Gudmundsson A.;Orsolini,Kean;Martinez L.;Malen
+24,Pi-Ciaccio,4-3-3,Maignan,Bellanova;Mancini;Bremer;Gutierrez,Ondrejka;McTominay;Atta,David;Colombo;Martinez L.
+24,BARAKALLAHOUFIK,3-4-3,Provedel,Palestra;Gosens;Norton-Cuffy,Strefezza;Rowe;Nicolussi Caviglia;Orsolini,Scamacca;Malen;Kean
+24,Concali Craboni FC,3-4-3,Provedel,Akanji;Palestra;Dimarco,Pulisic;Akinsanmiro;Tourè I.;Paz N.,Douvikas;Esposito Se.;David
+24,SILVEDO,4-3-3,Maignan,Vasquez;Terracciano F.;Palestra;Dodò,Paz N.;Orsolini;Zaniolo,Martinez L.;Berardi;David
+24,A.C.TUA CUCS,3-4-3,Sommer,Martin;Kempf;Valeri,Zaniolo;Paz N.;McKennie;Pulisic,Leao;Martinez L.;Yildiz
+24,Peaky Tunas,3-4-3,Di Gregorio,Terracciano F.;Tiago Gabriel;Bastoni,Lovric;Konè I.;Pulisic;Paz N.,Leao;Martinez L.;Yildiz
+24,Due Amici al Var,3-4-3,Di Gregorio,Dodò;Tiago Gabriel;Wesley,Maldini;Zaniolo;McTominay;Orsolini,Martinez L.;Malen;Kean
+24,Temptation Haaland,4-3-3,Maignan,Dimarco;Frese;Valeri;Bellanova,Ndour;McTominay;Vergara,David;Martinez L.;Malen
+24,AC DENTI,3-4-3,Sommer,Tiago Gabriel;Cambiaso;Gosens,McKennie;Orsolini;Pulisic;McTominay,Yildiz;Hojlund;Martinez L.
+24,PEAKY BLINDERS,4-3-3,Di Gregorio,Martin;Bellanova;Dodò;Frese,Sorensen O.;Maldini;Zaniolo,Hojlund;Martinez L.;David
+24,Boiali,3-4-3,Maignan,Ramon;Delprato;Tiago Gabriel,McTominay;Paz N.;Orsolini;Zaniolo,Douvikas;Malen;Martinez L.
+24,BANDITI,4-3-3,De Gea,Norton-Cuffy;Valeri;Martin;Muharemovic,Paz N.;Aebischer;Rabiot,Martinez L.;Soulè;Douvikas
+24,Malmö FF,3-4-3,Di Gregorio,Buongiorno;Wesley;Terracciano F.,Zaragoza;McTominay;Modric;Malinovskyi,Esposito Se.;Berardi;Martinez L.
+24,Giubbentus,4-3-3,Maignan,Canestrelli;Bozhinov;Smolcic I.;Tiago Gabriel,Aebischer;Zaniolo;McKennie,Scamacca;Martinez L.;David
+24,Hellas merdona,4-3-3,De Gea,Norton-Cuffy;Lazaro;Mancini;Tiago Gabriel,Pulisic;Malinovskyi;Paz N.,Kilicsoy;Martinez L.;Malen
+24,Sarzanello Team,4-3-3,Maignan,Angori;Martin;Wesley;Miranda J.,Paz N.;Adopo;Atta,Martinez L.;Yildiz;Esposito F.P.
+24,SPOSTATI,4-3-3,De Gea,Palestra;Valle;Mina;Martin,Vergara;Isaksen;Mazzitelli,Hojlund;Martinez L.;Leao
+24,scarsenal,3-4-3,Caprile,Norton-Cuffy;Ramon;Pavlovic,McTominay;McKennie;Atta;Orsolini,Scamacca;Malen;Martinez L.
+24,coach 71,3-4-3,Maignan,Norton-Cuffy;Miranda J.;N'Dicka,Zaragoza;Zaniolo;Malinovskyi;Zielinski,Kean;Malen;Hojlund
+24,i bro,3-4-3,Svilar,Zemura;Tiago Gabriel;Dodò,Miretti;Mkhitaryan;McTominay;McKennie,Esposito Se.;Hojlund;Thuram
+24,Real Mellandro,3-4-3,Maignan,Smolcic I.;Canestrelli;Tiago Gabriel,Pulisic;Aebischer;Maldini;Zaniolo,Berardi;Martinez L.;Malen
+24,puerto rosso blu,4-4-2,Skorupski,Gutierrez;Wesley;Palestra;Vojvoda,Gudmundsson A.;Vergara;McTominay;Nicolussi Caviglia,Scamacca;Thuram
+24,Riccardigno,4-4-2,Maignan,Gosens;Tiago Gabriel;Tavares N.;Valeri,Brescianini;Paz N.;Zaniolo;Pulisic,Kilicsoy;David
+24,BinuSpuntu,3-4-3,Sommer,Terracciano F.;Valeri;Canestrelli,Atta;McTominay;McKennie;Paz N.,Martinez L.;Hojlund;David
+24,Longobarda,4-3-3,Maignan,Akanji;Dodò;Cambiaso;Vasquez,McTominay;Marin M.;Baldanzi,Soulè;Berardi;Kean
+24,SAGATU,3-4-3,Okoye,Gosens;Nelsson;Cambiaso,Atta;McKennie;Lovric;Baturina,David;Martinez L.;Kean
+24,LEONE,3-4-3,Meret,Pavlovic;Bremer;Kempf,Atta;Ederson D.S.;Saelemaekers;Paz N.,Kilicsoy;Berardi;Davis K.
+24,Nastro Azzurro,3-4-3,Svilar,Gosens;Gabbia;Obert,McTominay;Paz N.;Vergara;McKennie,David;Malen;Martinez L.
+24,Piovra73,3-4-3,Maignan,Tavares N.;Tiago Gabriel;Cambiaso,Mazzitelli;Orsolini;Vergara;McTominay,Berardi;Kean;Martinez L.
+24,LosPollosHermanos,3-4-3,Maignan,Dimarco;Lazaro;Delprato,Zielinski;McTominay;McKennie;Orsolini,Malen;Pinamonti;Raspadori
+24,Lions,5-3-2,Di Gregorio,Cambiaso;Gosens;Tiago Gabriel;Kristensen T.;Bellanova,Paz N.;Pasalic;McTominay,Thuram;Douvikas
+24,KARABE 1975,3-4-3,Skorupski,Valeri;Zappacosta;Pavlovic,Baturina;Zielinski;Thorstvedt;Gudmundsson A.,Kean;Scamacca;Hojlund
+24,pacho team,3-4-3,Milinkovic-Savic V.,Valeri;Ramon;Martin,Atta;McKennie;Paz N.;Baturina,Pellegrino M.;Martinez L.;Yildiz
+24,Sciabolata Classica,4-3-3,Svilar,Veiga D.;Tavares N.;Angori;Zè Pedro,Zielinski;McTominay;Vergara,David;Kean;Hojlund
+24,CuginiDiCampagna,4-3-3,Carnesecchi,Wesley;Tiago Gabriel;Pongracic;Frese,Strefezza;Zaniolo;Orsolini,Kean;Martinez L.;David
+24,SerSi-FC,3-4-3,Sommer,Ostigard;Palestra;Cambiaso,Atta;Malinovskyi;McTominay;Maldini,Scamacca;Hojlund;Gueye
+24,buttiglia25,4-3-3,Svilar,Martin;Juan Jesus;Bellanova;Idrissi R.,McTominay;Zaccagni;Harroui,Thuram;Hojlund;Yildiz
+24,ROCKY 3,4-3-3,Meret,Wesley;Tomori;Martin;Palestra,Rabiot;Ederson D.S.;Paz N.,Solomon;Martinez L.;Berardi
+24,CISCO TEAM,4-4-2,Meret,Bremer;Cambiaso;Tiago Gabriel;Norton-Cuffy,Pellegrini Lo.;Paz N.;Mazzitelli;Maldini,Martinez L.;Berardi
+24,Fc nipiri,4-4-2,Meret,Akanji;Di Lorenzo;Solet;Gosens,Paz N.;Orsolini;Thuram K.;Karlstrom,David;Berardi
+24,SMOG,3-4-3,Milinkovic-Savic V.,Joao Mario;Martin;Kempf,Zaniolo;Odgaard;Gudmundsson A.;McKennie,Kean;Martinez L.;David
+24,Sisal Palace,4-3-3,Svilar,Akanji;Kristensen T.;Cambiaso;Tomori,McKennie;Pulisic;Thuram K.,Hojlund;Scamacca;Thuram
+24,i fratelli merda,4-3-3,Carnesecchi,De Winter;Zappa;Tiago Gabriel;Idrissi R.,Bernabè;Iling Junior;Thuram K.,Martinez L.;Yildiz;Solomon
+24,FC Buttarighe,3-4-3,De Gea,Dodò;Kalulu;Mina,McTominay;Zielinski;Paz N.;Modric,Esposito F.P.;Malen;Martinez L.
+24,lagg,4-3-3,Maignan,Martin;Wesley;Miranda J.;Heggem,Malinovskyi;Paz N.;McKennie,Kean;David;Scamacca
+24,DEEDPULLY,3-4-3,Svilar,Tavares N.;Mina;Dimarco,Zaniolo;Orsolini;Maldini;Pulisic,David;Kilicsoy;Raspadori
+24,kalashnikov,3-4-3,Ravaglia F.,Cambiaso;Pavlovic;Rrahmani,McTominay;Pulisic;Gudmundsson A.;Zaniolo,Kean;Scamacca;Douvikas
+24,real donk,3-4-3,Svilar,Wesley;Pezzella Giu.;Ostigard,Aebischer;Pasalic;Thuram K.;Zaniolo,Pellegrino M.;Kilicsoy;Esposito F.P.
+24,Mapoitta,3-4-3,Sommer,Gosens;Zappacosta;Bellanova,Paz N.;McTominay;McKennie;Zaniolo,Leao;Scamacca;Thuram
+24,I Cigni,4-3-3,Sommer,Valeri;Valle;Norton-Cuffy;Dodò,Vergara;Isaksen;Baturina,Martinez L.;Zapata D.;Malen
+24,Kung-Fu Pandev,3-4-3,Sommer,Bozhinov;Tiago Gabriel;Wesley,Maldini;Zaragoza;McKennie;Conceicao,Kean;Hojlund;Soulè
+24,mezzebirre,4-4-2,Maignan,Barbieri;Kempf;Hermoso;Wesley,Odgaard;Pulisic;Diouf;Ndour,Addai;Leao
+24,CLAN,3-4-3,Di Gregorio,Tavares N.;Gutierrez;Wesley,Bernardeschi;Zalewski;McTominay;Malinovskyi,Malen;Hojlund;Thuram
+24,ProPro Proibito,3-4-3,Sommer,Rrahmani;Bradaric;Tiago Gabriel,Thuram K.;Paz N.;Zaniolo;McTominay,David;Martinez L.;Vardy
+24,HeineKean,3-4-3,Svilar,Tiago Gabriel;Cambiaso;Ramon,Gudmundsson A.;McTominay;Conceicao;Vergara,David;Hojlund;Thuram
+24,Evergreen,3-4-3,De Gea,Dimarco;Palestra;Ostigard,Harroui;Gudmundsson A.;Zielinski;Zalewski,Zapata D.;Lukaku;David

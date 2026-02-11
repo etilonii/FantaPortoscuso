@@ -177,9 +177,10 @@ export default function FormazioniSection({
                 : Number.isFinite(Number(item.pos))
                   ? Number(item.pos)
                   : index + 1;
+              const rankNumber = orderValue === "live_total" ? index + 1 : standingPos;
               const rankClass =
-                standingPos === 1 || standingPos === 2 || standingPos === 3
-                  ? `rank-${standingPos}`
+                rankNumber === 1 || rankNumber === 2 || rankNumber === 3
+                  ? `rank-${rankNumber}`
                   : "";
               const benchDetails = Array.isArray(item.panchina_details)
                 ? item.panchina_details
@@ -191,7 +192,7 @@ export default function FormazioniSection({
                 <header className="formation-card-head">
                   <p className="rank-title">
                     <span className={`rank-badge ${rankClass}`.trim()}>
-                      #{standingPos}
+                      #{rankNumber}
                     </span>
                     <span>{item.team}</span>
                   </p>

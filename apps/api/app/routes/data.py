@@ -3981,6 +3981,43 @@ def _formation_lineup_size(item: Dict[str, object]) -> int:
     return total
 
 
+def _formation_starter_keyset(item: Dict[str, object]) -> Set[str]:
+    keys: Set[str] = set()
+    for raw_name in _lineup_player_names(item):
+        canonical = _canonicalize_name(raw_name)
+        key = normalize_name(canonical or raw_name)
+        if key:
+            keys.add(key)
+    return keys
+
+
+def _pick_appkey_candidate_by_similarity(
+    item: Dict[str, object],
+    appkey_items: List[Dict[str, object]],
+    used_indexes: Set[int],
+    preferred_round: Optional[int],
+) -> tuple[Optional[int], int]:
+    item_keys = _formation_starter_keyset(item)
+    if len(item_keys) < 6:
+        return None, 0
+
+    best_index: Optional[int] = None
+    best_overlap = 0
+    for idx, candidate in enumerate(appkey_items):
+        if idx in used_indexes:
+            continue
+        candidate_round = _parse_int(candidate.get("round"))
+        if preferred_round is not None and candidate_round is not None and candidate_round != preferred_round:
+            continue
+
+        candidate_keys = _formation_starter_keyset(candidate)
+        overlap = len(item_keys.intersection(candidate_keys))
+        if overlap > best_overlap:
+            best_overlap = overlap
+            best_index = idx
+    return best_index, best_overlap
+
+
 def _merge_real_formations_with_appkey(
     items: List[Dict[str, object]],
     appkey_items: List[Dict[str, object]],
@@ -3989,16 +4026,17 @@ def _merge_real_formations_with_appkey(
     if not appkey_items:
         return items
 
-    appkey_by_key: Dict[tuple[Optional[int], str], Dict[str, object]] = {}
-    for candidate in appkey_items:
+    appkey_by_key: Dict[tuple[Optional[int], str], int] = {}
+    for idx, candidate in enumerate(appkey_items):
         team_key = normalize_name(str(candidate.get("team") or ""))
         if not team_key:
             continue
         key = (_parse_int(candidate.get("round")), team_key)
-        appkey_by_key[key] = candidate
+        appkey_by_key[key] = idx
 
     single_round = appkey_rounds[0] if len(appkey_rounds) == 1 else None
     merged_by_key: Dict[tuple[Optional[int], str], Dict[str, object]] = {}
+    used_appkey_indexes: Set[int] = set()
 
     for item in items:
         team_key = normalize_name(str(item.get("team") or ""))
@@ -4007,33 +4045,68 @@ def _merge_real_formations_with_appkey(
 
         current_round = _parse_int(item.get("round"))
         lookup_key = (current_round, team_key)
-        candidate = appkey_by_key.get(lookup_key)
-        if candidate is None and current_round is None and single_round is not None:
-            candidate = appkey_by_key.get((single_round, team_key))
-            if candidate is not None:
+        candidate_idx = appkey_by_key.get(lookup_key)
+        if candidate_idx is None and current_round is None and single_round is not None:
+            candidate_idx = appkey_by_key.get((single_round, team_key))
+            if candidate_idx is not None:
                 item["round"] = single_round
                 current_round = single_round
 
+        candidate = appkey_items[candidate_idx] if candidate_idx is not None else None
+        direct_overlap = 0
         if candidate is not None:
+            direct_overlap = len(_formation_starter_keyset(item).intersection(_formation_starter_keyset(candidate)))
+
+        preferred_round = current_round if current_round is not None else single_round
+        similar_idx, similar_overlap = _pick_appkey_candidate_by_similarity(
+            item,
+            appkey_items,
+            used_appkey_indexes,
+            preferred_round,
+        )
+        if (
+            similar_idx is not None
+            and similar_overlap >= 7
+            and (candidate is None or direct_overlap < 7 or similar_overlap > direct_overlap)
+        ):
+            candidate_idx = similar_idx
+            candidate = appkey_items[similar_idx]
+            selected_round = _parse_int(candidate.get("round"))
+            if current_round is None and selected_round is not None:
+                item["round"] = selected_round
+                current_round = selected_round
+
+        if candidate is not None:
+            if candidate_idx is not None:
+                used_appkey_indexes.add(candidate_idx)
             if _formation_lineup_size(item) < 11:
                 for field in ("modulo", "portiere", "difensori", "centrocampisti", "attaccanti"):
                     item[field] = candidate.get(field)
-            if not isinstance(item.get("panchina_details"), list) or not item.get("panchina_details"):
-                item["panchina_details"] = candidate.get("panchina_details") or []
-                item["panchina"] = candidate.get("panchina") or []
+            candidate_reserves = candidate.get("panchina_details")
+            if isinstance(candidate_reserves, list) and candidate_reserves:
+                item["panchina_details"] = candidate_reserves
+                item["panchina"] = candidate.get("panchina") or [
+                    str(reserve.get("name") or "").strip()
+                    for reserve in candidate_reserves
+                    if isinstance(reserve, dict)
+                ]
+            elif not isinstance(item.get("panchina_details"), list) or not item.get("panchina_details"):
+                item["panchina_details"] = []
+                item["panchina"] = []
             elif not isinstance(item.get("panchina"), list) or not item.get("panchina"):
                 item["panchina"] = [
                     str(reserve.get("name") or "").strip()
                     for reserve in item.get("panchina_details") or []
                     if isinstance(reserve, dict)
                 ]
-            if not str(item.get("capitano") or "").strip():
-                item["capitano"] = str(candidate.get("capitano") or "").strip()
-            if not str(item.get("vice_capitano") or "").strip():
-                item["vice_capitano"] = str(candidate.get("vice_capitano") or "").strip()
-            if _parse_int(item.get("standing_pos")) is None and _parse_int(candidate.get("standing_pos")) is not None:
-                item["standing_pos"] = _parse_int(candidate.get("standing_pos"))
-                item["pos"] = _parse_int(candidate.get("pos"))
+
+            candidate_captain = str(candidate.get("capitano") or "").strip()
+            candidate_vice = str(candidate.get("vice_capitano") or "").strip()
+            if candidate_captain:
+                item["capitano"] = candidate_captain
+            if candidate_vice:
+                item["vice_capitano"] = candidate_vice
+
             if _parse_float(item.get("forza_titolari")) is None and _parse_float(
                 candidate.get("forza_titolari")
             ) is not None:
@@ -4041,7 +4114,8 @@ def _merge_real_formations_with_appkey(
 
         merged_by_key[(current_round, team_key)] = item
 
-    for key, candidate in appkey_by_key.items():
+    for key, candidate_idx in appkey_by_key.items():
+        candidate = appkey_items[candidate_idx]
         if key in merged_by_key:
             continue
         merged_by_key[key] = candidate
