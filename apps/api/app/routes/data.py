@@ -1,6 +1,8 @@
+import base64
 import csv
 import json
 import re
+import unicodedata
 from collections import defaultdict
 from datetime import datetime
 from html import unescape as html_unescape
@@ -58,8 +60,10 @@ REAL_FORMATIONS_APPKEY_GLOB = "formazioni*_appkey.json"
 REAL_FORMATIONS_CONTEXT_HTML_CANDIDATES = [
     REAL_FORMATIONS_TMP_DIR / "formazioni_page.html",
 ]
+REAL_FORMATIONS_CONTEXT_HTML_GLOB = "formazioni*.html"
 VOTI_PAGE_CACHE_PATH = DATA_DIR / "tmp" / "voti_page.html"
 VOTI_BASE_URL = "https://www.fantacalcio.it/voti-fantacalcio-serie-a"
+CALENDAR_BASE_URL = "https://www.fantacalcio.it/serie-a/calendario"
 STATUS_PATH = DATA_DIR / "status.json"
 MARKET_REPORT_GLOB = "rose_changes_*.csv"
 ROSE_DIFF_GLOB = "diff_rose_*.txt"
@@ -2449,6 +2453,257 @@ def _build_default_voti_url(round_value: int, season_slug: str) -> str:
     return f"{VOTI_BASE_URL}/{season_slug}/{int(round_value)}"
 
 
+def _build_calendar_round_url(round_value: int, season_slug: str) -> str:
+    return f"{CALENDAR_BASE_URL}/{int(round_value)}/{season_slug}"
+
+
+def _calendar_slugify(value: object) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    normalized = unicodedata.normalize("NFKD", raw)
+    ascii_text = "".join(ch for ch in normalized if not unicodedata.combining(ch))
+    slug = re.sub(r"[^A-Za-z0-9]+", "-", ascii_text).strip("-").lower()
+    return slug
+
+
+def _build_calendar_match_summary_url(
+    *,
+    round_value: int,
+    season_slug: str,
+    home_team: str,
+    away_team: str,
+    match_id: int,
+) -> str:
+    home_slug = _calendar_slugify(home_team)
+    away_slug = _calendar_slugify(away_team)
+    slug = f"{home_slug}-{away_slug}".strip("-")
+    return f"{CALENDAR_BASE_URL}/{int(round_value)}/{season_slug}/{slug}/{int(match_id)}/riepilogo"
+
+
+def _extract_round_match_refs_from_calendar_html(
+    html_text: str,
+    club_index: Dict[str, str],
+) -> List[Dict[str, object]]:
+    if not html_text:
+        return []
+
+    select_match = re.search(
+        r"<select[^>]+id=['\"]matchControl['\"][^>]*>(.*?)</select>",
+        html_text,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    if select_match is None:
+        return []
+
+    refs: List[Dict[str, object]] = []
+    seen_ids: Set[int] = set()
+    options_html = select_match.group(1)
+    for value_raw, _ in re.findall(
+        r"<option[^>]*value=['\"]([^'\"]+)['\"][^>]*>(.*?)</option>",
+        options_html,
+        flags=re.IGNORECASE | re.DOTALL,
+    ):
+        parts = [html_unescape(str(p or "")).strip() for p in str(value_raw).split("/") if str(p or "").strip()]
+        if len(parts) < 3:
+            continue
+        home_raw, away_raw, match_id_raw = parts[-3], parts[-2], parts[-1]
+        match_id = _parse_int(match_id_raw)
+        if match_id is None or match_id <= 0:
+            continue
+        if match_id in seen_ids:
+            continue
+
+        home_team = _display_team_name(home_raw, club_index)
+        away_team = _display_team_name(away_raw, club_index)
+        if not home_team or not away_team:
+            continue
+
+        seen_ids.add(match_id)
+        refs.append(
+            {
+                "match_id": int(match_id),
+                "home_team": home_team,
+                "away_team": away_team,
+            }
+        )
+    return refs
+
+
+def _extract_scorer_events_from_match_summary_html(html_text: str) -> List[Dict[str, object]]:
+    if not html_text:
+        return []
+
+    block_match = re.search(
+        r"<div[^>]+id=['\"]scorersTemplateTarget['\"][^>]*>(.*?)</div>",
+        html_text,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    source = block_match.group(1) if block_match else html_text
+    events: List[Dict[str, object]] = []
+    li_pattern = re.compile(r"<li class=['\"](home|away)[^'\"]*['\"]>(.*?)</li>", flags=re.IGNORECASE | re.DOTALL)
+
+    for idx, (side_raw, item_html) in enumerate(li_pattern.findall(source)):
+        side = str(side_raw or "").strip().lower()
+        if side not in {"home", "away"}:
+            continue
+
+        name_match = re.search(
+            r"<a[^>]*class=['\"][^'\"]*player-name[^'\"]*['\"][^>]*>.*?<span>([^<]+)</span>",
+            item_html,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        if name_match is None:
+            name_match = re.search(
+                r"<span class=['\"][^'\"]*player-name[^'\"]*['\"]>([^<]+)</span>",
+                item_html,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+        if name_match is None:
+            continue
+
+        player_name = _canonicalize_name(_strip_html_tags(name_match.group(1)))
+        if not player_name:
+            continue
+
+        minute_match = re.search(
+            r"<span class=['\"]minute[^'\"]*['\"]>([^<]+)</span>",
+            item_html,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        minute_raw = _strip_html_tags(minute_match.group(1)) if minute_match else ""
+        minute_raw = minute_raw.strip()
+        minute_clean = minute_raw.replace("’", "'").replace("`", "'")
+        minute_base = _parse_int(re.sub(r"[^0-9+]", "", minute_clean).split("+")[0])
+        minute_extra = None
+        if "+" in minute_clean:
+            minute_extra = _parse_int(minute_clean.split("+", 1)[1])
+
+        events.append(
+            {
+                "side": side,
+                "player": player_name,
+                "minute_raw": minute_raw,
+                "minute_base": minute_base,
+                "minute_extra": minute_extra,
+                "order": idx,
+            }
+        )
+    return events
+
+
+def _decisive_badge_from_scorer_events(
+    events: List[Dict[str, object]],
+) -> Optional[Dict[str, object]]:
+    if not events:
+        return None
+
+    home_goals = sum(1 for item in events if str(item.get("side") or "") == "home")
+    away_goals = sum(1 for item in events if str(item.get("side") or "") == "away")
+    if home_goals <= 0 and away_goals <= 0:
+        return None
+
+    if home_goals == away_goals:
+        last_event = events[-1]
+        return {
+            "event": "gol_pareggio",
+            "side": str(last_event.get("side") or ""),
+            "player": str(last_event.get("player") or ""),
+        }
+
+    if home_goals > away_goals:
+        threshold = away_goals + 1
+        count = 0
+        for item in events:
+            if str(item.get("side") or "") != "home":
+                continue
+            count += 1
+            if count == threshold:
+                return {
+                    "event": "gol_vittoria",
+                    "side": "home",
+                    "player": str(item.get("player") or ""),
+                }
+        return None
+
+    threshold = home_goals + 1
+    count = 0
+    for item in events:
+        if str(item.get("side") or "") != "away":
+            continue
+        count += 1
+        if count == threshold:
+            return {
+                "event": "gol_vittoria",
+                "side": "away",
+                "player": str(item.get("player") or ""),
+            }
+    return None
+
+
+def _load_round_decisive_badges_from_calendar_pages(
+    *,
+    round_value: int,
+    season_slug: str,
+    club_index: Dict[str, str],
+) -> Dict[Tuple[str, str], Dict[str, int]]:
+    badges: Dict[Tuple[str, str], Dict[str, int]] = {}
+    try:
+        round_html = _fetch_text_url(_build_calendar_round_url(round_value, season_slug))
+    except Exception:
+        return badges
+
+    refs = _extract_round_match_refs_from_calendar_html(round_html, club_index)
+    if not refs:
+        return badges
+
+    for ref in refs:
+        match_id = _parse_int(ref.get("match_id"))
+        home_team = str(ref.get("home_team") or "").strip()
+        away_team = str(ref.get("away_team") or "").strip()
+        if match_id is None or match_id <= 0 or not home_team or not away_team:
+            continue
+
+        summary_url = _build_calendar_match_summary_url(
+            round_value=round_value,
+            season_slug=season_slug,
+            home_team=home_team,
+            away_team=away_team,
+            match_id=match_id,
+        )
+
+        try:
+            summary_html = _fetch_text_url(summary_url)
+        except Exception:
+            continue
+
+        events = _extract_scorer_events_from_match_summary_html(summary_html)
+        decisive = _decisive_badge_from_scorer_events(events)
+        if not decisive:
+            continue
+
+        event_key = str(decisive.get("event") or "").strip()
+        side = str(decisive.get("side") or "").strip()
+        player_name = _canonicalize_name(str(decisive.get("player") or ""))
+        if event_key not in {"gol_vittoria", "gol_pareggio"} or side not in {"home", "away"} or not player_name:
+            continue
+
+        team_name = home_team if side == "home" else away_team
+        team_key = normalize_name(team_name)
+        player_key = normalize_name(player_name)
+        if not team_key or not player_key:
+            continue
+
+        key = (team_key, player_key)
+        current = badges.get(key)
+        if current is None:
+            current = {"gol_vittoria": 0, "gol_pareggio": 0}
+            badges[key] = current
+        current[event_key] = max(1, int(current.get(event_key, 0)))
+
+    return badges
+
+
 def _fetch_text_url(url: str, timeout_seconds: float = 20.0) -> str:
     request = Request(
         str(url),
@@ -3842,6 +4097,186 @@ def _load_projected_formazioni_rows(
     return items
 
 
+def _context_html_candidates() -> List[Path]:
+    candidates: List[Path] = []
+    seen: Set[str] = set()
+
+    def _register(path: Path) -> None:
+        if not path.exists() or not path.is_file():
+            return
+        key = str(path.resolve())
+        if key in seen:
+            return
+        seen.add(key)
+        candidates.append(path)
+
+    for fixed_path in REAL_FORMATIONS_CONTEXT_HTML_CANDIDATES:
+        _register(fixed_path)
+
+    if REAL_FORMATIONS_TMP_DIR.exists() and REAL_FORMATIONS_TMP_DIR.is_dir():
+        try:
+            dynamic_paths = sorted(
+                [p for p in REAL_FORMATIONS_TMP_DIR.glob(REAL_FORMATIONS_CONTEXT_HTML_GLOB) if p.is_file()],
+                key=lambda p: p.stat().st_mtime,
+                reverse=True,
+            )
+        except Exception:
+            dynamic_paths = []
+        for dynamic_path in dynamic_paths:
+            _register(dynamic_path)
+
+    return candidates
+
+
+def _decode_appkey_payload_token(token: str) -> Optional[Dict[str, object]]:
+    raw_token = str(token or "").strip()
+    if not raw_token:
+        return None
+
+    token_candidates = [raw_token, raw_token.replace("-", "+").replace("_", "/")]
+    tried: Set[str] = set()
+    for candidate in token_candidates:
+        if candidate in tried:
+            continue
+        tried.add(candidate)
+
+        padded = candidate + ("=" * ((4 - (len(candidate) % 4)) % 4))
+        try:
+            decoded = base64.b64decode(padded)
+        except Exception:
+            continue
+
+        payload: object
+        try:
+            payload = json.loads(decoded.decode("utf-8"))
+        except Exception:
+            try:
+                payload = json.loads(decoded.decode("utf-8-sig"))
+            except Exception:
+                continue
+
+        if not isinstance(payload, dict):
+            continue
+        data_section = payload.get("data")
+        if isinstance(data_section, dict) and isinstance(data_section.get("formazioni"), list):
+            return payload
+
+    return None
+
+
+def _extract_lt_appkey_payloads_from_html(source: str) -> List[Dict[str, object]]:
+    if not source:
+        return []
+
+    pattern = re.compile(
+        r"__\.s\(\s*['\"]lt['\"]\s*,\s*__\.dp\(\s*['\"]([^'\"]+)['\"]\s*\)\s*\)",
+        flags=re.IGNORECASE,
+    )
+    payloads: List[Dict[str, object]] = []
+    seen_tokens: Set[str] = set()
+
+    for match in pattern.finditer(source):
+        token = str(match.group(1) or "").strip()
+        if not token or token in seen_tokens:
+            continue
+        seen_tokens.add(token)
+
+        decoded = _decode_appkey_payload_token(token)
+        if decoded is None:
+            continue
+        payloads.append(decoded)
+
+    return payloads
+
+
+def _extract_appkey_payload_rounds(payload: Dict[str, object]) -> List[int]:
+    rounds: Set[int] = set()
+    data_section = payload.get("data") if isinstance(payload, dict) else None
+    if not isinstance(data_section, dict):
+        return []
+
+    global_round = _parse_int(data_section.get("giornataLega") or payload.get("giornataLega"))
+    if global_round is not None:
+        rounds.add(global_round)
+
+    formations = data_section.get("formazioni")
+    if not isinstance(formations, list):
+        return sorted(rounds)
+
+    for formation in formations:
+        if not isinstance(formation, dict):
+            continue
+        round_value = _parse_int(formation.get("giornata") or formation.get("round") or formation.get("turno"))
+        if round_value is not None:
+            rounds.add(round_value)
+    return sorted(rounds)
+
+
+def _write_formazioni_appkey_payload(payload: Dict[str, object], round_value: Optional[int]) -> Path:
+    round_num = _parse_int(round_value)
+    filename = f"formazioni_{round_num}_appkey.json" if round_num is not None else "formazioni_appkey.json"
+    path = REAL_FORMATIONS_TMP_DIR / filename
+    serialized = json.dumps(payload, ensure_ascii=False, indent=4) + "\n"
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        existing = path.read_text(encoding="utf-8-sig")
+        if existing == serialized:
+            path.touch()
+            return path
+    except Exception:
+        pass
+
+    path.write_text(serialized, encoding="utf-8")
+    return path
+
+
+def _refresh_formazioni_appkey_from_context_html(round_value: Optional[int]) -> Optional[Path]:
+    requested_round = _parse_int(round_value)
+    refreshed_path: Optional[Path] = None
+    refreshed_mtime = -1.0
+
+    for candidate in _context_html_candidates():
+        try:
+            source = candidate.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        if not source:
+            continue
+
+        payloads = _extract_lt_appkey_payloads_from_html(source)
+        if not payloads:
+            continue
+
+        for payload in payloads:
+            payload_rounds = _extract_appkey_payload_rounds(payload)
+            if requested_round is not None and payload_rounds and requested_round not in payload_rounds:
+                continue
+
+            if requested_round is not None:
+                selected_round = requested_round
+            elif payload_rounds:
+                selected_round = payload_rounds[-1]
+            else:
+                selected_round = None
+
+            try:
+                written_path = _write_formazioni_appkey_payload(payload, selected_round)
+            except Exception:
+                continue
+
+            try:
+                current_mtime = written_path.stat().st_mtime
+            except Exception:
+                current_mtime = -1.0
+
+            if current_mtime >= refreshed_mtime:
+                refreshed_path = written_path
+                refreshed_mtime = current_mtime
+
+    return refreshed_path
+
+
 def _latest_formazioni_appkey_path() -> Optional[Path]:
     if not REAL_FORMATIONS_TMP_DIR.exists() or not REAL_FORMATIONS_TMP_DIR.is_dir():
         return None
@@ -3994,7 +4429,7 @@ def _load_live_decisive_badges_from_appkey(
     standings_index: Optional[Dict[str, Dict[str, object]]],
     regulation: Dict[str, object],
 ) -> tuple[Dict[str, Dict[str, int]], Optional[Path]]:
-    source_path = _latest_formazioni_appkey_path()
+    source_path = _refresh_formazioni_appkey_from_context_html(round_value) or _latest_formazioni_appkey_path()
     if source_path is None:
         return {}, None
 
@@ -4099,6 +4534,117 @@ def _overlay_decisive_badges_from_appkey(
         if merged_gv != current_gv or merged_gp != current_gp:
             row["gol_vittoria"] = merged_gv
             row["gol_pareggio"] = merged_gp
+            applied += 1
+
+    return applied
+
+
+def _overlay_decisive_badges_from_round_results(
+    rows: List[Dict[str, object]],
+    *,
+    round_value: Optional[int],
+    season_slug: Optional[str],
+    db: Session,
+    club_index: Dict[str, str],
+) -> int:
+    target_round = _parse_int(round_value)
+    if target_round is None or target_round <= 0:
+        return 0
+    if not rows:
+        return 0
+
+    applied = 0
+    timeline_badges = _load_round_decisive_badges_from_calendar_pages(
+        round_value=target_round,
+        season_slug=_normalize_season_slug(season_slug),
+        club_index=club_index,
+    )
+    if timeline_badges:
+        for row in rows:
+            team_name = _display_team_name(str(row.get("team") or ""), club_index)
+            team_key = normalize_name(team_name)
+            player_key = normalize_name(str(row.get("player") or ""))
+            if not team_key or not player_key:
+                continue
+
+            source_counts = timeline_badges.get((team_key, player_key))
+            if not source_counts:
+                continue
+
+            current_gv = max(0, int(_parse_int(row.get("gol_vittoria")) or 0))
+            current_gp = max(0, int(_parse_int(row.get("gol_pareggio")) or 0))
+            merged_gv = max(current_gv, int(source_counts.get("gol_vittoria", 0) or 0))
+            merged_gp = max(current_gp, int(source_counts.get("gol_pareggio", 0) or 0))
+            if merged_gv != current_gv or merged_gp != current_gp:
+                row["gol_vittoria"] = merged_gv
+                row["gol_pareggio"] = merged_gp
+                applied += 1
+
+    fixture_rows = _load_fixture_rows_for_live(db, club_index)
+    opponent_by_team: Dict[str, str] = {}
+    for fixture in fixture_rows:
+        if _parse_int(fixture.get("round")) != target_round:
+            continue
+        team_name = _display_team_name(str(fixture.get("team") or ""), club_index)
+        opponent_name = _display_team_name(str(fixture.get("opponent") or ""), club_index)
+        team_key = normalize_name(team_name)
+        opponent_key = normalize_name(opponent_name)
+        if not team_key or not opponent_key or team_key == opponent_key:
+            continue
+        opponent_by_team[team_key] = opponent_key
+
+    if not opponent_by_team:
+        return 0
+
+    goals_scored_by_team: Dict[str, int] = defaultdict(int)
+    autogol_by_team: Dict[str, int] = defaultdict(int)
+    for row in rows:
+        team_name = _display_team_name(str(row.get("team") or ""), club_index)
+        team_key = normalize_name(team_name)
+        if not team_key:
+            continue
+        goals_scored_by_team[team_key] += max(0, int(_parse_int(row.get("goal")) or 0))
+        goals_scored_by_team[team_key] += max(0, int(_parse_int(row.get("rigore_segnato")) or 0))
+        autogol_by_team[team_key] += max(0, int(_parse_int(row.get("autogol")) or 0))
+
+    for row in rows:
+        team_name = _display_team_name(str(row.get("team") or ""), club_index)
+        team_key = normalize_name(team_name)
+        opponent_key = opponent_by_team.get(team_key, "")
+        if not team_key or not opponent_key:
+            continue
+
+        current_gv = max(0, int(_parse_int(row.get("gol_vittoria")) or 0))
+        current_gp = max(0, int(_parse_int(row.get("gol_pareggio")) or 0))
+        if current_gv > 0 or current_gp > 0:
+            continue
+
+        player_goals = max(0, int(_parse_int(row.get("goal")) or 0)) + max(
+            0, int(_parse_int(row.get("rigore_segnato")) or 0)
+        )
+        if player_goals <= 0:
+            continue
+
+        team_goals_from_players = int(goals_scored_by_team.get(team_key, 0))
+        opponent_goals_from_players = int(goals_scored_by_team.get(opponent_key, 0))
+        team_own_goals = int(autogol_by_team.get(team_key, 0))
+        opponent_own_goals = int(autogol_by_team.get(opponent_key, 0))
+
+        # Deterministic fallback only when the scorer is the sole scorer for their
+        # team and no own-goal noise exists on the opponent side.
+        if opponent_own_goals != 0:
+            continue
+        if team_goals_from_players != player_goals:
+            continue
+
+        team_total = team_goals_from_players + opponent_own_goals
+        opponent_total = opponent_goals_from_players + team_own_goals
+
+        if team_total > opponent_total:
+            row["gol_vittoria"] = 1
+            applied += 1
+        elif team_total == opponent_total and team_total > 0:
+            row["gol_pareggio"] = 1
             applied += 1
 
     return applied
@@ -4209,7 +4755,7 @@ def _parse_appkey_lineup(
 def _load_real_formazioni_rows_from_appkey_json(
     standings_index: Dict[str, Dict[str, object]],
 ) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
-    source_path = _latest_formazioni_appkey_path()
+    source_path = _refresh_formazioni_appkey_from_context_html(None) or _latest_formazioni_appkey_path()
     if source_path is None:
         return [], [], None
 
@@ -4743,6 +5289,22 @@ def _upsert_live_player_vote_internal(
             bonus_map,
         )
 
+    # Persist the computed fantasy vote (including bonuses/maluses) so downstream
+    # sections don't rely on stale raw source values.
+    default_vote = _safe_float_value(scoring_defaults.get("default_vote"), 6.0)
+    default_fantavote = _safe_float_value(scoring_defaults.get("default_fantavote"), default_vote)
+    vote_number_for_calc = default_vote if vote_value is None else float(vote_value)
+    computed_fantavote: Optional[float] = None
+    if not is_sv and not is_absent:
+        computed_fantavote = _compute_live_fantavote(
+            vote_number_for_calc,
+            event_counts,
+            bonus_map,
+            fantavote_override=fantavote_value,
+        )
+        if computed_fantavote is None:
+            computed_fantavote = default_fantavote
+
     team_key = normalize_name(team_name)
     player_key = normalize_name(player_name)
     existing = None
@@ -4804,7 +5366,7 @@ def _upsert_live_player_vote_internal(
             player_name=player_name,
             role=role_value,
             vote=vote_value,
-            fantavote=fantavote_value,
+            fantavote=computed_fantavote,
             **event_counts,
             is_sv=is_sv,
             is_absent=is_absent,
@@ -4817,7 +5379,7 @@ def _upsert_live_player_vote_internal(
         if role_value:
             existing.role = role_value
         existing.vote = vote_value
-        existing.fantavote = fantavote_value
+        existing.fantavote = computed_fantavote
         for field in LIVE_EVENT_FIELDS:
             setattr(existing, field, int(event_counts.get(field, 0)))
         existing.is_sv = is_sv
@@ -4826,7 +5388,7 @@ def _upsert_live_player_vote_internal(
 
     new_has_appearance = _live_has_appearance(
         vote_value,
-        fantavote_value,
+        computed_fantavote,
         is_sv,
         is_absent,
         event_counts,
@@ -4841,19 +5403,6 @@ def _upsert_live_player_vote_internal(
     if commit:
         db.commit()
 
-    default_vote = _safe_float_value(scoring_defaults.get("default_vote"), 6.0)
-    vote_number = default_vote if vote_value is None else float(vote_value)
-    computed_fantavote: Optional[float] = None
-    if not is_sv and not is_absent:
-        computed_fantavote = _compute_live_fantavote(
-            vote_number,
-            event_counts,
-            bonus_map,
-            fantavote_override=fantavote_value,
-        )
-        if computed_fantavote is None:
-            computed_fantavote = _safe_float_value(scoring_defaults.get("default_fantavote"), default_vote)
-
     return {
         "ok": True,
         "round": payload.round,
@@ -4866,8 +5415,10 @@ def _upsert_live_player_vote_internal(
         "events": event_counts,
         "bonus_total": None
         if (is_sv or is_absent or computed_fantavote is None)
-        else round(float(computed_fantavote) - vote_number, 2),
-        "vote_label": "X" if is_absent else ("SV" if is_sv else _format_live_number(vote_number)),
+        else round(float(computed_fantavote) - vote_number_for_calc, 2),
+        "vote_label": "X"
+        if is_absent
+        else ("SV" if is_sv else _format_live_number(vote_number_for_calc)),
         "fantavote_label": "X"
         if is_absent
         else ("SV" if is_sv else _format_live_number(computed_fantavote)),
@@ -4941,6 +5492,14 @@ def _import_live_votes_internal(
         regulation,
     )
     appkey_badges_applied = _overlay_decisive_badges_from_appkey(rows, decisive_badges)
+    club_index = _load_club_name_index()
+    deterministic_badges_applied = _overlay_decisive_badges_from_round_results(
+        rows,
+        round_value=resolved_round,
+        season_slug=season_slug,
+        db=db,
+        club_index=club_index,
+    )
 
     imported = 0
     for item in rows:
@@ -4985,6 +5544,7 @@ def _import_live_votes_internal(
         "appkey_decisive_source": str(decisive_source_path) if decisive_source_path else None,
         "appkey_decisive_players": len(decisive_badges),
         "appkey_decisive_applied": appkey_badges_applied,
+        "deterministic_decisive_applied": deterministic_badges_applied,
     }
 
 

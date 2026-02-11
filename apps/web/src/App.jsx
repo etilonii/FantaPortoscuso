@@ -152,6 +152,8 @@ export default function App() {
   /* ===== UI ===== */
   const [theme, setTheme] = useState("dark");
   const [activeMenu, setActiveMenu] = useState("home");
+  const [menuOpen, setMenuOpenState] = useState(false);
+  const [adminMenuOpen, setAdminMenuOpenState] = useState(false);
 
   /* ===== DASHBOARD ===== */
   const [summary, setSummary] = useState({ teams: 0, players: 0 });
@@ -1871,12 +1873,34 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
      MENU OPEN (mobile)
   =========================== */
   const setMenuOpen = (open) => {
-    if (open) document.body.classList.add("menu-open");
-    else document.body.classList.remove("menu-open");
+    if (open) {
+      document.body.classList.add("menu-open");
+      document.body.classList.remove("admin-menu-open");
+      setMenuOpenState(true);
+      setAdminMenuOpenState(false);
+    } else {
+      document.body.classList.remove("menu-open");
+      setMenuOpenState(false);
+    }
+  };
+
+  const setAdminMenuOpen = (open) => {
+    if (open) {
+      document.body.classList.add("admin-menu-open");
+      document.body.classList.remove("menu-open");
+      setAdminMenuOpenState(true);
+      setMenuOpenState(false);
+    } else {
+      document.body.classList.remove("admin-menu-open");
+      setAdminMenuOpenState(false);
+    }
   };
 
   useEffect(() => {
-    if (!loggedIn) setMenuOpen(false);
+    if (!loggedIn) {
+      setMenuOpen(false);
+      setAdminMenuOpen(false);
+    }
   }, [loggedIn]);
 
   /* ===========================
@@ -1998,22 +2022,6 @@ useEffect(() => {
                 Formazioni
               </button>
 
-              {isAdmin && (
-                <button
-                  className={
-                    activeMenu === "live"
-                      ? "menu-item active admin-mobile-item"
-                      : "menu-item admin-mobile-item"
-                  }
-                  onClick={() => {
-                    setActiveMenu("live");
-                    setMenuOpen(false);
-                  }}
-                >
-                  Live
-                </button>
-              )}
-
               <button
                 className={
                   activeMenu === "plusvalenze" ? "menu-item active" : "menu-item"
@@ -2056,22 +2064,6 @@ useEffect(() => {
               >
                 Mercato
               </button>
-
-              {isAdmin && (
-                <button
-                  className={
-                    activeMenu === "admin"
-                      ? "menu-item active admin-mobile-item"
-                      : "menu-item admin-mobile-item"
-                  }
-                  onClick={() => {
-                    setActiveMenu("admin");
-                    setMenuOpen(false);
-                  }}
-                >
-                  Gestione
-                </button>
-              )}
             </nav>
           </aside>
           {isAdmin && (
@@ -2086,7 +2078,7 @@ useEffect(() => {
                   className={activeMenu === "live" ? "menu-item active" : "menu-item"}
                   onClick={() => {
                     setActiveMenu("live");
-                    setMenuOpen(false);
+                    setAdminMenuOpen(false);
                   }}
                 >
                   Live
@@ -2095,7 +2087,7 @@ useEffect(() => {
                   className={activeMenu === "admin" ? "menu-item active" : "menu-item"}
                   onClick={() => {
                     setActiveMenu("admin");
-                    setMenuOpen(false);
+                    setAdminMenuOpen(false);
                   }}
                 >
                   Gestione
@@ -2106,11 +2098,10 @@ useEffect(() => {
 
           <header className="mobile-topbar">
             <button
-              className="burger"
-              onClick={() =>
-                setMenuOpen(!document.body.classList.contains("menu-open"))
-              }
+              className={menuOpen ? "burger active" : "burger"}
+              onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Apri menu"
+              aria-expanded={menuOpen}
             >
               <span />
               <span />
@@ -2147,11 +2138,26 @@ useEffect(() => {
             <button className="ghost theme-toggle" onClick={toggleTheme}>
               {theme === "dark" ? "Dark" : "Light"}
             </button>
+            {isAdmin && (
+              <button
+                className={
+                  adminMenuOpen
+                    ? "ghost admin-menu-toggle active"
+                    : "ghost admin-menu-toggle"
+                }
+                onClick={() => setAdminMenuOpen(!adminMenuOpen)}
+                aria-label="Apri menu admin"
+                aria-expanded={adminMenuOpen}
+              >
+                Admin
+              </button>
+            )}
           </header>
 
           <div className="menu-overlay" onClick={() => setMenuOpen(false)} />
+          <div className="admin-menu-overlay" onClick={() => setAdminMenuOpen(false)} />
 
-          <main className={isAdmin ? "content with-admin-menu" : "content"}>
+          <main className="content">
             {/* ===========================
                 HOME (placeholder minimale)
             =========================== */}

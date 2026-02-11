@@ -246,14 +246,18 @@ body.theme-light {
 }
 
 .admin-sidebar {
-  display: none;
   background: var(--bg-2);
   border-left: 1px solid var(--border);
   padding: 28px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
   position: fixed;
   inset: 0 0 0 auto;
   width: 250px;
-  z-index: 19;
+  transform: translateX(110%);
+  transition: transform 0.25s ease;
+  z-index: 20;
 }
 
 .admin-sidebar .menu-item.active::after {
@@ -352,9 +356,24 @@ body.theme-light {
   height: 2px;
   background: var(--text);
   display: block;
+  transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+}
+
+.burger.active span {
+  background: var(--accent-2);
 }
 
 .menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 10, 18, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 15;
+}
+
+.admin-menu-overlay {
   position: fixed;
   inset: 0;
   background: rgba(6, 10, 18, 0.6);
@@ -369,6 +388,15 @@ body.menu-open .sidebar {
 }
 
 body.menu-open .menu-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.admin-menu-open .admin-sidebar {
+  transform: translateX(0);
+}
+
+body.admin-menu-open .admin-menu-overlay {
   opacity: 1;
   pointer-events: auto;
 }
@@ -470,6 +498,51 @@ body.menu-open .menu-overlay {
 .theme-toggle {
   margin-left: auto;
   font-size: 0.85rem;
+}
+
+.admin-menu-toggle {
+  font-size: 0.85rem;
+  position: relative;
+  transition: transform 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.admin-menu-toggle::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.admin-menu-toggle.active {
+  background: rgba(91, 209, 255, 0.12);
+  border-color: rgba(91, 209, 255, 0.55);
+  box-shadow: 0 8px 18px rgba(91, 209, 255, 0.24);
+  transform: translateY(-1px);
+}
+
+.admin-menu-toggle.active::after {
+  opacity: 1;
+  transform: scale(1);
+  animation: admin-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes admin-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(91, 209, 255, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(91, 209, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(91, 209, 255, 0);
+  }
 }
 
 .card h3 {
@@ -3339,17 +3412,7 @@ body.theme-light .login-shell .select {
 }
 
 @media (min-width: 901px) {
-  .admin-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-  }
-
   .admin-mobile-item {
     display: none;
-  }
-
-  .content.with-admin-menu {
-    padding-right: 286px;
   }
 }
