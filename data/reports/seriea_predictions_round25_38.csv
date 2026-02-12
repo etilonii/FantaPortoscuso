@@ -1,0 +1,141 @@
+round,home_team,away_team,pred_score,home_win_prob,draw_prob,away_win_prob,home_xg,away_xg,home_scorers,away_scorers,home_assists,away_assists,home_yellow_cards,away_yellow_cards,home_red_cards,away_red_cards,home_clean_sheet_prob,away_clean_sheet_prob
+25,Cagliari,Lecce,1-0,0.5258,0.2864,0.1877,1.325,0.666,Belotti,,Mazzitelli,,Dossena; Obert,Ramadani; Gaspar K.,,,0.5136,0.2659
+25,Como,Fiorentina,2-0,0.7453,0.1681,0.0844,2.237,0.601,Douvikas; Baturina,,Rodriguez Je.; Paz N.,,Smolcic I.; Addai,Vanoli; Pongracic,,,0.5481,0.1068
+25,Cremonese,Genoa,1-1,0.3411,0.2704,0.3884,1.194,1.293,Djuric,Colombo,Vandeputte,Martin,Payero; Pezzella Giu.,Gronbaek *; Malinovskyi,,,0.2744,0.303
+25,Inter,Juventus,1-1,0.5117,0.2475,0.2405,1.624,1.031,Martinez L.,Yildiz,Dimarco,Boga,Calhanoglu; Carlos Augusto,Gatti,,,0.3568,0.1971
+25,Lazio,Atalanta,0-0,0.2848,0.3267,0.3885,0.805,0.995,,,,,Rovella; Zaccagni,Kolasinac; De Roon,Belahyane,,0.3697,0.4471
+25,Napoli,Roma,0-0,0.2902,0.343,0.3668,0.767,0.903,,,,,Juan Jesus,Zaragoza; Hermoso,,,0.4052,0.4644
+25,Parma,Verona,0-0,0.3949,0.3416,0.2636,0.948,0.715,,,,,Rinaldi; Nicolussi Caviglia,Akpa Akpro; Gagliardini,,,0.4894,0.3875
+25,Pisa,Milan,0-2,0.0735,0.1703,0.7545,0.503,2.146,,Pulisic; Leao,,Rabiot; Modric,Coppola F.; Bozhinov,Athekame; Estupinan,,,0.117,0.6045
+25,Torino,Bologna,1-1,0.2459,0.232,0.5215,1.16,1.794,Simeone,Orsolini,Njie,Dominguez B.,Baroni; Aboukhlal,De Silvestri; Lykogiannis,,,0.1663,0.3134
+25,Udinese,Sassuolo,1-1,0.3815,0.2544,0.3639,1.404,1.365,Davis K.,Berardi,Rui Modesto *,Volpato,Goglichidze *; Gueye,Iannoni; Thorstvedt,,,0.2553,0.2456
+26,Atalanta,Napoli,1-1,0.3782,0.2955,0.3263,1.122,1.02,Scamacca,De Bruyne,Raspadori,Neres,Kolasinac; De Roon,Juan Jesus,,,0.3605,0.3256
+26,Bologna,Udinese,1-1,0.5256,0.229,0.2448,1.83,1.179,Orsolini,Davis K.,Dominguez B.,Rui Modesto *,De Silvestri; Lykogiannis,Goglichidze *; Gueye,,,0.3076,0.1604
+26,Cagliari,Lazio,0-1,0.3155,0.298,0.3865,0.984,1.123,,Pedro,,Castellanos *,Dossena; Obert,Rovella; Zaccagni,,Belahyane,0.3254,0.3738
+26,Fiorentina,Pisa,1-0,0.5296,0.248,0.2221,1.622,0.955,Solomon,,Harrison,,Vanoli; Pongracic,Coppola F.; Bozhinov,,,0.3848,0.1975
+26,Genoa,Torino,1-1,0.5287,0.2267,0.2438,1.859,1.193,Colombo,Simeone,Martin,Njie,Gronbaek *; Malinovskyi,Baroni; Aboukhlal,,,0.3032,0.1559
+26,Juventus,Como,1-1,0.3441,0.3023,0.3536,1.025,1.043,Yildiz,Douvikas,Boga,Baturina,Gatti,Smolcic I.; Addai,,,0.3524,0.3589
+26,Lecce,Inter,0-2,0.0573,0.1547,0.7858,0.433,2.234,,Martinez L.; Calhanoglu,,Dimarco; Barella,Ramadani; Gaspar K.,Calhanoglu; Carlos Augusto,,,0.107,0.6486
+26,Milan,Parma,1-0,0.7311,0.2014,0.0669,1.813,0.364,Pulisic,,Rabiot,,Athekame; Estupinan,Rinaldi; Nicolussi Caviglia,,,0.695,0.1631
+26,Roma,Cremonese,1-0,0.6404,0.2609,0.0985,1.458,0.396,Malen,,El Shaarawy,,Zaragoza; Hermoso,Payero; Pezzella Giu.,,,0.6731,0.2326
+26,Sassuolo,Verona,1-0,0.5758,0.2426,0.1812,1.662,0.811,Berardi,,Volpato,,Iannoni; Thorstvedt,Akpa Akpro; Gagliardini,,,0.4446,0.1898
+27,Como,Lecce,1-0,0.7406,0.1976,0.0612,1.825,0.338,Douvikas,,Baturina,,Smolcic I.; Addai,Ramadani; Gaspar K.,,,0.7129,0.1612
+27,Cremonese,Milan,0-1,0.1134,0.2213,0.6649,0.567,1.766,,Pulisic,,Rabiot,Payero; Pezzella Giu.,Athekame; Estupinan,,,0.1709,0.5671
+27,Inter,Genoa,3-0,0.8147,0.1118,0.0607,3.039,0.745,Martinez L.; Calhanoglu; Thuram,,Dimarco; Barella,,Calhanoglu; Carlos Augusto,Gronbaek *; Malinovskyi,,,0.4747,0.0479
+27,Parma,Cagliari,0-1,0.245,0.3103,0.4446,0.762,1.137,,Belotti,,Mazzitelli,Rinaldi; Nicolussi Caviglia,Dossena; Obert,,,0.3206,0.4669
+27,Pisa,Bologna,0-1,0.1998,0.2386,0.5611,0.914,1.71,,Orsolini,,Dominguez B.,Coppola F.; Bozhinov,De Silvestri; Lykogiannis,,,0.1809,0.401
+27,Roma,Juventus,0-0,0.3621,0.3467,0.2911,0.884,0.758,,,,,Zaragoza; Hermoso,Gatti,,,0.4684,0.4132
+27,Sassuolo,Atalanta,0-1,0.2169,0.265,0.5179,0.849,1.472,,Scamacca,,Raspadori,Iannoni; Thorstvedt,Kolasinac; De Roon,,,0.2296,0.4279
+27,Torino,Lazio,0-1,0.2176,0.2701,0.5122,0.829,1.431,,Pedro,,Castellanos *,Baroni; Aboukhlal,Rovella; Zaccagni,,Belahyane,0.2391,0.4366
+27,Udinese,Fiorentina,1-1,0.422,0.2449,0.3329,1.566,1.365,Davis K.,Solomon,Rui Modesto *,Harrison,Goglichidze *; Gueye,Vanoli; Pongracic,,,0.2553,0.2088
+27,Verona,Napoli,0-1,0.1047,0.1954,0.6987,0.618,1.997,,De Bruyne,,Neres,Akpa Akpro; Gagliardini,Juan Jesus,,,0.1357,0.5389
+28,Atalanta,Udinese,1-0,0.631,0.2194,0.1489,1.853,0.767,Scamacca,,Raspadori,,Kolasinac; De Roon,Goglichidze *; Gueye,,,0.4646,0.1568
+28,Bologna,Verona,1-0,0.6565,0.2058,0.1366,1.976,0.768,Orsolini,,Dominguez B.,,De Silvestri; Lykogiannis,Akpa Akpro; Gagliardini,,,0.4642,0.1387
+28,Cagliari,Como,0-1,0.1516,0.2332,0.6148,0.716,1.721,,Douvikas,,Baturina,Dossena; Obert,Smolcic I.; Addai,,,0.1788,0.4889
+28,Fiorentina,Parma,1-0,0.4641,0.2989,0.237,1.215,0.778,Solomon,,Harrison,,Vanoli; Pongracic,Rinaldi; Nicolussi Caviglia,,,0.4592,0.2966
+28,Genoa,Roma,0-1,0.1563,0.2654,0.5782,0.618,1.466,,Malen,,El Shaarawy,Gronbaek *; Malinovskyi,Zaragoza; Hermoso,,,0.2307,0.5389
+28,Juventus,Pisa,2-0,0.7997,0.1391,0.0574,2.451,0.502,Yildiz; Kostic,,Boga; Holm,,Gatti,Coppola F.; Bozhinov,,,0.6052,0.0862
+28,Lazio,Sassuolo,1-0,0.4785,0.2853,0.2362,1.307,0.827,Pedro,,Castellanos *,,Rovella; Zaccagni,Iannoni; Thorstvedt,Belahyane,,0.4374,0.2705
+28,Lecce,Cremonese,0-0,0.2899,0.3483,0.3618,0.751,0.878,,,,,Ramadani; Gaspar K.,Payero; Pezzella Giu.,,,0.4156,0.4717
+28,Milan,Inter,1-1,0.331,0.274,0.3948,1.148,1.28,Pulisic,Martinez L.,Rabiot,Dimarco,Athekame; Estupinan,Calhanoglu; Carlos Augusto,,,0.2781,0.3174
+28,Napoli,Torino,2-0,0.7249,0.1703,0.1022,2.306,0.735,De Bruyne; Zambo Anguissa,,Neres; Giovane,,Juan Jesus,Baroni; Aboukhlal,,,0.4795,0.0996
+29,Como,Roma,0-0,0.3646,0.3684,0.2669,0.823,0.657,,,,,Smolcic I.; Addai,Zaragoza; Hermoso,,,0.5185,0.4392
+29,Cremonese,Fiorentina,1-1,0.3687,0.2768,0.3544,1.213,1.184,Djuric,Solomon,Vandeputte,Harrison,Payero; Pezzella Giu.,Vanoli; Pongracic,,,0.3061,0.2972
+29,Inter,Atalanta,1-0,0.5833,0.2379,0.1784,1.704,0.821,Martinez L.,,Dimarco,,Calhanoglu; Carlos Augusto,Kolasinac; De Roon,,,0.4401,0.182
+29,Lazio,Milan,0-1,0.2052,0.2997,0.495,0.682,1.234,,Pulisic,,Rabiot,Rovella; Zaccagni,Athekame; Estupinan,Belahyane,,0.2912,0.5057
+29,Napoli,Lecce,1-0,0.6787,0.2249,0.0961,1.701,0.465,De Bruyne,,Neres,,Juan Jesus,Ramadani; Gaspar K.,,,0.6279,0.1824
+29,Pisa,Cagliari,0-1,0.2324,0.259,0.5084,0.935,1.518,,Belotti,,Mazzitelli,Coppola F.; Bozhinov,Dossena; Obert,,,0.2192,0.3928
+29,Sassuolo,Bologna,1-1,0.3391,0.2542,0.4066,1.305,1.454,Berardi,Orsolini,Volpato,Dominguez B.,Iannoni; Thorstvedt,De Silvestri; Lykogiannis,,,0.2337,0.271
+29,Torino,Parma,1-0,0.4023,0.3114,0.2863,1.08,0.861,Simeone,,Njie,,Baroni; Aboukhlal,Rinaldi; Nicolussi Caviglia,,,0.4228,0.3395
+29,Udinese,Juventus,0-2,0.1395,0.1992,0.66,0.824,2.063,,Yildiz; Kostic,,Boga; Holm,Goglichidze *; Gueye,Gatti,,,0.127,0.4388
+29,Verona,Genoa,1-1,0.236,0.249,0.5147,1.004,1.61,Orban G.,Colombo,Lovric,Martin,Akpa Akpro; Gagliardini,Gronbaek *; Malinovskyi,,,0.1999,0.3665
+30,Atalanta,Verona,1-0,0.7301,0.1871,0.0817,2.0,0.499,Scamacca,,Raspadori,,Kolasinac; De Roon,Akpa Akpro; Gagliardini,,,0.6071,0.1353
+30,Bologna,Lazio,1-1,0.3573,0.2908,0.3519,1.109,1.098,Orsolini,Pedro,Dominguez B.,Castellanos *,De Silvestri; Lykogiannis,Rovella; Zaccagni,,Belahyane,0.3336,0.33
+30,Cagliari,Napoli,0-1,0.2319,0.2496,0.5182,0.984,1.605,,De Bruyne,,Neres,Dossena; Obert,Juan Jesus,,,0.201,0.3738
+30,Como,Pisa,2-0,0.8061,0.1408,0.0501,2.358,0.421,Douvikas; Baturina,,Rodriguez Je.; Paz N.,,Smolcic I.; Addai,Coppola F.; Bozhinov,,,0.6564,0.0946
+30,Fiorentina,Inter,0-2,0.079,0.1352,0.7786,0.769,2.738,,Martinez L.; Calhanoglu,,Dimarco; Barella,Vanoli; Pongracic,Calhanoglu; Carlos Augusto,,,0.0647,0.4634
+30,Genoa,Udinese,1-1,0.4493,0.2376,0.3126,1.682,1.367,Colombo,Davis K.,Martin,Rui Modesto *,Gronbaek *; Malinovskyi,Goglichidze *; Gueye,,,0.2549,0.186
+30,Juventus,Sassuolo,2-0,0.6901,0.1917,0.1168,2.084,0.717,Yildiz; Kostic,,Boga; Holm,,Gatti,Iannoni; Thorstvedt,,,0.488,0.1245
+30,Milan,Torino,2-0,0.7967,0.1365,0.0621,2.539,0.567,Pulisic; Leao,,Rabiot; Modric,,Athekame; Estupinan,Baroni; Aboukhlal,,,0.5674,0.079
+30,Parma,Cremonese,0-0,0.2992,0.3512,0.3496,0.762,0.85,,,,,Rinaldi; Nicolussi Caviglia,Payero; Pezzella Giu.,,,0.4273,0.4669
+30,Roma,Lecce,1-0,0.6522,0.2729,0.0747,1.371,0.282,Malen,,El Shaarawy,,Zaragoza; Hermoso,Ramadani; Gaspar K.,,,0.7539,0.2538
+31,Cremonese,Bologna,1-1,0.2755,0.2681,0.4563,1.03,1.407,Djuric,Orsolini,Vandeputte,Dominguez B.,Payero; Pezzella Giu.,De Silvestri; Lykogiannis,,,0.2448,0.3571
+31,Inter,Roma,1-0,0.4484,0.3115,0.2401,1.136,0.745,Martinez L.,,Dimarco,,Calhanoglu; Carlos Augusto,Zaragoza; Hermoso,,,0.4747,0.3211
+31,Juventus,Genoa,2-0,0.7104,0.175,0.112,2.288,0.784,Yildiz; Kostic,,Boga; Holm,,Gatti,Gronbaek *; Malinovskyi,,,0.4567,0.1015
+31,Lazio,Parma,1-0,0.529,0.3197,0.1513,1.153,0.472,Pedro,,Castellanos *,,Rovella; Zaccagni,Rinaldi; Nicolussi Caviglia,Belahyane,,0.6239,0.3158
+31,Lecce,Atalanta,0-1,0.132,0.2843,0.5837,0.478,1.34,,Scamacca,,Raspadori,Ramadani; Gaspar K.,Kolasinac; De Roon,,,0.2619,0.6201
+31,Napoli,Milan,0-1,0.2913,0.2875,0.4212,0.975,1.234,,Pulisic,,Rabiot,Juan Jesus,Athekame; Estupinan,,,0.2912,0.3774
+31,Pisa,Torino,1-1,0.3432,0.2717,0.385,1.191,1.278,Durosinmi,Simeone,Leris,Njie,Coppola F.; Bozhinov,Baroni; Aboukhlal,,,0.2785,0.3039
+31,Sassuolo,Cagliari,1-1,0.3792,0.2623,0.3584,1.335,1.29,Berardi,Belotti,Volpato,Mazzitelli,Iannoni; Thorstvedt,Dossena; Obert,,,0.2752,0.2632
+31,Udinese,Como,0-1,0.1201,0.201,0.6779,0.691,1.985,,Douvikas,,Baturina,Goglichidze *; Gueye,Smolcic I.; Addai,,,0.1374,0.5013
+31,Verona,Fiorentina,1-1,0.2617,0.262,0.4761,1.02,1.474,Orban G.,Solomon,Lovric,Harrison,Akpa Akpro; Gagliardini,Vanoli; Pongracic,,,0.2291,0.3607
+32,Atalanta,Juventus,0-1,0.3094,0.2973,0.3933,0.974,1.138,,Yildiz,,Boga,Kolasinac; De Roon,Gatti,,,0.3206,0.3777
+32,Bologna,Lecce,1-0,0.5757,0.262,0.1621,1.492,0.652,Orsolini,,Dominguez B.,,De Silvestri; Lykogiannis,Ramadani; Gaspar K.,,,0.5212,0.2248
+32,Cagliari,Cremonese,1-0,0.4798,0.2706,0.2494,1.409,0.934,Belotti,,Mazzitelli,,Dossena; Obert,Payero; Pezzella Giu.,,,0.393,0.2444
+32,Como,Inter,1-1,0.3374,0.2815,0.381,1.118,1.207,Douvikas,Martinez L.,Baturina,Dimarco,Smolcic I.; Addai,Calhanoglu; Carlos Augusto,,,0.2991,0.3268
+32,Fiorentina,Lazio,0-1,0.2685,0.2831,0.4483,0.932,1.294,,Pedro,,Castellanos *,Vanoli; Pongracic,Rovella; Zaccagni,,Belahyane,0.2743,0.3936
+32,Genoa,Sassuolo,1-1,0.4119,0.2494,0.3384,1.506,1.342,Colombo,Berardi,Martin,Volpato,Gronbaek *; Malinovskyi,Iannoni; Thorstvedt,,,0.2612,0.2218
+32,Milan,Udinese,2-0,0.7436,0.1654,0.0885,2.297,0.649,Pulisic; Leao,,Rabiot; Modric,,Athekame; Estupinan,Goglichidze *; Gueye,,,0.5224,0.1005
+32,Parma,Napoli,0-1,0.1341,0.2647,0.601,0.532,1.461,,De Bruyne,,Neres,Rinaldi; Nicolussi Caviglia,Juan Jesus,,,0.232,0.5874
+32,Roma,Pisa,1-0,0.7262,0.2066,0.0667,1.772,0.351,Malen,,El Shaarawy,,Zaragoza; Hermoso,Coppola F.; Bozhinov,,,0.7038,0.17
+32,Torino,Verona,1-1,0.4817,0.2621,0.256,1.477,1.0,Simeone,Orban G.,Njie,Lovric,Baroni; Aboukhlal,Akpa Akpro; Gagliardini,,,0.3677,0.2283
+33,Cremonese,Torino,1-1,0.4333,0.2734,0.2932,1.342,1.052,Djuric,Simeone,Vandeputte,Njie,Payero; Pezzella Giu.,Baroni; Aboukhlal,,,0.3491,0.2613
+33,Inter,Cagliari,2-0,0.7817,0.1364,0.0756,2.68,0.72,Martinez L.; Calhanoglu,,Dimarco; Barella,,Calhanoglu; Carlos Augusto,Dossena; Obert,,,0.4868,0.0686
+33,Juventus,Bologna,1-0,0.6347,0.2097,0.1546,1.973,0.853,Yildiz,,Boga,,Gatti,De Silvestri; Lykogiannis,,,0.4262,0.1391
+33,Lecce,Fiorentina,0-1,0.2816,0.3072,0.4112,0.866,1.113,,Solomon,,Harrison,Ramadani; Gaspar K.,Vanoli; Pongracic,,,0.3285,0.4207
+33,Napoli,Lazio,1-0,0.4769,0.2922,0.2309,1.264,0.784,De Bruyne,,Neres,,Juan Jesus,Rovella; Zaccagni,,Belahyane,0.4565,0.2826
+33,Pisa,Genoa,1-1,0.256,0.2521,0.4916,1.06,1.571,Durosinmi,Colombo,Leris,Martin,Coppola F.; Bozhinov,Gronbaek *; Malinovskyi,,,0.2078,0.3466
+33,Roma,Atalanta,0-0,0.4158,0.3554,0.2287,0.927,0.604,,,,,Zaragoza; Hermoso,Kolasinac; De Roon,,,0.5466,0.3956
+33,Sassuolo,Como,0-1,0.137,0.2249,0.6376,0.678,1.778,,Douvikas,,Baturina,Iannoni; Thorstvedt,Smolcic I.; Addai,,,0.169,0.5076
+33,Udinese,Parma,1-0,0.4705,0.2959,0.2336,1.238,0.779,Davis K.,,Rui Modesto *,,Goglichidze *; Gueye,Rinaldi; Nicolussi Caviglia,,,0.4589,0.2901
+33,Verona,Milan,0-2,0.0661,0.1623,0.7696,0.477,2.199,,Pulisic; Leao,,Rabiot; Modric,Akpa Akpro; Gagliardini,Athekame; Estupinan,,,0.111,0.6208
+34,Bologna,Roma,0-1,0.198,0.2953,0.5066,0.673,1.265,,Malen,,El Shaarawy,De Silvestri; Lykogiannis,Zaragoza; Hermoso,,,0.2823,0.5103
+34,Cagliari,Atalanta,0-1,0.2366,0.2697,0.4935,0.896,1.425,,Scamacca,,Raspadori,Dossena; Obert,Kolasinac; De Roon,,,0.2405,0.4083
+34,Fiorentina,Sassuolo,1-1,0.3753,0.2558,0.3686,1.379,1.364,Solomon,Berardi,Harrison,Volpato,Vanoli; Pongracic,Iannoni; Thorstvedt,,,0.2556,0.2519
+34,Genoa,Como,0-1,0.1334,0.2072,0.6585,0.741,1.952,,Douvikas,,Baturina,Gronbaek *; Malinovskyi,Smolcic I.; Addai,,,0.142,0.4768
+34,Lazio,Udinese,1-0,0.5166,0.2664,0.2168,1.46,0.842,Pedro,,Castellanos *,,Rovella; Zaccagni,Goglichidze *; Gueye,Belahyane,,0.4308,0.2322
+34,Milan,Juventus,1-0,0.416,0.2908,0.2931,1.207,0.964,Pulisic,,Rabiot,,Athekame; Estupinan,Gatti,,,0.3815,0.2991
+34,Napoli,Cremonese,1-0,0.6514,0.2199,0.1282,1.809,0.652,De Bruyne,,Neres,,Juan Jesus,Payero; Pezzella Giu.,,,0.5209,0.1638
+34,Parma,Pisa,0-0,0.3774,0.3411,0.2815,0.925,0.755,,,,,Rinaldi; Nicolussi Caviglia,Coppola F.; Bozhinov,,,0.4702,0.3964
+34,Torino,Inter,0-3,0.0544,0.108,0.825,0.684,3.029,,Martinez L.; Calhanoglu; Thuram,,Dimarco; Barella,Baroni; Aboukhlal,Calhanoglu; Carlos Augusto,,,0.0484,0.5048
+34,Verona,Lecce,0-0,0.3281,0.3453,0.3266,0.832,0.829,,,,,Akpa Akpro; Gagliardini,Ramadani; Gaspar K.,,,0.4363,0.4351
+35,Atalanta,Genoa,1-0,0.61,0.2247,0.1647,1.822,0.822,Scamacca,,Raspadori,,Kolasinac; De Roon,Gronbaek *; Malinovskyi,,,0.4394,0.1617
+35,Bologna,Cagliari,1-1,0.4582,0.2476,0.2939,1.587,1.222,Orsolini,Belotti,Dominguez B.,Mazzitelli,De Silvestri; Lykogiannis,Dossena; Obert,,,0.2947,0.2045
+35,Como,Napoli,1-0,0.4952,0.2796,0.2252,1.356,0.815,Douvikas,,Baturina,,Smolcic I.; Addai,Juan Jesus,,,0.4426,0.2577
+35,Cremonese,Lazio,0-1,0.2394,0.3139,0.4467,0.736,1.123,,Pedro,,Castellanos *,Payero; Pezzella Giu.,Rovella; Zaccagni,,Belahyane,0.3254,0.4793
+35,Inter,Parma,2-0,0.8237,0.13,0.0427,2.44,0.389,Martinez L.; Calhanoglu,,Dimarco; Barella,,Calhanoglu; Carlos Augusto,Rinaldi; Nicolussi Caviglia,,,0.6776,0.0872
+35,Juventus,Verona,2-0,0.8132,0.1313,0.0512,2.511,0.476,Yildiz; Kostic,,Boga; Holm,,Gatti,Akpa Akpro; Gagliardini,,,0.6215,0.0812
+35,Pisa,Lecce,0-0,0.3486,0.3416,0.3098,0.879,0.81,,,,,Coppola F.; Bozhinov,Ramadani; Gaspar K.,,,0.4451,0.4153
+35,Roma,Fiorentina,1-0,0.6637,0.2299,0.106,1.68,0.502,Malen,,El Shaarawy,,Zaragoza; Hermoso,Vanoli; Pongracic,,,0.6054,0.1863
+35,Sassuolo,Milan,0-1,0.1414,0.2209,0.6371,0.719,1.824,,Pulisic,,Rabiot,Iannoni; Thorstvedt,Athekame; Estupinan,,,0.1613,0.4872
+35,Udinese,Torino,1-1,0.4952,0.2366,0.2678,1.733,1.214,Davis K.,Simeone,Rui Modesto *,Njie,Goglichidze *; Gueye,Baroni; Aboukhlal,,,0.2971,0.1768
+36,Cagliari,Udinese,1-1,0.4711,0.2451,0.2835,1.625,1.206,Belotti,Davis K.,Mazzitelli,Rui Modesto *,Dossena; Obert,Goglichidze *; Gueye,,,0.2995,0.1969
+36,Cremonese,Pisa,1-0,0.4699,0.2887,0.2413,1.279,0.829,Djuric,,Vandeputte,,Payero; Pezzella Giu.,Coppola F.; Bozhinov,,,0.4366,0.2782
+36,Fiorentina,Genoa,1-1,0.3836,0.2428,0.3732,1.514,1.49,Solomon,Colombo,Harrison,Martin,Vanoli; Pongracic,Gronbaek *; Malinovskyi,,,0.2253,0.2201
+36,Lazio,Inter,0-1,0.1618,0.2412,0.5967,0.729,1.66,,Martinez L.,,Dimarco,Rovella; Zaccagni,Calhanoglu; Carlos Augusto,Belahyane,,0.1902,0.4822
+36,Lecce,Juventus,0-1,0.0953,0.2271,0.6773,0.455,1.682,,Yildiz,,Boga,Ramadani; Gaspar K.,Gatti,,,0.186,0.6342
+36,Milan,Atalanta,1-0,0.482,0.2924,0.2255,1.267,0.767,Pulisic,,Rabiot,,Athekame; Estupinan,Kolasinac; De Roon,,,0.4642,0.2818
+36,Napoli,Bologna,1-0,0.558,0.2333,0.2081,1.769,0.983,De Bruyne,,Neres,,Juan Jesus,De Silvestri; Lykogiannis,,,0.3742,0.1704
+36,Parma,Roma,0-1,0.1013,0.3163,0.5824,0.323,1.177,,Malen,,El Shaarawy,Rinaldi; Nicolussi Caviglia,Zaragoza; Hermoso,,,0.3081,0.7241
+36,Torino,Sassuolo,1-1,0.3086,0.2533,0.4379,1.226,1.509,Simeone,Berardi,Njie,Volpato,Baroni; Aboukhlal,Iannoni; Thorstvedt,,,0.2211,0.2936
+36,Verona,Como,0-2,0.0646,0.1663,0.7674,0.45,2.143,,Douvikas; Baturina,,Rodriguez Je.; Paz N.,Akpa Akpro; Gagliardini,Smolcic I.; Addai,,,0.1173,0.6379
+37,Atalanta,Bologna,1-0,0.5319,0.2535,0.2144,1.571,0.895,Scamacca,,Raspadori,,Kolasinac; De Roon,De Silvestri; Lykogiannis,,,0.4086,0.2078
+37,Cagliari,Torino,1-1,0.5474,0.2315,0.2206,1.796,1.052,Belotti,Simeone,Mazzitelli,Njie,Dossena; Obert,Baroni; Aboukhlal,,,0.3491,0.166
+37,Como,Parma,1-0,0.7276,0.2066,0.0652,1.767,0.343,Douvikas,,Baturina,,Smolcic I.; Addai,Rinaldi; Nicolussi Caviglia,,,0.7096,0.1708
+37,Genoa,Milan,0-2,0.1376,0.2037,0.6575,0.785,2.003,,Pulisic; Leao,,Rabiot; Modric,Gronbaek *; Malinovskyi,Athekame; Estupinan,,,0.1349,0.4559
+37,Inter,Verona,3-0,0.8826,0.0721,0.0245,3.336,0.452,Martinez L.; Calhanoglu; Thuram,,Dimarco; Barella,,Calhanoglu; Carlos Augusto,Akpa Akpro; Gagliardini,,,0.6362,0.0356
+37,Juventus,Fiorentina,2-0,0.732,0.1674,0.0979,2.325,0.717,Yildiz; Kostic,,Boga; Holm,,Gatti,Vanoli; Pongracic,,,0.488,0.0978
+37,Pisa,Napoli,0-1,0.1156,0.203,0.6805,0.653,1.949,,De Bruyne,,Neres,Coppola F.; Bozhinov,Juan Jesus,,,0.1424,0.5206
+37,Roma,Lazio,1-0,0.4832,0.347,0.1697,1.019,0.476,Malen,,El Shaarawy,,Zaragoza; Hermoso,Rovella; Zaccagni,,Belahyane,0.6213,0.3611
+37,Sassuolo,Lecce,1-0,0.4997,0.2963,0.204,1.255,0.688,Berardi,,Volpato,,Iannoni; Thorstvedt,Ramadani; Gaspar K.,,,0.5025,0.285
+37,Udinese,Cremonese,1-1,0.4324,0.2708,0.2967,1.359,1.077,Davis K.,Djuric,Rui Modesto *,Vandeputte,Goglichidze *; Gueye,Payero; Pezzella Giu.,,,0.3406,0.2568
+38,Bologna,Inter,0-2,0.1321,0.1789,0.6863,0.914,2.324,,Martinez L.; Calhanoglu,,Dimarco; Barella,De Silvestri; Lykogiannis,Calhanoglu; Carlos Augusto,,,0.0979,0.4008
+38,Cremonese,Como,0-1,0.1101,0.2258,0.6637,0.535,1.721,,Douvikas,,Baturina,Payero; Pezzella Giu.,Smolcic I.; Addai,,,0.1788,0.5858
+38,Fiorentina,Atalanta,0-1,0.1932,0.2454,0.5612,0.849,1.642,,Scamacca,,Raspadori,Vanoli; Pongracic,Kolasinac; De Roon,,,0.1936,0.4279
+38,Lazio,Pisa,1-0,0.6077,0.254,0.1382,1.538,0.579,Pedro,,Castellanos *,,Rovella; Zaccagni,Coppola F.; Bozhinov,Belahyane,,0.5605,0.2148
+38,Lecce,Genoa,0-1,0.2588,0.2955,0.4456,0.852,1.216,,Colombo,,Martin,Ramadani; Gaspar K.,Gronbaek *; Malinovskyi,,,0.2964,0.4265
+38,Milan,Cagliari,1-0,0.6837,0.1993,0.116,1.992,0.673,Pulisic,,Rabiot,,Athekame; Estupinan,Dossena; Obert,,,0.5102,0.1364
+38,Napoli,Udinese,2-0,0.6601,0.1977,0.1408,2.087,0.842,De Bruyne; Zambo Anguissa,,Neres; Giovane,,Juan Jesus,Goglichidze *; Gueye,,,0.4308,0.1241
+38,Parma,Sassuolo,0-1,0.2634,0.317,0.4196,0.787,1.078,,Berardi,,Volpato,Rinaldi; Nicolussi Caviglia,Iannoni; Thorstvedt,,,0.3403,0.4554
+38,Torino,Juventus,0-2,0.1014,0.1718,0.7244,0.719,2.28,,Yildiz; Kostic,,Boga; Holm,Baroni; Aboukhlal,Gatti,,,0.1023,0.4872
+38,Verona,Roma,0-1,0.0821,0.2338,0.6839,0.375,1.61,,Malen,,El Shaarawy,Akpa Akpro; Gagliardini,Zaragoza; Hermoso,,,0.1999,0.6872
