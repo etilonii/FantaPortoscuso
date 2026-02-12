@@ -1,0 +1,19 @@
+name,team,role,prezzo_attuale,threshold_role,minutes_ratio,minutes_ratio_pct,tier
+Bremer,Juventus,D,17.0,10.0,0.4398,44.0,top
+Zambo Anguissa,Napoli,C,18.0,13.0,0.4583,45.8,top
+Baturina,Como,C,17.0,13.0,0.4783,47.8,top
+De Bruyne,Napoli,C,20.0,13.0,0.3333,33.3,semitop
+Kostic,Juventus,C,14.0,13.0,0.4167,41.7,semitop
+Mazzitelli,Cagliari,C,13.0,13.0,0.4167,41.7,semitop
+Holm,Juventus,D,12.0,10.0,0.4167,41.7,semitop
+Carlos Augusto,Inter,D,13.0,10.0,0.4356,43.6,semitop
+Kilicsoy,Cagliari,A,16.0,15.0,0.4583,45.8,semitop
+Scalvini,Atalanta,D,14.0,10.0,0.4583,45.8,semitop
+Lukaku,Napoli,A,15.0,15.0,0.0000,0.0,starter
+Raspadori,Atalanta,A,15.0,15.0,0.1250,12.5,starter
+Durosinmi,Pisa,A,16.0,15.0,0.1667,16.7,starter
+Taylor K.,Lazio,C,14.0,13.0,0.2083,20.8,starter
+Cabal,Juventus,D,10.0,10.0,0.3333,33.3,starter
+Moreno Alb.,Como,D,10.0,10.0,0.3478,34.8,starter
+Dumfries,Inter,D,10.0,10.0,0.4583,45.8,starter
+Skorupski,Bologna,P,10.0,10.0,0.4583,45.8,starter

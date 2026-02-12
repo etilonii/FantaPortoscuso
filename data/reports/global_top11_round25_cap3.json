@@ -1,0 +1,295 @@
+{
+  "round": 25,
+  "team_cap": 3,
+  "candidate_modules": [
+    "433",
+    "343"
+  ],
+  "picked_module": "343",
+  "module_scores": [
+    {
+      "module": "343",
+      "adjusted_force_xi": 939.47
+    },
+    {
+      "module": "433",
+      "adjusted_force_xi": 933.57
+    }
+  ],
+  "totals": {
+    "adjusted_force_xi": 939.47,
+    "base_force_xi": 898.8
+  },
+  "captain_mode": "balanced",
+  "captain": "Martinez L.",
+  "vice_captain": "Dimarco",
+  "captain_explain": {
+    "name": "Martinez L.",
+    "role": "A",
+    "mode": "balanced",
+    "base_force": 92.0,
+    "adjusted_force": 95.15,
+    "captain_score": 95.15,
+    "fixture_factor": 1.034,
+    "fixture_home_away": "H",
+    "fixture_opponent": "Juventus",
+    "reason": "Scelto per captain_score 95.15 (adjusted 95.15); modalita balanced: ranking su forza contestuale."
+  },
+  "vice_captain_explain": {
+    "name": "Dimarco",
+    "role": "D",
+    "mode": "balanced",
+    "base_force": 89.4,
+    "adjusted_force": 91.73,
+    "captain_score": 91.73,
+    "fixture_factor": 1.026,
+    "fixture_home_away": "H",
+    "fixture_opponent": "Juventus",
+    "reason": "Scelto per captain_score 91.73 (adjusted 91.73); modalita balanced: ranking su forza contestuale."
+  },
+  "team_counts_xi": {
+    "milan": 3,
+    "inter": 3,
+    "cagliari": 1,
+    "como": 3,
+    "napoli": 1
+  },
+  "xi": [
+    {
+      "name": "Maignan",
+      "role": "P",
+      "club": "Milan",
+      "club_key": "milan",
+      "base_force": 85.2,
+      "fixture_factor": 1.053,
+      "adjusted_force": 89.69,
+      "fixture_home_away": "A",
+      "fixture_opponent": "Pisa",
+      "club_ppm": 2.17,
+      "opponent_ppm": 0.63
+    },
+    {
+      "name": "Dimarco",
+      "role": "D",
+      "club": "Inter",
+      "club_key": "inter",
+      "base_force": 89.4,
+      "fixture_factor": 1.026,
+      "adjusted_force": 91.73,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Juventus",
+      "club_ppm": 2.42,
+      "opponent_ppm": 1.92
+    },
+    {
+      "name": "Bastoni",
+      "role": "D",
+      "club": "Inter",
+      "club_key": "inter",
+      "base_force": 77.3,
+      "fixture_factor": 1.026,
+      "adjusted_force": 79.31,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Juventus",
+      "club_ppm": 2.42,
+      "opponent_ppm": 1.92
+    },
+    {
+      "name": "Palestra",
+      "role": "D",
+      "club": "Cagliari",
+      "club_key": "cagliari",
+      "base_force": 76.1,
+      "fixture_factor": 1.041,
+      "adjusted_force": 79.24,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Lecce",
+      "club_ppm": 1.17,
+      "opponent_ppm": 0.88
+    },
+    {
+      "name": "Pulisic",
+      "role": "C",
+      "club": "Milan",
+      "club_key": "milan",
+      "base_force": 84.2,
+      "fixture_factor": 1.031,
+      "adjusted_force": 86.84,
+      "fixture_home_away": "A",
+      "fixture_opponent": "Pisa",
+      "club_ppm": 2.17,
+      "opponent_ppm": 0.63
+    },
+    {
+      "name": "Paz N.",
+      "role": "C",
+      "club": "Como",
+      "club_key": "como",
+      "base_force": 79.7,
+      "fixture_factor": 1.074,
+      "adjusted_force": 85.58,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Fiorentina",
+      "club_ppm": 1.78,
+      "opponent_ppm": 0.75
+    },
+    {
+      "name": "McTominay",
+      "role": "C",
+      "club": "Napoli",
+      "club_key": "napoli",
+      "base_force": 82.2,
+      "fixture_factor": 1.021,
+      "adjusted_force": 83.95,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Roma",
+      "club_ppm": 2.04,
+      "opponent_ppm": 1.92
+    },
+    {
+      "name": "Baturina",
+      "role": "C",
+      "club": "Como",
+      "club_key": "como",
+      "base_force": 77.7,
+      "fixture_factor": 1.074,
+      "adjusted_force": 83.43,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Fiorentina",
+      "club_ppm": 1.78,
+      "opponent_ppm": 0.75
+    },
+    {
+      "name": "Martinez L.",
+      "role": "A",
+      "club": "Inter",
+      "club_key": "inter",
+      "base_force": 92.0,
+      "fixture_factor": 1.034,
+      "adjusted_force": 95.15,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Juventus",
+      "club_ppm": 2.42,
+      "opponent_ppm": 1.92
+    },
+    {
+      "name": "Douvikas",
+      "role": "A",
+      "club": "Como",
+      "club_key": "como",
+      "base_force": 75.5,
+      "fixture_factor": 1.093,
+      "adjusted_force": 82.5,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Fiorentina",
+      "club_ppm": 1.78,
+      "opponent_ppm": 0.75
+    },
+    {
+      "name": "Leao",
+      "role": "A",
+      "club": "Milan",
+      "club_key": "milan",
+      "base_force": 79.5,
+      "fixture_factor": 1.032,
+      "adjusted_force": 82.05,
+      "fixture_home_away": "A",
+      "fixture_opponent": "Pisa",
+      "club_ppm": 2.17,
+      "opponent_ppm": 0.63
+    }
+  ],
+  "bench": [
+    {
+      "name": "Carnesecchi",
+      "role": "P",
+      "club": "Atalanta",
+      "club_key": "atalanta",
+      "base_force": 85.8,
+      "fixture_factor": 0.989,
+      "adjusted_force": 84.84,
+      "fixture_home_away": "A",
+      "fixture_opponent": "Lazio",
+      "club_ppm": 1.63,
+      "opponent_ppm": 1.38
+    },
+    {
+      "name": "Calhanoglu",
+      "role": "C",
+      "club": "Inter",
+      "club_key": "inter",
+      "base_force": 81.7,
+      "fixture_factor": 1.032,
+      "adjusted_force": 84.35,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Juventus",
+      "club_ppm": 2.42,
+      "opponent_ppm": 1.92
+    },
+    {
+      "name": "Bonny",
+      "role": "A",
+      "club": "Inter",
+      "club_key": "inter",
+      "base_force": 80.1,
+      "fixture_factor": 1.034,
+      "adjusted_force": 82.84,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Juventus",
+      "club_ppm": 2.42,
+      "opponent_ppm": 1.92
+    },
+    {
+      "name": "Rabiot",
+      "role": "C",
+      "club": "Milan",
+      "club_key": "milan",
+      "base_force": 79.8,
+      "fixture_factor": 1.031,
+      "adjusted_force": 82.3,
+      "fixture_home_away": "A",
+      "fixture_opponent": "Pisa",
+      "club_ppm": 2.17,
+      "opponent_ppm": 0.63
+    },
+    {
+      "name": "Thuram",
+      "role": "A",
+      "club": "Inter",
+      "club_key": "inter",
+      "base_force": 78.8,
+      "fixture_factor": 1.034,
+      "adjusted_force": 81.49,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Juventus",
+      "club_ppm": 2.42,
+      "opponent_ppm": 1.92
+    },
+    {
+      "name": "Spinazzola",
+      "role": "D",
+      "club": "Napoli",
+      "club_key": "napoli",
+      "base_force": 76.6,
+      "fixture_factor": 1.012,
+      "adjusted_force": 77.53,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Roma",
+      "club_ppm": 2.04,
+      "opponent_ppm": 1.92
+    },
+    {
+      "name": "Kempf",
+      "role": "D",
+      "club": "Como",
+      "club_key": "como",
+      "base_force": 70.8,
+      "fixture_factor": 1.071,
+      "adjusted_force": 75.85,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Fiorentina",
+      "club_ppm": 1.78,
+      "opponent_ppm": 0.75
+    }
+  ]
+}

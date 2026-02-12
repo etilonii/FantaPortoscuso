@@ -8,6 +8,10 @@ export default function FormazioniSection({
   onFormationOrderChange,
   formationMeta,
   reloadFormazioni,
+  optimizerData,
+  optimizerLoading,
+  optimizerError,
+  runOptimizer,
   openPlayer,
   formatDecimal,
 }) {
@@ -69,6 +73,7 @@ export default function FormazioniSection({
   });
 
   const normalizePlayerKey = (value) => String(value || "").trim().toLowerCase();
+  const canOptimize = formationTeam !== "all" && String(formationTeam || "").trim().length > 0;
 
   const toPlayerEntry = (entry) => {
     if (typeof entry === "string") {
@@ -120,6 +125,44 @@ export default function FormazioniSection({
               </span>
               <span className={scoreClass}>
                 V {voteLabel} | FV {fantavoteLabel}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const renderOptimizerPills = (players) => {
+    const normalized = Array.isArray(players) ? players : [];
+    if (!normalized.length) return <span className="muted">-</span>;
+    return (
+      <div className="formation-pills">
+        {normalized.map((entry, idx) => {
+          const name = String(entry?.name || "").trim();
+          if (!name) return null;
+          const role = String(entry?.role || "").trim().toUpperCase();
+          const adjusted = Number(entry?.adjusted_force);
+          const base = Number(entry?.base_force);
+          const factor = Number(entry?.fixture_factor);
+          const opponent = String(entry?.fixture_opponent || "").trim();
+          const homeAway = String(entry?.fixture_home_away || "").trim().toUpperCase();
+          const opponentLabel = opponent ? `${homeAway || "?"} vs ${opponent}` : "N/D";
+          return (
+            <button
+              key={`${name}-${idx}`}
+              type="button"
+              className="formation-pill"
+              onClick={() => openPlayer(name)}
+            >
+              {role ? <span className="formation-pill-role">{role}</span> : null}
+              <span className="formation-pill-name">{name}</span>
+              <span className="formation-pill-metrics">
+                Adj {Number.isFinite(adjusted) ? formatDecimal(adjusted, 2) : "-"} | Base{" "}
+                {Number.isFinite(base) ? formatDecimal(base, 2) : "-"}
+              </span>
+              <span className="formation-pill-metrics">
+                x{Number.isFinite(factor) ? formatDecimal(factor, 3) : "1,000"} • {opponentLabel}
               </span>
             </button>
           );
@@ -197,8 +240,71 @@ export default function FormazioniSection({
           <button type="button" className="ghost" onClick={() => reloadFormazioni()}>
             Corrente
           </button>
+          {canOptimize ? (
+            <button
+              type="button"
+              className="primary"
+              onClick={() => runOptimizer(formationTeam, formationRound || null)}
+              disabled={optimizerLoading}
+            >
+              {optimizerLoading ? "Calcolo..." : "XI ottimizzata"}
+            </button>
+          ) : null}
         </div>
         {formationMeta?.note ? <p className="muted compact">{formationMeta.note}</p> : null}
+        {optimizerError ? <p className="error">{optimizerError}</p> : null}
+
+        {canOptimize && optimizerData ? (
+          <article className="formation-card formation-optimizer-card">
+            <header className="formation-card-head">
+              <p className="rank-title">
+                <span className="rank-badge rank-1">XI</span>
+                <span>
+                  {optimizerData.team} • Giornata {optimizerData.round}
+                </span>
+              </p>
+              <div className="formation-meta">
+                <span className="muted">Modulo {optimizerData.module || "-"}</span>
+                <strong>
+                  Adj {formatDecimal(optimizerData?.totals?.adjusted_force || 0, 2)}
+                </strong>
+                <span className="formation-live-total">
+                  Base {formatDecimal(optimizerData?.totals?.base_force || 0, 2)}
+                </span>
+              </div>
+            </header>
+            <p className="muted compact">
+              Calcolo su forza giocatore locale + coefficiente partita (casa/trasferta + forza
+              avversario).
+            </p>
+            <div className="formation-lines">
+              <div className="formation-line">
+                <span className="formation-label">P</span>
+                {renderOptimizerPills(optimizerData?.lineup?.portiere_details || [])}
+              </div>
+              <div className="formation-line">
+                <span className="formation-label">D</span>
+                {renderOptimizerPills(optimizerData?.lineup?.difensori_details || [])}
+              </div>
+              <div className="formation-line">
+                <span className="formation-label">C</span>
+                {renderOptimizerPills(optimizerData?.lineup?.centrocampisti_details || [])}
+              </div>
+              <div className="formation-line">
+                <span className="formation-label">A</span>
+                {renderOptimizerPills(optimizerData?.lineup?.attaccanti_details || [])}
+              </div>
+              <div className="formation-line formation-line-bench">
+                <span className="formation-label bench">B</span>
+                {renderOptimizerPills(optimizerData?.lineup?.panchina_details || [])}
+              </div>
+            </div>
+            <div className="formation-live-breakdown">
+              <span>Capitano {optimizerData?.captain || "-"}</span>
+              <span>Vice {optimizerData?.vice_captain || "-"}</span>
+            </div>
+          </article>
+        ) : null}
 
         {orderedItems.length === 0 ? (
           <p className="muted">Nessuna formazione disponibile.</p>

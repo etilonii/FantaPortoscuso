@@ -1,0 +1,26 @@
+Team: Pi-Ciaccio
+Giornata: 25
+Modulo consigliato: 3-4-3
+Capitano: Martinez L.
+Vice: Paz N.
+Forza base: 842.25
+Forza contestuale: 873.0
+
+XI consigliato:
+P: Maignan
+D: Bremer, Martin, Mancini
+C: Paz N., McTominay, Rabiot, Atta
+A: Martinez L., Douvikas, Esposito Se.
+
+Dettaglio titolari (ordinati per forza contestuale):
+- Martinez L. (A, Inter) | base=92.55 | adj=95.86 | f=1.036 | H vs Juventus
+- Maignan (P, Milan) | base=85.78 | adj=91.7 | f=1.069 | A vs Pisa
+- Paz N. (C, Como) | base=81.53 | adj=89.71 | f=1.1 | H vs Fiorentina
+- Douvikas (A, Como) | base=77.7 | adj=86.85 | f=1.118 | H vs Fiorentina
+- McTominay (C, Napoli) | base=83.4 | adj=85.39 | f=1.024 | H vs Roma
+- Rabiot (C, Milan) | base=78.9 | adj=82.32 | f=1.043 | A vs Pisa
+- Atta (C, Udinese) | base=74.83 | adj=78.57 | f=1.05 | H vs Sassuolo
+- Bremer (D, Juventus) | base=79.43 | adj=73.23 | f=0.922 | A vs Inter
+- Esposito Se. (A, Cagliari) | base=60.6 | adj=65.82 | f=1.086 | H vs Lecce
+- Martin (D, Genoa) | base=65.35 | adj=64.49 | f=0.987 | A vs Cremonese
+- Mancini (D, Roma) | base=62.18 | adj=59.06 | f=0.95 | A vs Napoli

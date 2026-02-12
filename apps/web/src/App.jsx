@@ -239,6 +239,9 @@ export default function App() {
     orderAllowed: ["classifica", "live_total"],
     note: "",
   });
+  const [formationOptimizer, setFormationOptimizer] = useState(null);
+  const [formationOptimizerLoading, setFormationOptimizerLoading] = useState(false);
+  const [formationOptimizerError, setFormationOptimizerError] = useState("");
   const [livePayload, setLivePayload] = useState({
     round: null,
     available_rounds: [],
@@ -642,6 +645,36 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       String(nextOrder || "").toLowerCase() === "live_total" ? "live_total" : "classifica";
     setFormationOrder(normalizedOrder);
     loadFormazioni(formationRound || null, normalizedOrder);
+  };
+
+  const runFormationOptimizer = async (teamName, roundValue = null) => {
+    const safeTeam = String(teamName || "").trim();
+    if (!safeTeam || safeTeam.toLowerCase() === "all") {
+      setFormationOptimizer(null);
+      setFormationOptimizerError("");
+      return;
+    }
+    try {
+      setFormationOptimizerLoading(true);
+      setFormationOptimizerError("");
+      const params = new URLSearchParams({ team: safeTeam });
+      const parsedRound = Number(roundValue || formationRound || 0);
+      if (Number.isFinite(parsedRound) && parsedRound > 0) {
+        params.set("round", String(parsedRound));
+      }
+      const res = await fetch(`${API_BASE}/data/formazioni/optimizer?${params.toString()}`);
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload?.detail || "Errore calcolo XI ottimizzata");
+      }
+      const data = await res.json();
+      setFormationOptimizer(data || null);
+    } catch (err) {
+      setFormationOptimizer(null);
+      setFormationOptimizerError(err?.message || "Errore calcolo XI ottimizzata");
+    } finally {
+      setFormationOptimizerLoading(false);
+    }
   };
 
   const loadLivePayload = async (roundValue = null) => {
@@ -1839,6 +1872,11 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   }, [loggedIn, selectedTeam]);
 
   useEffect(() => {
+    setFormationOptimizer(null);
+    setFormationOptimizerError("");
+  }, [formationTeam, formationRound]);
+
+  useEffect(() => {
     if (!loggedIn) return;
     loadPlusvalenze();
     loadAllPlusvalenze();
@@ -2252,6 +2290,10 @@ useEffect(() => {
                 onFormationOrderChange={onFormationOrderChange}
                 formationMeta={formationMeta}
                 reloadFormazioni={() => loadFormazioni(formationRound || null, formationOrder)}
+                optimizerData={formationOptimizer}
+                optimizerLoading={formationOptimizerLoading}
+                optimizerError={formationOptimizerError}
+                runOptimizer={runFormationOptimizer}
                 openPlayer={openPlayer}
                 formatDecimal={formatDecimal}
               />

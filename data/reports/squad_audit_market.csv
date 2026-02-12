@@ -1,0 +1,24 @@
+Team,Giocatore,Squadra,RuoloMantra,Reparto,PrezzoAcquisto,PrezzoAttuale,RealScore,PotentialScore,CreditEfficiencyScore,MarketScoreFinal,Tier
+Pi-Ciaccio,Colombo,Genoa,A,Att,6.0,14.0,18.75,25.0,0.0,16.88,Scarti
+Pi-Ciaccio,David,Juventus,A,Att,15.0,13.0,39.35,50.93,100.0,54.95,Scommessa
+Pi-Ciaccio,Douvikas,Como,A,Att,24.0,21.0,61.57,53.7,50.0,56.89,Scommessa
+Pi-Ciaccio,Esposito Se.,Cagliari,A,Att,7.0,16.0,35.42,28.7,25.0,31.32,Scarti
+Pi-Ciaccio,Martinez L.,Inter,A,Att,36.0,34.0,94.91,91.67,75.0,89.96,Top
+Pi-Ciaccio,Akinsanmiro,Pisa,C,Cen,3.0,7.0,36.66,27.09,85.71,43.6,Scarti
+Pi-Ciaccio,Atta,Udinese,C,Cen,6.0,16.0,69.81,62.4,57.14,65.05,Titolare
+Pi-Ciaccio,Bondo,Cremonese,M,Cen,4.0,7.0,14.42,19.41,14.29,15.89,Scarti
+Pi-Ciaccio,McTominay,Napoli,C,Cen,24.0,25.0,74.39,74.53,28.57,65.27,Titolare
+Pi-Ciaccio,Ondrejka,Parma,C,Cen,5.0,5.0,23.99,34.1,100.0,42.23,Scarti
+Pi-Ciaccio,Paz N.,Como,C,Cen,20.0,30.0,70.62,76.42,0.0,58.24,Scommessa
+Pi-Ciaccio,Prati,Cagliari,M,Cen,3.0,6.0,25.2,28.3,71.43,35.38,Scarti
+Pi-Ciaccio,Rabiot,Milan,C,Cen,26.0,23.0,84.91,77.76,42.86,74.36,SemiTop
+Pi-Ciaccio,Bellanova,Atalanta,Dc,Dif,6.0,6.0,33.49,46.24,83.33,47.28,Scommessa
+Pi-Ciaccio,Bremer,Juventus,Dc,Dif,13.0,13.0,88.52,89.05,66.67,84.31,Top
+Pi-Ciaccio,Gutierrez,Napoli,Dc,Dif,6.0,3.0,64.15,44.12,100.0,65.31,Titolare
+Pi-Ciaccio,Mancini,Roma,Dc,Dif,11.0,10.0,40.09,50.98,16.67,38.67,Scarti
+Pi-Ciaccio,Martin,Genoa,Dc,Dif,10.0,14.0,61.95,59.31,33.33,55.43,Scommessa
+Pi-Ciaccio,Mina,Cagliari,Dc,Dif,7.0,8.0,48.74,34.15,50.0,44.62,Scarti
+Pi-Ciaccio,Tiago Gabriel,Lecce,Dc,Dif,1.0,9.0,13.05,26.14,0.0,14.37,Scarti
+Pi-Ciaccio,Maignan,Milan,Por,Por,16.0,20.0,29.63,54.9,0.0,31.28,Scarti
+Pi-Ciaccio,Martinez Jo.,Inter,Por,Por,2.0,1.0,54.63,45.59,50.0,50.99,1 credito
+Pi-Ciaccio,Terracciano,Milan,Por,Por,1.0,1.0,65.74,49.51,100.0,67.72,1 credito

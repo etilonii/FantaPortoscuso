@@ -1,0 +1,26 @@
+Team: Pi-Ciaccio
+Giornata: 25
+
+Martinez L. (A) | base 92.55 | f 1.036 | adj 95.86 | H vs Juventus
+Maignan (P) | base 85.78 | f 1.069 | adj 91.7 | A vs Pisa
+Paz N. (C) | base 81.53 | f 1.1 | adj 89.71 | H vs Fiorentina
+Douvikas (A) | base 77.7 | f 1.118 | adj 86.85 | H vs Fiorentina
+McTominay (C) | base 83.4 | f 1.024 | adj 85.39 | H vs Roma
+Rabiot (C) | base 78.9 | f 1.043 | adj 82.32 | A vs Pisa
+Atta (C) | base 74.83 | f 1.05 | adj 78.57 | H vs Sassuolo
+Bremer (D) | base 79.43 | f 0.922 | adj 73.23 | A vs Inter
+Esposito Se. (A) | base 60.6 | f 1.086 | adj 65.82 | H vs Lecce
+Martin (D) | base 65.35 | f 0.987 | adj 64.49 | A vs Cremonese
+Mancini (D) | base 62.18 | f 0.95 | adj 59.06 | A vs Napoli
+David (A) | base 63.52 | f 0.875 | adj 55.59 | A vs Inter
+Colombo (A) | base 56.12 | f 0.972 | adj 54.56 | A vs Cremonese
+Mina (D) | base 50.68 | f 1.047 | adj 53.06 | H vs Lecce
+Bellanova (D) | base 51.15 | f 0.985 | adj 50.41 | A vs Lazio
+Tiago Gabriel (D) | base 50.72 | f 0.968 | adj 49.09 | A vs Cagliari
+Gutierrez (D) | base 47.97 | f 1.009 | adj 48.4 | H vs Roma
+Terracciano (P) | base 40.5 | f 1.069 | adj 43.29 | A vs Pisa
+Martinez Jo. (P) | base 42.17 | f 1.02 | adj 43.0 | H vs Juventus
+Prati (C) | base 38.87 | f 1.068 | adj 41.53 | H vs Lecce
+Bondo (C) | base 36.75 | f 1.055 | adj 38.76 | H vs Genoa
+Akinsanmiro (C) | base 37.82 | f 0.954 | adj 36.07 | H vs Milan
+Ondrejka (C) | base 27.77 | f 1.03 | adj 28.59 | H vs Verona

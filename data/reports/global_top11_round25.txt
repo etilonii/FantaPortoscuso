@@ -1,0 +1,19 @@
+Top XI Serie A - Giornata 25
+Pool giocatori valutati: 525
+Modulo: 352
+Capitano: Martinez L.
+Vice: Dimarco
+Totale base XI: 905.6
+Totale contestuale XI: 942.11
+
+- Martinez L. (A, Inter) | base 92.0 | f 1.034 | adj 95.15 | H vs Juventus
+- Dimarco (D, Inter) | base 89.4 | f 1.026 | adj 91.73 | H vs Juventus
+- Maignan (P, Milan) | base 85.2 | f 1.053 | adj 89.69 | A vs Pisa
+- Pulisic (C, Milan) | base 84.2 | f 1.031 | adj 86.84 | A vs Pisa
+- Paz N. (C, Como) | base 79.7 | f 1.074 | adj 85.58 | H vs Fiorentina
+- Calhanoglu (C, Inter) | base 81.7 | f 1.032 | adj 84.35 | H vs Juventus
+- McTominay (C, Napoli) | base 82.2 | f 1.021 | adj 83.95 | H vs Roma
+- Baturina (C, Como) | base 77.7 | f 1.074 | adj 83.43 | H vs Fiorentina
+- Bonny (A, Inter) | base 80.1 | f 1.034 | adj 82.84 | H vs Juventus
+- Bastoni (D, Inter) | base 77.3 | f 1.026 | adj 79.31 | H vs Juventus
+- Palestra (D, Cagliari) | base 76.1 | f 1.041 | adj 79.24 | H vs Lecce

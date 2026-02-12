@@ -1,0 +1,429 @@
+{
+  "team": "Pi-Ciaccio",
+  "round": 25,
+  "available_rounds": [
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38
+  ],
+  "source": "context_optimizer",
+  "context_source_path": "C:\\Users\\Kekko\\PycharmProjects\\FantaPortoscuso\\data\\incoming\\manual\\seriea_context.csv",
+  "optimizer_context": {
+    "home_bonus": {
+      "P": 0.01,
+      "D": 0.02,
+      "C": 0.04,
+      "A": 0.05
+    },
+    "away_penalty": {
+      "P": -0.015,
+      "D": -0.025,
+      "C": -0.04,
+      "A": -0.05
+    },
+    "own_weight": {
+      "P": 0.06,
+      "D": 0.06,
+      "C": 0.05,
+      "A": 0.045
+    },
+    "opp_weight": {
+      "P": 0.09,
+      "D": 0.1,
+      "C": 0.1,
+      "A": 0.12
+    },
+    "min_multiplier": 0.8,
+    "max_multiplier": 1.22
+  },
+  "module": "3-4-3",
+  "lineup": {
+    "portiere": "Maignan",
+    "difensori": [
+      "Bremer",
+      "Martin",
+      "Mancini"
+    ],
+    "centrocampisti": [
+      "Paz N.",
+      "McTominay",
+      "Rabiot",
+      "Atta"
+    ],
+    "attaccanti": [
+      "Martinez L.",
+      "Douvikas",
+      "Esposito Se."
+    ],
+    "portiere_details": [
+      {
+        "name": "Maignan",
+        "role": "P",
+        "base_force": 85.78,
+        "adjusted_force": 91.7,
+        "fixture_factor": 1.069,
+        "fixture_home_away": "A",
+        "fixture_opponent": "Pisa"
+      }
+    ],
+    "difensori_details": [
+      {
+        "name": "Bremer",
+        "role": "D",
+        "base_force": 79.43,
+        "adjusted_force": 73.23,
+        "fixture_factor": 0.922,
+        "fixture_home_away": "A",
+        "fixture_opponent": "Inter"
+      },
+      {
+        "name": "Martin",
+        "role": "D",
+        "base_force": 65.35,
+        "adjusted_force": 64.49,
+        "fixture_factor": 0.987,
+        "fixture_home_away": "A",
+        "fixture_opponent": "Cremonese"
+      },
+      {
+        "name": "Mancini",
+        "role": "D",
+        "base_force": 62.18,
+        "adjusted_force": 59.06,
+        "fixture_factor": 0.95,
+        "fixture_home_away": "A",
+        "fixture_opponent": "Napoli"
+      }
+    ],
+    "centrocampisti_details": [
+      {
+        "name": "Paz N.",
+        "role": "C",
+        "base_force": 81.53,
+        "adjusted_force": 89.71,
+        "fixture_factor": 1.1,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Fiorentina"
+      },
+      {
+        "name": "McTominay",
+        "role": "C",
+        "base_force": 83.4,
+        "adjusted_force": 85.39,
+        "fixture_factor": 1.024,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Roma"
+      },
+      {
+        "name": "Rabiot",
+        "role": "C",
+        "base_force": 78.9,
+        "adjusted_force": 82.32,
+        "fixture_factor": 1.043,
+        "fixture_home_away": "A",
+        "fixture_opponent": "Pisa"
+      },
+      {
+        "name": "Atta",
+        "role": "C",
+        "base_force": 74.83,
+        "adjusted_force": 78.57,
+        "fixture_factor": 1.05,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Sassuolo"
+      }
+    ],
+    "attaccanti_details": [
+      {
+        "name": "Martinez L.",
+        "role": "A",
+        "base_force": 92.55,
+        "adjusted_force": 95.86,
+        "fixture_factor": 1.036,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Juventus"
+      },
+      {
+        "name": "Douvikas",
+        "role": "A",
+        "base_force": 77.7,
+        "adjusted_force": 86.85,
+        "fixture_factor": 1.118,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Fiorentina"
+      },
+      {
+        "name": "Esposito Se.",
+        "role": "A",
+        "base_force": 60.6,
+        "adjusted_force": 65.82,
+        "fixture_factor": 1.086,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Lecce"
+      }
+    ],
+    "panchina_details": [
+      {
+        "name": "Terracciano",
+        "role": "P",
+        "base_force": 40.5,
+        "adjusted_force": 43.29,
+        "fixture_factor": 1.069,
+        "fixture_home_away": "A",
+        "fixture_opponent": "Pisa"
+      },
+      {
+        "name": "Martinez Jo.",
+        "role": "P",
+        "base_force": 42.17,
+        "adjusted_force": 43.0,
+        "fixture_factor": 1.02,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Juventus"
+      },
+      {
+        "name": "David",
+        "role": "A",
+        "base_force": 63.52,
+        "adjusted_force": 55.59,
+        "fixture_factor": 0.875,
+        "fixture_home_away": "A",
+        "fixture_opponent": "Inter"
+      },
+      {
+        "name": "Colombo",
+        "role": "A",
+        "base_force": 56.12,
+        "adjusted_force": 54.56,
+        "fixture_factor": 0.972,
+        "fixture_home_away": "A",
+        "fixture_opponent": "Cremonese"
+      },
+      {
+        "name": "Mina",
+        "role": "D",
+        "base_force": 50.68,
+        "adjusted_force": 53.06,
+        "fixture_factor": 1.047,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Lecce"
+      },
+      {
+        "name": "Bellanova",
+        "role": "D",
+        "base_force": 51.15,
+        "adjusted_force": 50.41,
+        "fixture_factor": 0.985,
+        "fixture_home_away": "A",
+        "fixture_opponent": "Lazio"
+      },
+      {
+        "name": "Tiago Gabriel",
+        "role": "D",
+        "base_force": 50.72,
+        "adjusted_force": 49.09,
+        "fixture_factor": 0.968,
+        "fixture_home_away": "A",
+        "fixture_opponent": "Cagliari"
+      },
+      {
+        "name": "Gutierrez",
+        "role": "D",
+        "base_force": 47.97,
+        "adjusted_force": 48.4,
+        "fixture_factor": 1.009,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Roma"
+      },
+      {
+        "name": "Prati",
+        "role": "C",
+        "base_force": 38.87,
+        "adjusted_force": 41.53,
+        "fixture_factor": 1.068,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Lecce"
+      },
+      {
+        "name": "Bondo",
+        "role": "C",
+        "base_force": 36.75,
+        "adjusted_force": 38.76,
+        "fixture_factor": 1.055,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Genoa"
+      },
+      {
+        "name": "Akinsanmiro",
+        "role": "C",
+        "base_force": 37.82,
+        "adjusted_force": 36.07,
+        "fixture_factor": 0.954,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Milan"
+      },
+      {
+        "name": "Ondrejka",
+        "role": "C",
+        "base_force": 27.77,
+        "adjusted_force": 28.59,
+        "fixture_factor": 1.03,
+        "fixture_home_away": "H",
+        "fixture_opponent": "Verona"
+      }
+    ]
+  },
+  "captain": "Martinez L.",
+  "vice_captain": "Paz N.",
+  "totals": {
+    "base_force": 842.25,
+    "adjusted_force": 873.0
+  },
+  "players_ranked": [
+    {
+      "name": "Martinez L.",
+      "role": "A",
+      "club": "Inter",
+      "base_force": 92.55,
+      "fixture_factor": 1.036,
+      "adjusted_force": 95.86,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Juventus",
+      "club_ppm": 2.42,
+      "opponent_ppm": 1.92
+    },
+    {
+      "name": "Maignan",
+      "role": "P",
+      "club": "Milan",
+      "base_force": 85.78,
+      "fixture_factor": 1.069,
+      "adjusted_force": 91.7,
+      "fixture_home_away": "A",
+      "fixture_opponent": "Pisa",
+      "club_ppm": 2.17,
+      "opponent_ppm": 0.63
+    },
+    {
+      "name": "Paz N.",
+      "role": "C",
+      "club": "Como",
+      "base_force": 81.53,
+      "fixture_factor": 1.1,
+      "adjusted_force": 89.71,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Fiorentina",
+      "club_ppm": 1.78,
+      "opponent_ppm": 0.75
+    },
+    {
+      "name": "Douvikas",
+      "role": "A",
+      "club": "Como",
+      "base_force": 77.7,
+      "fixture_factor": 1.118,
+      "adjusted_force": 86.85,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Fiorentina",
+      "club_ppm": 1.78,
+      "opponent_ppm": 0.75
+    },
+    {
+      "name": "McTominay",
+      "role": "C",
+      "club": "Napoli",
+      "base_force": 83.4,
+      "fixture_factor": 1.024,
+      "adjusted_force": 85.39,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Roma",
+      "club_ppm": 2.04,
+      "opponent_ppm": 1.92
+    },
+    {
+      "name": "Rabiot",
+      "role": "C",
+      "club": "Milan",
+      "base_force": 78.9,
+      "fixture_factor": 1.043,
+      "adjusted_force": 82.32,
+      "fixture_home_away": "A",
+      "fixture_opponent": "Pisa",
+      "club_ppm": 2.17,
+      "opponent_ppm": 0.63
+    },
+    {
+      "name": "Atta",
+      "role": "C",
+      "club": "Udinese",
+      "base_force": 74.83,
+      "fixture_factor": 1.05,
+      "adjusted_force": 78.57,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Sassuolo",
+      "club_ppm": 1.33,
+      "opponent_ppm": 1.21
+    },
+    {
+      "name": "Bremer",
+      "role": "D",
+      "club": "Juventus",
+      "base_force": 79.43,
+      "fixture_factor": 0.922,
+      "adjusted_force": 73.23,
+      "fixture_home_away": "A",
+      "fixture_opponent": "Inter",
+      "club_ppm": 1.92,
+      "opponent_ppm": 2.42
+    },
+    {
+      "name": "Esposito Se.",
+      "role": "A",
+      "club": "Cagliari",
+      "base_force": 60.6,
+      "fixture_factor": 1.086,
+      "adjusted_force": 65.82,
+      "fixture_home_away": "H",
+      "fixture_opponent": "Lecce",
+      "club_ppm": 1.17,
+      "opponent_ppm": 0.88
+    },
+    {
+      "name": "Martin",
+      "role": "D",
+      "club": "Genoa",
+      "base_force": 65.35,
+      "fixture_factor": 0.987,
+      "adjusted_force": 64.49,
+      "fixture_home_away": "A",
+      "fixture_opponent": "Cremonese",
+      "club_ppm": 0.96,
+      "opponent_ppm": 0.96
+    },
+    {
+      "name": "Mancini",
+      "role": "D",
+      "club": "Roma",
+      "base_force": 62.18,
+      "fixture_factor": 0.95,
+      "adjusted_force": 59.06,
+      "fixture_home_away": "A",
+      "fixture_opponent": "Napoli",
+      "club_ppm": 1.92,
+      "opponent_ppm": 2.04
+    }
+  ]
+}

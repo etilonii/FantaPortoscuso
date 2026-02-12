@@ -25,7 +25,7 @@ from .rate_limit import (
     log_rate_limit_hit,
     rate_limit_identity_key,
 )
-from .routes import auth, health, data, meta
+from .routes import auth, health, data, meta, market_advisor
 
 
 logger = logging.getLogger("uvicorn.error")
@@ -80,6 +80,7 @@ def create_app() -> FastAPI:
     app.include_router(meta.router)
     app.include_router(auth.router)
     app.include_router(data.router)
+    app.include_router(market_advisor.router)
 
     if AUTO_LIVE_IMPORT_ENABLED:
         interval_seconds = max(1, int(AUTO_LIVE_IMPORT_INTERVAL_HOURS)) * 3600

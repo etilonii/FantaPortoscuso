@@ -65,6 +65,10 @@ VOTI_PAGE_CACHE_PATH = DATA_DIR / "tmp" / "voti_page.html"
 VOTI_BASE_URL = "https://www.fantacalcio.it/voti-fantacalcio-serie-a"
 CALENDAR_BASE_URL = "https://www.fantacalcio.it/serie-a/calendario"
 STATUS_PATH = DATA_DIR / "status.json"
+SERIEA_CONTEXT_CANDIDATES = [
+    DATA_DIR / "incoming" / "manual" / "seriea_context.csv",
+    DATA_DIR / "config" / "seriea_context.csv",
+]
 MARKET_REPORT_GLOB = "rose_changes_*.csv"
 ROSE_DIFF_GLOB = "diff_rose_*.txt"
 STATS_DIR = DATA_DIR / "stats"
@@ -122,6 +126,7 @@ _NAME_LIST_CACHE: Dict[str, object] = {}
 _LISTONE_NAME_CACHE: Dict[str, object] = {}
 _PLAYER_FORCE_CACHE: Dict[str, object] = {}
 _REGULATION_CACHE: Dict[str, object] = {}
+_SERIEA_CONTEXT_CACHE: Dict[str, object] = {}
 
 LIVE_EVENT_FIELDS: Tuple[str, ...] = (
     "goal",
@@ -2269,6 +2274,781 @@ def _load_club_name_index() -> Dict[str, str]:
             if key not in index:
                 index[key] = raw.title() if raw.islower() else raw
     return index
+
+
+def _resolve_seriea_context_path() -> Optional[Path]:
+    for candidate in SERIEA_CONTEXT_CANDIDATES:
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def _load_seriea_context_index() -> Dict[str, object]:
+    source = _resolve_seriea_context_path()
+    if source is None:
+        return {
+            "path": None,
+            "teams": {},
+            "average_ppm": None,
+        }
+
+    cache_key = str(source.resolve())
+    mtime = source.stat().st_mtime
+    cached = _SERIEA_CONTEXT_CACHE.get(cache_key)
+    if cached and cached.get("mtime") == mtime:
+        return cached.get("data", {})
+
+    rows = _read_csv(source)
+    teams: Dict[str, Dict[str, object]] = {}
+    ppm_values: List[float] = []
+    for row in rows:
+        team_raw = str(row.get("Squad") or row.get("Team") or row.get("Squadra") or "").strip()
+        if not team_raw:
+            continue
+        team_key = normalize_name(team_raw)
+        if not team_key:
+            continue
+        ppm = _parse_float(row.get("Pts/MP") or row.get("PPM") or row.get("PtsPerMatch"))
+        if ppm is None:
+            points = _parse_float(row.get("Pts") or row.get("Punti"))
+            played = _parse_float(row.get("MP") or row.get("Partite"))
+            if points is not None and played is not None and played > 0:
+                ppm = round(points / played, 4)
+        if ppm is None:
+            continue
+        ppm_values.append(float(ppm))
+        teams[team_key] = {
+            "team": team_raw,
+            "ppm": float(ppm),
+        }
+
+    average_ppm = round(sum(ppm_values) / len(ppm_values), 4) if ppm_values else None
+    data = {
+        "path": source,
+        "teams": teams,
+        "average_ppm": average_ppm,
+    }
+    _SERIEA_CONTEXT_CACHE[cache_key] = {"mtime": mtime, "data": data}
+    return data
+
+
+def _optimizer_context_defaults() -> Dict[str, object]:
+    return {
+        "home_bonus": {"P": 0.02, "D": 0.02, "C": 0.03, "A": 0.04},
+        "away_penalty": {"P": -0.02, "D": -0.02, "C": -0.03, "A": -0.04},
+        "own_weight": {"P": 0.05, "D": 0.05, "C": 0.04, "A": 0.04},
+        "opp_weight": {"P": 0.08, "D": 0.08, "C": 0.07, "A": 0.09},
+        "min_multiplier": 0.82,
+        "max_multiplier": 1.20,
+    }
+
+
+def _parse_optimizer_role_weights(
+    raw: object,
+    defaults: Dict[str, float],
+) -> Dict[str, float]:
+    parsed = {role: float(value) for role, value in defaults.items()}
+    if not isinstance(raw, dict):
+        return parsed
+
+    for key, value in raw.items():
+        role = _role_from_text(key)
+        if role not in {"P", "D", "C", "A"}:
+            continue
+        parsed_value = _parse_float(value)
+        if parsed_value is None:
+            continue
+        parsed[role] = float(parsed_value)
+    return parsed
+
+
+def _load_optimizer_context_config(regulation: Optional[Dict[str, object]] = None) -> Dict[str, object]:
+    defaults = _optimizer_context_defaults()
+    source = regulation if isinstance(regulation, dict) else _load_regulation()
+    raw = source.get("optimizer_context") if isinstance(source, dict) else {}
+    if not isinstance(raw, dict):
+        return defaults
+
+    fixture_raw = raw.get("fixture_multiplier")
+    scope = fixture_raw if isinstance(fixture_raw, dict) else raw
+
+    home_bonus = _parse_optimizer_role_weights(scope.get("home_bonus"), defaults["home_bonus"])
+    away_penalty = _parse_optimizer_role_weights(scope.get("away_penalty"), defaults["away_penalty"])
+    own_weight = _parse_optimizer_role_weights(scope.get("own_weight"), defaults["own_weight"])
+    opp_weight = _parse_optimizer_role_weights(scope.get("opp_weight"), defaults["opp_weight"])
+
+    min_multiplier = _parse_float(scope.get("min_multiplier"))
+    max_multiplier = _parse_float(scope.get("max_multiplier"))
+    min_value = float(min_multiplier) if min_multiplier is not None else float(defaults["min_multiplier"])
+    max_value = float(max_multiplier) if max_multiplier is not None else float(defaults["max_multiplier"])
+    if min_value > max_value:
+        min_value, max_value = max_value, min_value
+
+    return {
+        "home_bonus": home_bonus,
+        "away_penalty": away_penalty,
+        "own_weight": own_weight,
+        "opp_weight": opp_weight,
+        "min_multiplier": min_value,
+        "max_multiplier": max_value,
+    }
+
+
+def _optimizer_fixture_multiplier(
+    role: str,
+    home_away: str,
+    own_ppm: Optional[float],
+    opponent_ppm: Optional[float],
+    league_ppm: Optional[float],
+    context_cfg: Optional[Dict[str, object]] = None,
+) -> float:
+    base_role = _role_from_text(role)
+    if base_role not in {"P", "D", "C", "A"}:
+        base_role = "C"
+
+    defaults = _optimizer_context_defaults()
+    resolved_cfg = context_cfg if isinstance(context_cfg, dict) else defaults
+    home_bonus = _parse_optimizer_role_weights(resolved_cfg.get("home_bonus"), defaults["home_bonus"])
+    away_penalty = _parse_optimizer_role_weights(resolved_cfg.get("away_penalty"), defaults["away_penalty"])
+    own_weight = _parse_optimizer_role_weights(resolved_cfg.get("own_weight"), defaults["own_weight"])
+    opp_weight = _parse_optimizer_role_weights(resolved_cfg.get("opp_weight"), defaults["opp_weight"])
+    min_multiplier = _parse_float(resolved_cfg.get("min_multiplier"))
+    max_multiplier = _parse_float(resolved_cfg.get("max_multiplier"))
+    min_value = float(min_multiplier) if min_multiplier is not None else 0.82
+    max_value = float(max_multiplier) if max_multiplier is not None else 1.20
+    if min_value > max_value:
+        min_value, max_value = max_value, min_value
+
+    modifier = 0.0
+    where = str(home_away or "").strip().upper()
+    if where == "H":
+        modifier += home_bonus[base_role]
+    elif where == "A":
+        modifier += away_penalty[base_role]
+
+    if (
+        league_ppm is not None
+        and league_ppm > 0
+        and own_ppm is not None
+    ):
+        own_delta = (float(own_ppm) - float(league_ppm)) / float(league_ppm)
+        modifier += own_delta * own_weight[base_role]
+
+    if (
+        league_ppm is not None
+        and league_ppm > 0
+        and opponent_ppm is not None
+    ):
+        # Positive when opponent is weaker than average.
+        opponent_delta = (float(league_ppm) - float(opponent_ppm)) / float(league_ppm)
+        modifier += opponent_delta * opp_weight[base_role]
+
+    raw_multiplier = 1.0 + modifier
+    # Keep fixture impact material but bounded.
+    return max(min_value, min(max_value, raw_multiplier))
+
+
+def _player_force_value(
+    player_name: str,
+    force_map: Dict[str, float],
+    qa_map: Dict[str, float],
+) -> float:
+    canonical = _canonicalize_name(player_name)
+    lookup_keys = [
+        normalize_name(strip_star(canonical)),
+        normalize_name(strip_star(player_name)),
+        normalize_name(canonical),
+        normalize_name(player_name),
+    ]
+    for key in lookup_keys:
+        if not key:
+            continue
+        value = force_map.get(key)
+        if value is not None:
+            return float(value)
+    for key in lookup_keys:
+        if not key:
+            continue
+        qa = qa_map.get(key)
+        if qa is not None and qa > 0:
+            # Conservative fallback when force report misses the player.
+            return float(qa) * 3.0
+    return 0.0
+
+
+def _captain_mode(value: object) -> str:
+    mode = normalize_name(str(value or "balanced"))
+    if mode in {"safe", "balanced", "upside"}:
+        return mode
+    return "balanced"
+
+
+def _captain_selection_score(
+    player: Dict[str, object],
+    captain_mode: str,
+    league_avg_ppm: Optional[float],
+) -> float:
+    score = float(player.get("adjusted_force") or 0.0)
+    role = _role_from_text(player.get("role"))
+    home_away = str(player.get("fixture_home_away") or "").strip().upper()
+    own_ppm = _parse_float(player.get("club_ppm"))
+    opponent_ppm = _parse_float(player.get("opponent_ppm"))
+    mode = _captain_mode(captain_mode)
+
+    if mode == "safe":
+        if role == "A":
+            score *= 0.97
+        elif role == "C":
+            score *= 1.01
+        elif role == "D":
+            score *= 1.005
+
+        if home_away == "A":
+            score *= 0.97
+
+        if own_ppm is not None and opponent_ppm is not None:
+            delta = opponent_ppm - own_ppm
+            if delta >= 0.25:
+                score *= 0.94
+            elif delta > 0:
+                score *= 0.97
+
+        if (
+            league_avg_ppm is not None
+            and opponent_ppm is not None
+            and opponent_ppm >= (league_avg_ppm + 0.35)
+        ):
+            score *= 0.95
+
+    elif mode == "upside":
+        if role == "A":
+            score *= 1.05
+        elif role == "C":
+            score *= 1.02
+
+        if home_away == "H":
+            score *= 1.01
+
+        if own_ppm is not None and opponent_ppm is not None and (own_ppm - opponent_ppm) >= 0.25:
+            score *= 1.03
+
+    return round(score, 2)
+
+
+def _optimizer_player_recommendation_reason(player: Dict[str, object]) -> str:
+    name = str(player.get("name") or "").strip()
+    role = _role_from_text(player.get("role")) or "-"
+    base = float(player.get("base_force") or 0.0)
+    adjusted = float(player.get("adjusted_force") or 0.0)
+    factor = float(player.get("fixture_factor") or 1.0)
+    home_away = str(player.get("fixture_home_away") or "").strip().upper() or "-"
+    opponent = str(player.get("fixture_opponent") or "").strip() or "?"
+    own_ppm = _parse_float(player.get("club_ppm"))
+    opp_ppm = _parse_float(player.get("opponent_ppm"))
+
+    fixture_note = "matchup neutro"
+    if factor >= 1.06:
+        fixture_note = "matchup favorevole"
+    elif factor <= 0.95:
+        fixture_note = "matchup sfavorevole"
+
+    ppm_note = ""
+    if own_ppm is not None and opp_ppm is not None:
+        ppm_note = f" | ppm {own_ppm:.2f} vs {opp_ppm:.2f}"
+
+    return (
+        f"{name} ({role}): base {base:.2f}, adjusted {adjusted:.2f}, "
+        f"fattore {factor:.3f} ({fixture_note}), {home_away} vs {opponent}{ppm_note}"
+    )
+
+
+def _captain_explain_payload(
+    player: Optional[Dict[str, object]],
+    captain_mode: str,
+    league_avg_ppm: Optional[float],
+) -> Dict[str, object]:
+    mode = _captain_mode(captain_mode)
+    if not player:
+        return {"name": "", "mode": mode}
+
+    adjusted = float(player.get("adjusted_force") or 0.0)
+    captain_score = _captain_selection_score(player, mode, league_avg_ppm)
+    home_away = str(player.get("fixture_home_away") or "").strip().upper()
+    opponent = str(player.get("fixture_opponent") or "").strip()
+
+    if mode == "safe":
+        mode_note = "modalita safe: penalizza trasferte e avversari forti"
+    elif mode == "upside":
+        mode_note = "modalita upside: spinge profili offensivi ad alto picco"
+    else:
+        mode_note = "modalita balanced: ranking su forza contestuale"
+
+    return {
+        "name": str(player.get("name") or ""),
+        "role": _role_from_text(player.get("role")),
+        "mode": mode,
+        "base_force": round(float(player.get("base_force") or 0.0), 2),
+        "adjusted_force": round(adjusted, 2),
+        "captain_score": captain_score,
+        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+        "fixture_home_away": home_away,
+        "fixture_opponent": opponent,
+        "reason": (
+            f"Scelto per captain_score {captain_score:.2f} "
+            f"(adjusted {adjusted:.2f}); {mode_note}."
+        ),
+    }
+
+
+def _build_optimizer_lineup(
+    players: List[Dict[str, object]],
+    allowed_modules: List[str],
+    captain_mode: str = "balanced",
+    league_avg_ppm: Optional[float] = None,
+) -> Dict[str, object]:
+    best_payload: Optional[Dict[str, object]] = None
+    captain_mode = _captain_mode(captain_mode)
+    role_buckets: Dict[str, List[Dict[str, object]]] = {"P": [], "D": [], "C": [], "A": []}
+    for player in players:
+        role = _role_from_text(player.get("role"))
+        if role in role_buckets:
+            role_buckets[role].append(player)
+
+    for role in role_buckets:
+        role_buckets[role].sort(
+            key=lambda item: (
+                -float(item.get("adjusted_force") or 0.0),
+                -float(item.get("base_force") or 0.0),
+                normalize_name(str(item.get("name") or "")),
+            )
+        )
+
+    fallback_modules = ["343", "352", "433", "442", "451", "541", "532"]
+    modules = allowed_modules[:] if allowed_modules else fallback_modules
+    if not modules:
+        modules = fallback_modules
+
+    for module in modules:
+        counts = _module_counts_from_str(module)
+        if counts is None:
+            continue
+        d_need = int(counts.get("D", 0))
+        c_need = int(counts.get("C", 0))
+        a_need = int(counts.get("A", 0))
+        if (
+            len(role_buckets["P"]) < 1
+            or len(role_buckets["D"]) < d_need
+            or len(role_buckets["C"]) < c_need
+            or len(role_buckets["A"]) < a_need
+        ):
+            continue
+
+        chosen: List[Dict[str, object]] = []
+        chosen.extend(role_buckets["P"][:1])
+        chosen.extend(role_buckets["D"][:d_need])
+        chosen.extend(role_buckets["C"][:c_need])
+        chosen.extend(role_buckets["A"][:a_need])
+
+        chosen_keys = {
+            normalize_name(str(player.get("name") or ""))
+            for player in chosen
+            if str(player.get("name") or "").strip()
+        }
+        bench = [
+            player
+            for player in players
+            if normalize_name(str(player.get("name") or "")) not in chosen_keys
+        ]
+        bench.sort(
+            key=lambda item: (
+                0 if _role_from_text(item.get("role")) == "P" else 1,
+                -float(item.get("adjusted_force") or 0.0),
+                normalize_name(str(item.get("name") or "")),
+            )
+        )
+
+        adjusted_total = round(sum(float(player.get("adjusted_force") or 0.0) for player in chosen), 2)
+        base_total = round(sum(float(player.get("base_force") or 0.0) for player in chosen), 2)
+
+        ranked = [player for player in chosen if _role_from_text(player.get("role")) != "P"] or chosen
+        ranked.sort(
+            key=lambda item: (
+                -_captain_selection_score(item, captain_mode, league_avg_ppm),
+                -float(item.get("adjusted_force") or 0.0),
+                -float(item.get("base_force") or 0.0),
+                normalize_name(str(item.get("name") or "")),
+            )
+        )
+        captain_player = ranked[0] if ranked else None
+        vice_player = ranked[1] if len(ranked) > 1 else None
+        captain = str(captain_player.get("name") or "") if captain_player else ""
+        vice = str(vice_player.get("name") or "") if vice_player else ""
+        captain_explain = _captain_explain_payload(captain_player, captain_mode, league_avg_ppm)
+        vice_explain = _captain_explain_payload(vice_player, captain_mode, league_avg_ppm)
+
+        payload = {
+            "module": module,
+            "lineup": {
+                "portiere": str(chosen[0].get("name") or "") if chosen else "",
+                "difensori": [str(player.get("name") or "") for player in chosen[1 : 1 + d_need]],
+                "centrocampisti": [
+                    str(player.get("name") or "")
+                    for player in chosen[1 + d_need : 1 + d_need + c_need]
+                ],
+                "attaccanti": [
+                    str(player.get("name") or "")
+                    for player in chosen[1 + d_need + c_need : 1 + d_need + c_need + a_need]
+                ],
+                "portiere_details": [
+                    {
+                        "name": str(player.get("name") or ""),
+                        "role": _role_from_text(player.get("role")),
+                        "base_force": round(float(player.get("base_force") or 0.0), 2),
+                        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+                        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+                        "fixture_home_away": str(player.get("fixture_home_away") or ""),
+                        "fixture_opponent": str(player.get("fixture_opponent") or ""),
+                    }
+                    for player in chosen[:1]
+                ],
+                "difensori_details": [
+                    {
+                        "name": str(player.get("name") or ""),
+                        "role": _role_from_text(player.get("role")),
+                        "base_force": round(float(player.get("base_force") or 0.0), 2),
+                        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+                        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+                        "fixture_home_away": str(player.get("fixture_home_away") or ""),
+                        "fixture_opponent": str(player.get("fixture_opponent") or ""),
+                    }
+                    for player in chosen[1 : 1 + d_need]
+                ],
+                "centrocampisti_details": [
+                    {
+                        "name": str(player.get("name") or ""),
+                        "role": _role_from_text(player.get("role")),
+                        "base_force": round(float(player.get("base_force") or 0.0), 2),
+                        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+                        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+                        "fixture_home_away": str(player.get("fixture_home_away") or ""),
+                        "fixture_opponent": str(player.get("fixture_opponent") or ""),
+                    }
+                    for player in chosen[1 + d_need : 1 + d_need + c_need]
+                ],
+                "attaccanti_details": [
+                    {
+                        "name": str(player.get("name") or ""),
+                        "role": _role_from_text(player.get("role")),
+                        "base_force": round(float(player.get("base_force") or 0.0), 2),
+                        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+                        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+                        "fixture_home_away": str(player.get("fixture_home_away") or ""),
+                        "fixture_opponent": str(player.get("fixture_opponent") or ""),
+                    }
+                    for player in chosen[1 + d_need + c_need : 1 + d_need + c_need + a_need]
+                ],
+                "panchina_details": [
+                    {
+                        "name": str(player.get("name") or ""),
+                        "role": _role_from_text(player.get("role")),
+                        "base_force": round(float(player.get("base_force") or 0.0), 2),
+                        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+                        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+                        "fixture_home_away": str(player.get("fixture_home_away") or ""),
+                        "fixture_opponent": str(player.get("fixture_opponent") or ""),
+                    }
+                    for player in bench
+                ],
+            },
+            "captain": captain,
+            "vice_captain": vice,
+            "captain_mode": captain_mode,
+            "captain_explain": captain_explain,
+            "vice_captain_explain": vice_explain,
+            "totals": {
+                "base_force": base_total,
+                "adjusted_force": adjusted_total,
+            },
+        }
+        if best_payload is None or float(payload["totals"]["adjusted_force"]) > float(
+            best_payload["totals"]["adjusted_force"]
+        ):
+            best_payload = payload
+
+    if best_payload is not None:
+        return best_payload
+
+    # Last-resort fallback: keep top 11 by adjusted force with coarse role split.
+    sorted_players = sorted(
+        players,
+        key=lambda item: (
+            -float(item.get("adjusted_force") or 0.0),
+            -float(item.get("base_force") or 0.0),
+            normalize_name(str(item.get("name") or "")),
+        ),
+    )
+    by_role: Dict[str, List[Dict[str, object]]] = {"P": [], "D": [], "C": [], "A": []}
+    for player in sorted_players:
+        role = _role_from_text(player.get("role"))
+        if role in by_role:
+            by_role[role].append(player)
+    goalkeeper = by_role["P"][:1]
+    defenders = by_role["D"][:3]
+    midfielders = by_role["C"][:4]
+    attackers = by_role["A"][:3]
+    starters = goalkeeper + defenders + midfielders + attackers
+    bench = [
+        player
+        for player in sorted_players
+        if normalize_name(str(player.get("name") or "")) not in {
+            normalize_name(str(starter.get("name") or "")) for starter in starters
+        }
+    ]
+    ranked_captains = [player for player in starters if _role_from_text(player.get("role")) != "P"] or starters
+    ranked_captains.sort(
+        key=lambda item: (
+            -_captain_selection_score(item, captain_mode, league_avg_ppm),
+            -float(item.get("adjusted_force") or 0.0),
+            -float(item.get("base_force") or 0.0),
+            normalize_name(str(item.get("name") or "")),
+        )
+    )
+    captain_player = ranked_captains[0] if ranked_captains else None
+    vice_player = ranked_captains[1] if len(ranked_captains) > 1 else None
+    captain = str(captain_player.get("name") or "") if captain_player else ""
+    vice = str(vice_player.get("name") or "") if vice_player else ""
+    captain_explain = _captain_explain_payload(captain_player, captain_mode, league_avg_ppm)
+    vice_explain = _captain_explain_payload(vice_player, captain_mode, league_avg_ppm)
+    module = _module_from_role_counts(
+        {
+            "P": 1 if goalkeeper else 0,
+            "D": len(defenders),
+            "C": len(midfielders),
+            "A": len(attackers),
+        }
+    ) or (allowed_modules[0] if allowed_modules else "343")
+    return {
+        "module": module,
+        "lineup": {
+            "portiere": str(goalkeeper[0].get("name") or "") if goalkeeper else "",
+            "difensori": [str(player.get("name") or "") for player in defenders],
+            "centrocampisti": [str(player.get("name") or "") for player in midfielders],
+            "attaccanti": [str(player.get("name") or "") for player in attackers],
+            "portiere_details": [
+                {
+                    "name": str(player.get("name") or ""),
+                    "role": _role_from_text(player.get("role")),
+                    "base_force": round(float(player.get("base_force") or 0.0), 2),
+                    "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+                    "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+                    "fixture_home_away": str(player.get("fixture_home_away") or ""),
+                    "fixture_opponent": str(player.get("fixture_opponent") or ""),
+                }
+                for player in goalkeeper
+            ],
+            "difensori_details": [
+                {
+                    "name": str(player.get("name") or ""),
+                    "role": _role_from_text(player.get("role")),
+                    "base_force": round(float(player.get("base_force") or 0.0), 2),
+                    "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+                    "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+                    "fixture_home_away": str(player.get("fixture_home_away") or ""),
+                    "fixture_opponent": str(player.get("fixture_opponent") or ""),
+                }
+                for player in defenders
+            ],
+            "centrocampisti_details": [
+                {
+                    "name": str(player.get("name") or ""),
+                    "role": _role_from_text(player.get("role")),
+                    "base_force": round(float(player.get("base_force") or 0.0), 2),
+                    "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+                    "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+                    "fixture_home_away": str(player.get("fixture_home_away") or ""),
+                    "fixture_opponent": str(player.get("fixture_opponent") or ""),
+                }
+                for player in midfielders
+            ],
+            "attaccanti_details": [
+                {
+                    "name": str(player.get("name") or ""),
+                    "role": _role_from_text(player.get("role")),
+                    "base_force": round(float(player.get("base_force") or 0.0), 2),
+                    "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+                    "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+                    "fixture_home_away": str(player.get("fixture_home_away") or ""),
+                    "fixture_opponent": str(player.get("fixture_opponent") or ""),
+                }
+                for player in attackers
+            ],
+            "panchina_details": [
+                {
+                    "name": str(player.get("name") or ""),
+                    "role": _role_from_text(player.get("role")),
+                    "base_force": round(float(player.get("base_force") or 0.0), 2),
+                    "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+                    "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+                    "fixture_home_away": str(player.get("fixture_home_away") or ""),
+                    "fixture_opponent": str(player.get("fixture_opponent") or ""),
+                }
+                for player in bench
+            ],
+        },
+        "captain": captain,
+        "vice_captain": vice,
+        "captain_mode": captain_mode,
+        "captain_explain": captain_explain,
+        "vice_captain_explain": vice_explain,
+        "totals": {
+            "base_force": round(sum(float(player.get("base_force") or 0.0) for player in starters), 2),
+            "adjusted_force": round(sum(float(player.get("adjusted_force") or 0.0) for player in starters), 2),
+        },
+    }
+
+
+def _build_contextual_optimizer_payload(
+    team_key: str,
+    db: Session,
+    round_value: Optional[int],
+    captain_mode: str = "balanced",
+) -> Optional[Dict[str, object]]:
+    rose_rows = _apply_qa_from_quot(_read_csv(ROSE_PATH))
+    team_rows = [row for row in rose_rows if normalize_name(row.get("Team", "")) == team_key]
+    if not team_rows:
+        return None
+
+    team_name = str(team_rows[0].get("Team") or "").strip()
+    regulation = _load_regulation()
+    optimizer_context_cfg = _load_optimizer_context_config(regulation)
+    allowed_modules = _allowed_modules_from_regulation(regulation)
+    club_index = _load_club_name_index()
+    fixture_rows = _load_fixture_rows_for_live(db, club_index)
+    rounds = _rounds_from_fixture_rows(fixture_rows)
+
+    target_round = _parse_int(round_value)
+    if target_round is None:
+        target_round = _resolve_current_round(rounds)
+    if target_round is None or target_round <= 0:
+        target_round = rounds[-1] if rounds else 1
+
+    fixture_index: Dict[str, Dict[str, str]] = {}
+    for fixture in fixture_rows:
+        if _parse_int(fixture.get("round")) != target_round:
+            continue
+        team_name_real = _display_team_name(str(fixture.get("team") or ""), club_index)
+        opponent_name = _display_team_name(str(fixture.get("opponent") or ""), club_index)
+        team_real_key = normalize_name(team_name_real)
+        if not team_real_key:
+            continue
+        fixture_index[team_real_key] = {
+            "opponent": opponent_name,
+            "home_away": str(fixture.get("home_away") or "").strip().upper(),
+        }
+
+    context_data = _load_seriea_context_index()
+    context_index = context_data.get("teams") if isinstance(context_data, dict) else {}
+    context_index = context_index if isinstance(context_index, dict) else {}
+    league_avg_ppm = _parse_float(context_data.get("average_ppm")) if isinstance(context_data, dict) else None
+    if league_avg_ppm is None:
+        league_avg_ppm = 1.25
+
+    resolved_captain_mode = _captain_mode(captain_mode)
+    force_map = _load_player_force_map()
+    qa_map = _load_qa_map()
+
+    players_payload: List[Dict[str, object]] = []
+    for row in team_rows:
+        player_name = _canonicalize_name(str(row.get("Giocatore") or ""))
+        if not player_name:
+            continue
+        role = _role_from_text(row.get("Ruolo"))
+        if not role:
+            continue
+        club_name = _display_team_name(str(row.get("Squadra") or ""), club_index)
+        club_key = normalize_name(club_name)
+        fixture_ctx = fixture_index.get(club_key, {})
+        opponent_name = str(fixture_ctx.get("opponent") or "").strip()
+        opponent_key = normalize_name(opponent_name)
+        home_away = str(fixture_ctx.get("home_away") or "").strip().upper()
+
+        own_ppm = _parse_float((context_index.get(club_key) or {}).get("ppm"))
+        opp_ppm = _parse_float((context_index.get(opponent_key) or {}).get("ppm"))
+        fixture_factor = _optimizer_fixture_multiplier(
+            role=role,
+            home_away=home_away,
+            own_ppm=own_ppm,
+            opponent_ppm=opp_ppm,
+            league_ppm=league_avg_ppm,
+            context_cfg=optimizer_context_cfg,
+        )
+        base_force = _player_force_value(player_name, force_map, qa_map)
+        adjusted_force = round(base_force * fixture_factor, 2)
+
+        payload = {
+            "name": player_name,
+            "role": role,
+            "club": club_name,
+            "base_force": round(base_force, 2),
+            "fixture_factor": round(fixture_factor, 3),
+            "adjusted_force": adjusted_force,
+            "fixture_home_away": home_away,
+            "fixture_opponent": opponent_name,
+            "club_ppm": own_ppm,
+            "opponent_ppm": opp_ppm,
+        }
+        payload["recommendation_reason"] = _optimizer_player_recommendation_reason(payload)
+        players_payload.append(payload)
+
+    if not players_payload:
+        return None
+
+    lineup_payload = _build_optimizer_lineup(
+        players_payload,
+        allowed_modules,
+        captain_mode=resolved_captain_mode,
+        league_avg_ppm=league_avg_ppm,
+    )
+    selected_keys = {
+        normalize_name(name)
+        for section in ("portiere", "difensori", "centrocampisti", "attaccanti")
+        for name in (
+            [lineup_payload.get("lineup", {}).get("portiere", "")]
+            if section == "portiere"
+            else lineup_payload.get("lineup", {}).get(section, [])
+        )
+        if str(name or "").strip()
+    }
+    selected_players = [
+        player
+        for player in players_payload
+        if normalize_name(player.get("name")) in selected_keys
+    ]
+    selected_players.sort(
+        key=lambda item: (
+            -float(item.get("adjusted_force") or 0.0),
+            -float(item.get("base_force") or 0.0),
+            normalize_name(str(item.get("name") or "")),
+        )
+    )
+
+    return {
+        "team": team_name,
+        "round": int(target_round),
+        "available_rounds": rounds,
+        "source": "context_optimizer",
+        "context_source_path": str(context_data.get("path")) if isinstance(context_data, dict) and context_data.get("path") else "",
+        "optimizer_context": optimizer_context_cfg,
+        "captain_mode": lineup_payload.get("captain_mode", resolved_captain_mode),
+        "module": _format_module(lineup_payload.get("module")),
+        "lineup": lineup_payload.get("lineup", {}),
+        "captain": lineup_payload.get("captain", ""),
+        "vice_captain": lineup_payload.get("vice_captain", ""),
+        "captain_explain": lineup_payload.get("captain_explain", {}),
+        "vice_captain_explain": lineup_payload.get("vice_captain_explain", {}),
+        "totals": lineup_payload.get("totals", {"base_force": 0.0, "adjusted_force": 0.0}),
+        "players_ranked": selected_players,
+    }
 
 
 def _load_fixture_rows_for_live(db: Session, club_index: Dict[str, str]) -> List[Dict[str, object]]:
@@ -5760,6 +6540,23 @@ def formazioni(
         "source_path": str(source_path) if source_path else "",
         "note": note,
     }
+
+
+@router.get("/formazioni/optimizer")
+def formazione_optimizer(
+    team: str = Query(..., min_length=1),
+    round: Optional[int] = Query(default=None, ge=1, le=99),
+    captain_mode: str = Query(default="balanced"),
+    db: Session = Depends(get_db),
+):
+    team_key = normalize_name(team)
+    if not team_key:
+        raise HTTPException(status_code=400, detail="Team non valido")
+
+    payload = _build_contextual_optimizer_payload(team_key, db, round, captain_mode=captain_mode)
+    if payload is None:
+        raise HTTPException(status_code=404, detail="Team non trovato o rosa non disponibile")
+    return payload
 
 
 @router.get("/team/{team_name}")

@@ -36,6 +36,7 @@ $updateId = (Get-Date).ToString("yyyyMMdd_HHmmss_fff")
 $steps = @{
   rose = "pending"
   stats = "pending"
+  tiers = "pending"
   strength = "pending"
 }
 
@@ -125,6 +126,7 @@ function Get-StepRunningMessage([string]$stepName) {
   switch ($stepName) {
     "rose" { return "Aggiornamento in corso: Rose/Quotazioni..." }
     "stats" { return "Aggiornamento in corso: Statistiche..." }
+    "tiers" { return "Aggiornamento in corso: Tier List..." }
     "strength" { return "Aggiornamento in corso: Classifiche Forza..." }
     default { return "Aggiornamento in corso..." }
   }
@@ -262,11 +264,25 @@ try {
   try {
     python "$root\scripts\clean_stats_batch.py" @statsArgs
     $steps.stats = "ok"
-    Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "strength")
+    Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "tiers")
   }
   catch {
     $steps.stats = "error"
     Write-DataStatus -result "running" -message (Get-StepErrorMessage -stepLabel "Statistiche")
+    throw
+  }
+
+  Write-Host "==> Rigenerazione TIER LIST"
+  $steps.tiers = "running"
+  Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "tiers")
+  try {
+    python "$root\scripts\build_player_tiers.py"
+    $steps.tiers = "ok"
+    Write-DataStatus -result "running" -message (Get-StepRunningMessage -stepName "strength")
+  }
+  catch {
+    $steps.tiers = "error"
+    Write-DataStatus -result "running" -message (Get-StepErrorMessage -stepLabel "Tier List")
     throw
   }
 

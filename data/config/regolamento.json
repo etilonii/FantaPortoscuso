@@ -199,6 +199,36 @@
     ],
     "live_total_tiebreaker": "classifica"
   },
+  "optimizer_context": {
+    "fixture_multiplier": {
+      "min_multiplier": 0.8,
+      "max_multiplier": 1.22,
+      "home_bonus": {
+        "P": 0.01,
+        "D": 0.02,
+        "C": 0.04,
+        "A": 0.05
+      },
+      "away_penalty": {
+        "P": -0.015,
+        "D": -0.025,
+        "C": -0.04,
+        "A": -0.05
+      },
+      "own_weight": {
+        "P": 0.06,
+        "D": 0.06,
+        "C": 0.05,
+        "A": 0.045
+      },
+      "opp_weight": {
+        "P": 0.09,
+        "D": 0.1,
+        "C": 0.1,
+        "A": 0.12
+      }
+    }
+  },
   "market_rules": {
     "windows": [
       {

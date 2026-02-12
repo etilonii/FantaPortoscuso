@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-02-12T00:00:13.376601+00:00",
+  "source_mode": "local_only",
+  "team_context_source": "C:\\Users\\Kekko\\PycharmProjects\\FantaPortoscuso\\data\\config\\seriea_context.csv",
+  "team_context_teams": 20,
+  "team_total_minutes_source": "C:\\Users\\Kekko\\PycharmProjects\\FantaPortoscuso\\data\\config\\seriea_context.csv",
+  "team_total_minutes_teams": 20,
+  "team_context_profile_teams": 20,
+  "team_context_profile_sources": {
+    "attack_source": "C:\\Users\\Kekko\\PycharmProjects\\FantaPortoscuso\\data\\config\\seriea_team_per90.csv",
+    "goalkeeper_source": "C:\\Users\\Kekko\\PycharmProjects\\FantaPortoscuso\\data\\config\\seriea_goalkeeper_context.csv",
+    "discipline_source": "C:\\Users\\Kekko\\PycharmProjects\\FantaPortoscuso\\data\\config\\seriea_discipline_context.csv"
+  },
+  "player_context_source": "C:\\Users\\Kekko\\PycharmProjects\\FantaPortoscuso\\data\\config\\seriea_players_context.tsv",
+  "player_context_rows": 1054,
+  "players_total": 525,
+  "rows_written": 525,
+  "output": "C:\\Users\\Kekko\\PycharmProjects\\FantaPortoscuso\\data\\player_tiers.csv"
+}

@@ -2030,6 +2030,12 @@ body.admin-menu-open .admin-menu-overlay {
   text-align: left;
 }
 
+.formation-optimizer-card {
+  margin-top: 12px;
+  border-color: rgba(91, 209, 255, 0.45);
+  background: rgba(91, 209, 255, 0.08);
+}
+
 .formation-card-head {
   display: flex;
   align-items: flex-start;

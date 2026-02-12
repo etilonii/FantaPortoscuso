@@ -1,0 +1,12 @@
+Round,Module,Player,Role,Team,BaseForce,FixtureFactor,AdjustedForce,HomeAway,Opponent,Captain,ViceCaptain
+25,352,Martinez L.,A,Inter,92.0,1.034,95.15,H,Juventus,1,
+25,352,Dimarco,D,Inter,89.4,1.026,91.73,H,Juventus,,1
+25,352,Maignan,P,Milan,85.2,1.053,89.69,A,Pisa,,
+25,352,Pulisic,C,Milan,84.2,1.031,86.84,A,Pisa,,
+25,352,Paz N.,C,Como,79.7,1.074,85.58,H,Fiorentina,,
+25,352,Calhanoglu,C,Inter,81.7,1.032,84.35,H,Juventus,,
+25,352,McTominay,C,Napoli,82.2,1.021,83.95,H,Roma,,
+25,352,Baturina,C,Como,77.7,1.074,83.43,H,Fiorentina,,
+25,352,Bonny,A,Inter,80.1,1.034,82.84,H,Juventus,,
+25,352,Bastoni,D,Inter,77.3,1.026,79.31,H,Juventus,,
+25,352,Palestra,D,Cagliari,76.1,1.041,79.24,H,Lecce,,

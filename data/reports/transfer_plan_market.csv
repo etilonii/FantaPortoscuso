@@ -1,0 +1,4 @@
+plan_id,step,out_players,in_players,credits_out_total,credits_in_total,credits_residual_before,credits_residual_after,package_gain,notes
+P1,1,Tiago Gabriel | Colombo | Esposito Se.,Bonny | Kalulu | Belotti,39.0,38.0,0.0,1.0,192.48,vincoli reparto ok; team-cap ok; budget ok
+P2,1,Bondo | Colombo | Esposito Se.,Bonny | Berisha M. | Belotti,37.0,37.0,0.0,0.0,188.0,vincoli reparto ok; team-cap ok; budget ok
+P3,1,Tiago Gabriel | Colombo | Maignan,Bonny | Butez | Kossounou,43.0,41.0,0.0,2.0,183.49,vincoli reparto ok; team-cap ok; budget ok
