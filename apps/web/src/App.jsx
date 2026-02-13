@@ -7,6 +7,7 @@ import PlusvalenzeSection from "./components/sections/PlusvalenzeSection";
 import RoseSection from "./components/sections/RoseSection";
 import FormazioniSection from "./components/sections/FormazioniSection";
 import LiveSection from "./components/sections/LiveSection";
+import PremiumInsightsSection from "./components/sections/PremiumInsightsSection";
 import StatsSection from "./components/sections/StatsSection";
 import TopAcquistiSection from "./components/sections/TopAcquistiSection";
 
@@ -167,19 +168,77 @@ const PLAN_PRICES_FALLBACK = {
   base: { monthly: 5, season9: 37.99 },
   premium: { monthly: 10, season9: 57.99 },
 };
+const PLAN_COMPARISON = {
+  trial: {
+    title: "Trial 3 giorni",
+    subtitle: "Accesso guidato con funzioni ridotte",
+    features: [
+      "Home e classifica lega",
+      "Rose, listone, statistiche giocatori",
+      "Top acquisti fino alla top 20 per ruolo",
+      "Dark/Light mode",
+      "Funzioni premium visibili ma bloccate",
+    ],
+  },
+  base: {
+    title: "Base",
+    subtitle: "Strumenti essenziali per giocare ogni giornata",
+    features: [
+      "Home, quotazioni, rose, listone",
+      "Plusvalenze, top acquisti e mercato (non live)",
+      "Statistiche giocatori e formazioni (non live)",
+      "Schede giocatori e dark/light mode",
+      "Classifica lega",
+    ],
+  },
+  premium: {
+    title: "Premium",
+    subtitle: "Analisi avanzata e funzioni live complete",
+    features: [
+      "Tutto il piano Base",
+      "Formazioni live e mercato live",
+      "Formazione consigliata",
+      "Tier list e potenza squadre (XI/totale)",
+      "Classifiche avanzate e predictions campionato+fixtures",
+    ],
+  },
+};
 const MENU_FEATURES = {
   home: "home",
+  abbonamenti: "home",
+  quotazioni: "quotazioni",
   stats: "statistiche_giocatori",
   rose: "rose",
   formazioni: "formazioni",
+  "formazioni-live": "formazioni_live",
+  "formazione-consigliata": "formazione_consigliata",
   plusvalenze: "plusvalenze",
   listone: "listone",
   "top-acquisti": "top_acquisti",
   mercato: "mercato",
+  "classifica-lega": "classifica_lega",
+  "mercato-live": "mercato_live",
+  "tier-list": "tier_list",
+  "potenza-titolari": "potenza_squadra_titolari",
+  "potenza-totale": "potenza_squadra_totale",
+  "classifica-potenza": "classifica_potenza",
+  "classifica-reale-lega": "classifica_reale_lega",
+  "classifica-fixtures-seriea": "classifica_fixtures_seriea",
+  predictions: "predictions_campionato_fixtures",
   player: "schede_giocatori",
   live: "formazioni_live",
   admin: "home",
 };
+
+const PREMIUM_INSIGHTS_MENU_KEYS = new Set([
+  "tier-list",
+  "potenza-titolari",
+  "potenza-totale",
+  "classifica-potenza",
+  "classifica-reale-lega",
+  "classifica-fixtures-seriea",
+  "predictions",
+]);
 
 /* ===========================
    APP
@@ -215,6 +274,17 @@ export default function App() {
     update_id: "",
     steps: {},
   });
+  const [premiumInsights, setPremiumInsights] = useState({
+    player_tiers: [],
+    team_strength_total: [],
+    team_strength_starting: [],
+    seriea_current_table: [],
+    seriea_predictions: [],
+    seriea_final_table: [],
+    generated_at: "",
+  });
+  const [premiumInsightsLoading, setPremiumInsightsLoading] = useState(false);
+  const [premiumInsightsError, setPremiumInsightsError] = useState("");
 
   /* ===== SEARCH ===== */
   const [activeTab, setActiveTab] = useState("rose");
@@ -724,6 +794,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     const amount = Number(planMap[cycleKey]);
     return Number.isFinite(amount) ? amount : null;
   };
+
+  const currentPlanTier = String(subscription?.plan_tier || "").trim().toLowerCase();
+  const currentBillingCycle = String(subscription?.billing_cycle || "").trim().toLowerCase();
 
   const menuItemClass = (menuKey, featureName) => {
     const active = activeMenu === menuKey;
@@ -2137,6 +2210,53 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     } catch {}
   };
 
+  const loadPremiumInsights = async (force = false) => {
+    if (!loggedIn) return false;
+    if (
+      !force &&
+      Array.isArray(premiumInsights?.player_tiers) &&
+      premiumInsights.player_tiers.length > 0
+    ) {
+      return true;
+    }
+    try {
+      setPremiumInsightsLoading(true);
+      setPremiumInsightsError("");
+      const res = await fetchWithAuth(`${API_BASE}/data/insights/premium`, {
+        headers: buildAuthHeaders({ legacyAccessKey: true }),
+      });
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(payload?.detail || "Errore caricamento insight premium");
+      }
+      setPremiumInsights({
+        player_tiers: Array.isArray(payload?.player_tiers) ? payload.player_tiers : [],
+        team_strength_total: Array.isArray(payload?.team_strength_total)
+          ? payload.team_strength_total
+          : [],
+        team_strength_starting: Array.isArray(payload?.team_strength_starting)
+          ? payload.team_strength_starting
+          : [],
+        seriea_current_table: Array.isArray(payload?.seriea_current_table)
+          ? payload.seriea_current_table
+          : [],
+        seriea_predictions: Array.isArray(payload?.seriea_predictions)
+          ? payload.seriea_predictions
+          : [],
+        seriea_final_table: Array.isArray(payload?.seriea_final_table)
+          ? payload.seriea_final_table
+          : [],
+        generated_at: String(payload?.generated_at || ""),
+      });
+      return true;
+    } catch (err) {
+      setPremiumInsightsError(err?.message || "Errore caricamento insight premium");
+      return false;
+    } finally {
+      setPremiumInsightsLoading(false);
+    }
+  };
+
   const setSubscriptionAdmin = async () => {
     if (!isAdmin) return;
     const key = String(adminSubKey || "").trim().toLowerCase();
@@ -2357,6 +2477,28 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   useEffect(() => {
     if (!loggedIn) return;
+    if (activeMenu !== "formazione-consigliata") return;
+
+    const fallbackTeam =
+      String(suggestTeam || "").trim() ||
+      String(selectedTeam || "").trim() ||
+      String(teams?.[0] || "").trim();
+    const activeTeamValue =
+      String(formationTeam || "").trim().toLowerCase() === "all"
+        ? fallbackTeam
+        : String(formationTeam || "").trim();
+
+    if (!activeTeamValue) return;
+    if (String(formationTeam || "").trim().toLowerCase() === "all") {
+      setFormationTeam(activeTeamValue);
+      return;
+    }
+    runFormationOptimizer(activeTeamValue, formationRound || null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn, activeMenu, formationTeam, formationRound, suggestTeam, selectedTeam, teams]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
     loadPlusvalenze();
     loadAllPlusvalenze();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -2376,7 +2518,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   }, [query, activeTab, loggedIn]);
 
   useEffect(() => {
-    if (loggedIn && activeMenu === "listone") loadListone();
+    if (loggedIn && (activeMenu === "listone" || activeMenu === "quotazioni")) loadListone();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn, activeMenu, quoteRole, quoteOrder]);
 
@@ -2386,6 +2528,28 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     loadLivePayload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn, isAdmin, activeMenu, subscription]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    if (!PREMIUM_INSIGHTS_MENU_KEYS.has(String(activeMenu || "").trim())) return;
+    loadPremiumInsights(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn, activeMenu, subscription, isAdmin]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    if (activeMenu !== "formazioni-live") return;
+    if (String(formationOrder || "").toLowerCase() === "live_total") return;
+    loadFormazioni(formationRound || null, "live_total");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn, activeMenu, formationRound, formationOrder]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    if (activeMenu !== "quotazioni") return;
+    if (activeTab === "quotazioni") return;
+    setActiveTab("quotazioni");
+  }, [loggedIn, activeMenu, activeTab]);
 
   useEffect(() => {
     if (!loggedIn || isAdmin) return;
@@ -2573,6 +2737,18 @@ useEffect(() => {
               >
                 Home
               </button>
+              <button
+                className={menuItemClass("abbonamenti")}
+                onClick={() => openMenuFeature("abbonamenti")}
+              >
+                Abbonamenti
+              </button>
+              <button
+                className={menuItemClass("quotazioni")}
+                onClick={() => openMenuFeature("quotazioni")}
+              >
+                Quotazioni
+              </button>
 
               <button
                 className={menuItemClass("stats")}
@@ -2587,12 +2763,30 @@ useEffect(() => {
               >
                 Rose
               </button>
+              <button
+                className={menuItemClass("classifica-lega")}
+                onClick={() => openMenuFeature("classifica-lega")}
+              >
+                Classifica Lega
+              </button>
 
               <button
                 className={menuItemClass("formazioni")}
                 onClick={() => openMenuFeature("formazioni")}
               >
                 Formazioni
+              </button>
+              <button
+                className={menuItemClass("formazioni-live")}
+                onClick={() => openMenuFeature("formazioni-live")}
+              >
+                Formazioni Live
+              </button>
+              <button
+                className={menuItemClass("formazione-consigliata")}
+                onClick={() => openMenuFeature("formazione-consigliata")}
+              >
+                Formazione consigliata
               </button>
 
               <button
@@ -2621,6 +2815,54 @@ useEffect(() => {
               >
                 Mercato
               </button>
+              <button
+                className={menuItemClass("mercato-live")}
+                onClick={() => openMenuFeature("mercato-live")}
+              >
+                Mercato Live
+              </button>
+              <button
+                className={menuItemClass("tier-list")}
+                onClick={() => openMenuFeature("tier-list")}
+              >
+                Tier List
+              </button>
+              <button
+                className={menuItemClass("potenza-titolari")}
+                onClick={() => openMenuFeature("potenza-titolari")}
+              >
+                Potenza XI
+              </button>
+              <button
+                className={menuItemClass("potenza-totale")}
+                onClick={() => openMenuFeature("potenza-totale")}
+              >
+                Potenza Totale
+              </button>
+              <button
+                className={menuItemClass("classifica-potenza")}
+                onClick={() => openMenuFeature("classifica-potenza")}
+              >
+                Classifica Potenza
+              </button>
+              <button
+                className={menuItemClass("classifica-reale-lega")}
+                onClick={() => openMenuFeature("classifica-reale-lega")}
+              >
+                Classifica Reale Lega
+              </button>
+              <button
+                className={menuItemClass("classifica-fixtures-seriea")}
+                onClick={() => openMenuFeature("classifica-fixtures-seriea")}
+              >
+                Classifica + Fixtures Serie A
+              </button>
+              <button
+                className={menuItemClass("predictions")}
+                onClick={() => openMenuFeature("predictions")}
+              >
+                Predictions
+              </button>
             </nav>
             {!isAdmin && subscription ? (
               <div className="subscription-card">
@@ -2638,23 +2880,9 @@ useEffect(() => {
                     {formatCountdown(Number(subscription.seconds_to_pending || 0))}
                   </p>
                 ) : null}
-                <div className="subscription-actions">
-                  <button
-                    className="ghost"
-                    onClick={() => startBillingCheckout("premium", "monthly")}
-                    disabled={billingLoading || billingSessionVerifying}
-                  >
-                    Premium Mensile {formatEuro(subscriptionPriceFor("premium", "monthly"))}
-                  </button>
-                  <button
-                    className="ghost"
-                    onClick={() => startBillingCheckout("premium", "season9")}
-                    disabled={billingLoading || billingSessionVerifying}
-                  >
-                    Premium 9 mesi {formatEuro(subscriptionPriceFor("premium", "season9"))}
-                  </button>
-                </div>
-                {billingNotice ? <p className="muted">{billingNotice}</p> : null}
+                <button className="ghost" onClick={() => openMenuFeature("abbonamenti")}>
+                  Apri abbonamenti
+                </button>
               </div>
             ) : null}
           </aside>
@@ -2699,12 +2927,22 @@ useEffect(() => {
               <strong>
                 {activeMenu === "home"
                   ? "Home"
+                  : activeMenu === "abbonamenti"
+                  ? "Abbonamenti"
+                  : activeMenu === "quotazioni"
+                  ? "Quotazioni"
                   : activeMenu === "stats"
                   ? "Statistiche"
                   : activeMenu === "rose"
                   ? "Rose"
+                  : activeMenu === "classifica-lega"
+                  ? "Classifica Lega"
                   : activeMenu === "formazioni"
                   ? "Formazioni"
+                  : activeMenu === "formazioni-live"
+                  ? "Formazioni Live"
+                  : activeMenu === "formazione-consigliata"
+                  ? "Formazione consigliata"
                   : activeMenu === "live"
                   ? "Live"
                   : activeMenu === "plusvalenze"
@@ -2715,6 +2953,22 @@ useEffect(() => {
                   ? "Top Acquisti"
                   : activeMenu === "mercato"
                   ? "Mercato"
+                  : activeMenu === "mercato-live"
+                  ? "Mercato Live"
+                  : activeMenu === "tier-list"
+                  ? "Tier List"
+                  : activeMenu === "potenza-titolari"
+                  ? "Potenza XI"
+                  : activeMenu === "potenza-totale"
+                  ? "Potenza Totale"
+                  : activeMenu === "classifica-potenza"
+                  ? "Classifica Potenza"
+                  : activeMenu === "classifica-reale-lega"
+                  ? "Classifica Reale Lega"
+                  : activeMenu === "classifica-fixtures-seriea"
+                  ? "Classifica + Fixtures Serie A"
+                  : activeMenu === "predictions"
+                  ? "Predictions"
                   : activeMenu === "player"
                   ? "Scheda giocatore"
                   : "Gestione"}
@@ -2784,6 +3038,149 @@ useEffect(() => {
               />
             )}
 
+            {activeMenu === "abbonamenti" && (
+              <section className="dashboard billing-hub">
+                <div className="dashboard-header left">
+                  <div>
+                    <p className="eyebrow">Abbonamenti</p>
+                    <h2>Piani e funzionalita</h2>
+                  </div>
+                  <p className="muted">
+                    Scegli il piano piu adatto: qui trovi confronto feature e checkout diretto.
+                  </p>
+                </div>
+
+                {subscription ? (
+                  <div className="panel billing-current-panel">
+                    <div className="billing-current-grid">
+                      <div>
+                        <p className="eyebrow">Stato corrente</p>
+                        <h3>
+                          {planTierLabel(subscription.plan_tier)} ·{" "}
+                          {billingCycleLabel(subscription.billing_cycle)}
+                        </h3>
+                        <p className="muted">
+                          {subscription.status === "blocked"
+                            ? `Bloccata: ${blockedReasonLabel(subscription.blocked_reason)}`
+                            : "Attiva"}
+                        </p>
+                      </div>
+                      <div className="billing-current-meta">
+                        {Number.isFinite(Number(subscription.seconds_to_expiry)) ? (
+                          <span>
+                            Scadenza tra {formatCountdown(Number(subscription.seconds_to_expiry))}
+                          </span>
+                        ) : (
+                          <span>Scadenza: non prevista</span>
+                        )}
+                        {subscription.pending_plan_tier ? (
+                          <span>
+                            Cambio pianificato: {planTierLabel(subscription.pending_plan_tier)} tra{" "}
+                            {formatCountdown(Number(subscription.seconds_to_pending || 0))}
+                          </span>
+                        ) : (
+                          <span>Nessun cambio pianificato</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="billing-plan-grid">
+                  {["trial", "base", "premium"].map((plan) => {
+                    const details = PLAN_COMPARISON[plan];
+                    const isCurrent = currentPlanTier === plan;
+                    const monthlyPrice = subscriptionPriceFor(plan, "monthly");
+                    const seasonPrice = subscriptionPriceFor(plan, "season9");
+                    return (
+                      <article
+                        key={plan}
+                        className={`panel billing-plan-card ${isCurrent ? "active" : ""}`}
+                      >
+                        <p className="eyebrow">{details?.title || planTierLabel(plan)}</p>
+                        <h3>{details?.subtitle || ""}</h3>
+                        <ul className="billing-feature-list">
+                          {(details?.features || []).map((feature) => (
+                            <li key={`${plan}-${feature}`}>{feature}</li>
+                          ))}
+                        </ul>
+                        {plan !== "trial" ? (
+                          <div className="billing-plan-actions">
+                            <button
+                              className="ghost"
+                              onClick={() => startBillingCheckout(plan, "monthly")}
+                              disabled={
+                                billingLoading ||
+                                billingSessionVerifying ||
+                                (isCurrent && currentBillingCycle === "monthly") ||
+                                isAdmin
+                              }
+                            >
+                              Mensile {formatEuro(monthlyPrice)}
+                              {isCurrent && currentBillingCycle === "monthly" ? " (attivo)" : ""}
+                            </button>
+                            <button
+                              className="ghost"
+                              onClick={() => startBillingCheckout(plan, "season9")}
+                              disabled={
+                                billingLoading ||
+                                billingSessionVerifying ||
+                                (isCurrent && currentBillingCycle === "season9") ||
+                                isAdmin
+                              }
+                            >
+                              9 mesi {formatEuro(seasonPrice)}
+                              {isCurrent && currentBillingCycle === "season9" ? " (attivo)" : ""}
+                            </button>
+                          </div>
+                        ) : (
+                          <p className="muted billing-trial-note">
+                            Trial automatico di 3 giorni alla prima attivazione key.
+                          </p>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
+
+                <div className="panel billing-faq-panel">
+                  <div className="dashboard-header left">
+                    <div>
+                      <p className="eyebrow">Note</p>
+                      <h3>Come funziona</h3>
+                    </div>
+                  </div>
+                  <div className="list">
+                    <div className="list-item">
+                      <div>
+                        <p>Upgrade e rinnovi</p>
+                        <span className="muted">
+                          Pagamento via Stripe, rinnovo del piano in automatico dopo conferma checkout.
+                        </span>
+                      </div>
+                    </div>
+                    <div className="list-item">
+                      <div>
+                        <p>Blocco per scadenza</p>
+                        <span className="muted">
+                          Se il piano scade, la key viene bloccata fino al rinnovo.
+                        </span>
+                      </div>
+                    </div>
+                    <div className="list-item">
+                      <div>
+                        <p>Utente admin</p>
+                        <span className="muted">
+                          L&apos;admin gestisce piani e sospensioni dalla sezione Gestione.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  {billingNotice ? <p className="muted">{billingNotice}</p> : null}
+                </div>
+              </section>
+            )}
+
             {/* ===========================
                 STATS
             =========================== */}
@@ -2797,6 +3194,23 @@ useEffect(() => {
                 slugify={slugify}
                 openPlayer={openPlayer}
                 tabToColumn={tabToColumn}
+              />
+            )}
+
+            {activeMenu === "quotazioni" && (
+              <ListoneSection
+                quoteRole={quoteRole}
+                setQuoteRole={setQuoteRole}
+                quoteTeam={quoteTeam}
+                setQuoteTeam={setQuoteTeam}
+                quoteOrder={quoteOrder}
+                setQuoteOrder={setQuoteOrder}
+                quoteList={quoteList}
+                listoneQuery={listoneQuery}
+                setListoneQuery={setListoneQuery}
+                formatInt={formatInt}
+                slugify={slugify}
+                openPlayer={openPlayer}
               />
             )}
 
@@ -2836,6 +3250,46 @@ useEffect(() => {
             )}
 
             {activeMenu === "formazioni" && (
+              <FormazioniSection
+                formations={formations}
+                formationTeam={formationTeam}
+                setFormationTeam={setFormationTeam}
+                formationRound={formationRound}
+                onFormationRoundChange={onFormationRoundChange}
+                formationOrder={formationOrder}
+                onFormationOrderChange={onFormationOrderChange}
+                formationMeta={formationMeta}
+                reloadFormazioni={() => loadFormazioni(formationRound || null, formationOrder)}
+                optimizerData={formationOptimizer}
+                optimizerLoading={formationOptimizerLoading}
+                optimizerError={formationOptimizerError}
+                runOptimizer={runFormationOptimizer}
+                openPlayer={openPlayer}
+                formatDecimal={formatDecimal}
+              />
+            )}
+
+            {activeMenu === "formazioni-live" && (
+              <FormazioniSection
+                formations={formations}
+                formationTeam={formationTeam}
+                setFormationTeam={setFormationTeam}
+                formationRound={formationRound}
+                onFormationRoundChange={onFormationRoundChange}
+                formationOrder={formationOrder}
+                onFormationOrderChange={onFormationOrderChange}
+                formationMeta={formationMeta}
+                reloadFormazioni={() => loadFormazioni(formationRound || null, "live_total")}
+                optimizerData={formationOptimizer}
+                optimizerLoading={formationOptimizerLoading}
+                optimizerError={formationOptimizerError}
+                runOptimizer={runFormationOptimizer}
+                openPlayer={openPlayer}
+                formatDecimal={formatDecimal}
+              />
+            )}
+
+            {activeMenu === "formazione-consigliata" && (
               <FormazioniSection
                 formations={formations}
                 formationTeam={formationTeam}
@@ -2942,6 +3396,135 @@ useEffect(() => {
                 manualLoading={manualLoading}
                 manualError={manualError}
                 normalizeName={normalizeName}
+              />
+            )}
+
+            {activeMenu === "mercato-live" && (
+              <MercatoSection
+                marketUpdatedAt={marketUpdatedAt}
+                marketCountdown={marketCountdown}
+                marketStandings={marketStandings}
+                isAdmin={isAdmin}
+                marketPreview={marketPreview}
+                setMarketPreview={setMarketPreview}
+                marketItems={marketItems}
+                formatInt={formatInt}
+                suggestions={suggestions}
+                formatDecimal={formatDecimal}
+                openPlayer={openPlayer}
+                runSuggest={runSuggest}
+                suggestLoading={suggestLoading}
+                suggestError={suggestError}
+                suggestHasRun={suggestHasRun}
+                manualOuts={manualOuts}
+                setManualOuts={setManualOuts}
+                suggestPayload={suggestPayload}
+                manualResult={manualResult}
+                manualBudgetSummary={manualBudgetSummary}
+                manualSwapMap={manualSwapMap}
+                manualDislikes={manualDislikes}
+                setManualDislikes={setManualDislikes}
+                computeManualSuggestions={computeManualSuggestions}
+                resetManual={resetManual}
+                manualLoading={manualLoading}
+                manualError={manualError}
+                normalizeName={normalizeName}
+              />
+            )}
+
+            {activeMenu === "tier-list" && (
+              <PremiumInsightsSection
+                mode="tier-list"
+                insights={premiumInsights}
+                loading={premiumInsightsLoading}
+                error={premiumInsightsError}
+                onReload={() => loadPremiumInsights(true)}
+                leagueStandings={marketStandings}
+                openPlayer={openPlayer}
+              />
+            )}
+
+            {activeMenu === "potenza-titolari" && (
+              <PremiumInsightsSection
+                mode="potenza-squadra-titolari"
+                insights={premiumInsights}
+                loading={premiumInsightsLoading}
+                error={premiumInsightsError}
+                onReload={() => loadPremiumInsights(true)}
+                leagueStandings={marketStandings}
+                openPlayer={openPlayer}
+              />
+            )}
+
+            {activeMenu === "potenza-totale" && (
+              <PremiumInsightsSection
+                mode="potenza-squadra-totale"
+                insights={premiumInsights}
+                loading={premiumInsightsLoading}
+                error={premiumInsightsError}
+                onReload={() => loadPremiumInsights(true)}
+                leagueStandings={marketStandings}
+                openPlayer={openPlayer}
+              />
+            )}
+
+            {activeMenu === "classifica-potenza" && (
+              <PremiumInsightsSection
+                mode="classifica-potenza"
+                insights={premiumInsights}
+                loading={premiumInsightsLoading}
+                error={premiumInsightsError}
+                onReload={() => loadPremiumInsights(true)}
+                leagueStandings={marketStandings}
+                openPlayer={openPlayer}
+              />
+            )}
+
+            {activeMenu === "classifica-lega" && (
+              <PremiumInsightsSection
+                mode="classifica-reale-lega"
+                insights={premiumInsights}
+                loading={false}
+                error=""
+                onReload={null}
+                leagueStandings={marketStandings}
+                openPlayer={openPlayer}
+              />
+            )}
+
+            {activeMenu === "classifica-reale-lega" && (
+              <PremiumInsightsSection
+                mode="classifica-reale-lega"
+                insights={premiumInsights}
+                loading={premiumInsightsLoading}
+                error={premiumInsightsError}
+                onReload={() => loadPremiumInsights(true)}
+                leagueStandings={marketStandings}
+                openPlayer={openPlayer}
+              />
+            )}
+
+            {activeMenu === "classifica-fixtures-seriea" && (
+              <PremiumInsightsSection
+                mode="classifica-fixtures-seriea"
+                insights={premiumInsights}
+                loading={premiumInsightsLoading}
+                error={premiumInsightsError}
+                onReload={() => loadPremiumInsights(true)}
+                leagueStandings={marketStandings}
+                openPlayer={openPlayer}
+              />
+            )}
+
+            {activeMenu === "predictions" && (
+              <PremiumInsightsSection
+                mode="predictions-campionato-fixtures"
+                insights={premiumInsights}
+                loading={premiumInsightsLoading}
+                error={premiumInsightsError}
+                onReload={() => loadPremiumInsights(true)}
+                leagueStandings={marketStandings}
+                openPlayer={openPlayer}
               />
             )}
 

@@ -49,6 +49,11 @@ STATS_PATH = DATA_DIR / "statistiche_giocatori.csv"
 MARKET_PATH = DATA_DIR / "market_latest.json"
 STARTING_XI_REPORT_PATH = DATA_DIR / "reports" / "team_starting_xi.csv"
 PLAYER_STRENGTH_REPORT_PATH = DATA_DIR / "reports" / "team_strength_players.csv"
+PLAYER_TIERS_PATH = DATA_DIR / "player_tiers.csv"
+TEAM_STRENGTH_RANKING_PATH = DATA_DIR / "reports" / "team_strength_ranking.csv"
+TEAM_STARTING_STRENGTH_RANKING_PATH = DATA_DIR / "reports" / "team_starting_strength_ranking.csv"
+SERIEA_PREDICTIONS_REPORT_PATH = DATA_DIR / "reports" / "seriea_predictions_round25_38.csv"
+SERIEA_FINAL_TABLE_REPORT_PATH = DATA_DIR / "reports" / "seriea_final_table_projection_round25_38.csv"
 REAL_FORMATIONS_FILE_CANDIDATES = [
     DATA_DIR / "reports" / "formazioni_giornata.csv",
     DATA_DIR / "reports" / "formazioni_giornata.xlsx",
@@ -2084,6 +2089,98 @@ def _load_standings_rows() -> List[Dict[str, object]]:
 @router.get("/standings")
 def standings():
     return {"items": _load_standings_rows()}
+
+
+def _sort_rows_numeric(
+    rows: List[Dict[str, str]],
+    key_name: str,
+    *,
+    reverse: bool = False,
+    default_value: float = 0.0,
+) -> List[Dict[str, str]]:
+    def _score(row: Dict[str, str]) -> float:
+        parsed = _parse_float(row.get(key_name))
+        if parsed is None:
+            return float(default_value)
+        return float(parsed)
+
+    return sorted(rows, key=_score, reverse=reverse)
+
+
+@router.get("/insights/premium")
+def premium_insights(
+    db: Session = Depends(get_db),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+    x_access_key: str | None = Header(default=None, alias="X-Access-Key"),
+):
+    _require_subscription_feature(
+        "tier_list",
+        db,
+        authorization=authorization,
+        x_access_key=x_access_key,
+    )
+
+    player_tiers_rows = _read_csv(PLAYER_TIERS_PATH)
+    player_tiers = _sort_rows_numeric(
+        player_tiers_rows,
+        "score_auto",
+        reverse=True,
+        default_value=-1.0,
+    )
+
+    team_strength_total_rows = _read_csv(TEAM_STRENGTH_RANKING_PATH)
+    team_strength_total = _sort_rows_numeric(
+        team_strength_total_rows,
+        "Pos",
+        reverse=False,
+        default_value=9999.0,
+    )
+
+    team_strength_starting_rows = _read_csv(TEAM_STARTING_STRENGTH_RANKING_PATH)
+    team_strength_starting = _sort_rows_numeric(
+        team_strength_starting_rows,
+        "Pos",
+        reverse=False,
+        default_value=9999.0,
+    )
+
+    seriea_current_table: List[Dict[str, str]] = []
+    seriea_context_path = _resolve_seriea_context_path()
+    if seriea_context_path is not None:
+        seriea_current_table = _sort_rows_numeric(
+            _read_csv(seriea_context_path),
+            "Pts",
+            reverse=True,
+            default_value=-1.0,
+        )
+
+    seriea_predictions = _read_csv(SERIEA_PREDICTIONS_REPORT_PATH)
+    seriea_predictions = sorted(
+        seriea_predictions,
+        key=lambda row: (
+            _parse_int(row.get("round")) or 999,
+            str(row.get("home_team") or ""),
+            str(row.get("away_team") or ""),
+        ),
+    )
+
+    seriea_final_table_rows = _read_csv(SERIEA_FINAL_TABLE_REPORT_PATH)
+    seriea_final_table = _sort_rows_numeric(
+        seriea_final_table_rows,
+        "rank",
+        reverse=False,
+        default_value=9999.0,
+    )
+
+    return {
+        "player_tiers": player_tiers,
+        "team_strength_total": team_strength_total,
+        "team_strength_starting": team_strength_starting,
+        "seriea_current_table": seriea_current_table,
+        "seriea_predictions": seriea_predictions,
+        "seriea_final_table": seriea_final_table,
+        "generated_at": datetime.utcnow().isoformat() + "Z",
+    }
 
 
 def _parse_int(value: object) -> Optional[int]:
