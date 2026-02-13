@@ -14,6 +14,16 @@ from ..auth_utils import access_key_from_bearer
 from ..config import BACKUP_DIR, BACKUP_KEEP_LAST, DATABASE_URL, KEY_LENGTH
 from ..deps import get_db
 from ..models import AccessKey, DeviceSession, KeyReset, RefreshToken, TeamKey
+from ..subscriptions import (
+    PLAN_PREMIUM,
+    PLAN_TRIAL,
+    CYCLE_TRIAL,
+    TRIAL_DURATION,
+    schedule_plan_change,
+    set_manual_suspension,
+    subscription_block_message,
+    subscription_snapshot,
+)
 from ..auth_tokens import (
     REFRESH_TOKEN_TTL,
     create_access_token,
@@ -38,6 +48,8 @@ from ..schemas import (
     TeamKeyRequest,
     TeamKeyItem,
     TeamKeyDeleteRequest,
+    SetSubscriptionRequest,
+    ToggleSubscriptionBlockRequest,
 )
 
 
@@ -97,6 +109,15 @@ def _ua_hash(user_agent: str) -> str:
     return hashlib.sha256(user_agent.encode("utf-8")).hexdigest()
 
 
+def _subscription_payload(db: Session, access_key: AccessKey) -> dict:
+    snapshot, changed = subscription_snapshot(access_key)
+    if changed:
+        db.add(access_key)
+        db.commit()
+        snapshot, _ = subscription_snapshot(access_key)
+    return snapshot
+
+
 def _issue_tokens(db: Session, access_key: AccessKey, device_id: str | None) -> dict:
     access_token, access_expires_at = create_access_token(
         key_value=access_key.key,
@@ -129,7 +150,13 @@ def create_key(db: Session = Depends(get_db)):
     for _ in range(5):
         key = _generate_key()
         if not db.query(AccessKey).filter(AccessKey.key == key).first():
-            record = AccessKey(key=key, used=False)
+            record = AccessKey(
+                key=key,
+                used=False,
+                plan_tier=PLAN_TRIAL,
+                billing_cycle=CYCLE_TRIAL,
+                plan_expires_at=None,
+            )
             db.add(record)
             db.commit()
             return KeyCreateResponse(key=key)
@@ -144,7 +171,14 @@ def bootstrap_admin_key(db: Session = Depends(get_db)):
     for _ in range(5):
         key = _generate_key()
         if not db.query(AccessKey).filter(AccessKey.key == key).first():
-            record = AccessKey(key=key, used=False, is_admin=True)
+            record = AccessKey(
+                key=key,
+                used=False,
+                is_admin=True,
+                plan_tier=PLAN_PREMIUM,
+                billing_cycle="season9",
+                plan_expires_at=None,
+            )
             db.add(record)
             db.commit()
             return AdminKeyResponse(key=key)
@@ -226,30 +260,39 @@ def list_keys(
         .all()
     )
     reset_map = {row.key: row for row in reset_rows}
-
-    return [
-        AdminKeyItem(
-            key=k.key,
-            used=k.used,
-            is_admin=k.is_admin,
-            device_id=k.device_id,
-            device_count=device_count_map.get(k.key, 0),
-            team=team_map.get(k.key),
-            created_at=k.created_at.isoformat() if k.created_at else None,
-            used_at=k.used_at.isoformat() if k.used_at else None,
-            last_seen_at=last_seen_map.get(k.key).isoformat() if last_seen_map.get(k.key) else None,
-            online=k.key in online_keys,
-            reset_used=int(getattr(reset_map.get(k.key), "used", 0) or 0),
-            reset_limit=MAX_KEY_RESETS_PER_SEASON,
-            reset_season=season,
-            reset_cooldown_blocked=(
-                bool(getattr(reset_map.get(k.key), "last_reset_at", None))
-                and getattr(reset_map.get(k.key), "last_reset_at")
-                >= now - timedelta(hours=RESET_COOLDOWN_HOURS)
-            ),
+    items: list[AdminKeyItem] = []
+    changed_any = False
+    for k in keys:
+        sub, changed = subscription_snapshot(k, now)
+        changed_any = changed_any or changed
+        items.append(
+            AdminKeyItem(
+                key=k.key,
+                used=k.used,
+                is_admin=k.is_admin,
+                subscription=sub,
+                device_id=k.device_id,
+                device_count=device_count_map.get(k.key, 0),
+                team=team_map.get(k.key),
+                created_at=k.created_at.isoformat() if k.created_at else None,
+                used_at=k.used_at.isoformat() if k.used_at else None,
+                last_seen_at=last_seen_map.get(k.key).isoformat()
+                if last_seen_map.get(k.key)
+                else None,
+                online=k.key in online_keys,
+                reset_used=int(getattr(reset_map.get(k.key), "used", 0) or 0),
+                reset_limit=MAX_KEY_RESETS_PER_SEASON,
+                reset_season=season,
+                reset_cooldown_blocked=(
+                    bool(getattr(reset_map.get(k.key), "last_reset_at", None))
+                    and getattr(reset_map.get(k.key), "last_reset_at")
+                    >= now - timedelta(hours=RESET_COOLDOWN_HOURS)
+                ),
+            )
         )
-        for k in keys
-    ]
+    if changed_any:
+        db.commit()
+    return items
 
 
 @router.post("/admin/keys", response_model=KeyCreateResponse)
@@ -262,7 +305,14 @@ def create_key_admin(
     for _ in range(5):
         key = _generate_key()
         if not db.query(AccessKey).filter(AccessKey.key == key).first():
-            record = AccessKey(key=key, used=False, is_admin=False)
+            record = AccessKey(
+                key=key,
+                used=False,
+                is_admin=False,
+                plan_tier=PLAN_TRIAL,
+                billing_cycle=CYCLE_TRIAL,
+                plan_expires_at=None,
+            )
             db.add(record)
             db.commit()
             return KeyCreateResponse(key=key)
@@ -337,6 +387,104 @@ def delete_team_key(
     db.delete(record)
     db.commit()
     return {"status": "ok", "key": key_value}
+
+
+@router.get("/session")
+def session_info(
+    x_access_key: str | None = Header(default=None, alias="X-Access-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+    db: Session = Depends(get_db),
+):
+    record = access_key_from_bearer(authorization, db)
+    if record is None:
+        key_value = str(x_access_key or "").strip().lower()
+        if not key_value:
+            raise HTTPException(status_code=401, detail="Key richiesta")
+        record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+        if not record or not record.used:
+            raise HTTPException(status_code=401, detail="Key non valida")
+
+    sub = _subscription_payload(db, record)
+    if not record.is_admin and sub.get("status") != "active":
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "code": "subscription_blocked",
+                "message": subscription_block_message(sub),
+                "subscription": sub,
+            },
+        )
+
+    team_row = db.query(TeamKey).filter(TeamKey.key == record.key).first()
+    team_name = team_row.team if team_row else None
+    return {
+        "status": "ok",
+        "key": record.key,
+        "is_admin": bool(record.is_admin),
+        "team": team_name,
+        "subscription": sub,
+    }
+
+
+@router.post("/admin/subscription")
+def set_subscription_plan(
+    payload: SetSubscriptionRequest,
+    x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+    key_value = payload.key.strip().lower()
+    if not key_value:
+        raise HTTPException(status_code=400, detail="Key non valida")
+    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Key non trovata")
+
+    schedule = schedule_plan_change(
+        record,
+        target_plan=payload.plan_tier,
+        billing_cycle=payload.billing_cycle,
+        force_immediate=bool(payload.force_immediate),
+    )
+    db.add(record)
+    db.commit()
+    snapshot = _subscription_payload(db, record)
+    return {
+        "status": "ok",
+        "key": key_value,
+        "schedule": {
+            **schedule,
+            "effective_at": (
+                schedule["effective_at"].isoformat()
+                if isinstance(schedule.get("effective_at"), datetime)
+                else schedule.get("effective_at")
+            ),
+        },
+        "subscription": snapshot,
+    }
+
+
+@router.post("/admin/subscription/block")
+def set_subscription_block(
+    payload: ToggleSubscriptionBlockRequest,
+    x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+    key_value = payload.key.strip().lower()
+    if not key_value:
+        raise HTTPException(status_code=400, detail="Key non valida")
+    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Key non trovata")
+
+    set_manual_suspension(record, bool(payload.blocked), payload.reason)
+    db.add(record)
+    db.commit()
+    snapshot = _subscription_payload(db, record)
+    return {"status": "ok", "key": key_value, "subscription": snapshot}
 
 
 @router.get("/admin/status")
@@ -434,9 +582,32 @@ def import_keys(
         exists = db.query(AccessKey).filter(AccessKey.key == key_value).first()
         if exists:
             exists.is_admin = bool(payload.is_admin)
+            if exists.is_admin:
+                exists.plan_tier = PLAN_PREMIUM
+                exists.billing_cycle = "season9"
+                exists.plan_expires_at = None
+                exists.blocked_at = None
+                exists.blocked_reason = None
             db.add(exists)
             continue
-        record = AccessKey(key=key_value, used=False, is_admin=payload.is_admin)
+        if payload.is_admin:
+            record = AccessKey(
+                key=key_value,
+                used=False,
+                is_admin=True,
+                plan_tier=PLAN_PREMIUM,
+                billing_cycle="season9",
+                plan_expires_at=None,
+            )
+        else:
+            record = AccessKey(
+                key=key_value,
+                used=False,
+                is_admin=False,
+                plan_tier=PLAN_TRIAL,
+                billing_cycle=CYCLE_TRIAL,
+                plan_expires_at=None,
+            )
         db.add(record)
         inserted += 1
     db.commit()
@@ -558,6 +729,16 @@ def ping(
         access_key = db.query(AccessKey).filter(AccessKey.key == key_value).first()
         if not access_key:
             raise HTTPException(status_code=401, detail="Key non valida")
+        subscription = _subscription_payload(db, access_key)
+        if not access_key.is_admin and subscription.get("status") != "active":
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "code": "subscription_blocked",
+                    "message": subscription_block_message(subscription),
+                    "subscription": subscription,
+                },
+            )
     session = db.query(DeviceSession).filter(DeviceSession.device_id == device_id).first()
     if session:
         session.last_seen_at = datetime.utcnow()
@@ -579,6 +760,17 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
     if not access_key:
         raise HTTPException(status_code=401, detail="Key non valida")
 
+    subscription = _subscription_payload(db, access_key)
+    if not access_key.is_admin and subscription.get("status") != "active":
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "code": "subscription_blocked",
+                "message": subscription_block_message(subscription),
+                "subscription": subscription,
+            },
+        )
+
     # First use binds the device
     if not access_key.used:
         access_key.used = True
@@ -586,6 +778,8 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
         access_key.user_agent_hash = ua_hash
         access_key.ip_address = ip
         access_key.used_at = datetime.utcnow()
+        if str(access_key.plan_tier or "").strip().lower() == PLAN_TRIAL and access_key.plan_expires_at is None:
+            access_key.plan_expires_at = datetime.utcnow() + TRIAL_DURATION
         db.add(access_key)
 
         session = DeviceSession(
@@ -601,6 +795,7 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
             status="ok",
             message="Accesso autorizzato e device collegato",
             is_admin=access_key.is_admin,
+            subscription=subscription,
             warning="Accesso legacy con key: passa ai Bearer token.",
             **tokens,
         )
@@ -629,6 +824,7 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
                 status="ok",
                 message="Accesso autorizzato (admin)",
                 is_admin=True,
+                subscription=subscription,
                 warning="Accesso legacy con key: passa ai Bearer token.",
                 **tokens,
             )
@@ -648,6 +844,7 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
         status="ok",
         message="Accesso autorizzato",
         is_admin=access_key.is_admin,
+        subscription=subscription,
         warning="Accesso legacy con key: passa ai Bearer token.",
         **tokens,
     )
@@ -672,6 +869,16 @@ def refresh_tokens(payload: RefreshRequest, db: Session = Depends(get_db)):
     access_key = db.query(AccessKey).filter(AccessKey.id == record.key_id).first()
     if not access_key:
         raise HTTPException(status_code=401, detail="Refresh token non valido")
+    subscription = _subscription_payload(db, access_key)
+    if not access_key.is_admin and subscription.get("status") != "active":
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "code": "subscription_blocked",
+                "message": subscription_block_message(subscription),
+                "subscription": subscription,
+            },
+        )
 
     record.revoked_at = now
     record.last_used_at = now

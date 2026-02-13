@@ -89,6 +89,13 @@ const formatDecimal = (value, digits = 2) => {
   return n.toFixed(digits).replace(".", ",");
 };
 
+const formatEuro = (value) => {
+  if (value === undefined || value === null) return "-";
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "-";
+  return `${n.toFixed(2).replace(".", ",")}€`;
+};
+
 const formatLastAccess = (value) => {
   if (!value) return "-";
   const d = new Date(value);
@@ -121,6 +128,18 @@ const formatDataStatusDate = (value) => {
   });
 };
 
+const formatCountdown = (secondsValue) => {
+  const total = Number(secondsValue);
+  if (!Number.isFinite(total) || total <= 0) return "0m";
+  const s = Math.floor(total % 60);
+  const m = Math.floor((total / 60) % 60);
+  const h = Math.floor((total / 3600) % 24);
+  const d = Math.floor(total / 86400);
+  if (d > 0) return `${d}g ${h}h ${m}m`;
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m ${s}s`;
+};
+
 /* ===========================
    CONFIG
 =========================== */
@@ -132,6 +151,35 @@ const API_BASE =
   (import.meta.env.DEV
     ? "http://localhost:8001"
     : "https://fantaportoscuso.up.railway.app");
+const TRIAL_TOP_ACQUISTI_LIMIT = 20;
+const PLAN_TIER_LABELS = {
+  trial: "Trial",
+  base: "Base",
+  premium: "Premium",
+};
+const BILLING_LABELS = {
+  trial: "Trial",
+  monthly: "Mensile",
+  season9: "9 mesi",
+};
+const PLAN_PRICES_FALLBACK = {
+  trial: { trial: 0 },
+  base: { monthly: 5, season9: 37.99 },
+  premium: { monthly: 10, season9: 57.99 },
+};
+const MENU_FEATURES = {
+  home: "home",
+  stats: "statistiche_giocatori",
+  rose: "rose",
+  formazioni: "formazioni",
+  plusvalenze: "plusvalenze",
+  listone: "listone",
+  "top-acquisti": "top_acquisti",
+  mercato: "mercato",
+  player: "schede_giocatori",
+  live: "formazioni_live",
+  admin: "home",
+};
 
 /* ===========================
    APP
@@ -146,6 +194,7 @@ export default function App() {
   const [rememberKey, setRememberKey] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [subscription, setSubscription] = useState(null);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
 
@@ -305,6 +354,13 @@ export default function App() {
   const [adminImportTeamKeys, setAdminImportTeamKeys] = useState("");
   const [adminStatus, setAdminStatus] = useState(null);
   const [adminTeamKeys, setAdminTeamKeys] = useState([]);
+  const [adminSubKey, setAdminSubKey] = useState("");
+  const [adminSubPlan, setAdminSubPlan] = useState("base");
+  const [adminSubCycle, setAdminSubCycle] = useState("monthly");
+  const [adminSubImmediate, setAdminSubImmediate] = useState(false);
+  const [adminBlockKey, setAdminBlockKey] = useState("");
+  const [adminBlockValue, setAdminBlockValue] = useState(true);
+  const [adminBlockReason, setAdminBlockReason] = useState("");
 
   /* ===== MERCATO + SUGGEST ===== */
   const [marketView, setMarketView] = useState("players");
@@ -367,6 +423,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const clearAuthSession = (message = "") => {
     setLoggedIn(false);
     setIsAdmin(false);
+    setSubscription(null);
     setStatus("idle");
     if (message) {
       setError(message);
@@ -414,6 +471,42 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     return fetch(url, { ...options, headers: retryHeaders });
   };
 
+  const applyAuthSessionPayload = (data) => {
+    setIsAdmin(Boolean(data?.is_admin));
+    setSubscription(normalizeSubscription(data?.subscription));
+  };
+
+  const loadAuthSession = async () => {
+    const keyValue = accessKey.trim().toLowerCase();
+    const headers = buildAuthHeaders({ legacyAccessKey: true });
+    try {
+      const res = await fetchWithAuth(`${API_BASE}/auth/session`, { headers }, true);
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (res.status === 402) {
+          setLoggedIn(true);
+          applyAuthSessionPayload(payload || {});
+          const message =
+            payload?.detail?.message ||
+            payload?.message ||
+            "Key bloccata: rinnova per continuare.";
+          setError(String(message));
+          return false;
+        }
+        clearAuthSession(payload?.detail || payload?.message || "Sessione non valida.");
+        return false;
+      }
+      setLoggedIn(true);
+      applyAuthSessionPayload(payload || {});
+      return true;
+    } catch {
+      if (keyValue) {
+        setError("Errore verifica sessione.");
+      }
+      return false;
+    }
+  };
+
   const buildAuthHeaders = ({
     legacyAccessKey = false,
     legacyAdminKey = false,
@@ -428,6 +521,127 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       headers["X-Admin-Key"] = keyValue;
     }
     return headers;
+  };
+
+  const normalizeSubscription = (raw) => {
+    const src = raw && typeof raw === "object" ? raw : {};
+    const featuresRaw = src.features && typeof src.features === "object" ? src.features : {};
+    const features = {};
+    Object.keys(featuresRaw).forEach((key) => {
+      features[String(key)] = Boolean(featuresRaw[key]);
+    });
+    const catalogRaw =
+      src.price_catalog_eur && typeof src.price_catalog_eur === "object"
+        ? src.price_catalog_eur
+        : {};
+    const priceCatalog = {};
+    Object.keys(catalogRaw).forEach((planKey) => {
+      const cycleMap = catalogRaw[planKey];
+      if (!cycleMap || typeof cycleMap !== "object") return;
+      const cleanCycleMap = {};
+      Object.keys(cycleMap).forEach((cycleKey) => {
+        const amount = Number(cycleMap[cycleKey]);
+        if (Number.isFinite(amount)) cleanCycleMap[String(cycleKey)] = amount;
+      });
+      priceCatalog[String(planKey)] = cleanCycleMap;
+    });
+    return {
+      plan_tier: String(src.plan_tier || "").trim().toLowerCase() || "trial",
+      billing_cycle: String(src.billing_cycle || "").trim().toLowerCase() || "trial",
+      current_price_eur: Number.isFinite(Number(src.current_price_eur))
+        ? Number(src.current_price_eur)
+        : null,
+      pending_price_eur: Number.isFinite(Number(src.pending_price_eur))
+        ? Number(src.pending_price_eur)
+        : null,
+      price_catalog_eur: priceCatalog,
+      status: String(src.status || "").trim().toLowerCase() || "active",
+      blocked_reason: String(src.blocked_reason || "").trim().toLowerCase() || "",
+      plan_expires_at: src.plan_expires_at ? String(src.plan_expires_at) : "",
+      seconds_to_expiry: Number.isFinite(Number(src.seconds_to_expiry))
+        ? Number(src.seconds_to_expiry)
+        : null,
+      pending_plan_tier: src.pending_plan_tier ? String(src.pending_plan_tier) : "",
+      pending_billing_cycle: src.pending_billing_cycle
+        ? String(src.pending_billing_cycle)
+        : "",
+      pending_effective_at: src.pending_effective_at ? String(src.pending_effective_at) : "",
+      seconds_to_pending: Number.isFinite(Number(src.seconds_to_pending))
+        ? Number(src.seconds_to_pending)
+        : null,
+      features,
+    };
+  };
+
+  const hasFeature = (featureName) => {
+    if (isAdmin) return true;
+    if (!subscription || !subscription.features) return false;
+    return Boolean(subscription.features[String(featureName || "")]);
+  };
+
+  const isSubscriptionBlocked = Boolean(
+    !isAdmin && subscription && String(subscription.status || "") === "blocked"
+  );
+
+  const resolveMenuFeature = (menuKey, featureName) => {
+    const explicit = String(featureName || "").trim();
+    if (explicit) return explicit;
+    const mapped = MENU_FEATURES[String(menuKey || "").trim()];
+    return mapped || "home";
+  };
+
+  const planTierLabel = (planTier) =>
+    PLAN_TIER_LABELS[String(planTier || "").trim().toLowerCase()] ||
+    String(planTier || "-").toUpperCase();
+
+  const billingCycleLabel = (billingCycle) =>
+    BILLING_LABELS[String(billingCycle || "").trim().toLowerCase()] ||
+    String(billingCycle || "-");
+
+  const blockedReasonLabel = (blockedReason) => {
+    const key = String(blockedReason || "").trim().toLowerCase();
+    if (key === "trial_expired") return "Trial terminato";
+    if (key === "plan_expired") return "Piano scaduto";
+    if (key === "manual_suspension") return "Sospensione manuale";
+    return key || "bloccata";
+  };
+
+  const subscriptionPriceCatalog =
+    subscription?.price_catalog_eur &&
+    typeof subscription.price_catalog_eur === "object" &&
+    Object.keys(subscription.price_catalog_eur).length > 0
+      ? subscription.price_catalog_eur
+      : PLAN_PRICES_FALLBACK;
+
+  const subscriptionPriceFor = (planTier, billingCycle) => {
+    const planKey = String(planTier || "").trim().toLowerCase();
+    const cycleKey = String(billingCycle || "").trim().toLowerCase();
+    const planMap = subscriptionPriceCatalog[planKey];
+    if (!planMap || typeof planMap !== "object") return null;
+    const amount = Number(planMap[cycleKey]);
+    return Number.isFinite(amount) ? amount : null;
+  };
+
+  const menuItemClass = (menuKey, featureName) => {
+    const active = activeMenu === menuKey;
+    const locked = !hasFeature(resolveMenuFeature(menuKey, featureName));
+    const classes = ["menu-item"];
+    if (active) classes.push("active");
+    if (locked) classes.push("locked");
+    return classes.join(" ");
+  };
+
+  const openMenuFeature = (menuKey, featureName, closeMobile = true, closeAdmin = false) => {
+    const requiredFeature = resolveMenuFeature(menuKey, featureName);
+    if (!hasFeature(requiredFeature)) {
+      const planTier = String(subscription?.plan_tier || "trial").toUpperCase();
+      setError(`Funzione non disponibile nel piano ${planTier}.`);
+      return;
+    }
+    setError("");
+    setActiveMenu(menuKey);
+    if (closeMobile) setMenuOpen(false);
+    if (closeAdmin) setAdminMenuOpen(false);
   };
 
   /* ===========================
@@ -454,14 +668,28 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
-        throw new Error(d.detail || "Accesso non consentito");
+        const detail = d?.detail;
+        if (res.status === 402 && detail && typeof detail === "object") {
+          setLoggedIn(true);
+          setIsAdmin(Boolean(d?.is_admin));
+          setSubscription(normalizeSubscription(detail?.subscription || d?.subscription));
+          throw new Error(detail?.message || "Key bloccata: rinnova per continuare.");
+        }
+        if (typeof detail === "string") {
+          throw new Error(detail || "Accesso non consentito");
+        }
+        if (detail && typeof detail === "object") {
+          throw new Error(detail?.message || "Accesso non consentito");
+        }
+        throw new Error(d?.message || "Accesso non consentito");
       }
 
       const data = await res.json();
       setLoggedIn(true);
-      setIsAdmin(!!data.is_admin);
+      applyAuthSessionPayload(data);
       setStatus("success");
       persistTokens(data?.access_token || "", data?.refresh_token || "");
+      setError("");
 
       if (rememberKey) {
         localStorage.setItem(
@@ -593,7 +821,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (normalizedOrder === "classifica" || normalizedOrder === "live_total") {
         params.set("order_by", normalizedOrder);
       }
-      const res = await fetch(`${API_BASE}/data/formazioni?${params.toString()}`);
+      const res = await fetchWithAuth(`${API_BASE}/data/formazioni?${params.toString()}`, {
+        headers: buildAuthHeaders({ legacyAccessKey: true }),
+      });
       if (!res.ok) return;
       const data = await res.json();
       setFormations(Array.isArray(data.items) ? data.items : []);
@@ -643,11 +873,20 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const onFormationOrderChange = (nextOrder) => {
     const normalizedOrder =
       String(nextOrder || "").toLowerCase() === "live_total" ? "live_total" : "classifica";
+    if (normalizedOrder === "live_total" && !hasFeature("formazioni_live")) {
+      setError("Classifica live giornata disponibile solo con piano Premium.");
+      return;
+    }
     setFormationOrder(normalizedOrder);
     loadFormazioni(formationRound || null, normalizedOrder);
   };
 
   const runFormationOptimizer = async (teamName, roundValue = null) => {
+    if (!hasFeature("formazione_consigliata")) {
+      setFormationOptimizer(null);
+      setFormationOptimizerError("XI ottimizzata disponibile solo con piano Premium.");
+      return;
+    }
     const safeTeam = String(teamName || "").trim();
     if (!safeTeam || safeTeam.toLowerCase() === "all") {
       setFormationOptimizer(null);
@@ -662,7 +901,10 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (Number.isFinite(parsedRound) && parsedRound > 0) {
         params.set("round", String(parsedRound));
       }
-      const res = await fetch(`${API_BASE}/data/formazioni/optimizer?${params.toString()}`);
+      const res = await fetchWithAuth(
+        `${API_BASE}/data/formazioni/optimizer?${params.toString()}`,
+        { headers: buildAuthHeaders({ legacyAccessKey: true }) }
+      );
       if (!res.ok) {
         const payload = await res.json().catch(() => ({}));
         throw new Error(payload?.detail || "Errore calcolo XI ottimizzata");
@@ -678,7 +920,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   };
 
   const loadLivePayload = async (roundValue = null) => {
-    if (!loggedIn || !isAdmin) return;
+    if (!loggedIn || (!isAdmin && !hasFeature("formazioni_live"))) return;
     try {
       setLiveLoading(true);
       setLiveError("");
@@ -690,7 +932,10 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       const queryString = params.toString();
       const endpoint = `${API_BASE}/data/live/payload${queryString ? `?${queryString}` : ""}`;
       const res = await fetchWithAuth(endpoint, {
-        headers: buildAuthHeaders({ legacyAdminKey: true }),
+        headers: buildAuthHeaders({
+          legacyAccessKey: true,
+          legacyAdminKey: isAdmin,
+        }),
       });
       if (!res.ok) {
         const payload = await res.json().catch(() => ({}));
@@ -1082,6 +1327,10 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
      PLAYER PROFILE
   =========================== */
   const openPlayer = async (name) => {
+    if (!hasFeature("schede_giocatori")) {
+      setError("Scheda giocatore disponibile dal piano Base.");
+      return;
+    }
     if (!name) return;
     setSelectedPlayer(name);
     setActiveMenu("player");
@@ -1273,6 +1522,10 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         rank: index + 1,
       }));
 
+    const isTrial = String(subscription?.plan_tier || "").toLowerCase() === "trial";
+    if (!isAdmin && isTrial) {
+      return list.slice(0, TRIAL_TOP_ACQUISTI_LIMIT);
+    }
     return list;
   }, [
     topPlayersByRole,
@@ -1281,6 +1534,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     marketStandings,
     topPosFrom,
     topPosTo,
+    subscription,
+    isAdmin,
   ]);
 
   const topAcquistiRangeLabel = useMemo(() => {
@@ -1779,6 +2034,89 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     } catch {}
   };
 
+  const setSubscriptionAdmin = async () => {
+    if (!isAdmin) return;
+    const key = String(adminSubKey || "").trim().toLowerCase();
+    if (!key) {
+      setAdminNotice("Inserisci una key per impostare il piano.");
+      return;
+    }
+    try {
+      const payload = {
+        key,
+        plan_tier: String(adminSubPlan || "base").trim().toLowerCase(),
+        billing_cycle: String(adminSubCycle || "monthly").trim().toLowerCase(),
+        force_immediate: Boolean(adminSubImmediate),
+      };
+      if (payload.plan_tier === "trial") {
+        payload.billing_cycle = "trial";
+      }
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/subscription`, {
+        method: "POST",
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAdminNotice(data?.detail || data?.message || "Errore impostazione piano.");
+        return;
+      }
+      const schedule = data?.schedule || {};
+      const delayHours = Number(schedule?.delay_hours);
+      const immediate = !schedule?.scheduled || delayHours <= 0;
+      const summary = immediate
+        ? `Piano ${String(payload.plan_tier).toUpperCase()} applicato subito.`
+        : `Piano ${String(payload.plan_tier).toUpperCase()} pianificato tra ${delayHours}h.`;
+      setAdminNotice(`${key.toUpperCase()}: ${summary}`);
+      loadAdminKeys();
+      if (key === String(accessKey || "").trim().toLowerCase()) {
+        loadAuthSession();
+      }
+    } catch {
+      setAdminNotice("Errore impostazione piano.");
+    }
+  };
+
+  const setSubscriptionBlockAdmin = async () => {
+    if (!isAdmin) return;
+    const key = String(adminBlockKey || "").trim().toLowerCase();
+    if (!key) {
+      setAdminNotice("Inserisci una key per sospendere/ripristinare.");
+      return;
+    }
+    try {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/subscription/block`, {
+        method: "POST",
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
+        body: JSON.stringify({
+          key,
+          blocked: Boolean(adminBlockValue),
+          reason: String(adminBlockReason || "").trim() || null,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAdminNotice(data?.detail || data?.message || "Errore aggiornamento blocco key.");
+        return;
+      }
+      setAdminNotice(
+        `${key.toUpperCase()}: ${adminBlockValue ? "sospesa" : "riattivata"} con successo.`
+      );
+      loadAdminKeys();
+      if (key === String(accessKey || "").trim().toLowerCase()) {
+        loadAuthSession();
+      }
+    } catch {
+      setAdminNotice("Errore aggiornamento blocco key.");
+    }
+  };
+
   /* ===========================
      EFFECTS
   =========================== */
@@ -1797,6 +2135,14 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       }
     } catch {}
   }, []);
+
+  useEffect(() => {
+    if (loggedIn) return;
+    if (!accessKey.trim()) return;
+    if (!accessToken && !refreshToken) return;
+    loadAuthSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn, accessKey, accessToken, refreshToken]);
 
   useEffect(() => {
     try {
@@ -1850,6 +2196,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           body: JSON.stringify({ key: accessKey.trim(), device_id: deviceId }),
         });
       } catch {}
+      try {
+        await loadAuthSession();
+      } catch {}
     };
     ping();
     const timer = setInterval(ping, 60000);
@@ -1902,10 +2251,19 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   }, [loggedIn, activeMenu, quoteRole, quoteOrder]);
 
   useEffect(() => {
-    if (!loggedIn || !isAdmin || activeMenu !== "live") return;
+    if (!loggedIn || activeMenu !== "live") return;
+    if (!isAdmin && !hasFeature("formazioni_live")) return;
     loadLivePayload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedIn, isAdmin, activeMenu]);
+  }, [loggedIn, isAdmin, activeMenu, subscription]);
+
+  useEffect(() => {
+    if (!loggedIn || isAdmin) return;
+    const feature = MENU_FEATURES[String(activeMenu || "").trim()] || "home";
+    if (!hasFeature(feature)) {
+      setActiveMenu("home");
+    }
+  }, [loggedIn, isAdmin, activeMenu, subscription]);
 
   /* ===========================
      MENU OPEN (mobile)
@@ -2011,98 +2369,117 @@ useEffect(() => {
             </p>
           </section>
         </div>
+      ) : isSubscriptionBlocked ? (
+        <div className="blocked-shell">
+          <section className="blocked-card">
+            <p className="eyebrow">Accesso Bloccato</p>
+            <h2>Rinnova la key per continuare ad utilizzare il sito</h2>
+            <p className="muted">
+              {error ||
+                `Stato: ${blockedReasonLabel(subscription?.blocked_reason)}. Contatta l'admin o rinnova il piano.`}
+            </p>
+            <div className="blocked-meta">
+              <span>Piano attuale: {planTierLabel(subscription?.plan_tier)}</span>
+              <span>Ciclo: {billingCycleLabel(subscription?.billing_cycle)}</span>
+              {subscription?.plan_expires_at ? (
+                <span>Scadenza: {formatDataStatusDate(subscription.plan_expires_at)}</span>
+              ) : null}
+              {subscription?.pending_plan_tier ? (
+                <span>
+                  Prossimo piano: {planTierLabel(subscription.pending_plan_tier)} tra{" "}
+                  {formatCountdown(Number(subscription.seconds_to_pending || 0))}
+                </span>
+              ) : null}
+            </div>
+            <div className="blocked-actions">
+              <button className="primary" onClick={() => loadAuthSession()}>
+                Ricarica stato key
+              </button>
+            </div>
+          </section>
+        </div>
       ) : (
         <div className="app-shell">
           <aside className="sidebar" aria-label="Menu principale">
             <div className="brand">
               <span className="eyebrow">FantaPortoscuso</span>
-              <h2>Menù</h2>
+              <h2>MenÃ¹</h2>
             </div>
 
             <nav className="menu">
               <button
-                className={activeMenu === "home" ? "menu-item active" : "menu-item"}
-                onClick={() => {
-                  setActiveMenu("home");
-                  setMenuOpen(false);
-                }}
+                className={menuItemClass("home")}
+                onClick={() => openMenuFeature("home")}
               >
                 Home
               </button>
 
               <button
-                className={activeMenu === "stats" ? "menu-item active" : "menu-item"}
-                onClick={() => {
-                  setActiveMenu("stats");
-                  setMenuOpen(false);
-                }}
+                className={menuItemClass("stats")}
+                onClick={() => openMenuFeature("stats")}
               >
                 Statistiche Giocatori
               </button>
 
               <button
-                className={activeMenu === "rose" ? "menu-item active" : "menu-item"}
-                onClick={() => {
-                  setActiveMenu("rose");
-                  setMenuOpen(false);
-                }}
+                className={menuItemClass("rose")}
+                onClick={() => openMenuFeature("rose")}
               >
                 Rose
               </button>
 
               <button
-                className={activeMenu === "formazioni" ? "menu-item active" : "menu-item"}
-                onClick={() => {
-                  setActiveMenu("formazioni");
-                  setMenuOpen(false);
-                }}
+                className={menuItemClass("formazioni")}
+                onClick={() => openMenuFeature("formazioni")}
               >
                 Formazioni
               </button>
 
               <button
-                className={
-                  activeMenu === "plusvalenze" ? "menu-item active" : "menu-item"
-                }
-                onClick={() => {
-                  setActiveMenu("plusvalenze");
-                  setMenuOpen(false);
-                }}
+                className={menuItemClass("plusvalenze")}
+                onClick={() => openMenuFeature("plusvalenze")}
               >
                 Plusvalenze
               </button>
 
               <button
-                className={activeMenu === "listone" ? "menu-item active" : "menu-item"}
-                onClick={() => {
-                  setActiveMenu("listone");
-                  setMenuOpen(false);
-                }}
+                className={menuItemClass("listone")}
+                onClick={() => openMenuFeature("listone")}
               >
                 Listone
               </button>
 
               <button
-                className={
-                  activeMenu === "top-acquisti" ? "menu-item active" : "menu-item"
-                }
-                onClick={() => {
-                  setActiveMenu("top-acquisti");
-                  setMenuOpen(false);
-                }}
+                className={menuItemClass("top-acquisti")}
+                onClick={() => openMenuFeature("top-acquisti")}
               >
-                Giocatori più acquistati
+                Giocatori piÃ¹ acquistati
               </button>
               <button
-                className={activeMenu === "mercato" ? "menu-item active" : "menu-item"}
-                onClick={() => {
-                  setActiveMenu("mercato");
-                  setMenuOpen(false);
-                }}
+                className={menuItemClass("mercato")}
+                onClick={() => openMenuFeature("mercato")}
               >
                 Mercato
               </button>
             </nav>
+            {!isAdmin && subscription ? (
+              <div className="subscription-card">
+                <p className="eyebrow">Piano</p>
+                <h3>{planTierLabel(subscription.plan_tier)}</h3>
+                <p className="muted">Ciclo: {billingCycleLabel(subscription.billing_cycle)}</p>
+                {Number.isFinite(Number(subscription.seconds_to_expiry)) ? (
+                  <p className="muted">
+                    Scadenza tra {formatCountdown(Number(subscription.seconds_to_expiry))}
+                  </p>
+                ) : null}
+                {subscription.pending_plan_tier ? (
+                  <p className="muted">
+                    Cambio a {planTierLabel(subscription.pending_plan_tier)} tra{" "}
+                    {formatCountdown(Number(subscription.seconds_to_pending || 0))}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
           </aside>
           {isAdmin && (
             <aside className="admin-sidebar" aria-label="Menu admin">
@@ -2113,20 +2490,14 @@ useEffect(() => {
 
               <nav className="menu">
                 <button
-                  className={activeMenu === "live" ? "menu-item active" : "menu-item"}
-                  onClick={() => {
-                    setActiveMenu("live");
-                    setAdminMenuOpen(false);
-                  }}
+                  className={menuItemClass("live", "formazioni_live")}
+                  onClick={() => openMenuFeature("live", "formazioni_live", true, true)}
                 >
                   Live
                 </button>
                 <button
-                  className={activeMenu === "admin" ? "menu-item active" : "menu-item"}
-                  onClick={() => {
-                    setActiveMenu("admin");
-                    setAdminMenuOpen(false);
-                  }}
+                  className={menuItemClass("admin", "home")}
+                  onClick={() => openMenuFeature("admin", "home", true, true)}
                 >
                   Gestione
                 </button>
@@ -2196,6 +2567,14 @@ useEffect(() => {
           <div className="admin-menu-overlay" onClick={() => setAdminMenuOpen(false)} />
 
           <main className="content">
+            {error ? (
+              <div className="panel app-alert">
+                <p className="error">{error}</p>
+                <button type="button" className="ghost" onClick={() => setError("")}>
+                  Chiudi
+                </button>
+              </div>
+            ) : null}
             {/* ===========================
                 HOME (placeholder minimale)
             =========================== */}
@@ -2224,7 +2603,7 @@ useEffect(() => {
                 setStatsTab={setStatsTab}
                 statColumn={statColumn}
                 goToTeam={goToTeam}
-                setActiveMenu={setActiveMenu}
+                setActiveMenu={(menuKey) => openMenuFeature(menuKey, null, false, false)}
               />
             )}
 
@@ -2409,10 +2788,10 @@ useEffect(() => {
                     >
                       <div>
                         <p>Profilo</p>
-                        <span className="muted">Squadra · Ruolo</span>
+                        <span className="muted">Squadra Â· Ruolo</span>
                       </div>
                       <strong>
-                        {playerProfile?.Squadra || "-"} · {playerProfile?.Ruolo || "-"}
+                        {playerProfile?.Squadra || "-"} Â· {playerProfile?.Ruolo || "-"}
                       </strong>
                     </div>
 
@@ -2618,13 +2997,93 @@ useEffect(() => {
                         Key selezionata ({(adminResetKey || "-").toUpperCase()}): reset usati{" "}
                         {adminResetUsage?.used ?? 0}/{adminResetUsage?.limit ?? 3}
                         {adminResetUsage?.season
-                          ? ` · Stagione ${adminResetUsage.season}`
+                          ? ` Â· Stagione ${adminResetUsage.season}`
                           : ""}
                       </p>
                     </div>
 
                     <div className="admin-row admin-row-stacked">
                       <p className="muted">Le associazioni key-team si gestiscono sopra.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="panel">
+                  <div className="panel-header">
+                    <h3>Piani e Sospensioni</h3>
+                  </div>
+                  <div className="admin-actions">
+                    <div className="admin-row admin-row-stacked">
+                      <p className="muted">
+                        Listino: Base mensile {formatEuro(subscriptionPriceFor("base", "monthly"))} · Base 9 mesi{" "}
+                        {formatEuro(subscriptionPriceFor("base", "season9"))} · Premium mensile{" "}
+                        {formatEuro(subscriptionPriceFor("premium", "monthly"))} · Premium 9 mesi{" "}
+                        {formatEuro(subscriptionPriceFor("premium", "season9"))}
+                      </p>
+                    </div>
+                    <div className="admin-row">
+                      <input
+                        className="input"
+                        placeholder="Key da aggiornare piano"
+                        value={adminSubKey}
+                        onChange={(e) => setAdminSubKey(e.target.value)}
+                      />
+                      <select
+                        className="input"
+                        value={adminSubPlan}
+                        onChange={(e) => setAdminSubPlan(e.target.value)}
+                      >
+                        <option value="trial">Trial</option>
+                        <option value="base">Base</option>
+                        <option value="premium">Premium</option>
+                      </select>
+                      <select
+                        className="input"
+                        value={adminSubCycle}
+                        onChange={(e) => setAdminSubCycle(e.target.value)}
+                        disabled={adminSubPlan === "trial"}
+                      >
+                        <option value="monthly">Mensile</option>
+                        <option value="season9">9 mesi</option>
+                        <option value="trial">Trial</option>
+                      </select>
+                      <label className="admin-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={adminSubImmediate}
+                          onChange={(e) => setAdminSubImmediate(e.target.checked)}
+                        />
+                        <span>Applica subito</span>
+                      </label>
+                      <button className="ghost" onClick={setSubscriptionAdmin}>
+                        Imposta piano
+                      </button>
+                    </div>
+
+                    <div className="admin-row">
+                      <input
+                        className="input"
+                        placeholder="Key da sospendere/riattivare"
+                        value={adminBlockKey}
+                        onChange={(e) => setAdminBlockKey(e.target.value)}
+                      />
+                      <select
+                        className="input"
+                        value={adminBlockValue ? "blocked" : "active"}
+                        onChange={(e) => setAdminBlockValue(e.target.value === "blocked")}
+                      >
+                        <option value="blocked">Sospendi</option>
+                        <option value="active">Riattiva</option>
+                      </select>
+                      <input
+                        className="input"
+                        placeholder="Motivo (opzionale)"
+                        value={adminBlockReason}
+                        onChange={(e) => setAdminBlockReason(e.target.value)}
+                      />
+                      <button className="ghost" onClick={setSubscriptionBlockAdmin}>
+                        Salva stato
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -2641,33 +3100,44 @@ useEffect(() => {
                     {adminKeys.length === 0 ? (
                       <p className="muted">Nessuna key disponibile.</p>
                     ) : (
-                      adminKeys.map((item) => (
-                        <div key={item.key} className="list-item player-card">
-                          <div>
-                            <p>{String(item.key || "").toUpperCase()}</p>
-                            <span className="muted">
-                              {item.is_admin ? "ADMIN" : "USER"} - {item.used ? "Attivata" : "Non usata"}
-                            </span>
-                            <span className="muted">Team: {item.team || "-"}</span>
-                            <span className="muted">
-                              Reset: {item.reset_used ?? 0}/{item.reset_limit ?? 3}
-                              {item.reset_season ? ` · Stagione ${item.reset_season}` : ""}
-                            </span>
-                            <span className="muted">
-                              Ultimo accesso:{" "}
-                              {item.online
-                                ? "Online"
-                                : formatLastAccess(item.last_seen_at || item.used_at)}
-                            </span>
+                      adminKeys.map((item) => {
+                        const sub = normalizeSubscription(item.subscription || {});
+                        return (
+                          <div key={item.key} className="list-item player-card">
+                            <div>
+                              <p>{String(item.key || "").toUpperCase()}</p>
+                              <span className="muted">
+                                {item.is_admin ? "ADMIN" : "USER"} - {item.used ? "Attivata" : "Non usata"}
+                              </span>
+                              <span className="muted">Team: {item.team || "-"}</span>
+                              <span className="muted">
+                                Piano: {planTierLabel(sub.plan_tier)} ({billingCycleLabel(sub.billing_cycle)}) - {sub.status === "blocked" ? "Bloccata" : "Attiva"}
+                              </span>
+                              {sub.blocked_reason ? (
+                                <span className="muted">Blocco: {blockedReasonLabel(sub.blocked_reason)}</span>
+                              ) : null}
+                              {sub.plan_expires_at ? (
+                                <span className="muted">Scadenza: {formatDataStatusDate(sub.plan_expires_at)}</span>
+                              ) : null}
+                              {sub.pending_plan_tier ? (
+                                <span className="muted">
+                                  Cambio pianificato: {planTierLabel(sub.pending_plan_tier)} tra {formatCountdown(Number(sub.seconds_to_pending || 0))}
+                                </span>
+                              ) : null}
+                              <span className="muted">
+                                Reset: {item.reset_used ?? 0}/{item.reset_limit ?? 3}
+                                {item.reset_season ? ` · Stagione ${item.reset_season}` : ""}
+                              </span>
+                              <span className="muted">
+                                Ultimo accesso: {item.online ? "Online" : formatLastAccess(item.last_seen_at || item.used_at)}
+                              </span>
+                            </div>
+                            <button className="ghost" onClick={() => deleteTeamKeyAdmin(item.key)}>
+                              Elimina
+                            </button>
                           </div>
-                          <button
-                            className="ghost"
-                            onClick={() => deleteTeamKeyAdmin(item.key)}
-                          >
-                            Elimina
-                          </button>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 </div>
@@ -2680,4 +3150,5 @@ useEffect(() => {
     </div>
   );
 }
+
 

@@ -108,6 +108,32 @@ body.theme-light {
   overflow: hidden;
 }
 
+.blocked-shell {
+  width: min(680px, 100%);
+}
+
+.blocked-card {
+  display: grid;
+  gap: 14px;
+  padding: 26px 24px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: linear-gradient(155deg, #1a2b45, #121d2f 65%);
+  box-shadow: var(--shadow);
+}
+
+.blocked-meta {
+  display: grid;
+  gap: 6px;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.blocked-actions {
+  display: flex;
+  gap: 10px;
+}
+
 .login-shell::before {
   content: "";
   position: absolute;
@@ -302,6 +328,17 @@ body.theme-light {
   box-shadow: 0 8px 18px rgba(91, 209, 255, 0.2);
 }
 
+.menu-item.locked {
+  opacity: 0.62;
+  border-style: dashed;
+  border-color: rgba(91, 209, 255, 0.26);
+}
+
+.menu-item.locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .menu-item.active::after {
   content: "";
   position: absolute;
@@ -327,6 +364,32 @@ body.theme-light {
 
 .menu-item:active {
   transform: scale(0.98);
+}
+
+.subscription-card {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  display: grid;
+  gap: 6px;
+}
+
+.subscription-card h3 {
+  font-size: 1.1rem;
+}
+
+.app-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.app-alert .error {
+  margin: 0;
+  font-size: 0.9rem;
 }
 
 .mobile-topbar {

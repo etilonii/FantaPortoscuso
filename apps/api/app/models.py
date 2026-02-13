@@ -12,6 +12,14 @@ class AccessKey(Base):
     key = Column(String(32), unique=True, index=True, nullable=False)
     used = Column(Boolean, default=False, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
+    plan_tier = Column(String(16), default="trial", nullable=False)
+    billing_cycle = Column(String(16), default="trial", nullable=False)
+    plan_expires_at = Column(DateTime, nullable=True)
+    pending_plan_tier = Column(String(16), nullable=True)
+    pending_billing_cycle = Column(String(16), nullable=True)
+    pending_effective_at = Column(DateTime, nullable=True)
+    blocked_at = Column(DateTime, nullable=True)
+    blocked_reason = Column(String(128), nullable=True)
     device_id = Column(String(128), nullable=True)
     user_agent_hash = Column(String(128), nullable=True)
     ip_address = Column(String(64), nullable=True)
@@ -207,7 +215,23 @@ def ensure_schema(engine) -> None:
         columns = {row[1] for row in result}
         if "is_admin" not in columns:
             conn.execute(text("ALTER TABLE access_keys ADD COLUMN is_admin BOOLEAN DEFAULT 0"))
-            conn.commit()
+        if "plan_tier" not in columns:
+            conn.execute(text("ALTER TABLE access_keys ADD COLUMN plan_tier VARCHAR(16) DEFAULT 'trial'"))
+        if "billing_cycle" not in columns:
+            conn.execute(text("ALTER TABLE access_keys ADD COLUMN billing_cycle VARCHAR(16) DEFAULT 'trial'"))
+        if "plan_expires_at" not in columns:
+            conn.execute(text("ALTER TABLE access_keys ADD COLUMN plan_expires_at DATETIME"))
+        if "pending_plan_tier" not in columns:
+            conn.execute(text("ALTER TABLE access_keys ADD COLUMN pending_plan_tier VARCHAR(16)"))
+        if "pending_billing_cycle" not in columns:
+            conn.execute(text("ALTER TABLE access_keys ADD COLUMN pending_billing_cycle VARCHAR(16)"))
+        if "pending_effective_at" not in columns:
+            conn.execute(text("ALTER TABLE access_keys ADD COLUMN pending_effective_at DATETIME"))
+        if "blocked_at" not in columns:
+            conn.execute(text("ALTER TABLE access_keys ADD COLUMN blocked_at DATETIME"))
+        if "blocked_reason" not in columns:
+            conn.execute(text("ALTER TABLE access_keys ADD COLUMN blocked_reason VARCHAR(128)"))
+        conn.commit()
 
         result = conn.execute(text("PRAGMA table_info(players)"))
         pcols = {row[1] for row in result}

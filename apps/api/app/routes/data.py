@@ -31,6 +31,11 @@ from apps.api.app.models import (
     Team,
     TeamKey,
 )
+from apps.api.app.subscriptions import (
+    can_use_feature,
+    subscription_block_message,
+    subscription_snapshot,
+)
 from apps.api.app.utils.names import normalize_name, strip_star, is_starred
 
 
@@ -573,6 +578,60 @@ def _require_admin_key(
         raise HTTPException(status_code=403, detail="Admin key non valida")
     if not record.used:
         raise HTTPException(status_code=403, detail="Admin key non ancora attivata")
+
+
+def _resolve_access_key_for_request(
+    db: Session,
+    *,
+    authorization: str | None = None,
+    x_access_key: str | None = None,
+) -> tuple[AccessKey | None, dict | None]:
+    record = access_key_from_bearer(authorization, db)
+    if record is None:
+        key_value = str(x_access_key or "").strip().lower()
+        if not key_value:
+            return None, None
+        record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+        if not record or not record.used:
+            raise HTTPException(status_code=401, detail="Key non valida")
+
+    snapshot, changed = subscription_snapshot(record)
+    if changed:
+        db.add(record)
+        db.commit()
+        snapshot, _ = subscription_snapshot(record)
+
+    if not record.is_admin and str(snapshot.get("status", "active")) != "active":
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "code": "subscription_blocked",
+                "message": subscription_block_message(snapshot),
+                "subscription": snapshot,
+            },
+        )
+    return record, snapshot
+
+
+def _require_subscription_feature(
+    feature_name: str,
+    db: Session,
+    *,
+    authorization: str | None = None,
+    x_access_key: str | None = None,
+) -> tuple[AccessKey, dict]:
+    record, snapshot = _resolve_access_key_for_request(
+        db,
+        authorization=authorization,
+        x_access_key=x_access_key,
+    )
+    if record is None or snapshot is None:
+        raise HTTPException(status_code=401, detail="Login richiesto")
+    if record.is_admin:
+        return record, snapshot
+    if not can_use_feature(snapshot, feature_name):
+        raise HTTPException(status_code=403, detail="Funzione disponibile solo con piano Premium")
+    return record, snapshot
 
 
 def _backup_or_500(prefix: str) -> None:
@@ -5911,10 +5970,16 @@ def _load_real_formazioni_rows(
 def live_payload(
     round: Optional[int] = Query(default=None, ge=1, le=99),
     db: Session = Depends(get_db),
+    x_access_key: str | None = Header(default=None, alias="X-Access-Key"),
     x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
     authorization: str | None = Header(default=None, alias="Authorization"),
 ):
-    _require_admin_key(x_admin_key, db, authorization)
+    _require_subscription_feature(
+        "formazioni_live",
+        db,
+        authorization=authorization,
+        x_access_key=x_access_key or x_admin_key,
+    )
 
     context = _load_live_round_context(db, round)
     matches: List[Dict[str, object]] = context.get("matches", [])
@@ -6442,6 +6507,9 @@ def formazioni(
     order_by: Optional[str] = Query(default=None, pattern="^(classifica|live_total)$"),
     limit: int = Query(default=200, ge=1, le=500),
     db: Session = Depends(get_db),
+    x_access_key: str | None = Header(default=None, alias="X-Access-Key"),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
 ):
     team_key = normalize_name(team or "")
     regulation = _load_regulation()
@@ -6449,6 +6517,25 @@ def formazioni(
     selected_order = str(order_by or default_order).strip().lower()
     if selected_order not in allowed_orders:
         selected_order = default_order
+    order_lock_note = ""
+    if selected_order == "live_total":
+        has_auth = bool(str(authorization or "").strip()) or bool(
+            str(x_access_key or x_admin_key or "").strip()
+        )
+        if has_auth:
+            record, snapshot = _resolve_access_key_for_request(
+                db,
+                authorization=authorization,
+                x_access_key=x_access_key or x_admin_key,
+            )
+            if record is not None and not record.is_admin and not can_use_feature(
+                snapshot or {}, "formazioni_live"
+            ):
+                selected_order = "classifica"
+                order_lock_note = "Classifica live giornata disponibile solo con piano Premium."
+        else:
+            selected_order = "classifica"
+            order_lock_note = "Classifica live giornata disponibile solo con piano Premium."
 
     standings_index = _build_standings_index()
     status_matchday = _load_status_matchday()
@@ -6500,6 +6587,7 @@ def formazioni(
             "inferred_matchday_fixtures": inferred_matchday_fixtures,
             "inferred_matchday_stats": inferred_matchday_stats,
             "source_path": str(source_path) if source_path else "",
+            "note": order_lock_note,
         }
 
     projected_items = _load_projected_formazioni_rows(team_key, standings_index)
@@ -6526,6 +6614,8 @@ def formazioni(
         )
     else:
         note = "Formazioni reali non disponibili: mostrato XI migliore ordinato per classifica."
+    if order_lock_note:
+        note = f"{order_lock_note} {note}".strip()
 
     return {
         "items": projected_items[:limit],
@@ -6548,7 +6638,16 @@ def formazione_optimizer(
     round: Optional[int] = Query(default=None, ge=1, le=99),
     captain_mode: str = Query(default="balanced"),
     db: Session = Depends(get_db),
+    x_access_key: str | None = Header(default=None, alias="X-Access-Key"),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
 ):
+    _require_subscription_feature(
+        "formazione_consigliata",
+        db,
+        authorization=authorization,
+        x_access_key=x_access_key or x_admin_key,
+    )
     team_key = normalize_name(team)
     if not team_key:
         raise HTTPException(status_code=400, detail="Team non valido")
