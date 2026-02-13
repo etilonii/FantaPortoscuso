@@ -134,6 +134,18 @@ body.theme-light {
   gap: 10px;
 }
 
+.blocked-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.blocked-actions-grid .primary,
+.blocked-actions-grid .ghost {
+  width: 100%;
+  margin-top: 0;
+}
+
 .login-shell::before {
   content: "";
   position: absolute;
@@ -378,6 +390,12 @@ body.theme-light {
 
 .subscription-card h3 {
   font-size: 1.1rem;
+}
+
+.subscription-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 2px;
 }
 
 .app-alert {
@@ -2850,6 +2868,12 @@ body.admin-menu-open .admin-menu-overlay {
   .top-acquisti-toolbar {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 700px) {
+  .blocked-actions-grid {
+    grid-template-columns: 1fr;
   }
 }
 

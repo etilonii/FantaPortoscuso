@@ -122,3 +122,17 @@ class ToggleSubscriptionBlockRequest(BaseModel):
     key: str = Field(min_length=1)
     blocked: bool = True
     reason: str | None = None
+
+
+class BillingCheckoutRequest(BaseModel):
+    plan_tier: str = Field(min_length=1)
+    billing_cycle: str = Field(min_length=1)
+    success_path: str | None = None
+    cancel_path: str | None = None
+
+
+class BillingCheckoutResponse(BaseModel):
+    status: str
+    checkout_url: str
+    session_id: str
+    publishable_key: str | None = None

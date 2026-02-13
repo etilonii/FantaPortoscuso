@@ -361,6 +361,11 @@ export default function App() {
   const [adminBlockKey, setAdminBlockKey] = useState("");
   const [adminBlockValue, setAdminBlockValue] = useState(true);
   const [adminBlockReason, setAdminBlockReason] = useState("");
+  const [billingPlan, setBillingPlan] = useState("premium");
+  const [billingCycle, setBillingCycle] = useState("season9");
+  const [billingLoading, setBillingLoading] = useState(false);
+  const [billingNotice, setBillingNotice] = useState("");
+  const [billingSessionVerifying, setBillingSessionVerifying] = useState(false);
 
   /* ===== MERCATO + SUGGEST ===== */
   const [marketView, setMarketView] = useState("players");
@@ -604,6 +609,104 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     if (key === "plan_expired") return "Piano scaduto";
     if (key === "manual_suspension") return "Sospensione manuale";
     return key || "bloccata";
+  };
+
+  const cleanBillingQueryParams = () => {
+    try {
+      const nextUrl = new URL(window.location.href);
+      nextUrl.searchParams.delete("billing");
+      nextUrl.searchParams.delete("session_id");
+      window.history.replaceState({}, "", nextUrl.toString());
+    } catch {}
+  };
+
+  const billingAuthHeaders = () => {
+    const headers = { "Content-Type": "application/json" };
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+    const keyValue = String(accessKey || "").trim().toLowerCase();
+    if (keyValue) {
+      headers["X-Access-Key"] = keyValue;
+    }
+    return headers;
+  };
+
+  const verifyBillingCheckout = async (sessionId) => {
+    const cleanSessionId = String(sessionId || "").trim();
+    if (!cleanSessionId) return;
+    setBillingSessionVerifying(true);
+    try {
+      const res = await fetch(
+        `${API_BASE}/auth/billing/verify?session_id=${encodeURIComponent(cleanSessionId)}`,
+        {
+          headers: billingAuthHeaders(),
+        }
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const message = data?.detail || data?.message || "Pagamento registrato, aggiornamento in corso.";
+        setBillingNotice(String(message));
+        return;
+      }
+      const nextSub = normalizeSubscription(data?.subscription || {});
+      if (nextSub && typeof nextSub === "object") {
+        setSubscription(nextSub);
+      }
+      setBillingNotice("Pagamento confermato. Piano aggiornato con successo.");
+      setError("");
+      try {
+        await loadAuthSession();
+      } catch {}
+    } catch {
+      setBillingNotice("Pagamento completato. Ricarica lo stato key tra pochi secondi.");
+    } finally {
+      setBillingSessionVerifying(false);
+      cleanBillingQueryParams();
+    }
+  };
+
+  const startBillingCheckout = async (planTier = billingPlan, cycle = billingCycle) => {
+    const targetPlan = String(planTier || "").trim().toLowerCase();
+    const targetCycle = String(cycle || "").trim().toLowerCase();
+    if (!["base", "premium"].includes(targetPlan)) {
+      setBillingNotice("Seleziona un piano valido.");
+      return;
+    }
+    if (!["monthly", "season9"].includes(targetCycle)) {
+      setBillingNotice("Seleziona un ciclo valido.");
+      return;
+    }
+    setBillingLoading(true);
+    setBillingNotice("");
+    try {
+      const res = await fetch(`${API_BASE}/auth/billing/checkout`, {
+        method: "POST",
+        headers: billingAuthHeaders(),
+        body: JSON.stringify({
+          plan_tier: targetPlan,
+          billing_cycle: targetCycle,
+          success_path: "/?billing=success",
+          cancel_path: "/?billing=cancel",
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const message = data?.detail || data?.message || "Errore avvio checkout.";
+        setBillingNotice(String(message));
+        return;
+      }
+      const checkoutUrl = String(data?.checkout_url || "").trim();
+      if (!checkoutUrl) {
+        setBillingNotice("Checkout non disponibile.");
+        return;
+      }
+      window.location.assign(checkoutUrl);
+    } catch {
+      setBillingNotice("Errore connessione checkout.");
+    } finally {
+      setBillingLoading(false);
+    }
   };
 
   const subscriptionPriceCatalog =
@@ -2145,6 +2248,33 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   }, [loggedIn, accessKey, accessToken, refreshToken]);
 
   useEffect(() => {
+    if (!loggedIn) return;
+    let params;
+    try {
+      params = new URLSearchParams(window.location.search);
+    } catch {
+      return;
+    }
+    const billingState = String(params.get("billing") || "").trim().toLowerCase();
+    if (!billingState) return;
+    if (billingState === "cancel") {
+      setBillingNotice("Pagamento annullato.");
+      cleanBillingQueryParams();
+      return;
+    }
+    if (billingState === "success") {
+      const sessionId = String(params.get("session_id") || "").trim();
+      if (!sessionId) {
+        setBillingNotice("Pagamento completato. Aggiorna lo stato key.");
+        cleanBillingQueryParams();
+        return;
+      }
+      verifyBillingCheckout(sessionId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn]);
+
+  useEffect(() => {
     try {
       const stored = localStorage.getItem("fp_theme");
       const next = stored === "light" ? "light" : "dark";
@@ -2391,11 +2521,41 @@ useEffect(() => {
                 </span>
               ) : null}
             </div>
-            <div className="blocked-actions">
-              <button className="primary" onClick={() => loadAuthSession()}>
+            <div className="blocked-actions blocked-actions-grid">
+              <select
+                className="select"
+                value={billingPlan}
+                onChange={(e) => {
+                  const nextPlan = e.target.value;
+                  setBillingPlan(nextPlan);
+                  if (nextPlan === "trial") setBillingCycle("monthly");
+                }}
+              >
+                <option value="base">Base</option>
+                <option value="premium">Premium</option>
+              </select>
+              <select
+                className="select"
+                value={billingCycle}
+                onChange={(e) => setBillingCycle(e.target.value)}
+              >
+                <option value="monthly">Mensile</option>
+                <option value="season9">9 mesi</option>
+              </select>
+              <button
+                className="primary"
+                onClick={() => startBillingCheckout(billingPlan, billingCycle)}
+                disabled={billingLoading || billingSessionVerifying}
+              >
+                {billingLoading
+                  ? "Reindirizzamento..."
+                  : `Acquista ${planTierLabel(billingPlan)} ${billingCycleLabel(billingCycle)}`}
+              </button>
+              <button className="ghost" onClick={() => loadAuthSession()}>
                 Ricarica stato key
               </button>
             </div>
+            {billingNotice ? <p className="muted">{billingNotice}</p> : null}
           </section>
         </div>
       ) : (
@@ -2478,6 +2638,23 @@ useEffect(() => {
                     {formatCountdown(Number(subscription.seconds_to_pending || 0))}
                   </p>
                 ) : null}
+                <div className="subscription-actions">
+                  <button
+                    className="ghost"
+                    onClick={() => startBillingCheckout("premium", "monthly")}
+                    disabled={billingLoading || billingSessionVerifying}
+                  >
+                    Premium Mensile {formatEuro(subscriptionPriceFor("premium", "monthly"))}
+                  </button>
+                  <button
+                    className="ghost"
+                    onClick={() => startBillingCheckout("premium", "season9")}
+                    disabled={billingLoading || billingSessionVerifying}
+                  >
+                    Premium 9 mesi {formatEuro(subscriptionPriceFor("premium", "season9"))}
+                  </button>
+                </div>
+                {billingNotice ? <p className="muted">{billingNotice}</p> : null}
               </div>
             ) : null}
           </aside>
