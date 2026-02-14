@@ -210,7 +210,6 @@ const MENU_FEATURES = {
   stats: "statistiche_giocatori",
   rose: "rose",
   formazioni: "formazioni",
-  "formazioni-live": "formazioni_live",
   "formazione-consigliata": "formazione_consigliata",
   plusvalenze: "plusvalenze",
   listone: "listone",
@@ -2538,14 +2537,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   useEffect(() => {
     if (!loggedIn) return;
-    if (activeMenu !== "formazioni-live") return;
-    if (String(formationOrder || "").toLowerCase() === "live_total") return;
-    loadFormazioni(formationRound || null, "live_total");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedIn, activeMenu, formationRound, formationOrder]);
-
-  useEffect(() => {
-    if (!loggedIn) return;
     if (activeMenu !== "quotazioni") return;
     if (activeTab === "quotazioni") return;
     setActiveTab("quotazioni");
@@ -2777,12 +2768,6 @@ useEffect(() => {
                 Formazioni
               </button>
               <button
-                className={menuItemClass("formazioni-live")}
-                onClick={() => openMenuFeature("formazioni-live")}
-              >
-                Formazioni Live
-              </button>
-              <button
                 className={menuItemClass("formazione-consigliata")}
                 onClick={() => openMenuFeature("formazione-consigliata")}
               >
@@ -2939,8 +2924,6 @@ useEffect(() => {
                   ? "Classifica Lega"
                   : activeMenu === "formazioni"
                   ? "Formazioni"
-                  : activeMenu === "formazioni-live"
-                  ? "Formazioni Live"
                   : activeMenu === "formazione-consigliata"
                   ? "Formazione consigliata"
                   : activeMenu === "live"
@@ -3260,26 +3243,6 @@ useEffect(() => {
                 onFormationOrderChange={onFormationOrderChange}
                 formationMeta={formationMeta}
                 reloadFormazioni={() => loadFormazioni(formationRound || null, formationOrder)}
-                optimizerData={formationOptimizer}
-                optimizerLoading={formationOptimizerLoading}
-                optimizerError={formationOptimizerError}
-                runOptimizer={runFormationOptimizer}
-                openPlayer={openPlayer}
-                formatDecimal={formatDecimal}
-              />
-            )}
-
-            {activeMenu === "formazioni-live" && (
-              <FormazioniSection
-                formations={formations}
-                formationTeam={formationTeam}
-                setFormationTeam={setFormationTeam}
-                formationRound={formationRound}
-                onFormationRoundChange={onFormationRoundChange}
-                formationOrder={formationOrder}
-                onFormationOrderChange={onFormationOrderChange}
-                formationMeta={formationMeta}
-                reloadFormazioni={() => loadFormazioni(formationRound || null, "live_total")}
                 optimizerData={formationOptimizer}
                 optimizerLoading={formationOptimizerLoading}
                 optimizerError={formationOptimizerError}
