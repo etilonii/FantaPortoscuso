@@ -242,6 +242,7 @@ export default function PremiumInsightsSection({
                 <tr>
                   <th>Pos</th>
                   <th>Squadra</th>
+                  <th>Ultimi 5</th>
                   <th>Pt</th>
                   <th>PG</th>
                   <th>GF</th>
@@ -254,6 +255,7 @@ export default function PremiumInsightsSection({
                   <tr key={`${row?.Squad || row?.Team || index}`}>
                     <td>{index + 1}</td>
                     <td>{row?.Squad || row?.Team || "-"}</td>
+                    <td>{String(row?.Last5 ?? row?.["Last5"] ?? row?.["Last 5"] ?? "").trim() || "-"}</td>
                     <td>{row?.Pts || "-"}</td>
                     <td>{row?.MP || "-"}</td>
                     <td>{row?.GF || "-"}</td>

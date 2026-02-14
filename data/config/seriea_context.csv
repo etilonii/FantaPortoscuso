@@ -1,21 +1,21 @@
-Squad,MP,GF,GA,GD,Pts,Pts/MP
-Inter,24,57,19,38,58,2.42
-Milan,23,38,17,21,50,2.17
-Napoli,24,36,23,13,49,2.04
-Juventus,24,41,20,21,46,1.92
-Roma,24,29,14,15,46,1.92
-Como,23,37,16,21,41,1.78
-Atalanta,24,32,21,11,39,1.63
-Lazio,24,26,23,3,33,1.38
-Udinese,24,27,36,-9,32,1.33
-Bologna,24,32,31,1,30,1.25
-Sassuolo,24,27,34,-7,29,1.21
-Cagliari,24,28,33,-5,28,1.17
-Torino,24,24,42,-18,27,1.13
-Parma,24,16,30,-14,26,1.08
-Genoa,24,29,37,-8,23,0.96
-Cremonese,24,21,33,-12,23,0.96
-Lecce,24,15,31,-16,21,0.88
-Fiorentina,24,27,38,-11,18,0.75
-Pisa,24,19,40,-21,15,0.63
-Hellas Verona,24,18,41,-23,15,0.63
+Squad,MP,GF,GA,GD,Pts,Pts/MP,Last5
+Inter,24,57,19,38,58,2.42,W W W W W
+Milan,23,38,17,21,50,2.17,D W W D W
+Napoli,24,36,23,13,49,2.04,D W L W W
+Juventus,24,41,20,21,46,1.92,W L W W D
+Roma,24,29,14,15,46,1.92,W W D L W
+Como,23,37,16,21,41,1.78,D L W W D
+Atalanta,24,32,21,11,39,1.63,W D W D W
+Lazio,24,26,23,3,33,1.38,W L D W D
+Udinese,24,27,36,-9,32,1.33,D L W W L
+Bologna,24,32,31,1,30,1.25,W L L L L
+Sassuolo,24,27,34,-7,29,1.21,L L W W L
+Cagliari,24,28,33,-5,28,1.17,L W W W L
+Torino,24,24,42,-18,27,1.13,L L L W D
+Parma,24,16,30,-14,26,1.08,D D L L W
+Genoa,24,29,37,-8,23,0.96,W D W L L
+Cremonese,24,21,33,-12,23,0.96,L D L L L
+Lecce,24,15,31,-16,21,0.88,L L D L W
+Fiorentina,24,27,38,-11,18,0.75,D W L L D
+Pisa,24,19,40,-21,15,0.63,D D L L D
+Hellas Verona,24,18,41,-23,15,0.63,L D L L D
