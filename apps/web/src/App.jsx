@@ -221,7 +221,6 @@ const MENU_FEATURES = {
   "potenza-titolari": "potenza_squadra_titolari",
   "potenza-totale": "potenza_squadra_totale",
   "classifica-potenza": "classifica_potenza",
-  "classifica-reale-lega": "classifica_reale_lega",
   "classifica-fixtures-seriea": "classifica_fixtures_seriea",
   predictions: "predictions_campionato_fixtures",
   player: "schede_giocatori",
@@ -234,7 +233,6 @@ const PREMIUM_INSIGHTS_MENU_KEYS = new Set([
   "potenza-titolari",
   "potenza-totale",
   "classifica-potenza",
-  "classifica-reale-lega",
   "classifica-fixtures-seriea",
   "predictions",
 ]);
@@ -2831,12 +2829,6 @@ useEffect(() => {
                 Classifica Potenza
               </button>
               <button
-                className={menuItemClass("classifica-reale-lega")}
-                onClick={() => openMenuFeature("classifica-reale-lega")}
-              >
-                Classifica Reale Lega
-              </button>
-              <button
                 className={menuItemClass("classifica-fixtures-seriea")}
                 onClick={() => openMenuFeature("classifica-fixtures-seriea")}
               >
@@ -2946,8 +2938,6 @@ useEffect(() => {
                   ? "Potenza Totale"
                   : activeMenu === "classifica-potenza"
                   ? "Classifica Potenza"
-                  : activeMenu === "classifica-reale-lega"
-                  ? "Classifica Reale Lega"
                   : activeMenu === "classifica-fixtures-seriea"
                   ? "Classifica + Fixtures Serie A"
                   : activeMenu === "predictions"
@@ -3445,23 +3435,11 @@ useEffect(() => {
 
             {activeMenu === "classifica-lega" && (
               <PremiumInsightsSection
-                mode="classifica-reale-lega"
+                mode="classifica-lega"
                 insights={premiumInsights}
                 loading={false}
                 error=""
                 onReload={null}
-                leagueStandings={marketStandings}
-                openPlayer={openPlayer}
-              />
-            )}
-
-            {activeMenu === "classifica-reale-lega" && (
-              <PremiumInsightsSection
-                mode="classifica-reale-lega"
-                insights={premiumInsights}
-                loading={premiumInsightsLoading}
-                error={premiumInsightsError}
-                onReload={() => loadPremiumInsights(true)}
                 leagueStandings={marketStandings}
                 openPlayer={openPlayer}
               />

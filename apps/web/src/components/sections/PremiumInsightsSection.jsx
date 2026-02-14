@@ -188,12 +188,12 @@ export default function PremiumInsightsSection({
     );
   }
 
-  if (mode === "classifica-reale-lega") {
+  if (mode === "classifica-lega") {
     const rows = Array.isArray(leagueStandings) ? leagueStandings : [];
     return (
       <ReportSection
-        eyebrow="Premium"
-        title="Classifica Reale Lega"
+        eyebrow="Lega"
+        title="Classifica Lega"
         description="Classifica ufficiale FantaPortoscuso."
         loading={false}
         error=""
