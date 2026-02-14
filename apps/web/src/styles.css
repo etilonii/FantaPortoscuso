@@ -298,6 +298,16 @@ body.theme-light {
   z-index: 20;
 }
 
+.sidebar .menu,
+.admin-sidebar .menu {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 4px;
+}
+
 .admin-sidebar .menu-item.active::after {
   left: 12px;
   right: auto;
@@ -317,19 +327,19 @@ body.theme-light {
 
 .menu {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .menu-item {
   text-align: left;
-  padding: 10px 12px;
-  border-radius: 14px;
+  padding: 8px 12px;
+  border-radius: 12px;
   background: transparent;
   border: 1px solid transparent;
   color: var(--text);
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   position: relative;
   transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
