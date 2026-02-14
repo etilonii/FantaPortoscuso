@@ -5,6 +5,7 @@ export default function ReportSection({
   loading,
   error,
   onReload,
+  headerControls = null,
   rows,
   columns,
   emptyLabel = "Nessun dato disponibile.",
@@ -25,6 +26,7 @@ export default function ReportSection({
       <div className="panel">
         <div className="panel-header spaced">
           <h3>Dati</h3>
+          {headerControls}
           {typeof onReload === "function" ? (
             <button className="ghost" type="button" onClick={onReload} disabled={Boolean(loading)}>
               {loading ? "Aggiorno..." : "Aggiorna"}

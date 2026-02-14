@@ -48,6 +48,7 @@ export default function PremiumInsightsSection({
   }, [serieaPredictions]);
 
   const [selectedRound, setSelectedRound] = useState("");
+  const [powerSortBy, setPowerSortBy] = useState("forza_tot");
 
   useEffect(() => {
     if (!rounds.length) {
@@ -99,90 +100,96 @@ export default function PremiumInsightsSection({
     );
   }
 
-  if (mode === "potenza-squadra-titolari") {
-    return (
-      <ReportSection
-        eyebrow="Premium"
-        title="Potenza Squadra Titolari"
-        description="Ranking dei migliori XI della lega."
-        loading={loading}
-        error={error}
-        onReload={onReload}
-        rows={teamStrengthStarting}
-        columns={[
-          { key: "Pos", label: "Pos", render: (row) => row?.Pos || "-" },
-          { key: "Team", label: "Team" },
-          {
-            key: "ForzaTitolari",
-            label: "Forza XI",
-            render: (row) => formatNumber(row?.ForzaTitolari, 2),
-          },
-          { key: "ModuloMigliore", label: "Modulo" },
-        ]}
-      />
-    );
-  }
+  if (mode === "classifica-potenza") {
+    const startingMap = new Map();
+    teamStrengthStarting.forEach((row) => {
+      const key = String(row?.Team || "").trim().toLowerCase();
+      if (!key) return;
+      startingMap.set(key, row);
+    });
 
-  if (mode === "potenza-squadra-totale") {
+    const combined = [];
+    const seen = new Set();
+
+    teamStrengthTotal.forEach((row) => {
+      const key = String(row?.Team || "").trim().toLowerCase();
+      if (!key) return;
+      const startingRow = startingMap.get(key);
+      combined.push({
+        Team: row?.Team || startingRow?.Team || "-",
+        ForzaSquadra: row?.ForzaSquadra ?? null,
+        ForzaMediaGiocatore: row?.ForzaMediaGiocatore ?? null,
+        ForzaTitolari: startingRow?.ForzaTitolari ?? null,
+      });
+      seen.add(key);
+    });
+
+    teamStrengthStarting.forEach((row) => {
+      const key = String(row?.Team || "").trim().toLowerCase();
+      if (!key || seen.has(key)) return;
+      combined.push({
+        Team: row?.Team || "-",
+        ForzaSquadra: null,
+        ForzaMediaGiocatore: null,
+        ForzaTitolari: row?.ForzaTitolari ?? null,
+      });
+    });
+
+    const sortValue = (row) => {
+      if (powerSortBy === "media") return toNumber(row?.ForzaMediaGiocatore);
+      if (powerSortBy === "forza_xi") return toNumber(row?.ForzaTitolari);
+      return toNumber(row?.ForzaSquadra);
+    };
+
+    const rows = combined
+      .slice()
+      .sort((a, b) => {
+        const av = sortValue(a);
+        const bv = sortValue(b);
+        const an = av === null ? Number.NEGATIVE_INFINITY : av;
+        const bn = bv === null ? Number.NEGATIVE_INFINITY : bv;
+        return bn - an;
+      })
+      .map((row, index) => ({
+        ...row,
+        Pos: index + 1,
+      }));
+
     return (
       <ReportSection
         eyebrow="Premium"
-        title="Potenza Squadra Totale"
-        description="Valutazione complessiva rosa per team."
+        title="Classifica Potenza"
+        description="Forza totale rosa, media e forza XI (ordinabile)."
         loading={loading}
         error={error}
         onReload={onReload}
-        rows={teamStrengthTotal}
+        headerControls={
+          <div className="filters inline centered">
+            <div className="field">
+              <span>Ordina per</span>
+              <select
+                className="select"
+                value={powerSortBy}
+                onChange={(event) => setPowerSortBy(event.target.value)}
+              >
+                <option value="forza_tot">Forza Tot</option>
+                <option value="media">Media</option>
+                <option value="forza_xi">Forza XI</option>
+              </select>
+            </div>
+          </div>
+        }
+        rows={rows}
         columns={[
           { key: "Pos", label: "Pos", render: (row) => row?.Pos || "-" },
           { key: "Team", label: "Team" },
-          { key: "ForzaSquadra", label: "Forza", render: (row) => formatNumber(row?.ForzaSquadra, 2) },
+          { key: "ForzaSquadra", label: "Forza Tot", render: (row) => formatNumber(row?.ForzaSquadra, 2) },
           {
             key: "ForzaMediaGiocatore",
             label: "Media",
             render: (row) => formatNumber(row?.ForzaMediaGiocatore, 2),
           },
-          { key: "Top", label: "Top", render: (row) => formatNumber(row?.Top, 0) },
-          { key: "SemiTop", label: "SemiTop", render: (row) => formatNumber(row?.SemiTop, 0) },
-          { key: "Starter", label: "Starter", render: (row) => formatNumber(row?.Starter, 0) },
-        ]}
-      />
-    );
-  }
-
-  if (mode === "classifica-potenza") {
-    const xiRankMap = new Map();
-    teamStrengthStarting.forEach((row) => {
-      const team = String(row?.Team || "").trim();
-      if (!team) return;
-      xiRankMap.set(team.toLowerCase(), row?.Pos || "-");
-    });
-    const rows = teamStrengthTotal.map((row) => {
-      const team = String(row?.Team || "").trim().toLowerCase();
-      return {
-        ...row,
-        xi_pos: xiRankMap.get(team) || "-",
-      };
-    });
-    return (
-      <ReportSection
-        eyebrow="Premium"
-        title="Classifica Potenza"
-        description="Confronto ranking rosa totale e XI titolare."
-        loading={loading}
-        error={error}
-        onReload={onReload}
-        rows={rows}
-        columns={[
-          { key: "Pos", label: "Pos Tot", render: (row) => row?.Pos || "-" },
-          { key: "Team", label: "Team" },
-          { key: "ForzaSquadra", label: "Forza Tot", render: (row) => formatNumber(row?.ForzaSquadra, 2) },
-          { key: "xi_pos", label: "Pos XI" },
-          {
-            key: "ForzaTitolari",
-            label: "Forza XI",
-            render: (row) => formatNumber(row?.ForzaTitolari, 2),
-          },
+          { key: "ForzaTitolari", label: "Forza XI", render: (row) => formatNumber(row?.ForzaTitolari, 2) },
         ]}
       />
     );

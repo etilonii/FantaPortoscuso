@@ -198,7 +198,7 @@ const PLAN_COMPARISON = {
       "Tutto il piano Base",
       "Formazioni live e mercato live",
       "Formazione consigliata",
-      "Tier list e potenza squadre (XI/totale)",
+      "Tier list e potenza squadre",
       "Classifiche avanzate e predictions campionato+fixtures",
     ],
   },
@@ -218,8 +218,6 @@ const MENU_FEATURES = {
   "classifica-lega": "classifica_lega",
   "mercato-live": "mercato_live",
   "tier-list": "tier_list",
-  "potenza-titolari": "potenza_squadra_titolari",
-  "potenza-totale": "potenza_squadra_totale",
   "classifica-potenza": "classifica_potenza",
   "classifica-fixtures-seriea": "classifica_fixtures_seriea",
   predictions: "predictions_campionato_fixtures",
@@ -230,8 +228,6 @@ const MENU_FEATURES = {
 
 const PREMIUM_INSIGHTS_MENU_KEYS = new Set([
   "tier-list",
-  "potenza-titolari",
-  "potenza-totale",
   "classifica-potenza",
   "classifica-fixtures-seriea",
   "predictions",
@@ -2811,18 +2807,6 @@ useEffect(() => {
                 Tier List
               </button>
               <button
-                className={menuItemClass("potenza-titolari")}
-                onClick={() => openMenuFeature("potenza-titolari")}
-              >
-                Potenza XI
-              </button>
-              <button
-                className={menuItemClass("potenza-totale")}
-                onClick={() => openMenuFeature("potenza-totale")}
-              >
-                Potenza Totale
-              </button>
-              <button
                 className={menuItemClass("classifica-potenza")}
                 onClick={() => openMenuFeature("classifica-potenza")}
               >
@@ -2932,10 +2916,6 @@ useEffect(() => {
                   ? "Mercato Live"
                   : activeMenu === "tier-list"
                   ? "Tier List"
-                  : activeMenu === "potenza-titolari"
-                  ? "Potenza XI"
-                  : activeMenu === "potenza-totale"
-                  ? "Potenza Totale"
                   : activeMenu === "classifica-potenza"
                   ? "Classifica Potenza"
                   : activeMenu === "classifica-fixtures-seriea"
@@ -3388,30 +3368,6 @@ useEffect(() => {
             {activeMenu === "tier-list" && (
               <PremiumInsightsSection
                 mode="tier-list"
-                insights={premiumInsights}
-                loading={premiumInsightsLoading}
-                error={premiumInsightsError}
-                onReload={() => loadPremiumInsights(true)}
-                leagueStandings={marketStandings}
-                openPlayer={openPlayer}
-              />
-            )}
-
-            {activeMenu === "potenza-titolari" && (
-              <PremiumInsightsSection
-                mode="potenza-squadra-titolari"
-                insights={premiumInsights}
-                loading={premiumInsightsLoading}
-                error={premiumInsightsError}
-                onReload={() => loadPremiumInsights(true)}
-                leagueStandings={marketStandings}
-                openPlayer={openPlayer}
-              />
-            )}
-
-            {activeMenu === "potenza-totale" && (
-              <PremiumInsightsSection
-                mode="potenza-squadra-totale"
                 insights={premiumInsights}
                 loading={premiumInsightsLoading}
                 error={premiumInsightsError}
