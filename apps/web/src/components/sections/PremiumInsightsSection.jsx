@@ -136,7 +136,6 @@ export default function PremiumInsightsSection({
     });
 
     const sortValue = (row) => {
-      if (powerSortBy === "media") return toNumber(row?.ForzaMediaGiocatore);
       if (powerSortBy === "forza_xi") return toNumber(row?.ForzaTitolari);
       return toNumber(row?.ForzaSquadra);
     };
@@ -173,7 +172,6 @@ export default function PremiumInsightsSection({
                 onChange={(event) => setPowerSortBy(event.target.value)}
               >
                 <option value="forza_tot">Forza Tot</option>
-                <option value="media">Media</option>
                 <option value="forza_xi">Forza XI</option>
               </select>
             </div>
