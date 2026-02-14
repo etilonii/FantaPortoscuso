@@ -2716,7 +2716,7 @@ useEffect(() => {
           <aside className="sidebar" aria-label="Menu principale">
             <div className="brand">
               <span className="eyebrow">FantaPortoscuso</span>
-              <h2>MenÃ¹</h2>
+              <h2>Menù</h2>
             </div>
 
             <nav className="menu">
@@ -2790,7 +2790,7 @@ useEffect(() => {
                 className={menuItemClass("top-acquisti")}
                 onClick={() => openMenuFeature("top-acquisti")}
               >
-                Giocatori piÃ¹ acquistati
+                Giocatori più acquistati
               </button>
               <button
                 className={menuItemClass("mercato")}
@@ -3489,10 +3489,10 @@ useEffect(() => {
                     >
                       <div>
                         <p>Profilo</p>
-                        <span className="muted">Squadra Â· Ruolo</span>
+                        <span className="muted">Squadra · Ruolo</span>
                       </div>
                       <strong>
-                        {playerProfile?.Squadra || "-"} Â· {playerProfile?.Ruolo || "-"}
+                        {playerProfile?.Squadra || "-"} · {playerProfile?.Ruolo || "-"}
                       </strong>
                     </div>
 
@@ -3698,7 +3698,7 @@ useEffect(() => {
                         Key selezionata ({(adminResetKey || "-").toUpperCase()}): reset usati{" "}
                         {adminResetUsage?.used ?? 0}/{adminResetUsage?.limit ?? 3}
                         {adminResetUsage?.season
-                          ? ` Â· Stagione ${adminResetUsage.season}`
+                          ? ` · Stagione ${adminResetUsage.season}`
                           : ""}
                       </p>
                     </div>
