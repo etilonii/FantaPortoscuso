@@ -14,7 +14,6 @@ class LoginResponse(BaseModel):
     status: str
     message: str
     is_admin: bool = False
-    subscription: dict | None = None
     access_token: str | None = None
     access_expires_at: str | None = None
     refresh_token: str | None = None
@@ -45,7 +44,6 @@ class AdminKeyItem(BaseModel):
     key: str
     used: bool
     is_admin: bool
-    subscription: dict | None = None
     device_id: str | None = None
     device_count: int = 0
     team: str | None = None
@@ -109,30 +107,3 @@ class TeamKeyDeleteRequest(BaseModel):
 class PingRequest(BaseModel):
     key: str = Field(min_length=8, max_length=32)
     device_id: str = Field(min_length=6, max_length=128)
-
-
-class SetSubscriptionRequest(BaseModel):
-    key: str = Field(min_length=1)
-    plan_tier: str = Field(min_length=1)
-    billing_cycle: str | None = None
-    force_immediate: bool = False
-
-
-class ToggleSubscriptionBlockRequest(BaseModel):
-    key: str = Field(min_length=1)
-    blocked: bool = True
-    reason: str | None = None
-
-
-class BillingCheckoutRequest(BaseModel):
-    plan_tier: str = Field(min_length=1)
-    billing_cycle: str = Field(min_length=1)
-    success_path: str | None = None
-    cancel_path: str | None = None
-
-
-class BillingCheckoutResponse(BaseModel):
-    status: str
-    checkout_url: str
-    session_id: str
-    publishable_key: str | None = None

@@ -23,12 +23,6 @@ class AccessKey(Base):
     key = Column(String(32), unique=True, index=True, nullable=False)
     used = Column(Boolean, default=False, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
-    plan_tier = Column(String(16), default="trial", nullable=False)
-    billing_cycle = Column(String(16), default="trial", nullable=False)
-    plan_expires_at = Column(DateTime, nullable=True)
-    pending_plan_tier = Column(String(16), nullable=True)
-    pending_billing_cycle = Column(String(16), nullable=True)
-    pending_effective_at = Column(DateTime, nullable=True)
     blocked_at = Column(DateTime, nullable=True)
     blocked_reason = Column(String(128), nullable=True)
     device_id = Column(String(128), nullable=True)
@@ -220,43 +214,12 @@ class RefreshToken(Base):
     last_used_at = Column(DateTime, nullable=True)
 
 
-class BillingPayment(Base):
-    __tablename__ = "billing_payments"
-
-    id = Column(Integer, primary_key=True, index=True)
-    provider = Column(String(32), nullable=False, default="stripe")
-    provider_event_id = Column(String(128), unique=True, index=True, nullable=False)
-    checkout_session_id = Column(String(128), nullable=True, index=True)
-    key = Column(String(32), nullable=False, index=True)
-    plan_tier = Column(String(16), nullable=False)
-    billing_cycle = Column(String(16), nullable=False)
-    amount_eur = Column(Float, nullable=True)
-    currency = Column(String(8), nullable=True)
-    payment_status = Column(String(32), nullable=True)
-    customer_email = Column(String(255), nullable=True)
-    raw_payload = Column(Text, nullable=True)
-    applied_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-
-
 def ensure_schema(engine) -> None:
     with engine.connect() as conn:
         result = conn.execute(text("PRAGMA table_info(access_keys)"))
         columns = {row[1] for row in result}
         if "is_admin" not in columns:
             conn.execute(text("ALTER TABLE access_keys ADD COLUMN is_admin BOOLEAN DEFAULT 0"))
-        if "plan_tier" not in columns:
-            conn.execute(text("ALTER TABLE access_keys ADD COLUMN plan_tier VARCHAR(16) DEFAULT 'trial'"))
-        if "billing_cycle" not in columns:
-            conn.execute(text("ALTER TABLE access_keys ADD COLUMN billing_cycle VARCHAR(16) DEFAULT 'trial'"))
-        if "plan_expires_at" not in columns:
-            conn.execute(text("ALTER TABLE access_keys ADD COLUMN plan_expires_at DATETIME"))
-        if "pending_plan_tier" not in columns:
-            conn.execute(text("ALTER TABLE access_keys ADD COLUMN pending_plan_tier VARCHAR(16)"))
-        if "pending_billing_cycle" not in columns:
-            conn.execute(text("ALTER TABLE access_keys ADD COLUMN pending_billing_cycle VARCHAR(16)"))
-        if "pending_effective_at" not in columns:
-            conn.execute(text("ALTER TABLE access_keys ADD COLUMN pending_effective_at DATETIME"))
         if "blocked_at" not in columns:
             conn.execute(text("ALTER TABLE access_keys ADD COLUMN blocked_at DATETIME"))
         if "blocked_reason" not in columns:
@@ -324,39 +287,6 @@ def ensure_schema(engine) -> None:
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_refresh_tokens_key_id ON refresh_tokens (key_id)"))
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_refresh_tokens_expires_at ON refresh_tokens (expires_at)"))
         conn.execute(text("CREATE INDEX IF NOT EXISTS ix_refresh_tokens_revoked_at ON refresh_tokens (revoked_at)"))
-        conn.execute(
-            text(
-                """
-                CREATE TABLE IF NOT EXISTS billing_payments (
-                    id INTEGER PRIMARY KEY,
-                    provider VARCHAR(32) NOT NULL DEFAULT 'stripe',
-                    provider_event_id VARCHAR(128) NOT NULL UNIQUE,
-                    checkout_session_id VARCHAR(128),
-                    key VARCHAR(32) NOT NULL,
-                    plan_tier VARCHAR(16) NOT NULL,
-                    billing_cycle VARCHAR(16) NOT NULL,
-                    amount_eur FLOAT,
-                    currency VARCHAR(8),
-                    payment_status VARCHAR(32),
-                    customer_email VARCHAR(255),
-                    raw_payload TEXT,
-                    applied_at DATETIME,
-                    created_at DATETIME NOT NULL
-                )
-                """
-            )
-        )
-        conn.execute(
-            text(
-                "CREATE INDEX IF NOT EXISTS ix_billing_payments_event ON billing_payments (provider_event_id)"
-            )
-        )
-        conn.execute(
-            text(
-                "CREATE INDEX IF NOT EXISTS ix_billing_payments_session ON billing_payments (checkout_session_id)"
-            )
-        )
-        conn.execute(text("CREATE INDEX IF NOT EXISTS ix_billing_payments_key ON billing_payments (key)"))
         conn.commit()
 
         conn.execute(

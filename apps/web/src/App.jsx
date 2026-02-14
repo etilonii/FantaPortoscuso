@@ -152,80 +152,7 @@ const API_BASE =
   (import.meta.env.DEV
     ? "http://localhost:8001"
     : "https://fantaportoscuso.up.railway.app");
-const TRIAL_TOP_ACQUISTI_LIMIT = 20;
-const PLAN_TIER_LABELS = {
-  trial: "Trial",
-  base: "Base",
-  premium: "Premium",
-};
-const BILLING_LABELS = {
-  trial: "Trial",
-  monthly: "Mensile",
-  season9: "9 mesi",
-};
-const PLAN_PRICES_FALLBACK = {
-  trial: { trial: 0 },
-  base: { monthly: 5, season9: 37.99 },
-  premium: { monthly: 10, season9: 57.99 },
-};
-const PLAN_COMPARISON = {
-  trial: {
-    title: "Trial 3 giorni",
-    subtitle: "Accesso guidato con funzioni ridotte",
-    features: [
-      "Home e classifica lega",
-      "Rose, listone, statistiche giocatori",
-      "Top acquisti fino alla top 20 per ruolo",
-      "Dark/Light mode",
-      "Funzioni premium visibili ma bloccate",
-    ],
-  },
-  base: {
-    title: "Base",
-    subtitle: "Strumenti essenziali per giocare ogni giornata",
-    features: [
-      "Home, quotazioni, rose, listone",
-      "Plusvalenze, top acquisti e mercato (non live)",
-      "Statistiche giocatori e formazioni (non live)",
-      "Schede giocatori e dark/light mode",
-      "Classifica lega",
-    ],
-  },
-  premium: {
-    title: "Premium",
-    subtitle: "Analisi avanzata e funzioni live complete",
-    features: [
-      "Tutto il piano Base",
-      "Formazioni live e mercato live",
-      "Formazione consigliata",
-      "Potenza squadre e insights premium",
-      "Classifiche avanzate e predictions campionato+fixtures",
-    ],
-  },
-};
-const MENU_FEATURES = {
-  home: "home",
-  abbonamenti: "home",
-  quotazioni: "quotazioni",
-  stats: "statistiche_giocatori",
-  rose: "rose",
-  formazioni: "formazioni",
-  "formazione-consigliata": "formazione_consigliata",
-  plusvalenze: "plusvalenze",
-  listone: "listone",
-  "top-acquisti": "top_acquisti",
-  mercato: "mercato",
-  "classifica-lega": "classifica_lega",
-  // Mercato live e Tier List sono funzioni Premium, ma la navigazione e' unificata/semplificata.
-  "classifica-potenza": "classifica_potenza",
-  "classifica-fixtures-seriea": "classifica_fixtures_seriea",
-  predictions: "predictions_campionato_fixtures",
-  player: "schede_giocatori",
-  live: "formazioni_live",
-  admin: "home",
-};
-
-const PREMIUM_INSIGHTS_MENU_KEYS = new Set([
+const INSIGHTS_MENU_KEYS = new Set([
   "classifica-potenza",
   "classifica-fixtures-seriea",
   "predictions",
@@ -244,7 +171,6 @@ export default function App() {
   const [rememberKey, setRememberKey] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [subscription, setSubscription] = useState(null);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
 
@@ -415,18 +341,6 @@ export default function App() {
   const [adminImportTeamKeys, setAdminImportTeamKeys] = useState("");
   const [adminStatus, setAdminStatus] = useState(null);
   const [adminTeamKeys, setAdminTeamKeys] = useState([]);
-  const [adminSubKey, setAdminSubKey] = useState("");
-  const [adminSubPlan, setAdminSubPlan] = useState("base");
-  const [adminSubCycle, setAdminSubCycle] = useState("monthly");
-  const [adminSubImmediate, setAdminSubImmediate] = useState(false);
-  const [adminBlockKey, setAdminBlockKey] = useState("");
-  const [adminBlockValue, setAdminBlockValue] = useState(true);
-  const [adminBlockReason, setAdminBlockReason] = useState("");
-  const [billingPlan, setBillingPlan] = useState("premium");
-  const [billingCycle, setBillingCycle] = useState("season9");
-  const [billingLoading, setBillingLoading] = useState(false);
-  const [billingNotice, setBillingNotice] = useState("");
-  const [billingSessionVerifying, setBillingSessionVerifying] = useState(false);
 
   /* ===== MERCATO + SUGGEST ===== */
   const [marketView, setMarketView] = useState("players");
@@ -489,7 +403,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const clearAuthSession = (message = "") => {
     setLoggedIn(false);
     setIsAdmin(false);
-    setSubscription(null);
     setStatus("idle");
     if (message) {
       setError(message);
@@ -539,7 +452,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const applyAuthSessionPayload = (data) => {
     setIsAdmin(Boolean(data?.is_admin));
-    setSubscription(normalizeSubscription(data?.subscription));
   };
 
   const loadAuthSession = async () => {
@@ -549,16 +461,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       const res = await fetchWithAuth(`${API_BASE}/auth/session`, { headers }, true);
       const payload = await res.json().catch(() => ({}));
       if (!res.ok) {
-        if (res.status === 402) {
-          setLoggedIn(true);
-          applyAuthSessionPayload(payload || {});
-          const message =
-            payload?.detail?.message ||
-            payload?.message ||
-            "Key bloccata: rinnova per continuare.";
-          setError(String(message));
-          return false;
-        }
         clearAuthSession(payload?.detail || payload?.message || "Sessione non valida.");
         return false;
       }
@@ -589,222 +491,14 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     return headers;
   };
 
-  const normalizeSubscription = (raw) => {
-    const src = raw && typeof raw === "object" ? raw : {};
-    const featuresRaw = src.features && typeof src.features === "object" ? src.features : {};
-    const features = {};
-    Object.keys(featuresRaw).forEach((key) => {
-      features[String(key)] = Boolean(featuresRaw[key]);
-    });
-    const catalogRaw =
-      src.price_catalog_eur && typeof src.price_catalog_eur === "object"
-        ? src.price_catalog_eur
-        : {};
-    const priceCatalog = {};
-    Object.keys(catalogRaw).forEach((planKey) => {
-      const cycleMap = catalogRaw[planKey];
-      if (!cycleMap || typeof cycleMap !== "object") return;
-      const cleanCycleMap = {};
-      Object.keys(cycleMap).forEach((cycleKey) => {
-        const amount = Number(cycleMap[cycleKey]);
-        if (Number.isFinite(amount)) cleanCycleMap[String(cycleKey)] = amount;
-      });
-      priceCatalog[String(planKey)] = cleanCycleMap;
-    });
-    return {
-      plan_tier: String(src.plan_tier || "").trim().toLowerCase() || "trial",
-      billing_cycle: String(src.billing_cycle || "").trim().toLowerCase() || "trial",
-      current_price_eur: Number.isFinite(Number(src.current_price_eur))
-        ? Number(src.current_price_eur)
-        : null,
-      pending_price_eur: Number.isFinite(Number(src.pending_price_eur))
-        ? Number(src.pending_price_eur)
-        : null,
-      price_catalog_eur: priceCatalog,
-      status: String(src.status || "").trim().toLowerCase() || "active",
-      blocked_reason: String(src.blocked_reason || "").trim().toLowerCase() || "",
-      plan_expires_at: src.plan_expires_at ? String(src.plan_expires_at) : "",
-      seconds_to_expiry: Number.isFinite(Number(src.seconds_to_expiry))
-        ? Number(src.seconds_to_expiry)
-        : null,
-      pending_plan_tier: src.pending_plan_tier ? String(src.pending_plan_tier) : "",
-      pending_billing_cycle: src.pending_billing_cycle
-        ? String(src.pending_billing_cycle)
-        : "",
-      pending_effective_at: src.pending_effective_at ? String(src.pending_effective_at) : "",
-      seconds_to_pending: Number.isFinite(Number(src.seconds_to_pending))
-        ? Number(src.seconds_to_pending)
-        : null,
-      features,
-    };
-  };
-
-  const hasFeature = (featureName) => {
-    if (isAdmin) return true;
-    if (!subscription || !subscription.features) return false;
-    return Boolean(subscription.features[String(featureName || "")]);
-  };
-
-  const isSubscriptionBlocked = Boolean(
-    !isAdmin && subscription && String(subscription.status || "") === "blocked"
-  );
-
-  const resolveMenuFeature = (menuKey, featureName) => {
-    const explicit = String(featureName || "").trim();
-    if (explicit) return explicit;
-    const mapped = MENU_FEATURES[String(menuKey || "").trim()];
-    return mapped || "home";
-  };
-
-  const planTierLabel = (planTier) =>
-    PLAN_TIER_LABELS[String(planTier || "").trim().toLowerCase()] ||
-    String(planTier || "-").toUpperCase();
-
-  const billingCycleLabel = (billingCycle) =>
-    BILLING_LABELS[String(billingCycle || "").trim().toLowerCase()] ||
-    String(billingCycle || "-");
-
-  const blockedReasonLabel = (blockedReason) => {
-    const key = String(blockedReason || "").trim().toLowerCase();
-    if (key === "trial_expired") return "Trial terminato";
-    if (key === "plan_expired") return "Piano scaduto";
-    if (key === "manual_suspension") return "Sospensione manuale";
-    return key || "bloccata";
-  };
-
-  const cleanBillingQueryParams = () => {
-    try {
-      const nextUrl = new URL(window.location.href);
-      nextUrl.searchParams.delete("billing");
-      nextUrl.searchParams.delete("session_id");
-      window.history.replaceState({}, "", nextUrl.toString());
-    } catch {}
-  };
-
-  const billingAuthHeaders = () => {
-    const headers = { "Content-Type": "application/json" };
-    if (accessToken) {
-      headers.Authorization = `Bearer ${accessToken}`;
-    }
-    const keyValue = String(accessKey || "").trim().toLowerCase();
-    if (keyValue) {
-      headers["X-Access-Key"] = keyValue;
-    }
-    return headers;
-  };
-
-  const verifyBillingCheckout = async (sessionId) => {
-    const cleanSessionId = String(sessionId || "").trim();
-    if (!cleanSessionId) return;
-    setBillingSessionVerifying(true);
-    try {
-      const res = await fetch(
-        `${API_BASE}/auth/billing/verify?session_id=${encodeURIComponent(cleanSessionId)}`,
-        {
-          headers: billingAuthHeaders(),
-        }
-      );
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        const message = data?.detail || data?.message || "Pagamento registrato, aggiornamento in corso.";
-        setBillingNotice(String(message));
-        return;
-      }
-      const nextSub = normalizeSubscription(data?.subscription || {});
-      if (nextSub && typeof nextSub === "object") {
-        setSubscription(nextSub);
-      }
-      setBillingNotice("Pagamento confermato. Piano aggiornato con successo.");
-      setError("");
-      try {
-        await loadAuthSession();
-      } catch {}
-    } catch {
-      setBillingNotice("Pagamento completato. Ricarica lo stato key tra pochi secondi.");
-    } finally {
-      setBillingSessionVerifying(false);
-      cleanBillingQueryParams();
-    }
-  };
-
-  const startBillingCheckout = async (planTier = billingPlan, cycle = billingCycle) => {
-    const targetPlan = String(planTier || "").trim().toLowerCase();
-    const targetCycle = String(cycle || "").trim().toLowerCase();
-    if (!["base", "premium"].includes(targetPlan)) {
-      setBillingNotice("Seleziona un piano valido.");
-      return;
-    }
-    if (!["monthly", "season9"].includes(targetCycle)) {
-      setBillingNotice("Seleziona un ciclo valido.");
-      return;
-    }
-    setBillingLoading(true);
-    setBillingNotice("");
-    try {
-      const res = await fetch(`${API_BASE}/auth/billing/checkout`, {
-        method: "POST",
-        headers: billingAuthHeaders(),
-        body: JSON.stringify({
-          plan_tier: targetPlan,
-          billing_cycle: targetCycle,
-          success_path: "/?billing=success",
-          cancel_path: "/?billing=cancel",
-        }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        const message = data?.detail || data?.message || "Errore avvio checkout.";
-        setBillingNotice(String(message));
-        return;
-      }
-      const checkoutUrl = String(data?.checkout_url || "").trim();
-      if (!checkoutUrl) {
-        setBillingNotice("Checkout non disponibile.");
-        return;
-      }
-      window.location.assign(checkoutUrl);
-    } catch {
-      setBillingNotice("Errore connessione checkout.");
-    } finally {
-      setBillingLoading(false);
-    }
-  };
-
-  const subscriptionPriceCatalog =
-    subscription?.price_catalog_eur &&
-    typeof subscription.price_catalog_eur === "object" &&
-    Object.keys(subscription.price_catalog_eur).length > 0
-      ? subscription.price_catalog_eur
-      : PLAN_PRICES_FALLBACK;
-
-  const subscriptionPriceFor = (planTier, billingCycle) => {
-    const planKey = String(planTier || "").trim().toLowerCase();
-    const cycleKey = String(billingCycle || "").trim().toLowerCase();
-    const planMap = subscriptionPriceCatalog[planKey];
-    if (!planMap || typeof planMap !== "object") return null;
-    const amount = Number(planMap[cycleKey]);
-    return Number.isFinite(amount) ? amount : null;
-  };
-
-  const currentPlanTier = String(subscription?.plan_tier || "").trim().toLowerCase();
-  const currentBillingCycle = String(subscription?.billing_cycle || "").trim().toLowerCase();
-
-  const menuItemClass = (menuKey, featureName) => {
+  const menuItemClass = (menuKey) => {
     const active = activeMenu === menuKey;
-    const locked = !hasFeature(resolveMenuFeature(menuKey, featureName));
     const classes = ["menu-item"];
     if (active) classes.push("active");
-    if (locked) classes.push("locked");
     return classes.join(" ");
   };
 
-  const openMenuFeature = (menuKey, featureName, closeMobile = true, closeAdmin = false) => {
-    const requiredFeature = resolveMenuFeature(menuKey, featureName);
-    if (!hasFeature(requiredFeature)) {
-      const planTier = String(subscription?.plan_tier || "trial").toUpperCase();
-      setError(`Funzione non disponibile nel piano ${planTier}.`);
-      return;
-    }
+  const openMenuFeature = (menuKey, _featureName, closeMobile = true, closeAdmin = false) => {
     setError("");
     setActiveMenu(menuKey);
     if (closeMobile) setMenuOpen(false);
@@ -836,12 +530,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
         const detail = d?.detail;
-        if (res.status === 402 && detail && typeof detail === "object") {
-          setLoggedIn(true);
-          setIsAdmin(Boolean(d?.is_admin));
-          setSubscription(normalizeSubscription(detail?.subscription || d?.subscription));
-          throw new Error(detail?.message || "Key bloccata: rinnova per continuare.");
-        }
         if (typeof detail === "string") {
           throw new Error(detail || "Accesso non consentito");
         }
@@ -1040,20 +728,11 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const onFormationOrderChange = (nextOrder) => {
     const normalizedOrder =
       String(nextOrder || "").toLowerCase() === "live_total" ? "live_total" : "classifica";
-    if (normalizedOrder === "live_total" && !hasFeature("formazioni_live")) {
-      setError("Classifica live giornata disponibile solo con piano Premium.");
-      return;
-    }
     setFormationOrder(normalizedOrder);
     loadFormazioni(formationRound || null, normalizedOrder);
   };
 
   const runFormationOptimizer = async (teamName, roundValue = null) => {
-    if (!hasFeature("formazione_consigliata")) {
-      setFormationOptimizer(null);
-      setFormationOptimizerError("XI ottimizzata disponibile solo con piano Premium.");
-      return;
-    }
     const safeTeam = String(teamName || "").trim();
     if (!safeTeam || safeTeam.toLowerCase() === "all") {
       setFormationOptimizer(null);
@@ -1087,7 +766,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   };
 
   const loadLivePayload = async (roundValue = null) => {
-    if (!loggedIn || (!isAdmin && !hasFeature("formazioni_live"))) return;
+    if (!loggedIn) return;
     try {
       setLiveLoading(true);
       setLiveError("");
@@ -1494,10 +1173,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
      PLAYER PROFILE
   =========================== */
   const openPlayer = async (name) => {
-    if (!hasFeature("schede_giocatori")) {
-      setError("Scheda giocatore disponibile dal piano Base.");
-      return;
-    }
     if (!name) return;
     setSelectedPlayer(name);
     setActiveMenu("player");
@@ -1688,11 +1363,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         ...item,
         rank: index + 1,
       }));
-
-    const isTrial = String(subscription?.plan_tier || "").toLowerCase() === "trial";
-    if (!isAdmin && isTrial) {
-      return list.slice(0, TRIAL_TOP_ACQUISTI_LIMIT);
-    }
     return list;
   }, [
     topPlayersByRole,
@@ -1701,7 +1371,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     marketStandings,
     topPosFrom,
     topPosTo,
-    subscription,
     isAdmin,
   ]);
 
@@ -2248,89 +1917,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
   };
 
-  const setSubscriptionAdmin = async () => {
-    if (!isAdmin) return;
-    const key = String(adminSubKey || "").trim().toLowerCase();
-    if (!key) {
-      setAdminNotice("Inserisci una key per impostare il piano.");
-      return;
-    }
-    try {
-      const payload = {
-        key,
-        plan_tier: String(adminSubPlan || "base").trim().toLowerCase(),
-        billing_cycle: String(adminSubCycle || "monthly").trim().toLowerCase(),
-        force_immediate: Boolean(adminSubImmediate),
-      };
-      if (payload.plan_tier === "trial") {
-        payload.billing_cycle = "trial";
-      }
-      const res = await fetchWithAuth(`${API_BASE}/auth/admin/subscription`, {
-        method: "POST",
-        headers: buildAuthHeaders({
-          legacyAdminKey: true,
-          extraHeaders: { "Content-Type": "application/json" },
-        }),
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setAdminNotice(data?.detail || data?.message || "Errore impostazione piano.");
-        return;
-      }
-      const schedule = data?.schedule || {};
-      const delayHours = Number(schedule?.delay_hours);
-      const immediate = !schedule?.scheduled || delayHours <= 0;
-      const summary = immediate
-        ? `Piano ${String(payload.plan_tier).toUpperCase()} applicato subito.`
-        : `Piano ${String(payload.plan_tier).toUpperCase()} pianificato tra ${delayHours}h.`;
-      setAdminNotice(`${key.toUpperCase()}: ${summary}`);
-      loadAdminKeys();
-      if (key === String(accessKey || "").trim().toLowerCase()) {
-        loadAuthSession();
-      }
-    } catch {
-      setAdminNotice("Errore impostazione piano.");
-    }
-  };
-
-  const setSubscriptionBlockAdmin = async () => {
-    if (!isAdmin) return;
-    const key = String(adminBlockKey || "").trim().toLowerCase();
-    if (!key) {
-      setAdminNotice("Inserisci una key per sospendere/ripristinare.");
-      return;
-    }
-    try {
-      const res = await fetchWithAuth(`${API_BASE}/auth/admin/subscription/block`, {
-        method: "POST",
-        headers: buildAuthHeaders({
-          legacyAdminKey: true,
-          extraHeaders: { "Content-Type": "application/json" },
-        }),
-        body: JSON.stringify({
-          key,
-          blocked: Boolean(adminBlockValue),
-          reason: String(adminBlockReason || "").trim() || null,
-        }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setAdminNotice(data?.detail || data?.message || "Errore aggiornamento blocco key.");
-        return;
-      }
-      setAdminNotice(
-        `${key.toUpperCase()}: ${adminBlockValue ? "sospesa" : "riattivata"} con successo.`
-      );
-      loadAdminKeys();
-      if (key === String(accessKey || "").trim().toLowerCase()) {
-        loadAuthSession();
-      }
-    } catch {
-      setAdminNotice("Errore aggiornamento blocco key.");
-    }
-  };
-
   /* ===========================
      EFFECTS
   =========================== */
@@ -2357,33 +1943,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     loadAuthSession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn, accessKey, accessToken, refreshToken]);
-
-  useEffect(() => {
-    if (!loggedIn) return;
-    let params;
-    try {
-      params = new URLSearchParams(window.location.search);
-    } catch {
-      return;
-    }
-    const billingState = String(params.get("billing") || "").trim().toLowerCase();
-    if (!billingState) return;
-    if (billingState === "cancel") {
-      setBillingNotice("Pagamento annullato.");
-      cleanBillingQueryParams();
-      return;
-    }
-    if (billingState === "success") {
-      const sessionId = String(params.get("session_id") || "").trim();
-      if (!sessionId) {
-        setBillingNotice("Pagamento completato. Aggiorna lo stato key.");
-        cleanBillingQueryParams();
-        return;
-      }
-      verifyBillingCheckout(sessionId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedIn]);
 
   useEffect(() => {
     try {
@@ -2515,17 +2074,16 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   useEffect(() => {
     if (!loggedIn || activeMenu !== "live") return;
-    if (!isAdmin && !hasFeature("formazioni_live")) return;
     loadLivePayload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedIn, isAdmin, activeMenu, subscription]);
+  }, [loggedIn, isAdmin, activeMenu]);
 
   useEffect(() => {
     if (!loggedIn) return;
-    if (!PREMIUM_INSIGHTS_MENU_KEYS.has(String(activeMenu || "").trim())) return;
+    if (!INSIGHTS_MENU_KEYS.has(String(activeMenu || "").trim())) return;
     loadPremiumInsights(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedIn, activeMenu, subscription, isAdmin]);
+  }, [loggedIn, activeMenu, isAdmin]);
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -2533,14 +2091,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     if (activeTab === "quotazioni") return;
     setActiveTab("quotazioni");
   }, [loggedIn, activeMenu, activeTab]);
-
-  useEffect(() => {
-    if (!loggedIn || isAdmin) return;
-    const feature = MENU_FEATURES[String(activeMenu || "").trim()] || "home";
-    if (!hasFeature(feature)) {
-      setActiveMenu("home");
-    }
-  }, [loggedIn, isAdmin, activeMenu, subscription]);
 
   /* ===========================
      MENU OPEN (mobile)
@@ -2646,65 +2196,6 @@ useEffect(() => {
             </p>
           </section>
         </div>
-      ) : isSubscriptionBlocked ? (
-        <div className="blocked-shell">
-          <section className="blocked-card">
-            <p className="eyebrow">Accesso Bloccato</p>
-            <h2>Rinnova la key per continuare ad utilizzare il sito</h2>
-            <p className="muted">
-              {error ||
-                `Stato: ${blockedReasonLabel(subscription?.blocked_reason)}. Contatta l'admin o rinnova il piano.`}
-            </p>
-            <div className="blocked-meta">
-              <span>Piano attuale: {planTierLabel(subscription?.plan_tier)}</span>
-              <span>Ciclo: {billingCycleLabel(subscription?.billing_cycle)}</span>
-              {subscription?.plan_expires_at ? (
-                <span>Scadenza: {formatDataStatusDate(subscription.plan_expires_at)}</span>
-              ) : null}
-              {subscription?.pending_plan_tier ? (
-                <span>
-                  Prossimo piano: {planTierLabel(subscription.pending_plan_tier)} tra{" "}
-                  {formatCountdown(Number(subscription.seconds_to_pending || 0))}
-                </span>
-              ) : null}
-            </div>
-            <div className="blocked-actions blocked-actions-grid">
-              <select
-                className="select"
-                value={billingPlan}
-                onChange={(e) => {
-                  const nextPlan = e.target.value;
-                  setBillingPlan(nextPlan);
-                  if (nextPlan === "trial") setBillingCycle("monthly");
-                }}
-              >
-                <option value="base">Base</option>
-                <option value="premium">Premium</option>
-              </select>
-              <select
-                className="select"
-                value={billingCycle}
-                onChange={(e) => setBillingCycle(e.target.value)}
-              >
-                <option value="monthly">Mensile</option>
-                <option value="season9">9 mesi</option>
-              </select>
-              <button
-                className="primary"
-                onClick={() => startBillingCheckout(billingPlan, billingCycle)}
-                disabled={billingLoading || billingSessionVerifying}
-              >
-                {billingLoading
-                  ? "Reindirizzamento..."
-                  : `Acquista ${planTierLabel(billingPlan)} ${billingCycleLabel(billingCycle)}`}
-              </button>
-              <button className="ghost" onClick={() => loadAuthSession()}>
-                Ricarica stato key
-              </button>
-            </div>
-            {billingNotice ? <p className="muted">{billingNotice}</p> : null}
-          </section>
-        </div>
       ) : (
         <div className="app-shell">
           <aside className="sidebar" aria-label="Menu principale">
@@ -2719,12 +2210,6 @@ useEffect(() => {
                 onClick={() => openMenuFeature("home")}
               >
                 Home
-              </button>
-              <button
-                className={menuItemClass("abbonamenti")}
-                onClick={() => openMenuFeature("abbonamenti")}
-              >
-                Abbonamenti
               </button>
               <button
                 className={menuItemClass("quotazioni")}
@@ -2811,27 +2296,6 @@ useEffect(() => {
                 Predictions
               </button>
             </nav>
-            {!isAdmin && subscription ? (
-              <div className="subscription-card">
-                <p className="eyebrow">Piano</p>
-                <h3>{planTierLabel(subscription.plan_tier)}</h3>
-                <p className="muted">Ciclo: {billingCycleLabel(subscription.billing_cycle)}</p>
-                {Number.isFinite(Number(subscription.seconds_to_expiry)) ? (
-                  <p className="muted">
-                    Scadenza tra {formatCountdown(Number(subscription.seconds_to_expiry))}
-                  </p>
-                ) : null}
-                {subscription.pending_plan_tier ? (
-                  <p className="muted">
-                    Cambio a {planTierLabel(subscription.pending_plan_tier)} tra{" "}
-                    {formatCountdown(Number(subscription.seconds_to_pending || 0))}
-                  </p>
-                ) : null}
-                <button className="ghost" onClick={() => openMenuFeature("abbonamenti")}>
-                  Apri abbonamenti
-                </button>
-              </div>
-            ) : null}
           </aside>
           {isAdmin && (
             <aside className="admin-sidebar" aria-label="Menu admin">
@@ -2874,8 +2338,6 @@ useEffect(() => {
               <strong>
                 {activeMenu === "home"
                   ? "Home"
-                  : activeMenu === "abbonamenti"
-                  ? "Abbonamenti"
                   : activeMenu === "quotazioni"
                   ? "Quotazioni"
                   : activeMenu === "stats"
@@ -2973,148 +2435,6 @@ useEffect(() => {
               />
             )}
 
-            {activeMenu === "abbonamenti" && (
-              <section className="dashboard billing-hub">
-                <div className="dashboard-header left">
-                  <div>
-                    <p className="eyebrow">Abbonamenti</p>
-                    <h2>Piani e funzionalita</h2>
-                  </div>
-                  <p className="muted">
-                    Scegli il piano piu adatto: qui trovi confronto feature e checkout diretto.
-                  </p>
-                </div>
-
-                {subscription ? (
-                  <div className="panel billing-current-panel">
-                    <div className="billing-current-grid">
-                      <div>
-                        <p className="eyebrow">Stato corrente</p>
-                        <h3>
-                          {planTierLabel(subscription.plan_tier)} ·{" "}
-                          {billingCycleLabel(subscription.billing_cycle)}
-                        </h3>
-                        <p className="muted">
-                          {subscription.status === "blocked"
-                            ? `Bloccata: ${blockedReasonLabel(subscription.blocked_reason)}`
-                            : "Attiva"}
-                        </p>
-                      </div>
-                      <div className="billing-current-meta">
-                        {Number.isFinite(Number(subscription.seconds_to_expiry)) ? (
-                          <span>
-                            Scadenza tra {formatCountdown(Number(subscription.seconds_to_expiry))}
-                          </span>
-                        ) : (
-                          <span>Scadenza: non prevista</span>
-                        )}
-                        {subscription.pending_plan_tier ? (
-                          <span>
-                            Cambio pianificato: {planTierLabel(subscription.pending_plan_tier)} tra{" "}
-                            {formatCountdown(Number(subscription.seconds_to_pending || 0))}
-                          </span>
-                        ) : (
-                          <span>Nessun cambio pianificato</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-
-                <div className="billing-plan-grid">
-                  {["trial", "base", "premium"].map((plan) => {
-                    const details = PLAN_COMPARISON[plan];
-                    const isCurrent = currentPlanTier === plan;
-                    const monthlyPrice = subscriptionPriceFor(plan, "monthly");
-                    const seasonPrice = subscriptionPriceFor(plan, "season9");
-                    return (
-                      <article
-                        key={plan}
-                        className={`panel billing-plan-card ${isCurrent ? "active" : ""}`}
-                      >
-                        <p className="eyebrow">{details?.title || planTierLabel(plan)}</p>
-                        <h3>{details?.subtitle || ""}</h3>
-                        <ul className="billing-feature-list">
-                          {(details?.features || []).map((feature) => (
-                            <li key={`${plan}-${feature}`}>{feature}</li>
-                          ))}
-                        </ul>
-                        {plan !== "trial" ? (
-                          <div className="billing-plan-actions">
-                            <button
-                              className="ghost"
-                              onClick={() => startBillingCheckout(plan, "monthly")}
-                              disabled={
-                                billingLoading ||
-                                billingSessionVerifying ||
-                                (isCurrent && currentBillingCycle === "monthly") ||
-                                isAdmin
-                              }
-                            >
-                              Mensile {formatEuro(monthlyPrice)}
-                              {isCurrent && currentBillingCycle === "monthly" ? " (attivo)" : ""}
-                            </button>
-                            <button
-                              className="ghost"
-                              onClick={() => startBillingCheckout(plan, "season9")}
-                              disabled={
-                                billingLoading ||
-                                billingSessionVerifying ||
-                                (isCurrent && currentBillingCycle === "season9") ||
-                                isAdmin
-                              }
-                            >
-                              9 mesi {formatEuro(seasonPrice)}
-                              {isCurrent && currentBillingCycle === "season9" ? " (attivo)" : ""}
-                            </button>
-                          </div>
-                        ) : (
-                          <p className="muted billing-trial-note">
-                            Trial automatico di 3 giorni alla prima attivazione key.
-                          </p>
-                        )}
-                      </article>
-                    );
-                  })}
-                </div>
-
-                <div className="panel billing-faq-panel">
-                  <div className="dashboard-header left">
-                    <div>
-                      <p className="eyebrow">Note</p>
-                      <h3>Come funziona</h3>
-                    </div>
-                  </div>
-                  <div className="list">
-                    <div className="list-item">
-                      <div>
-                        <p>Upgrade e rinnovi</p>
-                        <span className="muted">
-                          Pagamento via Stripe, rinnovo del piano in automatico dopo conferma checkout.
-                        </span>
-                      </div>
-                    </div>
-                    <div className="list-item">
-                      <div>
-                        <p>Blocco per scadenza</p>
-                        <span className="muted">
-                          Se il piano scade, la key viene bloccata fino al rinnovo.
-                        </span>
-                      </div>
-                    </div>
-                    <div className="list-item">
-                      <div>
-                        <p>Utente admin</p>
-                        <span className="muted">
-                          L&apos;admin gestisce piani e sospensioni dalla sezione Gestione.
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  {billingNotice ? <p className="muted">{billingNotice}</p> : null}
-                </div>
-              </section>
-            )}
 
             {/* ===========================
                 STATS
@@ -3604,86 +2924,6 @@ useEffect(() => {
 
                 <div className="panel">
                   <div className="panel-header">
-                    <h3>Piani e Sospensioni</h3>
-                  </div>
-                  <div className="admin-actions">
-                    <div className="admin-row admin-row-stacked">
-                      <p className="muted">
-                        Listino: Base mensile {formatEuro(subscriptionPriceFor("base", "monthly"))} · Base 9 mesi{" "}
-                        {formatEuro(subscriptionPriceFor("base", "season9"))} · Premium mensile{" "}
-                        {formatEuro(subscriptionPriceFor("premium", "monthly"))} · Premium 9 mesi{" "}
-                        {formatEuro(subscriptionPriceFor("premium", "season9"))}
-                      </p>
-                    </div>
-                    <div className="admin-row">
-                      <input
-                        className="input"
-                        placeholder="Key da aggiornare piano"
-                        value={adminSubKey}
-                        onChange={(e) => setAdminSubKey(e.target.value)}
-                      />
-                      <select
-                        className="input"
-                        value={adminSubPlan}
-                        onChange={(e) => setAdminSubPlan(e.target.value)}
-                      >
-                        <option value="trial">Trial</option>
-                        <option value="base">Base</option>
-                        <option value="premium">Premium</option>
-                      </select>
-                      <select
-                        className="input"
-                        value={adminSubCycle}
-                        onChange={(e) => setAdminSubCycle(e.target.value)}
-                        disabled={adminSubPlan === "trial"}
-                      >
-                        <option value="monthly">Mensile</option>
-                        <option value="season9">9 mesi</option>
-                        <option value="trial">Trial</option>
-                      </select>
-                      <label className="admin-checkbox">
-                        <input
-                          type="checkbox"
-                          checked={adminSubImmediate}
-                          onChange={(e) => setAdminSubImmediate(e.target.checked)}
-                        />
-                        <span>Applica subito</span>
-                      </label>
-                      <button className="ghost" onClick={setSubscriptionAdmin}>
-                        Imposta piano
-                      </button>
-                    </div>
-
-                    <div className="admin-row">
-                      <input
-                        className="input"
-                        placeholder="Key da sospendere/riattivare"
-                        value={adminBlockKey}
-                        onChange={(e) => setAdminBlockKey(e.target.value)}
-                      />
-                      <select
-                        className="input"
-                        value={adminBlockValue ? "blocked" : "active"}
-                        onChange={(e) => setAdminBlockValue(e.target.value === "blocked")}
-                      >
-                        <option value="blocked">Sospendi</option>
-                        <option value="active">Riattiva</option>
-                      </select>
-                      <input
-                        className="input"
-                        placeholder="Motivo (opzionale)"
-                        value={adminBlockReason}
-                        onChange={(e) => setAdminBlockReason(e.target.value)}
-                      />
-                      <button className="ghost" onClick={setSubscriptionBlockAdmin}>
-                        Salva stato
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="panel-header">
                     <h3>Lista Key</h3>
                     <button className="ghost" onClick={loadAdminKeys}>
                       Aggiorna
@@ -3695,7 +2935,6 @@ useEffect(() => {
                       <p className="muted">Nessuna key disponibile.</p>
                     ) : (
                       adminKeys.map((item) => {
-                        const sub = normalizeSubscription(item.subscription || {});
                         return (
                           <div key={item.key} className="list-item player-card">
                             <div>
@@ -3704,20 +2943,6 @@ useEffect(() => {
                                 {item.is_admin ? "ADMIN" : "USER"} - {item.used ? "Attivata" : "Non usata"}
                               </span>
                               <span className="muted">Team: {item.team || "-"}</span>
-                              <span className="muted">
-                                Piano: {planTierLabel(sub.plan_tier)} ({billingCycleLabel(sub.billing_cycle)}) - {sub.status === "blocked" ? "Bloccata" : "Attiva"}
-                              </span>
-                              {sub.blocked_reason ? (
-                                <span className="muted">Blocco: {blockedReasonLabel(sub.blocked_reason)}</span>
-                              ) : null}
-                              {sub.plan_expires_at ? (
-                                <span className="muted">Scadenza: {formatDataStatusDate(sub.plan_expires_at)}</span>
-                              ) : null}
-                              {sub.pending_plan_tier ? (
-                                <span className="muted">
-                                  Cambio pianificato: {planTierLabel(sub.pending_plan_tier)} tra {formatCountdown(Number(sub.seconds_to_pending || 0))}
-                                </span>
-                              ) : null}
                               <span className="muted">
                                 Reset: {item.reset_used ?? 0}/{item.reset_limit ?? 3}
                                 {item.reset_season ? ` · Stagione ${item.reset_season}` : ""}
