@@ -422,18 +422,6 @@ def _inspect_formazioni_xlsx(path: Path) -> dict[str, object]:
                 }
             )
         )
-        sample_rows: list[list[str]] = []
-        try:
-            sample_frame = frame.fillna("")
-            for _, row in sample_frame.head(60).iterrows():
-                values = [str(value or "").strip() for value in list(row.values)[:12]]
-                if not any(values):
-                    continue
-                sample_rows.append(values)
-                if len(sample_rows) >= 8:
-                    break
-        except Exception:
-            sample_rows = []
         sheet_debug.append(
             {
                 "name": str(sheet_name),
@@ -441,7 +429,6 @@ def _inspect_formazioni_xlsx(path: Path) -> dict[str, object]:
                 "columns": sorted(list(columns))[:30],
                 "has_team": bool(has_team),
                 "has_lineup": bool(has_lineup),
-                "sample": sample_rows,
             }
         )
         if has_team and has_lineup:
@@ -555,7 +542,6 @@ def download_leghe_formazioni_xlsx_with_fallback(
                 "rows": int(rows),
                 "bytes": int(downloaded.get("bytes") or 0),
                 "lineup_frames": int(inspected.get("lineup_frames") or 0),
-                "sheet_debug": inspected.get("sheets") or [],
             }
         )
         if rows > 0:
