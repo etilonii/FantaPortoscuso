@@ -10,6 +10,7 @@ __pycache__/
 # Node
 apps/web/node_modules/
 apps/web/.env
+.vercel/
 
 # Local DB / runtime
 app.db
