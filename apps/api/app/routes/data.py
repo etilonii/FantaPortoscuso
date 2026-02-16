@@ -388,7 +388,7 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
         return []
 
     try:
-        sheets = pd.read_excel(path, sheet_name=None, header=None)
+        sheets = pd.read_excel(path, sheet_name=None)
     except Exception:
         return []
 
@@ -402,8 +402,14 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
             continue
 
         rows: List[List[str]] = []
+        columns = list(frame.columns)
+        if not columns:
+            continue
+        max_cols = min(12, len(columns))
         for _, source_row in frame.fillna("").iterrows():
-            values = [str(value or "").strip() for value in list(source_row.values)[:12]]
+            values = [str(source_row.get(column, "") or "").strip() for column in columns[:max_cols]]
+            if len(values) < 12:
+                values.extend([""] * (12 - len(values)))
             rows.append(values)
 
         if not any(
