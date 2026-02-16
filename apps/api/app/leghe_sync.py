@@ -273,6 +273,168 @@ def download_leghe_excel(
     }
 
 
+def download_leghe_service_json(
+    opener,
+    *,
+    url: str,
+    app_key: str,
+    referer: str,
+    timeout_seconds: int = 30,
+) -> dict[str, object]:
+    body, resp_headers = _http_read_bytes(
+        opener,
+        url,
+        method="GET",
+        headers={
+            "app_key": app_key,
+            "Referer": referer,
+            "Accept": "application/json, text/plain, */*",
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        timeout_seconds=timeout_seconds,
+    )
+    raw = body.decode("utf-8", errors="replace")
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        snippet = raw[:400].replace("\n", " ")
+        raise LegheSyncError(f"Download JSON non valido: url={url} body={snippet}") from exc
+
+    if not isinstance(parsed, dict):
+        raise LegheSyncError(f"Download JSON non valido: url={url} payload non-object")
+
+    parsed.setdefault("_content_type", str(resp_headers.get("content-type") or ""))
+    return parsed
+
+
+def fetch_leghe_formazioni_service_payloads(
+    *,
+    alias: str,
+    username: str,
+    password: str,
+    competition_id: int | None = None,
+    matchday: int | None = None,
+    team_ids: list[int] | None = None,
+) -> dict[str, object]:
+    opener, jar = _build_leghe_opener()
+    context = fetch_leghe_context(opener, alias=alias)
+
+    leghe_login(
+        opener,
+        alias=alias,
+        app_key=context.app_key,
+        username=username,
+        password=password,
+    )
+
+    resolved_competition_id = int(competition_id or 0) or context.competition_id
+    if not resolved_competition_id:
+        raise LegheSyncError("competition_id mancante: non posso leggere le formazioni via service.")
+
+    resolved_matchday = (
+        int(matchday or 0)
+        or context.current_turn
+        or context.suggested_formations_matchday
+        or context.last_calculated_matchday
+    )
+    if not resolved_matchday:
+        raise LegheSyncError("matchday non disponibile: non posso leggere le formazioni via service.")
+
+    referer = f"{LEGHE_BASE_URL}{alias}/formazioni"
+    attempts: list[dict[str, object]] = []
+    payloads: list[dict[str, object]] = []
+    seen_payload_keys: set[str] = set()
+
+    def _register_payload(label: str, parsed: dict[str, object]) -> None:
+        compact = json.dumps(parsed, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+        if compact in seen_payload_keys:
+            return
+        seen_payload_keys.add(compact)
+        payloads.append({"source": label, "payload": parsed})
+
+    def _try(label: str, url: str) -> None:
+        try:
+            parsed = download_leghe_service_json(
+                opener,
+                url=url,
+                app_key=context.app_key,
+                referer=referer,
+                timeout_seconds=30,
+            )
+            success_flag = bool(parsed.get("success")) if isinstance(parsed, dict) else False
+            attempts.append(
+                {
+                    "ok": True,
+                    "source": label,
+                    "url": url,
+                    "success": success_flag,
+                }
+            )
+            _register_payload(label, parsed)
+        except Exception as exc:
+            attempts.append(
+                {
+                    "ok": False,
+                    "source": label,
+                    "url": url,
+                    "warning": str(exc),
+                }
+            )
+
+    base_params = {
+        "alias_lega": alias,
+        "id_comp": int(resolved_competition_id),
+    }
+    visualizza_params = {
+        **base_params,
+        "giornata_lega": int(resolved_matchday),
+    }
+    lista_params = {
+        **base_params,
+        "giornata": int(resolved_matchday),
+    }
+
+    _try(
+        "visualizza_all",
+        f"{LEGHE_BASE_URL}servizi/V1_LegheFormazioni/Visualizza?{urlencode(visualizza_params)}",
+    )
+    _try(
+        "lista",
+        f"{LEGHE_BASE_URL}servizi/V1_LegheFormazioni/lista?{urlencode(lista_params)}",
+    )
+    _try(
+        "live_visualizza_all",
+        f"{LEGHE_BASE_URL}servizi/V1_LegheLive/Visualizza?{urlencode({**base_params, 'id_squadra': 0})}",
+    )
+
+    for team_id in team_ids or []:
+        if int(team_id or 0) <= 0:
+            continue
+        params = {
+            **visualizza_params,
+            "id_squadra": int(team_id),
+        }
+        _try(
+            f"visualizza_team_{int(team_id)}",
+            f"{LEGHE_BASE_URL}servizi/V1_LegheFormazioni/Visualizza?{urlencode(params)}",
+        )
+
+    return {
+        "ok": True,
+        "alias": alias,
+        "matchday": int(resolved_matchday),
+        "competition_id": int(resolved_competition_id),
+        "context": {
+            "current_turn": context.current_turn,
+            "last_calculated_matchday": context.last_calculated_matchday,
+            "suggested_formations_matchday": context.suggested_formations_matchday,
+        },
+        "cookies": len(list(jar)),
+        "attempts": attempts,
+        "payloads": payloads,
+    }
+
+
 def _build_leghe_opener() -> tuple[object, http.cookiejar.CookieJar]:
     jar = http.cookiejar.CookieJar()
     opener = build_opener(HTTPCookieProcessor(jar))

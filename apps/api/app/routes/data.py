@@ -35,6 +35,7 @@ from apps.api.app.leghe_sync import (
     LegheSyncError,
     run_leghe_sync_and_pipeline,
     refresh_formazioni_context_from_leghe,
+    fetch_leghe_formazioni_service_payloads,
 )
 from apps.api.app.models import (
     AccessKey,
@@ -5293,6 +5294,224 @@ def _refresh_formazioni_context_html_live() -> Optional[Path]:
     return target_path if target_path.exists() else None
 
 
+def _extract_current_turn_from_formazioni_context_html() -> Optional[int]:
+    pattern = re.compile(r'currentTurn\s*:\s*"?(?P<turn>\d+)"?', re.IGNORECASE)
+    for candidate in _context_html_candidates():
+        try:
+            source = candidate.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        if not source:
+            continue
+        match = pattern.search(source)
+        if match is None:
+            continue
+        parsed = _parse_int(match.group("turn"))
+        if parsed is not None and parsed > 0:
+            return int(parsed)
+    return None
+
+
+def _normalize_service_player_entry(raw_player: object, order: int) -> Optional[Dict[str, object]]:
+    if not isinstance(raw_player, dict):
+        return None
+
+    player_name = _canonicalize_name(
+        str(
+            raw_player.get("n")
+            or raw_player.get("nome")
+            or raw_player.get("name")
+            or raw_player.get("player")
+            or raw_player.get("giocatore")
+            or ""
+        )
+    )
+    if not player_name:
+        return None
+
+    role_raw = raw_player.get("r")
+    if role_raw in (None, ""):
+        role_raw = raw_player.get("ruolo")
+    if role_raw in (None, ""):
+        role_raw = raw_player.get("role")
+    role_value = _role_from_text(role_raw)
+
+    player_id_raw = (
+        raw_player.get("id")
+        or raw_player.get("i")
+        or raw_player.get("id_calciatore")
+        or raw_player.get("player_id")
+        or f"p{order}"
+    )
+    player_id = str(player_id_raw).strip() or f"p{order}"
+
+    normalized = {
+        "id": player_id,
+        "i": player_id,
+        "n": player_name,
+        "r": role_value or "",
+    }
+    bonus_raw = raw_player.get("b")
+    if isinstance(bonus_raw, list):
+        normalized["b"] = bonus_raw
+    return normalized
+
+
+def _normalize_service_squad(raw_squad: object, *, fallback_team_id: Optional[int] = None) -> Optional[Dict[str, object]]:
+    if not isinstance(raw_squad, dict):
+        return None
+
+    team_id = _parse_int(
+        raw_squad.get("id")
+        or raw_squad.get("id_squadra")
+        or raw_squad.get("idTeam")
+        or raw_squad.get("team_id")
+    )
+    if team_id is None:
+        team_id = fallback_team_id
+    if team_id is None:
+        return None
+
+    players_raw: List[object] = []
+    for key in ("pl", "players", "calciatori", "giocatori", "roster", "lineup", "titolari"):
+        value = raw_squad.get(key)
+        if isinstance(value, list):
+            players_raw.extend(value)
+            if key != "titolari":
+                break
+    for key in ("titolari", "panchina", "reserves", "bench"):
+        value = raw_squad.get(key)
+        if isinstance(value, list):
+            players_raw.extend(value)
+
+    normalized_players: List[Dict[str, object]] = []
+    seen_players: Set[str] = set()
+    for idx, player_raw in enumerate(players_raw):
+        normalized_player = _normalize_service_player_entry(player_raw, idx)
+        if not normalized_player:
+            continue
+        dedupe_key = normalize_name(str(normalized_player.get("n") or ""))
+        if dedupe_key and dedupe_key in seen_players:
+            continue
+        if dedupe_key:
+            seen_players.add(dedupe_key)
+        normalized_players.append(normalized_player)
+
+    if not normalized_players:
+        return None
+
+    module_raw = raw_squad.get("m")
+    if module_raw in (None, ""):
+        module_raw = raw_squad.get("modulo")
+    if module_raw in (None, ""):
+        module_raw = raw_squad.get("schema")
+
+    captain_raw = raw_squad.get("cap")
+    if captain_raw in (None, ""):
+        captain_raw = raw_squad.get("captain")
+    if captain_raw in (None, ""):
+        captain_raw = raw_squad.get("capitano")
+
+    strength_raw = raw_squad.get("t")
+    if strength_raw in (None, ""):
+        strength_raw = raw_squad.get("forza_titolari")
+
+    normalized_squad: Dict[str, object] = {
+        "id": int(team_id),
+        "pl": normalized_players,
+    }
+    if module_raw not in (None, ""):
+        normalized_squad["m"] = module_raw
+    if captain_raw not in (None, ""):
+        normalized_squad["cap"] = captain_raw
+    parsed_strength = _parse_float(strength_raw)
+    if parsed_strength is not None:
+        normalized_squad["t"] = parsed_strength
+    return normalized_squad
+
+
+def _build_formazioni_payload_from_service_response(
+    response_payload: Dict[str, object],
+    *,
+    round_hint: Optional[int],
+) -> Optional[Dict[str, object]]:
+    if not isinstance(response_payload, dict):
+        return None
+
+    data_section = response_payload.get("data")
+    if isinstance(data_section, dict) and isinstance(data_section.get("formazioni"), list):
+        return response_payload
+    if isinstance(response_payload.get("formazioni"), list):
+        return {
+            "data": {
+                "giornataLega": _parse_int(round_hint),
+                "formazioni": response_payload.get("formazioni"),
+            }
+        }
+
+    parsed_round = _parse_int(round_hint)
+    for container in (response_payload, data_section if isinstance(data_section, dict) else {}):
+        if not isinstance(container, dict):
+            continue
+        parsed_round = _parse_int(
+            container.get("giornataLega")
+            or container.get("giornata_lega")
+            or container.get("giornata")
+            or container.get("round")
+            or container.get("turno")
+            or parsed_round
+        )
+        if parsed_round is not None:
+            break
+
+    queue: List[object] = [response_payload]
+    visited: Set[int] = set()
+    normalized_squads: List[Dict[str, object]] = []
+    seen_team_ids: Set[int] = set()
+
+    while queue:
+        node = queue.pop()
+        if isinstance(node, list):
+            queue.extend(node)
+            continue
+        if not isinstance(node, dict):
+            continue
+        marker = id(node)
+        if marker in visited:
+            continue
+        visited.add(marker)
+
+        fallback_team_id = _parse_int(
+            node.get("id")
+            or node.get("id_squadra")
+            or node.get("idTeam")
+            or node.get("team_id")
+        )
+        normalized_squad = _normalize_service_squad(node, fallback_team_id=fallback_team_id)
+        if normalized_squad:
+            team_id = _parse_int(normalized_squad.get("id"))
+            if team_id is not None and team_id not in seen_team_ids:
+                seen_team_ids.add(team_id)
+                normalized_squads.append(normalized_squad)
+
+        for value in node.values():
+            if isinstance(value, (dict, list)):
+                queue.append(value)
+
+    if not normalized_squads:
+        return None
+
+    selected_round = _parse_int(parsed_round)
+    formation_entry: Dict[str, object] = {"sq": normalized_squads}
+    if selected_round is not None:
+        formation_entry["giornata"] = int(selected_round)
+
+    payload: Dict[str, object] = {"data": {"formazioni": [formation_entry]}}
+    if selected_round is not None:
+        payload["data"]["giornataLega"] = int(selected_round)
+    return payload
+
+
 def _decode_appkey_payload_token(token: str) -> Optional[Dict[str, object]]:
     raw_token = str(token or "").strip()
     if not raw_token:
@@ -5439,6 +5658,99 @@ def _refresh_formazioni_appkey_from_context_html(round_value: Optional[int]) -> 
                 refreshed_path = written_path
                 refreshed_mtime = current_mtime
 
+    return refreshed_path
+
+
+def _refresh_formazioni_appkey_from_service(round_value: Optional[int]) -> Optional[Path]:
+    requested_round = _parse_int(round_value)
+    if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
+        return None
+
+    cache_key = f"service_round_{int(requested_round) if requested_round is not None else 0}"
+    now_ts = datetime.utcnow().timestamp()
+    last_ts = float(_FORMAZIONI_REMOTE_REFRESH_CACHE.get(cache_key, 0.0) or 0.0)
+    if now_ts - last_ts < 90:
+        if requested_round is not None:
+            cached_round_path = REAL_FORMATIONS_TMP_DIR / f"formazioni_{int(requested_round)}_appkey.json"
+            if cached_round_path.exists():
+                return cached_round_path
+        return None
+
+    team_ids = sorted(_load_team_id_position_index_from_formazioni_html().keys())
+    service_payloads: List[Dict[str, object]] = []
+
+    try:
+        response = fetch_leghe_formazioni_service_payloads(
+            alias=LEGHE_ALIAS,
+            username=LEGHE_USERNAME,
+            password=LEGHE_PASSWORD,
+            competition_id=LEGHE_COMPETITION_ID,
+            matchday=requested_round,
+            team_ids=team_ids,
+        )
+    except Exception:
+        _FORMAZIONI_REMOTE_REFRESH_CACHE[cache_key] = now_ts
+        return None
+
+    raw_payloads = response.get("payloads")
+    if isinstance(raw_payloads, list):
+        for item in raw_payloads:
+            if not isinstance(item, dict):
+                continue
+            payload = item.get("payload")
+            if isinstance(payload, dict):
+                service_payloads.append(payload)
+
+    if not service_payloads:
+        _FORMAZIONI_REMOTE_REFRESH_CACHE[cache_key] = now_ts
+        return None
+
+    fallback_round = _parse_int(response.get("matchday"))
+    refreshed_path: Optional[Path] = None
+    refreshed_score = -1
+
+    for payload in service_payloads:
+        normalized = _build_formazioni_payload_from_service_response(
+            payload,
+            round_hint=requested_round if requested_round is not None else fallback_round,
+        )
+        if not normalized:
+            continue
+
+        payload_rounds = _extract_appkey_payload_rounds(normalized)
+        if requested_round is not None and payload_rounds and requested_round not in payload_rounds:
+            continue
+
+        if requested_round is not None:
+            selected_round = requested_round
+        elif payload_rounds:
+            selected_round = payload_rounds[-1]
+        else:
+            selected_round = fallback_round
+
+        try:
+            written_path = _write_formazioni_appkey_payload(normalized, selected_round)
+        except Exception:
+            continue
+
+        formations = normalized.get("data", {}).get("formazioni") if isinstance(normalized.get("data"), dict) else []
+        squad_count = 0
+        if isinstance(formations, list):
+            for formation in formations:
+                if not isinstance(formation, dict):
+                    continue
+                squads = formation.get("sq")
+                if isinstance(squads, list):
+                    squad_count += len([s for s in squads if isinstance(s, dict)])
+
+        score = int(squad_count)
+        if requested_round is not None and selected_round == requested_round:
+            score += 1000
+        if score >= refreshed_score:
+            refreshed_path = written_path
+            refreshed_score = score
+
+    _FORMAZIONI_REMOTE_REFRESH_CACHE[cache_key] = now_ts
     return refreshed_path
 
 
@@ -5917,32 +6229,17 @@ def _parse_appkey_lineup(
     }
 
 
-def _load_real_formazioni_rows_from_appkey_json(
+def _parse_formazioni_payload_to_items(
+    payload: Dict[str, object],
     standings_index: Dict[str, Dict[str, object]],
-) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
-    refreshed_path = _refresh_formazioni_appkey_from_context_html(None)
-    if refreshed_path is not None:
-        source_path = refreshed_path
-    elif LEGHE_ALIAS:
-        # With live mode enabled, avoid serving stale cached appkey payloads.
-        return [], [], None
-    else:
-        source_path = _latest_formazioni_appkey_path()
-    if source_path is None:
-        return [], [], None
-
-    try:
-        payload = json.loads(source_path.read_text(encoding="utf-8-sig"))
-    except Exception:
-        return [], [], None
-
+) -> tuple[List[Dict[str, object]], List[int]]:
     data_section = payload.get("data") if isinstance(payload, dict) else None
     if not isinstance(data_section, dict):
-        return [], [], None
+        return [], []
 
     formations = data_section.get("formazioni")
     if not isinstance(formations, list):
-        return [], [], None
+        return [], []
 
     global_round = _parse_int(data_section.get("giornataLega") or payload.get("giornataLega"))
     role_map = _load_role_map()
@@ -6003,9 +6300,55 @@ def _load_real_formazioni_rows_from_appkey_json(
             items_by_key[dedupe_key] = item
 
     if not items_by_key:
+        return [], sorted(rounds)
+    return list(items_by_key.values()), sorted(rounds)
+
+
+def _load_real_formazioni_rows_from_appkey_json(
+    standings_index: Dict[str, Dict[str, object]],
+) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
+    current_turn = _extract_current_turn_from_formazioni_context_html()
+    source_path: Optional[Path] = None
+
+    if current_turn is not None:
+        source_path = _refresh_formazioni_appkey_from_context_html(current_turn)
+    if source_path is None:
+        source_path = _refresh_formazioni_appkey_from_context_html(None)
+
+    if source_path is None and current_turn is not None:
+        source_path = _refresh_formazioni_appkey_from_service(current_turn)
+    if source_path is None and LEGHE_ALIAS:
+        # With live mode enabled, avoid serving stale cached appkey payloads.
+        return [], [], None
+    if source_path is None:
+        source_path = _latest_formazioni_appkey_path()
+    if source_path is None:
         return [], [], None
 
-    return list(items_by_key.values()), sorted(rounds), source_path
+    try:
+        payload = json.loads(source_path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return [], [], None
+
+    items, rounds = _parse_formazioni_payload_to_items(payload, standings_index)
+    if (
+        current_turn is not None
+        and current_turn not in rounds
+        and LEGHE_ALIAS
+        and LEGHE_USERNAME
+        and LEGHE_PASSWORD
+    ):
+        service_path = _refresh_formazioni_appkey_from_service(current_turn)
+        if service_path is not None:
+            try:
+                service_payload = json.loads(service_path.read_text(encoding="utf-8-sig"))
+            except Exception:
+                service_payload = {}
+            service_items, service_rounds = _parse_formazioni_payload_to_items(service_payload, standings_index)
+            if service_items and current_turn in service_rounds:
+                return service_items, service_rounds, service_path
+
+    return items, rounds, source_path
 
 
 def _formation_lineup_size(item: Dict[str, object]) -> int:
@@ -6964,7 +7307,9 @@ def formazioni(
     if target_round is None and available_rounds:
         target_round = max(available_rounds)
     if round is None and target_round is not None and available_rounds and target_round not in available_rounds:
-        target_round = max(available_rounds)
+        latest_available = max(available_rounds)
+        if target_round < latest_available:
+            target_round = latest_available
 
     real_items = []
     if real_rows:
