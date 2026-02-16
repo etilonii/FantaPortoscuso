@@ -6895,6 +6895,44 @@ def admin_leghe_sync(
     return result
 
 
+@router.get("/admin/formazioni/debug")
+def admin_formazioni_debug(
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+
+    source_path = _latest_supported_file(DATA_DIR / "incoming" / "formazioni")
+    if source_path is None:
+        return {
+            "ok": True,
+            "source_path": "",
+            "tabular_rows": 0,
+            "dual_rows": 0,
+            "tabular_sample": [],
+            "dual_sample": [],
+            "loaded_real_rows": 0,
+            "loaded_rounds": [],
+        }
+
+    tabular_rows = _read_tabular_rows(source_path)
+    dual_rows = _extract_dual_layout_formazioni_rows(source_path) if source_path.suffix.lower() in {".xlsx", ".xls"} else []
+    loaded_rows, loaded_rounds, loaded_source = _load_real_formazioni_rows(_build_standings_index())
+
+    return {
+        "ok": True,
+        "source_path": str(source_path),
+        "tabular_rows": len(tabular_rows),
+        "dual_rows": len(dual_rows),
+        "tabular_sample": tabular_rows[:3],
+        "dual_sample": dual_rows[:3],
+        "loaded_real_rows": len(loaded_rows),
+        "loaded_rounds": loaded_rounds,
+        "loaded_source_path": str(loaded_source) if loaded_source else "",
+    }
+
+
 @router.get("/formazioni")
 def formazioni(
     team: Optional[str] = Query(default=None),
