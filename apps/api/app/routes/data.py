@@ -334,6 +334,31 @@ def _clean_row_keys(row: Dict[object, object]) -> Dict[str, str]:
     return cleaned
 
 
+def _frame_looks_like_lineups(frame) -> bool:
+    try:
+        columns = {
+            normalize_name(str(column or ""))
+            for column in list(frame.columns)
+            if str(column or "").strip()
+        }
+    except Exception:
+        return False
+
+    team_columns = {"team", "squadra", "fantateam", "fantasquadra", "teamname"}
+    lineup_columns = {
+        "portiere",
+        "difensori",
+        "centrocampisti",
+        "attaccanti",
+        "modulo",
+        "formation",
+        "schema",
+        "titolare1",
+        "titolare_1",
+    }
+    return bool(columns.intersection(team_columns)) and bool(columns.intersection(lineup_columns))
+
+
 def _read_tabular_rows(path: Path) -> List[Dict[str, str]]:
     suffix = path.suffix.lower()
     if suffix == ".csv":
@@ -348,7 +373,14 @@ def _read_tabular_rows(path: Path) -> List[Dict[str, str]]:
         sheets = pd.read_excel(path, sheet_name=None)
         if not isinstance(sheets, dict):
             return []
-        for _, frame in sheets.items():
+        frames = [frame for frame in sheets.values() if frame is not None and not frame.empty]
+        if not frames:
+            return []
+
+        lineup_frames = [frame for frame in frames if _frame_looks_like_lineups(frame)]
+        frames_to_scan = lineup_frames or frames
+
+        for frame in frames_to_scan:
             if frame is None or frame.empty:
                 continue
             frame = frame.fillna("")

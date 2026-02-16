@@ -31,6 +31,7 @@ class LegheContext:
     app_key: str
     competition_id: int | None
     competition_name: str | None
+    current_turn: int | None
     last_calculated_matchday: int | None
     suggested_formations_matchday: int | None
 
@@ -112,6 +113,14 @@ def _parse_leghe_context(html: str, *, alias: str) -> LegheContext:
         if name_match:
             competition_name = name_match.group(1).strip()
 
+    current_turn: int | None = None
+    current_turn_match = re.search(r'currentTurn\s*:\s*"?(?P<turn>\d+)"?', html)
+    if current_turn_match:
+        try:
+            current_turn = int(current_turn_match.group("turn"))
+        except (TypeError, ValueError):
+            current_turn = None
+
     last_calculated: int | None = None
     last_match = re.search(r"ultima giornata calcolata\s*(\d+)", html, re.IGNORECASE)
     if last_match:
@@ -123,12 +132,15 @@ def _parse_leghe_context(html: str, *, alias: str) -> LegheContext:
     suggested: int | None = None
     if last_calculated is not None:
         suggested = max(1, last_calculated + 1)
+    elif current_turn is not None:
+        suggested = max(1, current_turn)
 
     return LegheContext(
         alias=alias,
         app_key=app_key,
         competition_id=competition_id,
         competition_name=competition_name,
+        current_turn=current_turn,
         last_calculated_matchday=last_calculated,
         suggested_formations_matchday=suggested,
     )
@@ -312,6 +324,211 @@ def _run_subprocess(argv: list[str], *, cwd: Path) -> dict[str, object]:
     }
 
 
+def _unique_positive_ints(values: list[int | None]) -> list[int]:
+    ordered: list[int] = []
+    seen: set[int] = set()
+    for value in values:
+        if value is None:
+            continue
+        current = int(value)
+        if current <= 0 or current in seen:
+            continue
+        seen.add(current)
+        ordered.append(current)
+    return ordered
+
+
+def _build_formazioni_matchday_candidates(
+    *,
+    context: LegheContext,
+    preferred_matchday: int | None,
+) -> list[int]:
+    base_values = _unique_positive_ints(
+        [
+            preferred_matchday,
+            context.current_turn,
+            context.suggested_formations_matchday,
+            context.last_calculated_matchday,
+            (context.current_turn - 1) if context.current_turn else None,
+            (context.suggested_formations_matchday - 1)
+            if context.suggested_formations_matchday
+            else None,
+        ]
+    )
+    if not base_values:
+        return []
+
+    max_seed = max(base_values)
+    fallback_tail = [value for value in range(max_seed - 1, max(max_seed - 6, 0), -1)]
+    return _unique_positive_ints([*base_values, *fallback_tail])
+
+
+def _xlsx_formazioni_rows_count(path: Path) -> int:
+    if not path.exists():
+        return 0
+
+    try:
+        import pandas as pd
+    except Exception:
+        return 0
+
+    try:
+        sheets = pd.read_excel(path, sheet_name=None)
+    except Exception:
+        return 0
+
+    if not isinstance(sheets, dict):
+        return 0
+
+    lineup_frames = []
+    fallback_frames = []
+    for frame in sheets.values():
+        if frame is None or frame.empty:
+            continue
+
+        fallback_frames.append(frame)
+        columns = {
+            normalize
+            for normalize in (
+                re.sub(r"[^a-z0-9]+", "", str(column or "").strip().lower())
+                for column in frame.columns
+            )
+            if normalize
+        }
+        has_team = bool(columns.intersection({"team", "squadra", "fantateam", "fantasquadra", "teamname"}))
+        has_lineup = bool(
+            columns.intersection(
+                {
+                    "portiere",
+                    "difensori",
+                    "centrocampisti",
+                    "attaccanti",
+                    "modulo",
+                    "formation",
+                    "schema",
+                }
+            )
+        )
+        if has_team and has_lineup:
+            lineup_frames.append(frame)
+
+    frames_to_scan = lineup_frames or fallback_frames
+    if not frames_to_scan:
+        return 0
+
+    row_count = 0
+    for frame in frames_to_scan:
+        current = frame.fillna("")
+        for _, row in current.iterrows():
+            values = {
+                re.sub(r"[^a-z0-9]+", "", str(key or "").strip().lower()): str(value or "").strip()
+                for key, value in row.to_dict().items()
+                if key is not None
+            }
+            if not any(values.values()):
+                continue
+
+            if lineup_frames:
+                team_value = (
+                    values.get("team")
+                    or values.get("squadra")
+                    or values.get("fantateam")
+                    or values.get("fantasquadra")
+                    or values.get("teamname")
+                )
+                lineup_value = (
+                    values.get("portiere")
+                    or values.get("difensori")
+                    or values.get("centrocampisti")
+                    or values.get("attaccanti")
+                )
+                if team_value and lineup_value:
+                    row_count += 1
+            else:
+                if sum(1 for value in values.values() if value) >= 3:
+                    row_count += 1
+
+    return row_count
+
+
+def download_leghe_formazioni_xlsx_with_fallback(
+    opener,
+    *,
+    alias: str,
+    app_key: str,
+    competition_id: int,
+    competition_name: str,
+    referer: str,
+    out_path: Path,
+    context: LegheContext,
+    preferred_matchday: int | None = None,
+) -> dict[str, object]:
+    if not competition_id:
+        return {"ok": False, "warning": "competition_id not available", "attempts": []}
+
+    candidates = _build_formazioni_matchday_candidates(
+        context=context,
+        preferred_matchday=preferred_matchday,
+    )
+    if not candidates:
+        return {"ok": False, "warning": "formations_matchday not available", "attempts": []}
+
+    attempts: list[dict[str, object]] = []
+    for matchday in candidates:
+        params = {
+            "alias_lega": alias,
+            "id_competizione": int(competition_id),
+            "giornata": int(matchday),
+            "nome_competizione": competition_name,
+            "dummy": 5,
+        }
+        form_url = f"{LEGHE_BASE_URL}servizi/V1_LegheFormazioni/excel?{urlencode(params)}"
+        try:
+            downloaded = download_leghe_excel(
+                opener,
+                url=form_url,
+                app_key=app_key,
+                referer=referer,
+                out_path=out_path,
+            )
+        except LegheSyncError as exc:
+            attempts.append(
+                {
+                    "ok": False,
+                    "matchday": int(matchday),
+                    "warning": str(exc),
+                }
+            )
+            continue
+
+        rows = _xlsx_formazioni_rows_count(out_path)
+        attempts.append(
+            {
+                "ok": True,
+                "matchday": int(matchday),
+                "rows": int(rows),
+                "bytes": int(downloaded.get("bytes") or 0),
+            }
+        )
+        if rows > 0:
+            return {
+                **downloaded,
+                "ok": True,
+                "selected_matchday": int(matchday),
+                "rows": int(rows),
+                "attempts": attempts,
+            }
+
+    return {
+        "ok": False,
+        "warning": "XLSX formazioni non disponibile o vuoto per le giornate candidate.",
+        "path": str(out_path) if out_path.exists() else "",
+        "selected_matchday": None,
+        "rows": 0,
+        "attempts": attempts,
+    }
+
+
 def refresh_formazioni_context_from_leghe(
     *,
     alias: str,
@@ -345,30 +562,22 @@ def refresh_formazioni_context_from_leghe(
     if out_xlsx_path is not None:
         resolved_competition_id = int(competition_id or 0) or context.competition_id
         resolved_competition_name = (competition_name or context.competition_name or alias).strip()
-        resolved_matchday = int(formations_matchday or 0) or context.suggested_formations_matchday
-        if resolved_competition_id and resolved_matchday:
-            params = {
-                "alias_lega": alias,
-                "id_competizione": int(resolved_competition_id),
-                "giornata": int(resolved_matchday),
-                "nome_competizione": resolved_competition_name,
-                "dummy": 5,
-            }
-            form_url = f"{LEGHE_BASE_URL}servizi/V1_LegheFormazioni/excel?{urlencode(params)}"
-            try:
-                xlsx_result = download_leghe_excel(
-                    opener,
-                    url=form_url,
-                    app_key=context.app_key,
-                    referer=f"{LEGHE_BASE_URL}{alias}/formazioni",
-                    out_path=out_xlsx_path,
-                )
-            except LegheSyncError as exc:
-                xlsx_result = {"ok": False, "warning": str(exc)}
+        if resolved_competition_id:
+            xlsx_result = download_leghe_formazioni_xlsx_with_fallback(
+                opener,
+                alias=alias,
+                app_key=context.app_key,
+                competition_id=int(resolved_competition_id),
+                competition_name=resolved_competition_name,
+                referer=f"{LEGHE_BASE_URL}{alias}/formazioni",
+                out_path=out_xlsx_path,
+                context=context,
+                preferred_matchday=int(formations_matchday or 0) or None,
+            )
         else:
             xlsx_result = {
                 "ok": False,
-                "warning": "competition_id or formations_matchday not available",
+                "warning": "competition_id not available",
             }
 
     return {
@@ -377,6 +586,7 @@ def refresh_formazioni_context_from_leghe(
         "context": {
             "competition_id": context.competition_id,
             "competition_name": context.competition_name,
+            "current_turn": context.current_turn,
             "last_calculated_matchday": context.last_calculated_matchday,
             "suggested_formations_matchday": context.suggested_formations_matchday,
         },
@@ -423,6 +633,7 @@ def run_leghe_sync_and_pipeline(
     context: LegheContext | None = None
     downloaded: dict[str, dict[str, object]] = {}
     pipeline_runs: list[dict[str, object]] = []
+    effective_formations_matchday: int | None = formations_matchday
 
     try:
         context = fetch_leghe_context(opener, alias=alias)
@@ -432,6 +643,7 @@ def run_leghe_sync_and_pipeline(
             competition_name = context.competition_name
         if formations_matchday is None:
             formations_matchday = context.suggested_formations_matchday
+        effective_formations_matchday = formations_matchday
 
         leghe_login(
             opener,
@@ -491,31 +703,21 @@ def run_leghe_sync_and_pipeline(
         if download_formazioni and download_formazioni_xlsx:
             if not competition_id:
                 raise LegheSyncError("competition_id mancante: non posso scaricare le formazioni.")
-            if not formations_matchday:
-                raise LegheSyncError("formations_matchday mancante: non posso scaricare le formazioni.")
-            params = {
-                "alias_lega": alias,
-                "id_competizione": competition_id,
-                "giornata": int(formations_matchday),
-                "nome_competizione": alias,
-                "dummy": 5,
-            }
-            form_url = f"{LEGHE_BASE_URL}servizi/V1_LegheFormazioni/excel?{urlencode(params)}"
             out_path = data_dir / "incoming" / "formazioni" / "formazioni.xlsx"
-            try:
-                downloaded["formazioni_xlsx"] = download_leghe_excel(
-                    opener,
-                    url=form_url,
-                    app_key=context.app_key,
-                    referer=f"{LEGHE_BASE_URL}{alias}/formazioni",
-                    out_path=out_path,
-                )
-            except LegheSyncError as exc:
-                # Non-fatal: HTML appkey source is enough for live formations.
-                downloaded["formazioni_xlsx"] = {
-                    "ok": False,
-                    "warning": str(exc),
-                }
+            downloaded["formazioni_xlsx"] = download_leghe_formazioni_xlsx_with_fallback(
+                opener,
+                alias=alias,
+                app_key=context.app_key,
+                competition_id=int(competition_id),
+                competition_name=(competition_name or context.competition_name or alias).strip(),
+                referer=f"{LEGHE_BASE_URL}{alias}/formazioni",
+                out_path=out_path,
+                context=context,
+                preferred_matchday=int(formations_matchday or 0) or None,
+            )
+            selected_matchday = downloaded["formazioni_xlsx"].get("selected_matchday")
+            if isinstance(selected_matchday, int) and selected_matchday > 0:
+                effective_formations_matchday = selected_matchday
 
         root = _repo_root()
 
@@ -611,7 +813,7 @@ def run_leghe_sync_and_pipeline(
                 "message": "Aggiornamento completato con successo.",
                 "season": _season_for(datetime.now(tz=timezone.utc)),
                 "update_id": update_id,
-                "matchday": int(formations_matchday) if formations_matchday else None,
+                "matchday": int(effective_formations_matchday) if effective_formations_matchday else None,
                 "steps": steps,
             }
         )
@@ -624,8 +826,12 @@ def run_leghe_sync_and_pipeline(
             "context": {
                 "competition_id": competition_id,
                 "competition_name": competition_name,
+                "current_turn": context.current_turn if context else None,
                 "last_calculated_matchday": context.last_calculated_matchday if context else None,
                 "suggested_formations_matchday": context.suggested_formations_matchday if context else None,
+                "effective_formations_matchday": int(effective_formations_matchday)
+                if effective_formations_matchday
+                else None,
             },
             "cookies": len(list(jar)),
             "downloaded": downloaded,
