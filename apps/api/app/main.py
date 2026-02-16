@@ -15,6 +15,9 @@ from .config import (
     AUTO_LIVE_IMPORT_ON_START,
     AUTO_LIVE_IMPORT_ROUND,
     AUTO_LIVE_IMPORT_SEASON,
+    AUTO_LEGHE_SYNC_ENABLED,
+    AUTO_LEGHE_SYNC_INTERVAL_HOURS,
+    AUTO_LEGHE_SYNC_ON_START,
 )
 from .db import Base, engine, SessionLocal
 from .migrations import apply_pending_migrations
@@ -138,6 +141,69 @@ def create_app() -> FastAPI:
         async def _shutdown_auto_live_import() -> None:
             stop_event = getattr(app.state, "auto_live_import_stop_event", None)
             task = getattr(app.state, "auto_live_import_task", None)
+            if stop_event is not None:
+                stop_event.set()
+            if task is not None:
+                task.cancel()
+                with suppress(asyncio.CancelledError):
+                    await task
+
+    if AUTO_LEGHE_SYNC_ENABLED:
+        interval_seconds = max(1, int(AUTO_LEGHE_SYNC_INTERVAL_HOURS)) * 3600
+
+        def _run_auto_leghe_sync_once() -> None:
+            db = SessionLocal()
+            try:
+                result = data.run_auto_leghe_sync(
+                    db,
+                    min_interval_seconds=interval_seconds,
+                )
+                if result.get("skipped"):
+                    logger.info("Auto leghe sync skipped: %s", result.get("reason", "not_due"))
+                    return
+                if result.get("ok") is False:
+                    logger.error("Auto leghe sync failed: %s", result.get("error", "unknown"))
+                    return
+                downloaded = result.get("downloaded") or {}
+                logger.info(
+                    "Auto leghe sync ok: keys=%s date=%s",
+                    ",".join(sorted(downloaded.keys())) if isinstance(downloaded, dict) else "n/a",
+                    result.get("date"),
+                )
+            except Exception:
+                with suppress(Exception):
+                    db.rollback()
+                logger.exception("Auto leghe sync failed")
+            finally:
+                db.close()
+
+        async def _auto_leghe_sync_loop(stop_event: asyncio.Event) -> None:
+            if AUTO_LEGHE_SYNC_ON_START and not stop_event.is_set():
+                await asyncio.to_thread(_run_auto_leghe_sync_once)
+
+            while not stop_event.is_set():
+                try:
+                    await asyncio.wait_for(stop_event.wait(), timeout=interval_seconds)
+                    break
+                except asyncio.TimeoutError:
+                    await asyncio.to_thread(_run_auto_leghe_sync_once)
+
+        @app.on_event("startup")
+        async def _startup_auto_leghe_sync() -> None:
+            stop_event = asyncio.Event()
+            task = asyncio.create_task(_auto_leghe_sync_loop(stop_event))
+            app.state.auto_leghe_sync_stop_event = stop_event
+            app.state.auto_leghe_sync_task = task
+            logger.info(
+                "Auto leghe sync scheduler enabled (interval=%sh, on_start=%s)",
+                AUTO_LEGHE_SYNC_INTERVAL_HOURS,
+                AUTO_LEGHE_SYNC_ON_START,
+            )
+
+        @app.on_event("shutdown")
+        async def _shutdown_auto_leghe_sync() -> None:
+            stop_event = getattr(app.state, "auto_leghe_sync_stop_event", None)
+            task = getattr(app.state, "auto_leghe_sync_task", None)
             if stop_event is not None:
                 stop_event.set()
             if task is not None:

@@ -103,3 +103,24 @@ powershell -ExecutionPolicy Bypass -File .\scripts\update-all.ps1 -UsePipelineV2
 - Nei placeholder mercato, "Nome" e "Nome *" sono trattati come lo stesso giocatore.
 - Il ruolo/squadra si risolve prima dalle rose, poi dalle quotazioni correnti,
   e infine dalle quotazioni storiche se serve.
+
+## Sync automatico Leghe (Railway / server)
+Obiettivo: scaricare gli XLSX da Leghe Fantacalcio e aggiornare i CSV in `data/` senza intervento manuale.
+
+Nota formazioni:
+- la fonte primaria aggiornata dal sync e' `data/tmp/formazioni_page.html` (payload appkey nell'HTML)
+- l'export `formazioni.xlsx` viene tentato come supporto, ma non e' bloccante
+
+### Variabili env (backend)
+- `LEGHE_ALIAS`, `LEGHE_USERNAME`, `LEGHE_PASSWORD` (obbligatorie)
+- opzionali: `LEGHE_COMPETITION_ID`, `LEGHE_COMPETITION_NAME`, `LEGHE_FORMATIONS_MATCHDAY`
+
+### Scheduler in-app
+- `AUTO_LEGHE_SYNC_ENABLED=1`
+- `AUTO_LEGHE_SYNC_INTERVAL_HOURS=12`
+- `AUTO_LEGHE_SYNC_ON_START=1` (opzionale)
+
+### Trigger manuale (admin)
+Endpoint:
+- `POST /data/admin/leghe/sync` (richiede `X-Admin-Key` o bearer admin)
+- query: `force=1` per bypassare l'intervallo, `formations_matchday=NN` per forzare la giornata

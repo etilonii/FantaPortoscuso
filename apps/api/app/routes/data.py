@@ -18,8 +18,20 @@ from sqlalchemy.orm import Session
 
 from apps.api.app.backup import run_backup_fail_fast
 from apps.api.app.auth_utils import access_key_from_bearer
-from apps.api.app.config import BACKUP_DIR, BACKUP_KEEP_LAST, DATABASE_URL
+from apps.api.app.config import (
+    BACKUP_DIR,
+    BACKUP_KEEP_LAST,
+    DATABASE_URL,
+    AUTO_LEGHE_SYNC_INTERVAL_HOURS,
+    LEGHE_ALIAS,
+    LEGHE_USERNAME,
+    LEGHE_PASSWORD,
+    LEGHE_COMPETITION_ID,
+    LEGHE_COMPETITION_NAME,
+    LEGHE_FORMATIONS_MATCHDAY,
+)
 from apps.api.app.deps import get_db
+from apps.api.app.leghe_sync import LegheSyncError, run_leghe_sync_and_pipeline
 from apps.api.app.models import (
     AccessKey,
     Fixture,
@@ -6547,6 +6559,50 @@ def run_auto_live_import(
     )
 
 
+def run_auto_leghe_sync(
+    db: Session,
+    *,
+    min_interval_seconds: Optional[int] = None,
+    run_pipeline: bool = True,
+) -> Dict[str, object]:
+    if min_interval_seconds is not None:
+        claimed = _claim_scheduled_job_run(
+            db,
+            job_name="auto_leghe_sync",
+            min_interval_seconds=int(min_interval_seconds),
+        )
+        if not claimed:
+            return {
+                "ok": True,
+                "skipped": True,
+                "reason": "not_due_or_claimed_by_other_instance",
+            }
+
+    if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "missing_leghe_env",
+            "required": ["LEGHE_ALIAS", "LEGHE_USERNAME", "LEGHE_PASSWORD"],
+        }
+
+    try:
+        return run_leghe_sync_and_pipeline(
+            alias=LEGHE_ALIAS,
+            username=LEGHE_USERNAME,
+            password=LEGHE_PASSWORD,
+            competition_id=LEGHE_COMPETITION_ID,
+            competition_name=LEGHE_COMPETITION_NAME,
+            formations_matchday=LEGHE_FORMATIONS_MATCHDAY,
+            run_pipeline=bool(run_pipeline),
+        )
+    except LegheSyncError as exc:
+        return {
+            "ok": False,
+            "error": str(exc),
+        }
+
+
 @router.post("/live/import-voti")
 def import_live_votes(
     payload: LiveImportVotesRequest,
@@ -6562,6 +6618,48 @@ def import_live_votes(
         source_url=payload.source_url,
         source_html=payload.source_html,
     )
+
+
+@router.post("/admin/leghe/sync")
+def admin_leghe_sync(
+    force: bool = Query(default=False),
+    run_pipeline: bool = Query(default=True),
+    formations_matchday: Optional[int] = Query(default=None, ge=1, le=99),
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+
+    interval_seconds = max(1, int(AUTO_LEGHE_SYNC_INTERVAL_HOURS)) * 3600
+
+    if force:
+        if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
+            raise HTTPException(
+                status_code=400,
+                detail="Missing env vars: LEGHE_ALIAS, LEGHE_USERNAME, LEGHE_PASSWORD",
+            )
+        try:
+            return run_leghe_sync_and_pipeline(
+                alias=LEGHE_ALIAS,
+                username=LEGHE_USERNAME,
+                password=LEGHE_PASSWORD,
+                competition_id=LEGHE_COMPETITION_ID,
+                competition_name=LEGHE_COMPETITION_NAME,
+                formations_matchday=formations_matchday or LEGHE_FORMATIONS_MATCHDAY,
+                run_pipeline=bool(run_pipeline),
+            )
+        except LegheSyncError as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+    result = run_auto_leghe_sync(
+        db,
+        min_interval_seconds=interval_seconds,
+        run_pipeline=bool(run_pipeline),
+    )
+    if result.get("ok") is False:
+        raise HTTPException(status_code=502, detail=str(result.get("error") or "Leghe sync failed"))
+    return result
 
 
 @router.get("/formazioni")

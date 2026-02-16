@@ -12,6 +12,7 @@ RUN grep -Ev "^\s*(#|$)|pytest==" /tmp/requirements.txt > /tmp/requirements.runt
 
 COPY apps/api /app/apps/api
 COPY data /app/data
+COPY scripts /app/scripts
 
 EXPOSE 8001
 
