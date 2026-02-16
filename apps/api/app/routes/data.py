@@ -5357,7 +5357,12 @@ def _normalize_service_player_entry(raw_player: object, order: int) -> Optional[
     return normalized
 
 
-def _normalize_service_squad(raw_squad: object, *, fallback_team_id: Optional[int] = None) -> Optional[Dict[str, object]]:
+def _normalize_service_squad(
+    raw_squad: object,
+    *,
+    fallback_team_id: Optional[int] = None,
+    valid_team_ids: Optional[Set[int]] = None,
+) -> Optional[Dict[str, object]]:
     if not isinstance(raw_squad, dict):
         return None
 
@@ -5370,6 +5375,8 @@ def _normalize_service_squad(raw_squad: object, *, fallback_team_id: Optional[in
     if team_id is None:
         team_id = fallback_team_id
     if team_id is None:
+        return None
+    if valid_team_ids and int(team_id) not in valid_team_ids:
         return None
 
     players_raw: List[object] = []
@@ -5464,19 +5471,21 @@ def _build_formazioni_payload_from_service_response(
         if parsed_round is not None:
             break
 
-    queue: List[object] = [response_payload]
-    visited: Set[int] = set()
+    queue: List[Tuple[object, Optional[int]]] = [(response_payload, None)]
+    visited: Set[Tuple[int, Optional[int]]] = set()
     normalized_squads: List[Dict[str, object]] = []
     seen_team_ids: Set[int] = set()
+    valid_team_ids = set(_load_team_id_position_index_from_formazioni_html().keys())
 
     while queue:
-        node = queue.pop()
+        node, inherited_team_id = queue.pop()
         if isinstance(node, list):
-            queue.extend(node)
+            for value in node:
+                queue.append((value, inherited_team_id))
             continue
         if not isinstance(node, dict):
             continue
-        marker = id(node)
+        marker = (id(node), inherited_team_id)
         if marker in visited:
             continue
         visited.add(marker)
@@ -5486,8 +5495,13 @@ def _build_formazioni_payload_from_service_response(
             or node.get("id_squadra")
             or node.get("idTeam")
             or node.get("team_id")
+            or inherited_team_id
         )
-        normalized_squad = _normalize_service_squad(node, fallback_team_id=fallback_team_id)
+        normalized_squad = _normalize_service_squad(
+            node,
+            fallback_team_id=fallback_team_id,
+            valid_team_ids=valid_team_ids,
+        )
         if normalized_squad:
             team_id = _parse_int(normalized_squad.get("id"))
             if team_id is not None and team_id not in seen_team_ids:
@@ -5496,7 +5510,7 @@ def _build_formazioni_payload_from_service_response(
 
         for value in node.values():
             if isinstance(value, (dict, list)):
-                queue.append(value)
+                queue.append((value, fallback_team_id))
 
     if not normalized_squads:
         return None
