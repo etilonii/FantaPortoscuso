@@ -362,13 +362,39 @@ def _looks_like_team_name_cell(value: object) -> bool:
     raw = str(value or "").strip()
     if not raw:
         return False
-    if _role_from_text(raw):
+    normalized = normalize_name(raw)
+    if normalized in {"panchina", "modificatorecapitano"}:
+        return False
+    if normalized.startswith("totale"):
+        return False
+    if normalized.startswith("inserita"):
+        return False
+    if normalized.startswith("inverde"):
+        return False
+    if _strict_role_from_layout_cell(raw):
         return False
     if _normalize_module(raw):
         return False
     if re.fullmatch(r"[0-9.\-]+", raw):
         return False
     return bool(re.search(r"[A-Za-zÀ-ÿ]", raw))
+
+
+def _strict_role_from_layout_cell(value: object) -> str:
+    raw = str(value or "").strip().upper()
+    if not raw:
+        return ""
+    if raw in {"P", "D", "C", "A"}:
+        return raw
+    if raw in {"POR", "PORTIERE", "PORTIERI", "GK", "GOALKEEPER"}:
+        return "P"
+    if raw in {"DIF", "DIFENSORE", "DIFENSORI", "DEF", "DEFENDER"}:
+        return "D"
+    if raw in {"CEN", "CENTROCAMPO", "CENTROCAMPISTA", "CENTROCAMPISTI", "MID", "MIDFIELDER"}:
+        return "C"
+    if raw in {"ATT", "ATTACCANTE", "ATTACCANTI", "FWD", "FORWARD", "ST"}:
+        return "A"
+    return ""
 
 
 def _sheet_round_from_name(sheet_name: str) -> Optional[int]:
@@ -413,7 +439,7 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
             rows.append(values)
 
         if not any(
-            len(row) > 7 and _role_from_text(row[0]) and _role_from_text(row[6])
+            len(row) > 7 and _strict_role_from_layout_cell(row[0]) and _strict_role_from_layout_cell(row[6])
             for row in rows
         ):
             continue
@@ -446,9 +472,9 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
                 if _looks_like_team_name_cell(next_left_team) and _looks_like_team_name_cell(next_right_team):
                     break
 
-                left_role = _role_from_text(row[0] if len(row) > 0 else "")
+                left_role = _strict_role_from_layout_cell(row[0] if len(row) > 0 else "")
                 left_name = _canonicalize_name(row[1] if len(row) > 1 else "")
-                right_role = _role_from_text(row[6] if len(row) > 6 else "")
+                right_role = _strict_role_from_layout_cell(row[6] if len(row) > 6 else "")
                 right_name = _canonicalize_name(row[7] if len(row) > 7 else "")
 
                 if left_role and left_name:
