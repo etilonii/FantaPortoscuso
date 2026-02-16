@@ -350,11 +350,10 @@ def _frame_looks_like_lineups(frame) -> bool:
         "difensori",
         "centrocampisti",
         "attaccanti",
-        "modulo",
-        "formation",
-        "schema",
         "titolare1",
         "titolare_1",
+        "starter1",
+        "starter_1",
     }
     return bool(columns.intersection(team_columns)) and bool(columns.intersection(lineup_columns))
 

@@ -403,9 +403,8 @@ def _xlsx_formazioni_rows_count(path: Path) -> int:
                     "difensori",
                     "centrocampisti",
                     "attaccanti",
-                    "modulo",
-                    "formation",
-                    "schema",
+                    "titolare1",
+                    "starter1",
                 }
             )
         )
@@ -441,6 +440,8 @@ def _xlsx_formazioni_rows_count(path: Path) -> int:
                     or values.get("difensori")
                     or values.get("centrocampisti")
                     or values.get("attaccanti")
+                    or values.get("titolare1")
+                    or values.get("starter1")
                 )
                 if team_value and lineup_value:
                     row_count += 1
