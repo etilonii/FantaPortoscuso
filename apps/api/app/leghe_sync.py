@@ -364,26 +364,40 @@ def _build_formazioni_matchday_candidates(
 
 
 def _xlsx_formazioni_rows_count(path: Path) -> int:
+    return int(_inspect_formazioni_xlsx(path).get("rows") or 0)
+
+
+def _inspect_formazioni_xlsx(path: Path) -> dict[str, object]:
     if not path.exists():
-        return 0
+        return {"rows": 0, "lineup_frames": 0, "sheets": []}
 
     try:
         import pandas as pd
     except Exception:
-        return 0
+        return {"rows": 0, "lineup_frames": 0, "sheets": []}
 
     try:
         sheets = pd.read_excel(path, sheet_name=None)
     except Exception:
-        return 0
+        return {"rows": 0, "lineup_frames": 0, "sheets": []}
 
     if not isinstance(sheets, dict):
-        return 0
+        return {"rows": 0, "lineup_frames": 0, "sheets": []}
 
     lineup_frames = []
     fallback_frames = []
-    for frame in sheets.values():
+    sheet_debug: list[dict[str, object]] = []
+    for sheet_name, frame in sheets.items():
         if frame is None or frame.empty:
+            sheet_debug.append(
+                {
+                    "name": str(sheet_name),
+                    "rows": 0,
+                    "columns": [],
+                    "has_team": False,
+                    "has_lineup": False,
+                }
+            )
             continue
 
         fallback_frames.append(frame)
@@ -408,12 +422,25 @@ def _xlsx_formazioni_rows_count(path: Path) -> int:
                 }
             )
         )
+        sheet_debug.append(
+            {
+                "name": str(sheet_name),
+                "rows": int(len(frame.index)),
+                "columns": sorted(list(columns))[:30],
+                "has_team": bool(has_team),
+                "has_lineup": bool(has_lineup),
+            }
+        )
         if has_team and has_lineup:
             lineup_frames.append(frame)
 
     frames_to_scan = lineup_frames or fallback_frames
     if not frames_to_scan:
-        return 0
+        return {
+            "rows": 0,
+            "lineup_frames": int(len(lineup_frames)),
+            "sheets": sheet_debug,
+        }
 
     row_count = 0
     for frame in frames_to_scan:
@@ -449,7 +476,11 @@ def _xlsx_formazioni_rows_count(path: Path) -> int:
                 if sum(1 for value in values.values() if value) >= 3:
                     row_count += 1
 
-    return row_count
+    return {
+        "rows": int(row_count),
+        "lineup_frames": int(len(lineup_frames)),
+        "sheets": sheet_debug,
+    }
 
 
 def download_leghe_formazioni_xlsx_with_fallback(
@@ -502,13 +533,16 @@ def download_leghe_formazioni_xlsx_with_fallback(
             )
             continue
 
-        rows = _xlsx_formazioni_rows_count(out_path)
+        inspected = _inspect_formazioni_xlsx(out_path)
+        rows = int(inspected.get("rows") or 0)
         attempts.append(
             {
                 "ok": True,
                 "matchday": int(matchday),
                 "rows": int(rows),
                 "bytes": int(downloaded.get("bytes") or 0),
+                "lineup_frames": int(inspected.get("lineup_frames") or 0),
+                "sheet_debug": inspected.get("sheets") or [],
             }
         )
         if rows > 0:
