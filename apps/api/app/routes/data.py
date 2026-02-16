@@ -358,6 +358,134 @@ def _frame_looks_like_lineups(frame) -> bool:
     return bool(columns.intersection(team_columns)) and bool(columns.intersection(lineup_columns))
 
 
+def _looks_like_team_name_cell(value: object) -> bool:
+    raw = str(value or "").strip()
+    if not raw:
+        return False
+    if _role_from_text(raw):
+        return False
+    if _normalize_module(raw):
+        return False
+    if re.fullmatch(r"[0-9.\-]+", raw):
+        return False
+    return bool(re.search(r"[A-Za-zÀ-ÿ]", raw))
+
+
+def _sheet_round_from_name(sheet_name: str) -> Optional[int]:
+    raw = str(sheet_name or "").strip().lower()
+    if not raw:
+        return None
+    match = re.search(r"(\d+)\s*giornata", raw)
+    if match:
+        return _parse_int(match.group(1))
+    return None
+
+
+def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
+    try:
+        import pandas as pd
+    except Exception:
+        return []
+
+    try:
+        sheets = pd.read_excel(path, sheet_name=None, header=None)
+    except Exception:
+        return []
+
+    if not isinstance(sheets, dict):
+        return []
+
+    extracted: List[Dict[str, str]] = []
+
+    for sheet_name, frame in sheets.items():
+        if frame is None or frame.empty:
+            continue
+
+        rows: List[List[str]] = []
+        for _, source_row in frame.fillna("").iterrows():
+            values = [str(value or "").strip() for value in list(source_row.values)[:12]]
+            rows.append(values)
+
+        if not any(
+            len(row) > 7 and _role_from_text(row[0]) and _role_from_text(row[6])
+            for row in rows
+        ):
+            continue
+
+        round_value = _sheet_round_from_name(str(sheet_name))
+        index = 0
+        while index < len(rows):
+            current = rows[index]
+            left_team = _canonicalize_name(current[0]) if len(current) > 0 else ""
+            right_team = _canonicalize_name(current[6]) if len(current) > 6 else ""
+            if not (_looks_like_team_name_cell(left_team) and _looks_like_team_name_cell(right_team)):
+                index += 1
+                continue
+
+            left_module = ""
+            right_module = ""
+            if index + 1 < len(rows):
+                module_row = rows[index + 1]
+                left_module = _format_module(module_row[0] if len(module_row) > 0 else "")
+                right_module = _format_module(module_row[6] if len(module_row) > 6 else "")
+
+            left_players: List[Tuple[str, str]] = []
+            right_players: List[Tuple[str, str]] = []
+            cursor = index + 2
+            while cursor < len(rows):
+                row = rows[cursor]
+
+                next_left_team = _canonicalize_name(row[0]) if len(row) > 0 else ""
+                next_right_team = _canonicalize_name(row[6]) if len(row) > 6 else ""
+                if _looks_like_team_name_cell(next_left_team) and _looks_like_team_name_cell(next_right_team):
+                    break
+
+                left_role = _role_from_text(row[0] if len(row) > 0 else "")
+                left_name = _canonicalize_name(row[1] if len(row) > 1 else "")
+                right_role = _role_from_text(row[6] if len(row) > 6 else "")
+                right_name = _canonicalize_name(row[7] if len(row) > 7 else "")
+
+                if left_role and left_name:
+                    left_players.append((left_role, left_name))
+                if right_role and right_name:
+                    right_players.append((right_role, right_name))
+                cursor += 1
+
+            for team_name, module, players in (
+                (left_team, left_module, left_players),
+                (right_team, right_module, right_players),
+            ):
+                if not team_name or len(players) < 11:
+                    continue
+
+                starters = players[:11]
+                reserves = players[11:]
+                portiere = next((name for role, name in starters if role == "P"), "")
+                difensori = [name for role, name in starters if role == "D"]
+                centrocampisti = [name for role, name in starters if role == "C"]
+                attaccanti = [name for role, name in starters if role == "A"]
+
+                if not portiere and starters:
+                    portiere = starters[0][1]
+
+                extracted.append(
+                    {
+                        "giornata": str(round_value or ""),
+                        "team": team_name,
+                        "modulo": module,
+                        "portiere": portiere,
+                        "difensori": ";".join(difensori),
+                        "centrocampisti": ";".join(centrocampisti),
+                        "attaccanti": ";".join(attaccanti),
+                        "panchina": ";".join(name for _, name in reserves),
+                    }
+                )
+
+            index = cursor
+
+    return extracted
+
+
 def _read_tabular_rows(path: Path) -> List[Dict[str, str]]:
     suffix = path.suffix.lower()
     if suffix == ".csv":
@@ -378,6 +506,11 @@ def _read_tabular_rows(path: Path) -> List[Dict[str, str]]:
 
         lineup_frames = [frame for frame in frames if _frame_looks_like_lineups(frame)]
         frames_to_scan = lineup_frames or frames
+
+        if not lineup_frames:
+            extracted = _extract_dual_layout_formazioni_rows(path)
+            if extracted:
+                return extracted
 
         for frame in frames_to_scan:
             if frame is None or frame.empty:
