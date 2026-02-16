@@ -6107,11 +6107,33 @@ def _load_real_formazioni_rows(
                 "source": "real",
             }
             item["panchina"] = [str(reserve.get("name") or "").strip() for reserve in item["panchina_details"]]
+            lineup_size = (
+                (1 if str(item.get("portiere") or "").strip() else 0)
+                + len([name for name in item.get("difensori") or [] if str(name).strip()])
+                + len([name for name in item.get("centrocampisti") or [] if str(name).strip()])
+                + len([name for name in item.get("attaccanti") or [] if str(name).strip()])
+            )
+            reserve_size = len([entry for entry in item.get("panchina_details") or [] if isinstance(entry, dict)])
+            quality_score = lineup_size * 10 + reserve_size
+            if str(item.get("modulo") or "").strip():
+                quality_score += 5
+            if round_value is not None:
+                quality_score += 100
+            item["_quality_score"] = quality_score
 
             dedupe_key = (round_value, normalize_name(str(item["team"])))
-            items_by_key[dedupe_key] = item
+            existing_item = items_by_key.get(dedupe_key)
+            existing_score = (
+                int(existing_item.get("_quality_score", -1))
+                if isinstance(existing_item, dict)
+                else -1
+            )
+            if quality_score >= existing_score:
+                items_by_key[dedupe_key] = item
 
         items = list(items_by_key.values())
+        for item in items:
+            item.pop("_quality_score", None)
         merged_items = _merge_real_formations_with_appkey(items, appkey_items, appkey_rounds)
         rounds_in_items = {
             round_value
