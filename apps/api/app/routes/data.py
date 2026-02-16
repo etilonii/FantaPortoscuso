@@ -5083,6 +5083,10 @@ def _refresh_formazioni_context_html_live() -> Optional[Path]:
             out_path=target_path,
             username=username,
             password=password,
+            out_xlsx_path=DATA_DIR / "incoming" / "formazioni" / "formazioni.xlsx",
+            competition_id=LEGHE_COMPETITION_ID,
+            competition_name=LEGHE_COMPETITION_NAME,
+            formations_matchday=LEGHE_FORMATIONS_MATCHDAY,
         )
     except Exception:
         # Keep fallback behavior via local cache if live refresh fails.
@@ -5971,17 +5975,14 @@ def _load_real_formazioni_rows(
         _recompute_forza_titolari(appkey_items)
         return appkey_items, appkey_rounds, appkey_source
 
-    # If a Leghe alias is configured, prefer live source only.
-    if LEGHE_ALIAS:
-        return [], appkey_rounds, appkey_source
-
     candidate_paths: List[Path] = []
     for folder in REAL_FORMATIONS_DIR_CANDIDATES:
         latest = _latest_supported_file(folder)
         if latest is not None:
             candidate_paths.append(latest)
-    for path in REAL_FORMATIONS_FILE_CANDIDATES:
-        candidate_paths.append(path)
+    if not LEGHE_ALIAS:
+        for path in REAL_FORMATIONS_FILE_CANDIDATES:
+            candidate_paths.append(path)
 
     seen_paths = set()
     ordered_paths: List[Path] = []

@@ -111,6 +111,7 @@ Nota formazioni:
 - la fonte primaria aggiornata dal sync e' `data/tmp/formazioni_page.html` (payload appkey nell'HTML)
 - l'export `formazioni.xlsx` viene tentato come supporto, ma non e' bloccante
 - con `LEGHE_ALIAS` configurato, endpoint `GET /data/formazioni` prova un refresh live dalla pagina Leghe prima di rispondere
+- se il payload appkey non e' disponibile, usa il file live `data/incoming/formazioni/formazioni.xlsx` (scaricato da Leghe)
 
 ### Variabili env (backend)
 - `LEGHE_ALIAS`, `LEGHE_USERNAME`, `LEGHE_PASSWORD` (obbligatorie)

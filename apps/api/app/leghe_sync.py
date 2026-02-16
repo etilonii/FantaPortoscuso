@@ -318,6 +318,10 @@ def refresh_formazioni_context_from_leghe(
     out_path: Path,
     username: str | None = None,
     password: str | None = None,
+    out_xlsx_path: Path | None = None,
+    competition_id: int | None = None,
+    competition_name: str | None = None,
+    formations_matchday: int | None = None,
 ) -> dict[str, object]:
     opener, _ = _build_leghe_opener()
     context = fetch_leghe_context(opener, alias=alias)
@@ -337,6 +341,36 @@ def refresh_formazioni_context_from_leghe(
         out_path=out_path,
     )
 
+    xlsx_result: dict[str, object] | None = None
+    if out_xlsx_path is not None:
+        resolved_competition_id = int(competition_id or 0) or context.competition_id
+        resolved_competition_name = (competition_name or context.competition_name or alias).strip()
+        resolved_matchday = int(formations_matchday or 0) or context.suggested_formations_matchday
+        if resolved_competition_id and resolved_matchday:
+            params = {
+                "alias_lega": alias,
+                "id_competizione": int(resolved_competition_id),
+                "giornata": int(resolved_matchday),
+                "nome_competizione": resolved_competition_name,
+                "dummy": 5,
+            }
+            form_url = f"{LEGHE_BASE_URL}servizi/V1_LegheFormazioni/excel?{urlencode(params)}"
+            try:
+                xlsx_result = download_leghe_excel(
+                    opener,
+                    url=form_url,
+                    app_key=context.app_key,
+                    referer=f"{LEGHE_BASE_URL}{alias}/formazioni",
+                    out_path=out_xlsx_path,
+                )
+            except LegheSyncError as exc:
+                xlsx_result = {"ok": False, "warning": str(exc)}
+        else:
+            xlsx_result = {
+                "ok": False,
+                "warning": "competition_id or formations_matchday not available",
+            }
+
     return {
         "ok": True,
         "alias": alias,
@@ -347,6 +381,7 @@ def refresh_formazioni_context_from_leghe(
             "suggested_formations_matchday": context.suggested_formations_matchday,
         },
         "downloaded": downloaded,
+        "formazioni_xlsx": xlsx_result,
     }
 
 
