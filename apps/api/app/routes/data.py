@@ -31,7 +31,11 @@ from apps.api.app.config import (
     LEGHE_FORMATIONS_MATCHDAY,
 )
 from apps.api.app.deps import get_db
-from apps.api.app.leghe_sync import LegheSyncError, run_leghe_sync_and_pipeline
+from apps.api.app.leghe_sync import (
+    LegheSyncError,
+    run_leghe_sync_and_pipeline,
+    refresh_formazioni_context_from_leghe,
+)
 from apps.api.app.models import (
     AccessKey,
     Fixture,
@@ -144,6 +148,7 @@ _LISTONE_NAME_CACHE: Dict[str, object] = {}
 _PLAYER_FORCE_CACHE: Dict[str, object] = {}
 _REGULATION_CACHE: Dict[str, object] = {}
 _SERIEA_CONTEXT_CACHE: Dict[str, object] = {}
+_FORMAZIONI_REMOTE_REFRESH_CACHE: Dict[str, float] = {}
 
 LIVE_EVENT_FIELDS: Tuple[str, ...] = (
     "goal",
@@ -5059,6 +5064,35 @@ def _context_html_candidates() -> List[Path]:
     return candidates
 
 
+def _refresh_formazioni_context_html_live() -> Optional[Path]:
+    if not LEGHE_ALIAS:
+        return None
+
+    target_path = REAL_FORMATIONS_TMP_DIR / "formazioni_page.html"
+    now_ts = datetime.utcnow().timestamp()
+    last_ts = float(_FORMAZIONI_REMOTE_REFRESH_CACHE.get("last_ts", 0.0) or 0.0)
+    # Avoid hammering Leghe when many clients poll /data/formazioni.
+    if now_ts - last_ts < 45 and target_path.exists():
+        return target_path
+
+    try:
+        username = LEGHE_USERNAME if LEGHE_USERNAME and LEGHE_PASSWORD else None
+        password = LEGHE_PASSWORD if LEGHE_USERNAME and LEGHE_PASSWORD else None
+        refresh_formazioni_context_from_leghe(
+            alias=LEGHE_ALIAS,
+            out_path=target_path,
+            username=username,
+            password=password,
+        )
+    except Exception:
+        # Keep fallback behavior via local cache if live refresh fails.
+        pass
+    finally:
+        _FORMAZIONI_REMOTE_REFRESH_CACHE["last_ts"] = now_ts
+
+    return target_path if target_path.exists() else None
+
+
 def _decode_appkey_payload_token(token: str) -> Optional[Dict[str, object]]:
     raw_token = str(token or "").strip()
     if not raw_token:
@@ -5686,7 +5720,14 @@ def _parse_appkey_lineup(
 def _load_real_formazioni_rows_from_appkey_json(
     standings_index: Dict[str, Dict[str, object]],
 ) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
-    source_path = _refresh_formazioni_appkey_from_context_html(None) or _latest_formazioni_appkey_path()
+    refreshed_path = _refresh_formazioni_appkey_from_context_html(None)
+    if refreshed_path is not None:
+        source_path = refreshed_path
+    elif LEGHE_ALIAS:
+        # With live mode enabled, avoid serving stale cached appkey payloads.
+        return [], [], None
+    else:
+        source_path = _latest_formazioni_appkey_path()
     if source_path is None:
         return [], [], None
 
@@ -5923,6 +5964,17 @@ def _load_real_formazioni_rows(
     standings_index: Optional[Dict[str, Dict[str, object]]],
 ) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
     standings_index = standings_index or {}
+    _refresh_formazioni_context_html_live()
+
+    appkey_items, appkey_rounds, appkey_source = _load_real_formazioni_rows_from_appkey_json(standings_index)
+    if appkey_items:
+        _recompute_forza_titolari(appkey_items)
+        return appkey_items, appkey_rounds, appkey_source
+
+    # If a Leghe alias is configured, prefer live source only.
+    if LEGHE_ALIAS:
+        return [], appkey_rounds, appkey_source
+
     candidate_paths: List[Path] = []
     for folder in REAL_FORMATIONS_DIR_CANDIDATES:
         latest = _latest_supported_file(folder)
@@ -5941,8 +5993,6 @@ def _load_real_formazioni_rows(
         ordered_paths.append(path)
 
     role_map = _load_role_map()
-    appkey_items, appkey_rounds, appkey_source = _load_real_formazioni_rows_from_appkey_json(standings_index)
-
     for source_path in ordered_paths:
         rows = _read_tabular_rows(source_path)
         if not rows:
@@ -6039,10 +6089,6 @@ def _load_real_formazioni_rows(
         available_rounds = sorted(rounds_in_items)
         _recompute_forza_titolari(merged_items)
         return merged_items, available_rounds, source_path
-
-    if appkey_items:
-        _recompute_forza_titolari(appkey_items)
-        return appkey_items, appkey_rounds, appkey_source
 
     return [], [], None
 

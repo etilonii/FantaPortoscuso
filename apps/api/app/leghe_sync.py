@@ -312,6 +312,44 @@ def _run_subprocess(argv: list[str], *, cwd: Path) -> dict[str, object]:
     }
 
 
+def refresh_formazioni_context_from_leghe(
+    *,
+    alias: str,
+    out_path: Path,
+    username: str | None = None,
+    password: str | None = None,
+) -> dict[str, object]:
+    opener, _ = _build_leghe_opener()
+    context = fetch_leghe_context(opener, alias=alias)
+
+    if username and password:
+        leghe_login(
+            opener,
+            alias=alias,
+            app_key=context.app_key,
+            username=username,
+            password=password,
+        )
+
+    downloaded = download_formazioni_context_html(
+        opener,
+        alias=alias,
+        out_path=out_path,
+    )
+
+    return {
+        "ok": True,
+        "alias": alias,
+        "context": {
+            "competition_id": context.competition_id,
+            "competition_name": context.competition_name,
+            "last_calculated_matchday": context.last_calculated_matchday,
+            "suggested_formations_matchday": context.suggested_formations_matchday,
+        },
+        "downloaded": downloaded,
+    }
+
+
 def run_leghe_sync_and_pipeline(
     *,
     alias: str,

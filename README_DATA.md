@@ -110,6 +110,7 @@ Obiettivo: scaricare gli XLSX da Leghe Fantacalcio e aggiornare i CSV in `data/`
 Nota formazioni:
 - la fonte primaria aggiornata dal sync e' `data/tmp/formazioni_page.html` (payload appkey nell'HTML)
 - l'export `formazioni.xlsx` viene tentato come supporto, ma non e' bloccante
+- con `LEGHE_ALIAS` configurato, endpoint `GET /data/formazioni` prova un refresh live dalla pagina Leghe prima di rispondere
 
 ### Variabili env (backend)
 - `LEGHE_ALIAS`, `LEGHE_USERNAME`, `LEGHE_PASSWORD` (obbligatorie)
