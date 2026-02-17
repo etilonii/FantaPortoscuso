@@ -2390,8 +2390,15 @@ def _build_live_standings_rows(
     live_context = _load_live_round_context(db, target_round)
     _attach_live_scores_to_formations(formazioni_items, live_context)
 
+    votes_payload = live_context.get("votes_by_team_player")
+    has_live_votes_for_round = isinstance(votes_payload, dict) and len(votes_payload) > 0
+    has_six_flags = bool(live_context.get("six_team_keys"))
+    can_apply_live_totals = bool(has_live_votes_for_round or has_six_flags)
+
     live_total_by_team: Dict[str, float] = {}
     for item in formazioni_items:
+        if not can_apply_live_totals:
+            continue
         team_name = str(item.get("team") or "").strip()
         if not team_name:
             continue

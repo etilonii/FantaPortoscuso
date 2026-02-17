@@ -30,7 +30,7 @@ def test_build_live_standings_rows_adds_live_totals(monkeypatch):
             None,
         ),
     )
-    monkeypatch.setattr(d, "_load_live_round_context", lambda db, round_value: {})
+    monkeypatch.setattr(d, "_load_live_round_context", lambda db, round_value: {"votes_by_team_player": {"x": {}}})
 
     def _fake_attach(items, live_context):
         for item in items:
@@ -106,7 +106,7 @@ def test_build_live_standings_rows_promotes_completed_live_votes_round(monkeypat
             None,
         ),
     )
-    monkeypatch.setattr(d, "_load_live_round_context", lambda db, round_value: {})
+    monkeypatch.setattr(d, "_load_live_round_context", lambda db, round_value: {"votes_by_team_player": {"x": {}}})
 
     def _fake_attach(items, live_context):
         for item in items:
@@ -124,3 +124,52 @@ def test_build_live_standings_rows_promotes_completed_live_votes_round(monkeypat
     assert payload["latest_live_votes_round"] == 25
     assert items[0]["played"] == 25
     assert items[1]["played"] == 25
+
+
+def test_build_live_standings_rows_skips_live_increment_without_votes(monkeypatch):
+    monkeypatch.setattr(
+        d,
+        "_load_standings_rows",
+        lambda: [
+            {"pos": 1, "team": "Alpha", "played": 24, "points": 50.0},
+            {"pos": 2, "team": "Beta", "played": 24, "points": 48.0},
+        ],
+    )
+    monkeypatch.setattr(
+        d,
+        "_build_standings_index",
+        lambda: {
+            "alpha": {"team": "Alpha", "pos": 1},
+            "beta": {"team": "Beta", "pos": 2},
+        },
+    )
+    monkeypatch.setattr(d, "_load_status_matchday", lambda: 24)
+    monkeypatch.setattr(d, "_infer_matchday_from_fixtures", lambda: None)
+    monkeypatch.setattr(d, "_infer_matchday_from_stats", lambda: None)
+    monkeypatch.setattr(
+        d,
+        "_load_real_formazioni_rows",
+        lambda standings_index: (
+            [{"team": "Alpha", "round": 24}, {"team": "Beta", "round": 24}],
+            [24],
+            None,
+        ),
+    )
+    monkeypatch.setattr(d, "_load_live_round_context", lambda db, round_value: {})
+
+    def _fake_attach(items, live_context):
+        for item in items:
+            if item.get("team") == "Alpha":
+                item["totale_live"] = 70.0
+            elif item.get("team") == "Beta":
+                item["totale_live"] = 66.0
+
+    monkeypatch.setattr(d, "_attach_live_scores_to_formations", _fake_attach)
+
+    payload = d._build_live_standings_rows(db=object(), requested_round=None)
+    items = payload["items"]
+
+    assert items[0]["played"] == 24
+    assert items[1]["played"] == 24
+    assert items[0]["points_live"] == 50.0
+    assert items[1]["points_live"] == 48.0
