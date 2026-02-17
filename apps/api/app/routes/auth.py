@@ -32,6 +32,7 @@ from ..schemas import (
     ImportKeysRequest,
     ImportTeamKeysRequest,
     KeyCreateResponse,
+    KeyDeleteRequest,
     KeyResetUsageResponse,
     LoginRequest,
     LoginResponse,
@@ -287,6 +288,40 @@ def create_key_admin(
             db.commit()
             return KeyCreateResponse(key=key)
     raise HTTPException(status_code=500, detail="Failed to generate key")
+
+
+@router.delete("/admin/keys")
+def delete_key_admin(
+    payload: KeyDeleteRequest,
+    x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    admin_record = _require_admin_key(x_admin_key, db, authorization)
+    _backup_or_500("delete-key")
+    key_value = payload.key.strip().lower()
+    if not key_value:
+        raise HTTPException(status_code=400, detail="Key non valida")
+
+    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Key non trovata")
+
+    if record.is_admin:
+        admin_count = db.query(AccessKey).filter(AccessKey.is_admin.is_(True)).count()
+        if admin_count <= 1:
+            raise HTTPException(status_code=400, detail="Impossibile eliminare l'ultima key admin")
+
+    if record.key == admin_record.key:
+        raise HTTPException(status_code=400, detail="Impossibile eliminare la key admin in uso")
+
+    db.query(RefreshToken).filter(RefreshToken.key_id == record.id).delete(synchronize_session=False)
+    db.query(DeviceSession).filter(DeviceSession.key == key_value).delete(synchronize_session=False)
+    db.query(TeamKey).filter(TeamKey.key == key_value).delete(synchronize_session=False)
+    db.query(KeyReset).filter(KeyReset.key == key_value).delete(synchronize_session=False)
+    db.delete(record)
+    db.commit()
+    return {"status": "ok", "key": key_value}
 
 
 @router.post("/admin/set-admin")

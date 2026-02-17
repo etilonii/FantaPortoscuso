@@ -14,6 +14,10 @@
   --radius: 18px;
   --radius-lg: 24px;
   --gap: 18px;
+  --menu-scroll-track: rgba(8, 24, 38, 0.42);
+  --menu-scroll-thumb: rgba(91, 209, 255, 0.52);
+  --menu-scroll-thumb-hover: rgba(91, 209, 255, 0.74);
+  --menu-scroll-thumb-active: rgba(243, 155, 52, 0.9);
 }
 
 .theme-light {
@@ -27,6 +31,10 @@
   --text: #0f1f33;
   --muted: #4d647d;
   --shadow: 0 16px 32px rgba(15, 35, 60, 0.12);
+  --menu-scroll-track: rgba(199, 216, 238, 0.62);
+  --menu-scroll-thumb: rgba(42, 167, 255, 0.4);
+  --menu-scroll-thumb-hover: rgba(42, 167, 255, 0.58);
+  --menu-scroll-thumb-active: rgba(243, 155, 52, 0.85);
 }
 
 * {
@@ -305,7 +313,42 @@ body.theme-light {
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--menu-scroll-thumb) var(--menu-scroll-track);
+  scrollbar-gutter: stable;
   padding-right: 4px;
+}
+
+.sidebar .menu::-webkit-scrollbar,
+.admin-sidebar .menu::-webkit-scrollbar {
+  width: 10px;
+}
+
+.sidebar .menu::-webkit-scrollbar-track,
+.admin-sidebar .menu::-webkit-scrollbar-track {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), var(--menu-scroll-track));
+  border-radius: 999px;
+}
+
+.sidebar .menu::-webkit-scrollbar-thumb,
+.admin-sidebar .menu::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--menu-scroll-thumb), rgba(243, 155, 52, 0.55));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  min-height: 44px;
+}
+
+.sidebar .menu::-webkit-scrollbar-thumb:hover,
+.admin-sidebar .menu::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--menu-scroll-thumb-hover), rgba(243, 155, 52, 0.7));
+  background-clip: content-box;
+}
+
+.sidebar .menu::-webkit-scrollbar-thumb:active,
+.admin-sidebar .menu::-webkit-scrollbar-thumb:active {
+  background: var(--menu-scroll-thumb-active);
+  background-clip: content-box;
 }
 
 .admin-sidebar .menu-item.active::after {

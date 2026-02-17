@@ -1891,12 +1891,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
   };
 
-  const deleteTeamKeyAdmin = async (keyValue) => {
+  const deleteAdminKey = async (keyValue) => {
     if (!isAdmin) return;
     const key = String(keyValue || "").trim().toLowerCase();
     if (!key) return;
     try {
-      const res = await fetchWithAuth(`${API_BASE}/auth/admin/team-key`, {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/keys`, {
         method: "DELETE",
         headers: buildAuthHeaders({
           legacyAdminKey: true,
@@ -1904,11 +1904,17 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         }),
         body: JSON.stringify({ key }),
       });
-      if (!res.ok) return;
-      setAdminNotice(`Associazione rimossa: ${key.toUpperCase()}.`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAdminNotice(data?.detail || "Errore eliminazione key.");
+        return;
+      }
+      setAdminNotice(`Key eliminata: ${key.toUpperCase()}.`);
+      loadAdminStatus();
       loadAdminTeamKeys();
+      loadAdminKeys();
     } catch {
-      setAdminNotice("Errore rimozione associazione.");
+      setAdminNotice("Errore eliminazione key.");
     }
   };
 
@@ -2993,7 +2999,7 @@ useEffect(() => {
                                 Ultimo accesso: {item.online ? "Online" : formatLastAccess(item.last_seen_at || item.used_at)}
                               </span>
                             </div>
-                            <button className="ghost" onClick={() => deleteTeamKeyAdmin(item.key)}>
+                            <button className="ghost" onClick={() => deleteAdminKey(item.key)}>
                               Elimina
                             </button>
                           </div>
