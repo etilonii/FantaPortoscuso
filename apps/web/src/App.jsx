@@ -341,6 +341,9 @@ export default function App() {
   const [adminImportTeamKeys, setAdminImportTeamKeys] = useState("");
   const [adminStatus, setAdminStatus] = useState(null);
   const [adminTeamKeys, setAdminTeamKeys] = useState([]);
+  const [adminKeyNotesDraft, setAdminKeyNotesDraft] = useState({});
+  const [adminSavingNoteKey, setAdminSavingNoteKey] = useState("");
+  const [adminDeletingKey, setAdminDeletingKey] = useState("");
 
   /* ===== MERCATO + SUGGEST ===== */
   const [marketView, setMarketView] = useState("players");
@@ -1662,7 +1665,17 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       });
       if (!res.ok) return;
       const data = await res.json();
-      setAdminKeys(data || []);
+      const items = Array.isArray(data) ? data : [];
+      setAdminKeys(items);
+      setAdminKeyNotesDraft(() => {
+        const next = {};
+        items.forEach((item) => {
+          const keyValue = String(item?.key || "").trim().toLowerCase();
+          if (!keyValue) return;
+          next[keyValue] = String(item?.note || "");
+        });
+        return next;
+      });
     } catch {
       console.warn("loadAdminKeys failed");
     }
@@ -1891,10 +1904,59 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
   };
 
+  const updateAdminKeyNoteDraft = (keyValue, noteValue) => {
+    const key = String(keyValue || "").trim().toLowerCase();
+    if (!key) return;
+    setAdminKeyNotesDraft((prev) => ({ ...prev, [key]: String(noteValue || "") }));
+  };
+
+  const saveAdminKeyNote = async (keyValue) => {
+    if (!isAdmin) return;
+    const key = String(keyValue || "").trim().toLowerCase();
+    if (!key) return;
+    setAdminSavingNoteKey(key);
+    try {
+      const note = String(adminKeyNotesDraft[key] ?? "");
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/key-note`, {
+        method: "POST",
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
+        body: JSON.stringify({ key, note }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAdminNotice(data?.detail || "Errore salvataggio nota.");
+        return;
+      }
+      const savedNote = String(data?.note || "");
+      setAdminKeys((prev) =>
+        prev.map((item) =>
+          String(item?.key || "").trim().toLowerCase() === key
+            ? { ...item, note: savedNote }
+            : item
+        )
+      );
+      setAdminKeyNotesDraft((prev) => ({ ...prev, [key]: savedNote }));
+      setAdminNotice(
+        savedNote
+          ? `Nota salvata per ${key.toUpperCase()}.`
+          : `Nota rimossa per ${key.toUpperCase()}.`
+      );
+    } catch {
+      setAdminNotice("Errore salvataggio nota.");
+    } finally {
+      setAdminSavingNoteKey("");
+    }
+  };
+
   const deleteAdminKey = async (keyValue) => {
     if (!isAdmin) return;
     const key = String(keyValue || "").trim().toLowerCase();
     if (!key) return;
+    if (adminDeletingKey === key) return;
+    setAdminDeletingKey(key);
     try {
       const res = await fetchWithAuth(`${API_BASE}/auth/admin/keys`, {
         method: "DELETE",
@@ -1910,11 +1972,18 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         return;
       }
       setAdminNotice(`Key eliminata: ${key.toUpperCase()}.`);
+      setAdminKeyNotesDraft((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
       loadAdminStatus();
       loadAdminTeamKeys();
       loadAdminKeys();
     } catch {
       setAdminNotice("Errore eliminazione key.");
+    } finally {
+      setAdminDeletingKey("");
     }
   };
 
@@ -2983,6 +3052,10 @@ useEffect(() => {
                       <p className="muted">Nessuna key disponibile.</p>
                     ) : (
                       adminKeys.map((item) => {
+                        const rowKey = String(item?.key || "").trim().toLowerCase();
+                        const noteDraft = String(adminKeyNotesDraft[rowKey] ?? item?.note ?? "");
+                        const savingNote = adminSavingNoteKey === rowKey;
+                        const deletingKey = adminDeletingKey === rowKey;
                         return (
                           <div key={item.key} className="list-item player-card">
                             <div>
@@ -2998,9 +3071,32 @@ useEffect(() => {
                               <span className="muted">
                                 Ultimo accesso: {item.online ? "Online" : formatLastAccess(item.last_seen_at || item.used_at)}
                               </span>
+                              <span className="muted key-note-preview">
+                                Nota: {String(item.note || "").trim() || "-"}
+                              </span>
+                              <div className="admin-row admin-row-key-note">
+                                <input
+                                  className="input"
+                                  placeholder="Nota opzionale per questa key"
+                                  value={noteDraft}
+                                  maxLength={255}
+                                  onChange={(e) => updateAdminKeyNoteDraft(rowKey, e.target.value)}
+                                />
+                                <button
+                                  className={savingNote ? "ghost note-save-btn is-loading" : "ghost note-save-btn"}
+                                  onClick={() => saveAdminKeyNote(rowKey)}
+                                  disabled={savingNote || deletingKey}
+                                >
+                                  {savingNote ? "Salvataggio..." : "Salva nota"}
+                                </button>
+                              </div>
                             </div>
-                            <button className="ghost" onClick={() => deleteAdminKey(item.key)}>
-                              Elimina
+                            <button
+                              className={deletingKey ? "ghost key-delete-btn is-loading" : "ghost key-delete-btn"}
+                              onClick={() => deleteAdminKey(item.key)}
+                              disabled={deletingKey || savingNote}
+                            >
+                              {deletingKey ? "Eliminazione..." : "Elimina"}
                             </button>
                           </div>
                         );

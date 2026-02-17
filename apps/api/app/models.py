@@ -28,6 +28,7 @@ class AccessKey(Base):
     device_id = Column(String(128), nullable=True)
     user_agent_hash = Column(String(128), nullable=True)
     ip_address = Column(String(64), nullable=True)
+    note = Column(String(255), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     used_at = Column(DateTime, nullable=True)
 
@@ -224,6 +225,8 @@ def ensure_schema(engine) -> None:
             conn.execute(text("ALTER TABLE access_keys ADD COLUMN blocked_at DATETIME"))
         if "blocked_reason" not in columns:
             conn.execute(text("ALTER TABLE access_keys ADD COLUMN blocked_reason VARCHAR(128)"))
+        if "note" not in columns:
+            conn.execute(text("ALTER TABLE access_keys ADD COLUMN note VARCHAR(255)"))
         conn.commit()
 
         result = conn.execute(text("PRAGMA table_info(players)"))

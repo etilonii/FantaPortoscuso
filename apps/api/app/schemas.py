@@ -47,6 +47,7 @@ class AdminKeyItem(BaseModel):
     device_id: str | None = None
     device_count: int = 0
     team: str | None = None
+    note: str | None = None
     created_at: str | None = None
     used_at: str | None = None
     last_seen_at: str | None = None
@@ -106,6 +107,11 @@ class TeamKeyDeleteRequest(BaseModel):
 
 class KeyDeleteRequest(BaseModel):
     key: str = Field(min_length=1)
+
+
+class KeyNoteRequest(BaseModel):
+    key: str = Field(min_length=1)
+    note: str | None = Field(default=None, max_length=255)
 
 
 class PingRequest(BaseModel):

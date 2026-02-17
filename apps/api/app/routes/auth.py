@@ -33,6 +33,7 @@ from ..schemas import (
     ImportTeamKeysRequest,
     KeyCreateResponse,
     KeyDeleteRequest,
+    KeyNoteRequest,
     KeyResetUsageResponse,
     LoginRequest,
     LoginResponse,
@@ -250,6 +251,7 @@ def list_keys(
                 device_id=k.device_id,
                 device_count=device_count_map.get(k.key, 0),
                 team=team_map.get(k.key),
+                note=k.note,
                 created_at=k.created_at.isoformat() if k.created_at else None,
                 used_at=k.used_at.isoformat() if k.used_at else None,
                 last_seen_at=last_seen_map.get(k.key).isoformat()
@@ -322,6 +324,29 @@ def delete_key_admin(
     db.delete(record)
     db.commit()
     return {"status": "ok", "key": key_value}
+
+
+@router.post("/admin/key-note")
+def set_key_note_admin(
+    payload: KeyNoteRequest,
+    x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+    key_value = payload.key.strip().lower()
+    if not key_value:
+        raise HTTPException(status_code=400, detail="Key non valida")
+
+    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Key non trovata")
+
+    note_value = (payload.note or "").strip()
+    record.note = note_value[:255] if note_value else None
+    db.add(record)
+    db.commit()
+    return {"status": "ok", "key": key_value, "note": record.note}
 
 
 @router.post("/admin/set-admin")

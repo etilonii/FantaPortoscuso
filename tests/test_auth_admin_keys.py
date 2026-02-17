@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from apps.api.app.db import Base
 from apps.api.app.models import AccessKey, DeviceSession, KeyReset, RefreshToken, TeamKey
 from apps.api.app.routes import auth as auth_routes
-from apps.api.app.schemas import KeyDeleteRequest
+from apps.api.app.schemas import KeyDeleteRequest, KeyNoteRequest
 
 
 def _build_db_session():
@@ -117,4 +117,50 @@ def test_delete_admin_key_blocks_last_admin(monkeypatch):
 
     assert exc.value.status_code == 400
     assert "ultima key admin" in str(exc.value.detail).lower()
+    db.close()
+
+
+def test_set_key_note_admin_updates_and_clears():
+    db = _build_db_session()
+    db.add_all(
+        [
+            AccessKey(key="admin0001", used=True, is_admin=True),
+            AccessKey(key="user00001", used=True, is_admin=False),
+        ]
+    )
+    db.commit()
+
+    result = auth_routes.set_key_note_admin(
+        payload=KeyNoteRequest(key="user00001", note="Da contattare domenica"),
+        x_admin_key="admin0001",
+        authorization=None,
+        db=db,
+    )
+    assert result["status"] == "ok"
+    assert result["note"] == "Da contattare domenica"
+
+    record = db.query(AccessKey).filter(AccessKey.key == "user00001").first()
+    assert record is not None
+    assert record.note == "Da contattare domenica"
+
+    listed = auth_routes.list_keys(
+        x_admin_key="admin0001",
+        authorization=None,
+        db=db,
+    )
+    listed_map = {item.key: item for item in listed}
+    assert listed_map["user00001"].note == "Da contattare domenica"
+
+    cleared = auth_routes.set_key_note_admin(
+        payload=KeyNoteRequest(key="user00001", note="   "),
+        x_admin_key="admin0001",
+        authorization=None,
+        db=db,
+    )
+    assert cleared["status"] == "ok"
+    assert cleared["note"] is None
+
+    record = db.query(AccessKey).filter(AccessKey.key == "user00001").first()
+    assert record is not None
+    assert record.note is None
     db.close()
