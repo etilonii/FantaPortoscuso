@@ -2228,7 +2228,7 @@ def _load_standings_rows() -> List[Dict[str, object]]:
                     played = 0
                 out.append({"pos": pos, "team": team, "played": played, "points": points})
             out.sort(key=lambda x: x["pos"])
-            return out
+            return _backfill_standings_played_if_missing(out)
 
         import pandas as pd
 
@@ -2292,9 +2292,34 @@ def _load_standings_rows() -> List[Dict[str, object]]:
             out.append({"pos": pos, "team": team, "played": played, "points": points})
 
         out.sort(key=lambda x: x["pos"])
-        return out
+        return _backfill_standings_played_if_missing(out)
     except Exception:
         return []
+
+
+def _backfill_standings_played_if_missing(rows: List[Dict[str, object]]) -> List[Dict[str, object]]:
+    if not rows:
+        return rows
+
+    has_played = any((_parse_int(row.get("played")) or 0) > 0 for row in rows)
+    if has_played:
+        return rows
+
+    fallback_played = _load_status_matchday()
+    if fallback_played is None or fallback_played <= 0:
+        fallback_played = _max_completed_round_from_fixtures()
+
+    if fallback_played is None or fallback_played <= 0:
+        inferred_matchday_stats = _infer_matchday_from_stats()
+        if inferred_matchday_stats is not None and inferred_matchday_stats > 1:
+            fallback_played = inferred_matchday_stats - 1
+
+    if fallback_played is None or fallback_played <= 0:
+        return rows
+
+    for row in rows:
+        row["played"] = int(fallback_played)
+    return rows
 
 
 def _build_live_standings_rows(
@@ -2333,6 +2358,20 @@ def _build_live_standings_rows(
         latest_available = max(available_rounds)
         if target_round < latest_available:
             target_round = latest_available
+
+    latest_live_votes_round: Optional[int] = None
+    promoted_round_from_completed_votes: Optional[int] = None
+    if requested_round is None:
+        latest_live_votes_round = _latest_round_with_live_votes(db)
+        if (
+            latest_live_votes_round is not None
+            and available_rounds
+            and latest_live_votes_round in available_rounds
+            and (target_round is None or int(latest_live_votes_round) > int(target_round))
+            and _is_round_completed_from_fixtures(latest_live_votes_round)
+        ):
+            target_round = int(latest_live_votes_round)
+            promoted_round_from_completed_votes = int(latest_live_votes_round)
 
     formazioni_items: List[Dict[str, object]] = []
     for item in real_rows:
@@ -2435,6 +2474,8 @@ def _build_live_standings_rows(
         "status_matchday": status_matchday,
         "inferred_matchday_fixtures": inferred_matchday_fixtures,
         "inferred_matchday_stats": inferred_matchday_stats,
+        "latest_live_votes_round": latest_live_votes_round,
+        "promoted_round_from_completed_votes": promoted_round_from_completed_votes,
     }
 
 
@@ -2619,13 +2660,11 @@ def _load_status_matchday() -> Optional[int]:
         return None
 
 
-def _infer_matchday_from_fixtures() -> Optional[int]:
+def _round_play_state_from_fixtures() -> Dict[int, Dict[str, bool]]:
     rows = _read_csv_fallback(FIXTURES_PATH, SEED_DB_DIR / "fixtures.csv")
-    if not rows:
-        return None
-
     by_round: Dict[int, Dict[str, bool]] = {}
-    any_score_found = False
+    if not rows:
+        return by_round
 
     for row in rows:
         round_value = _parse_int(row.get("round"))
@@ -2651,14 +2690,46 @@ def _infer_matchday_from_fixtures() -> Optional[int]:
             or row.get("score_away")
         )
         is_played = home_score is not None and away_score is not None
-        any_score_found = any_score_found or is_played
 
         current = by_round.setdefault(round_value, {"matches": False, "all_played": True, "any_played": False})
         current["matches"] = True
         current["all_played"] = bool(current["all_played"] and is_played)
         current["any_played"] = bool(current["any_played"] or is_played)
 
-    if not by_round or not any_score_found:
+    return by_round
+
+
+def _max_completed_round_from_fixtures() -> Optional[int]:
+    by_round = _round_play_state_from_fixtures()
+    if not by_round:
+        return None
+    completed = [
+        int(round_value)
+        for round_value, state in by_round.items()
+        if bool(state.get("matches")) and bool(state.get("all_played"))
+    ]
+    if not completed:
+        return None
+    return max(completed)
+
+
+def _is_round_completed_from_fixtures(round_value: Optional[int]) -> bool:
+    parsed_round = _parse_int(round_value)
+    if parsed_round is None:
+        return False
+    state = _round_play_state_from_fixtures().get(parsed_round)
+    if not state or not bool(state.get("matches")):
+        return False
+    return bool(state.get("all_played"))
+
+
+def _infer_matchday_from_fixtures() -> Optional[int]:
+    by_round = _round_play_state_from_fixtures()
+    if not by_round:
+        return None
+
+    any_score_found = any(bool(state.get("any_played")) for state in by_round.values())
+    if not any_score_found:
         return None
 
     rounds_sorted = sorted(by_round.keys())
@@ -2671,6 +2742,30 @@ def _infer_matchday_from_fixtures() -> Optional[int]:
         return round_value
 
     return rounds_sorted[-1]
+
+
+def _latest_round_with_live_votes(db: Session | None) -> Optional[int]:
+    if db is None:
+        return None
+    try:
+        rows = db.query(LivePlayerVote.round).distinct().all()
+    except OperationalError:
+        return None
+    except Exception:
+        return None
+
+    rounds: List[int] = []
+    for row in rows or []:
+        if isinstance(row, tuple):
+            value = row[0] if row else None
+        else:
+            value = getattr(row, "round", row)
+        parsed = _parse_int(value)
+        if parsed is not None and parsed > 0:
+            rounds.append(int(parsed))
+    if not rounds:
+        return None
+    return max(rounds)
 
 
 def _infer_matchday_from_stats() -> Optional[int]:
