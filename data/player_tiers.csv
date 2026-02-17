@@ -1,526 +1,526 @@
 name,team,role,tier,weight,score_auto,partite,mv,fm,is_new_arrival
-Martinez L.,Inter,A,top,0.943,0.920,24,6.41,8.22,0
-Dimarco,Inter,D,top,0.912,0.894,22,6.71,7.83,0
-Carnesecchi,Atalanta,P,top,0.898,0.858,24,6.46,5.85,0
-Maignan,Milan,P,top,0.881,0.852,22,6.39,5.82,0
-Pulisic,Milan,C,top,0.789,0.842,15,6.53,8.07,0
-Svilar,Roma,P,top,0.881,0.835,24,6.33,5.72,0
-Yildiz,Juventus,A,top,0.869,0.826,23,6.52,7.61,0
-McTominay,Napoli,C,top,0.866,0.822,23,6.36,7.11,0
-Calhanoglu,Inter,C,top,0.784,0.817,16,6.5,7.62,0
-Bonny,Inter,A,top,0.751,0.801,15,6.32,7.61,0
-Bremer,Juventus,D,top,0.766,0.800,14,6.46,7.27,0
-Rabiot,Milan,C,top,0.770,0.798,16,6.59,7.5,0
-Paz N.,Como,C,top,0.848,0.797,23,6.43,7.35,0
-Leao,Milan,A,top,0.806,0.795,16,6.12,7.53,0
-Butez,Como,P,semitop,0.844,0.791,23,6.11,5.5,0
-Thuram,Inter,A,top,0.777,0.788,18,6.38,7.56,0
-Provedel,Lazio,P,top,0.846,0.786,24,6.28,5.48,0
-Baturina,Como,C,top,0.691,0.777,11,6.36,7.73,0
-Bastoni,Inter,D,top,0.813,0.773,21,6.28,6.55,0
-Zielinski,Inter,C,top,0.764,0.773,17,6.44,7.25,0
-Spinazzola,Napoli,D,top,0.778,0.766,19,6.33,6.81,0
-Zambo Anguissa,Napoli,C,top,0.682,0.765,11,6.5,7.64,0
-Palestra,Cagliari,D,top,0.822,0.761,23,6.43,6.73,0
-Kalulu,Juventus,D,top,0.828,0.760,24,6.15,6.39,0
-Milinkovic-Savic V.,Napoli,P,semitop,0.787,0.760,17,6.18,5.76,0
-Douvikas,Como,A,top,0.806,0.755,21,6.17,7.31,0
-Modric,Milan,C,top,0.800,0.755,21,6.5,6.71,0
-Soulè,Roma,A,semitop,0.813,0.748,23,6.18,7.16,0
-Falcone,Lecce,P,semitop,0.810,0.737,24,6.48,5.39,0
-Hojlund,Napoli,A,semitop,0.767,0.734,20,6.03,7.05,0
-Berardi,Sassuolo,A,semitop,0.694,0.732,14,6.5,7.81,0
-Atta,Udinese,C,top,0.747,0.730,19,6.47,6.92,0
-Saelemaekers,Milan,C,top,0.791,0.726,22,6.27,6.64,0
-Pavlovic,Milan,D,top,0.755,0.719,19,6.24,6.5,0
-McKennie,Juventus,C,top,0.767,0.718,21,6.18,6.62,0
-Scamacca,Atalanta,A,semitop,0.703,0.716,15,6.17,7.37,0
-Konè M.,Roma,C,semitop,0.775,0.712,22,6.34,6.61,0
-Esposito F.P.,Inter,A,semitop,0.734,0.711,19,6.33,6.97,0
-Neres,Napoli,C,semitop,0.703,0.711,16,6.19,6.84,0
-Kempf,Como,D,top,0.703,0.708,15,6.27,6.83,0
-Di Gregorio,Juventus,P,semitop,0.770,0.704,21,6.18,5.4,0
-Nkunku,Milan,A,semitop,0.726,0.704,15,6.03,7.17,0
-Wesley,Roma,D,top,0.774,0.701,22,6.1,6.43,0
-Davis K.,Udinese,A,semitop,0.770,0.697,22,6.27,7.27,0
-Perrone,Como,C,semitop,0.752,0.696,21,6.29,6.55,0
-Krstovic,Atalanta,A,semitop,0.738,0.694,19,6.08,7.25,0
-Barella,Inter,C,semitop,0.763,0.687,22,6.18,6.45,0
-Zaniolo,Udinese,C,semitop,0.715,0.685,19,6.25,7,0
-Castro S.,Bologna,A,semitop,0.748,0.675,21,6.08,7,0
-Vlasic,Torino,C,semitop,0.759,0.674,23,6,6.67,0
-Audero,Cremonese,P,semitop,0.741,0.673,20,6.26,5.16,0
-Di Lorenzo,Napoli,D,top,0.755,0.668,23,6.07,6.22,0
-Orsolini,Bologna,C,semitop,0.749,0.668,22,6.1,6.95,0
-Sommer,Inter,P,semitop,0.747,0.665,22,5.9,5.05,0
-Bartesaghi,Milan,D,top,0.703,0.665,18,6.08,6.39,0
-Loftus-Cheek,Milan,C,semitop,0.699,0.665,18,6.14,6.5,0
-Kostic,Juventus,C,semitop,0.597,0.663,10,6.2,7.2,0
-Celik,Roma,D,semitop,0.702,0.660,19,6.19,6.33,0
-Bisseck,Inter,D,semitop,0.634,0.660,13,6.17,6.42,0
-Cataldi,Lazio,C,semitop,0.736,0.657,21,6.1,6.52,0
-Orban G.,Verona,A,semitop,0.727,0.654,21,6,7,0
-Isaksen,Lazio,C,semitop,0.657,0.652,15,6.11,6.61,0
-Mandragora,Fiorentina,C,semitop,0.746,0.648,24,6.04,6.74,0
-Akanji,Inter,D,semitop,0.723,0.648,21,6.2,6.12,0
-Ramon,Como,D,semitop,0.722,0.647,20,6.28,6.38,0
-Vojvoda,Como,D,semitop,0.710,0.647,19,6.08,6.24,0
-Scalvini,Atalanta,D,semitop,0.603,0.647,11,6.25,6.8,0
-Gudmundsson A.,Fiorentina,C,semitop,0.721,0.646,22,5.98,6.62,0
-Kilicsoy,Cagliari,A,semitop,0.596,0.645,11,6.4,7.6,0
-Carlos Augusto,Inter,D,semitop,0.646,0.642,16,6.22,6.38,0
-De Ketelaere,Atalanta,A,semitop,0.721,0.636,21,6.17,6.69,0
-Mazzitelli,Cagliari,C,semitop,0.575,0.636,10,6.33,7.11,0
-Da Cunha,Como,C,semitop,0.707,0.635,21,6.17,6.4,0
-De Bruyne,Napoli,C,semitop,0.551,0.633,8,6.38,7.81,0
-Berisha M.,Lecce,C,scommessa,0.598,0.632,12,6.17,6.92,0
-Konè I.,Sassuolo,C,semitop,0.704,0.630,21,6.2,6.7,0
-Malinovskyi,Genoa,C,semitop,0.715,0.629,22,6.12,6.64,0
-Conceicao,Juventus,C,semitop,0.642,0.627,16,6.19,6.56,0
-Zalewski,Atalanta,C,semitop,0.681,0.625,18,6.15,6.47,0
-Bonazzoli,Cremonese,A,starter,0.712,0.624,21,6.12,6.9,0
-David,Juventus,A,starter,0.686,0.621,20,5.87,6.61,0
-Martin,Genoa,D,semitop,0.680,0.621,20,6.03,6.34,0
-Pellegrino M.,Parma,A,starter,0.724,0.616,24,6.04,6.76,0
-Zanoli,Udinese,D,semitop,0.665,0.616,19,6.05,6.29,0
-Pellegrini Lo.,Roma,C,semitop,0.635,0.616,16,6.1,6.63,0
-Gaetano,Cagliari,C,semitop,0.699,0.614,22,6.05,6.4,0
-Simeone,Torino,A,starter,0.660,0.612,18,6.09,6.97,0
-Ferguson E.,Roma,A,starter,0.606,0.610,14,6.11,6.86,0
-Odgaard,Bologna,C,starter,0.633,0.608,16,5.91,6.69,0
-Rrahmani,Napoli,D,semitop,0.616,0.607,15,6.21,6.36,0
-Thuram K.,Juventus,C,semitop,0.698,0.605,22,6.17,6.36,0
-Thorsby,Cremonese,C,starter,0.597,0.603,13,6.21,6.71,0
-Bernabè,Parma,C,semitop,0.713,0.601,24,6.15,6.46,0
-Pasalic,Atalanta,C,semitop,0.676,0.601,19,5.94,6.33,0
-Solet,Udinese,D,semitop,0.712,0.600,24,6.04,6.13,0
-Belghali,Verona,D,semitop,0.611,0.600,15,6.3,6.53,0
-Caprile,Cagliari,P,semitop,0.712,0.599,24,6.37,4.98,0
-Mancini,Roma,D,semitop,0.706,0.599,23,6.18,6.07,0
-Ekkelenkamp,Udinese,C,starter,0.665,0.599,20,6.03,6.5,0
-Valle,Como,D,semitop,0.650,0.599,17,6.09,6.15,0
-Holm,Juventus,D,semitop,0.547,0.597,10,6.1,6.65,0
-Caqueret,Como,C,starter,0.619,0.595,16,6.16,6.44,0
-Basic,Lazio,C,starter,0.628,0.594,16,6.13,6.4,0
-Volpato,Sassuolo,C,scommessa,0.569,0.592,12,6.25,6.75,0
-Dovbyk,Roma,A,scommessa,0.567,0.589,12,6,6.83,0
-Giovane,Napoli,A,starter,0.694,0.585,23,6.02,6.57,0
-Zappacosta,Atalanta,D,semitop,0.684,0.585,21,5.95,5.9,0
-Maripan,Torino,D,semitop,0.683,0.585,22,5.98,6.1,0
-Sucic P.,Inter,C,starter,0.629,0.585,17,6.09,6.31,0
-Baschirotto,Cremonese,D,semitop,0.700,0.583,24,5.91,6.13,0
-Miretti,Juventus,C,scommessa,0.538,0.582,10,6.22,6.61,0
-Ostigard,Genoa,D,semitop,0.624,0.575,18,6.06,6.59,0
-Rodriguez Je.,Como,C,starter,0.638,0.572,19,6.11,6.29,0
-Bernasconi,Atalanta,D,semitop,0.574,0.571,13,6.17,6.21,0
-Kelly L.,Juventus,D,semitop,0.653,0.567,21,6.02,6.1,0
-Ricci S.,Milan,C,starter,0.613,0.564,17,6.12,6.35,0
-Dumfries,Inter,D,semitop,0.540,0.563,11,6,6.23,0
-Cambiaso,Juventus,D,semitop,0.661,0.562,22,5.81,5.88,0
-Esposito Se.,Cagliari,A,starter,0.678,0.561,23,6.23,6.73,0
-Locatelli,Juventus,C,starter,0.677,0.560,23,6.39,6.34,0
-Kabasele,Udinese,D,starter,0.601,0.560,17,6.06,6.34,0
-Coco,Torino,D,starter,0.652,0.558,21,5.98,6.12,0
-Cambiaghi,Bologna,A,starter,0.639,0.557,19,6.06,6.64,0
-Buongiorno,Napoli,D,semitop,0.626,0.556,19,6.06,6.06,0
-Kossounou,Atalanta,D,scommessa,0.538,0.556,11,6,6.3,0
-Thorstvedt,Sassuolo,C,starter,0.614,0.555,18,6.12,6.35,0
-Cancellieri,Lazio,C,starter,0.611,0.554,17,6.03,6.47,0
-De Winter,Milan,D,starter,0.573,0.553,14,5.93,6.11,0
-Muharemovic,Sassuolo,D,semitop,0.648,0.552,21,5.9,5.95,0
-Leris,Pisa,C,starter,0.647,0.551,21,6.02,6.3,0
+Martinez L.,Inter,A,top,0.905,0.868,24,6.41,8.22,0
+Maignan,Milan,P,top,0.885,0.856,22,6.39,5.82,0
+Carnesecchi,Atalanta,P,top,0.889,0.846,24,6.46,5.85,0
+Svilar,Roma,P,top,0.845,0.784,24,6.33,5.72,0
+Provedel,Lazio,P,top,0.844,0.784,24,6.28,5.48,0
+Dimarco,Inter,D,top,0.823,0.771,22,6.71,7.83,0
+Butez,Como,P,semitop,0.828,0.769,23,6.11,5.5,0
+Pulisic,Milan,C,top,0.732,0.762,15,6.53,8.07,0
+McTominay,Napoli,C,top,0.822,0.761,23,6.36,7.11,0
+Falcone,Lecce,P,semitop,0.826,0.759,24,6.48,5.39,0
+Modric,Milan,C,top,0.799,0.755,21,6.5,6.71,0
+Calhanoglu,Inter,C,top,0.732,0.746,16,6.5,7.62,0
+Milinkovic-Savic V.,Napoli,P,semitop,0.775,0.745,17,6.18,5.76,0
+Bremer,Juventus,D,top,0.723,0.741,14,6.46,7.27,0
+Bastoni,Inter,D,top,0.787,0.737,21,6.28,6.55,0
+Bonny,Inter,A,top,0.703,0.733,15,6.32,7.61,0
+Konè M.,Roma,C,top,0.787,0.728,22,6.34,6.61,0
+Leao,Milan,A,top,0.758,0.728,16,6.12,7.53,0
+Esposito F.P.,Inter,A,top,0.743,0.724,19,6.33,6.97,0
+Douvikas,Como,A,top,0.782,0.722,21,6.17,7.31,0
+Yildiz,Juventus,A,top,0.792,0.719,23,6.52,7.61,0
+Palestra,Cagliari,D,top,0.788,0.714,23,6.43,6.73,0
+Pavlovic,Milan,D,top,0.750,0.712,19,6.24,6.5,0
+Spinazzola,Napoli,D,top,0.739,0.712,19,6.33,6.81,0
+Zambo Anguissa,Napoli,C,top,0.641,0.708,11,6.5,7.64,0
+Wesley,Roma,D,top,0.777,0.706,22,6.1,6.43,0
+Kalulu,Juventus,D,top,0.782,0.697,24,6.15,6.39,0
+Di Gregorio,Juventus,P,semitop,0.764,0.696,21,6.18,5.4,0
+Rabiot,Milan,C,top,0.694,0.693,16,6.59,7.5,0
+Kempf,Como,D,top,0.691,0.693,15,6.27,6.83,0
+Atta,Udinese,C,top,0.720,0.692,19,6.47,6.92,0
+Baturina,Como,C,top,0.630,0.692,11,6.36,7.73,0
+Perrone,Como,C,top,0.747,0.690,21,6.29,6.55,0
+Audero,Cremonese,P,semitop,0.751,0.687,20,6.26,5.16,0
+McKennie,Juventus,C,top,0.743,0.684,21,6.18,6.62,0
+Hojlund,Napoli,A,semitop,0.730,0.683,20,6.03,7.05,0
+Soulè,Roma,A,semitop,0.764,0.681,23,6.18,7.16,0
+Zielinski,Inter,C,semitop,0.698,0.681,17,6.44,7.25,0
+Zaniolo,Udinese,C,semitop,0.707,0.675,19,6.25,7,0
+Neres,Napoli,C,semitop,0.675,0.673,16,6.19,6.84,0
+Scamacca,Atalanta,A,semitop,0.672,0.673,15,6.17,7.37,0
+Da Cunha,Como,C,semitop,0.732,0.669,21,6.17,6.4,0
+Konè I.,Sassuolo,C,semitop,0.730,0.666,21,6.2,6.7,0
+Berardi,Sassuolo,A,semitop,0.644,0.663,14,6.5,7.81,0
+Loftus-Cheek,Milan,C,semitop,0.696,0.662,18,6.14,6.5,0
+Thuram,Inter,A,semitop,0.686,0.661,18,6.38,7.56,0
+De Ketelaere,Atalanta,A,semitop,0.738,0.660,21,6.17,6.69,0
+Castro S.,Bologna,A,semitop,0.735,0.656,21,6.08,7,0
+Pellegrino M.,Parma,A,semitop,0.751,0.655,24,6.04,6.76,0
+Vlasic,Torino,C,semitop,0.743,0.651,23,6,6.67,0
+Paz N.,Como,C,semitop,0.742,0.650,23,6.43,7.35,0
+Sommer,Inter,P,semitop,0.736,0.650,22,5.9,5.05,0
+Caprile,Cagliari,P,semitop,0.743,0.644,24,6.37,4.98,0
+Cataldi,Lazio,C,semitop,0.726,0.644,21,6.1,6.52,0
+Bonazzoli,Cremonese,A,semitop,0.725,0.643,21,6.12,6.9,0
+Orban G.,Verona,A,semitop,0.719,0.643,21,6,7,0
+Saelemaekers,Milan,C,semitop,0.729,0.640,22,6.27,6.64,0
+Scalvini,Atalanta,D,top,0.597,0.638,11,6.25,6.8,0
+Davis K.,Udinese,A,semitop,0.725,0.634,22,6.27,7.27,0
+Ramon,Como,D,top,0.713,0.634,20,6.28,6.38,0
+Mandragora,Fiorentina,C,semitop,0.736,0.633,24,6.04,6.74,0
+Pellegrini Lo.,Roma,C,semitop,0.645,0.631,16,6.1,6.63,0
+Barella,Inter,C,semitop,0.719,0.626,22,6.18,6.45,0
+Kilicsoy,Cagliari,A,semitop,0.579,0.623,11,6.4,7.6,0
+Gaetano,Cagliari,C,semitop,0.703,0.620,22,6.05,6.4,0
+Ekkelenkamp,Udinese,C,semitop,0.679,0.619,20,6.03,6.5,0
+Nkunku,Milan,A,semitop,0.664,0.619,15,6.03,7.17,0
+Giovane,Napoli,A,semitop,0.716,0.616,23,6.02,6.57,0
+Lobotka,Napoli,C,semitop,0.667,0.612,19,6.08,6.22,0
+Locatelli,Juventus,C,semitop,0.712,0.608,23,6.39,6.34,0
+Mazzitelli,Cagliari,C,semitop,0.554,0.607,10,6.33,7.11,0
+Simeone,Torino,A,starter,0.656,0.606,18,6.09,6.97,0
+Ferguson E.,Roma,A,starter,0.603,0.606,14,6.11,6.86,0
+Akanji,Inter,D,semitop,0.691,0.605,21,6.2,6.12,0
+Bartesaghi,Milan,D,semitop,0.660,0.605,18,6.08,6.39,0
+Gudmundsson A.,Fiorentina,C,semitop,0.690,0.602,22,5.98,6.62,0
+Carlos Augusto,Inter,D,semitop,0.617,0.602,16,6.22,6.38,0
+Celik,Roma,D,semitop,0.659,0.601,19,6.19,6.33,0
+Isaksen,Lazio,C,semitop,0.620,0.601,15,6.11,6.61,0
+Muric,Sassuolo,P,semitop,0.703,0.596,23,6.16,4.84,0
+Basic,Lazio,C,semitop,0.628,0.594,16,6.13,6.4,0
+Ostigard,Genoa,D,semitop,0.637,0.593,18,6.06,6.59,0
+Bisseck,Inter,D,semitop,0.586,0.593,13,6.17,6.42,0
+Holm,Juventus,D,semitop,0.543,0.592,10,6.1,6.65,0
+Vojvoda,Como,D,semitop,0.668,0.589,19,6.08,6.24,0
+Zanoli,Udinese,D,semitop,0.645,0.587,19,6.05,6.29,0
+Montipò,Verona,P,semitop,0.685,0.586,21,6.15,4.6,0
+Belghali,Verona,D,semitop,0.601,0.586,15,6.3,6.53,0
+Baschirotto,Cremonese,D,semitop,0.701,0.585,24,5.91,6.13,0
+Thuram K.,Juventus,C,semitop,0.683,0.584,22,6.17,6.36,0
+Maripan,Torino,D,semitop,0.682,0.583,22,5.98,6.1,0
+Martin,Genoa,D,semitop,0.653,0.583,20,6.03,6.34,0
+Mancini,Roma,D,semitop,0.693,0.582,23,6.18,6.07,0
+Zappacosta,Atalanta,D,semitop,0.682,0.582,21,5.95,5.9,0
+Thorsby,Cremonese,C,semitop,0.582,0.582,13,6.21,6.71,0
+David,Juventus,A,starter,0.657,0.581,20,5.87,6.61,0
+Thorstvedt,Sassuolo,C,semitop,0.632,0.580,18,6.12,6.35,0
+Di Lorenzo,Napoli,D,semitop,0.691,0.579,23,6.07,6.22,0
+Cambiaghi,Bologna,A,starter,0.654,0.579,19,6.06,6.64,0
+Rrahmani,Napoli,D,semitop,0.594,0.576,15,6.21,6.36,0
+Dovbyk,Roma,A,scommessa,0.557,0.576,12,6,6.83,0
+Fadera,Sassuolo,C,semitop,0.665,0.575,21,5.9,6.17,0
+Krstovic,Atalanta,A,starter,0.650,0.573,19,6.08,7.25,0
+Kabasele,Udinese,D,semitop,0.611,0.573,17,6.06,6.34,0
+Valle,Como,D,semitop,0.628,0.569,17,6.09,6.15,0
+Serdar,Verona,C,starter,0.619,0.568,18,6,6.29,0
+Conceicao,Juventus,C,starter,0.600,0.568,16,6.19,6.56,0
+De Bruyne,Napoli,C,starter,0.504,0.568,8,6.38,7.81,0
+Kostic,Juventus,C,starter,0.527,0.567,10,6.2,7.2,0
+Berisha M.,Lecce,C,scommessa,0.550,0.565,12,6.17,6.92,0
+Bernabè,Parma,C,starter,0.686,0.564,24,6.15,6.46,0
+Zalewski,Atalanta,C,starter,0.637,0.564,18,6.15,6.47,0
+Mkhitaryan,Inter,C,starter,0.624,0.562,18,6.12,6.24,0
+Addai,Como,A,scommessa,0.541,0.561,11,6,6.64,0
+De Gea,Fiorentina,P,starter,0.683,0.560,24,6.17,4.74,0
+Cambiaso,Juventus,D,semitop,0.660,0.560,22,5.81,5.88,0
+Sucic P.,Inter,C,starter,0.610,0.560,17,6.09,6.31,0
+Hermoso,Roma,D,semitop,0.606,0.560,17,6.15,6.15,0
+Suzuki,Parma,P,scommessa,0.595,0.560,11,6,4.95,0
+Delprato,Parma,D,semitop,0.677,0.559,23,5.89,5.93,0
+Laurientè,Sassuolo,A,starter,0.677,0.559,23,6.09,6.59,0
+Diego Carlos,Como,D,semitop,0.620,0.559,15,6.13,5.97,0
+Odgaard,Bologna,C,starter,0.598,0.559,16,5.91,6.69,0
+Cancellieri,Lazio,A,starter,0.641,0.558,17,6.03,6.47,0
+Kossounou,Atalanta,D,scommessa,0.539,0.558,11,6,6.3,0
+Esposito Se.,Cagliari,A,starter,0.674,0.555,23,6.23,6.73,0
+Malinovskyi,Genoa,C,starter,0.662,0.555,22,6.12,6.64,0
+Muharemovic,Sassuolo,D,semitop,0.650,0.555,21,5.9,5.95,0
+Leris,Pisa,C,starter,0.649,0.553,21,6.02,6.3,0
+Ricci S.,Milan,C,starter,0.606,0.553,17,6.12,6.35,0
+Caqueret,Como,C,starter,0.587,0.551,16,6.16,6.44,0
+Cristante,Roma,C,starter,0.670,0.549,23,6.11,6.14,0
+Orsolini,Bologna,C,starter,0.663,0.548,22,6.1,6.95,0
+Leali,Genoa,P,starter,0.651,0.548,20,6.15,4.8,0
 Vlahovic,Juventus,A,starter,0.550,0.548,13,5.96,6.65,0
-Addai,Como,C,scommessa,0.526,0.548,11,6,6.64,0
-Politano,Napoli,C,starter,0.632,0.547,20,6.02,6.15,0
-Tomori,Milan,D,semitop,0.631,0.547,19,6,5.95,0
-Hermoso,Roma,D,starter,0.597,0.547,17,6.15,6.15,0
-Lobotka,Napoli,C,starter,0.619,0.545,19,6.08,6.22,0
-Muric,Sassuolo,P,semitop,0.666,0.544,23,6.16,4.84,0
-Adams C.,Torino,A,starter,0.660,0.544,22,6,6.62,0
-Fadera,Sassuolo,C,starter,0.641,0.543,21,5.9,6.17,0
-Suzuki,Parma,P,scommessa,0.583,0.543,11,6,4.95,0
-Montipò,Verona,P,semitop,0.653,0.542,21,6.15,4.6,0
-Kean,Fiorentina,A,starter,0.652,0.541,21,5.82,6.55,0
-Banda,Lecce,C,starter,0.616,0.541,19,5.97,6.25,0
-Luperto,Cremonese,D,starter,0.621,0.538,20,5.89,5.97,0
-Laurientè,Sassuolo,A,starter,0.661,0.537,23,6.09,6.59,0
-Dybala,Roma,A,starter,0.589,0.537,17,6.09,6.44,0
-Vandeputte,Cremonese,C,starter,0.647,0.535,21,6.12,6.26,0
-Luis Henrique,Inter,C,scommessa,0.583,0.531,17,5.88,5.97,0
-Cabal,Juventus,D,starter,0.476,0.531,8,6.07,6.86,0
-Samardzic,Atalanta,C,starter,0.548,0.529,13,5.96,6.33,0
-Mkhitaryan,Inter,C,starter,0.600,0.528,18,6.12,6.24,0
-Pinamonti,Sassuolo,A,starter,0.653,0.526,23,5.82,6.3,0
-Zappa,Cagliari,D,starter,0.617,0.526,20,5.92,6.03,0
-De Gea,Fiorentina,P,starter,0.658,0.525,24,6.17,4.74,0
-Felici,Cagliari,C,scommessa,0.507,0.525,11,6.05,6.55,0
-Pobega,Bologna,C,starter,0.583,0.522,17,5.88,6.28,0
-Fofana Y.,Milan,C,starter,0.606,0.520,19,5.92,6.08,0
-Moreo,Pisa,A,starter,0.636,0.519,21,6.08,6.8,0
-Delprato,Parma,D,starter,0.646,0.516,23,5.89,5.93,0
-Skorupski,Bologna,P,starter,0.554,0.515,11,6.1,5.15,0
-Valeri,Parma,D,starter,0.608,0.513,20,6,6,0
-Moreno Alb.,Como,D,starter,0.472,0.513,8,6.12,6.44,0
-Vardy,Cremonese,A,starter,0.619,0.512,20,5.95,6.63,0
-Colombo,Genoa,A,starter,0.642,0.511,23,5.86,6.43,0
-Gabbia,Milan,D,starter,0.630,0.511,21,5.98,5.9,0
-Terracciano F.,Cremonese,D,starter,0.635,0.510,23,5.95,6.07,0
-Gosens,Fiorentina,D,starter,0.554,0.510,16,5.94,6.25,0
-Sottil,Lecce,C,starter,0.580,0.508,18,6.03,6.24,0
-Idrissi R.,Cagliari,D,starter,0.544,0.507,15,5.93,6.29,0
-Diego Carlos,Como,D,starter,0.581,0.506,15,6.13,5.97,0
-Bellanova,Atalanta,D,starter,0.539,0.506,14,5.92,5.96,0
-Belotti,Cagliari,A,scommessa,0.398,0.504,3,6.33,8.33,0
-De Roon,Atalanta,C,starter,0.619,0.503,20,6.08,6.1,0
-Serdar,Verona,C,starter,0.572,0.502,18,6,6.29,0
-Zaccagni,Lazio,C,starter,0.597,0.500,19,6,6.26,0
-Bernede,Verona,C,starter,0.639,0.499,24,5.85,6.04,0
-Circati,Parma,D,starter,0.585,0.498,19,6.03,6.08,0
-Leali,Genoa,P,starter,0.614,0.496,20,6.15,4.8,0
-Gutierrez,Napoli,D,scommessa,0.465,0.496,9,5.94,6.31,0
-Okoye,Udinese,P,starter,0.586,0.490,16,5.93,4.87,0
-Mina,Cagliari,D,starter,0.531,0.489,15,6.03,6.13,0
-Dodò,Fiorentina,D,starter,0.630,0.487,24,5.89,5.91,0
-Norton-Cuffy,Genoa,D,starter,0.608,0.487,22,5.86,5.93,0
-Rensch,Roma,D,scommessa,0.446,0.487,8,6.06,6.19,0
-Semper,Pisa,P,starter,0.589,0.486,17,6.18,4.71,0
-Vasquez,Genoa,D,starter,0.629,0.484,24,6.07,6.04,0
-Brescianini,Fiorentina,C,scommessa,0.454,0.484,9,6.06,6.75,0
-Angori,Pisa,D,starter,0.592,0.483,21,5.98,6,0
-Vergara,Napoli,C,scommessa,0.396,0.483,4,6.5,7.33,0
-Hien,Atalanta,D,starter,0.596,0.481,20,5.88,5.85,0
-Gatti,Juventus,D,scommessa,0.474,0.481,11,5.91,6.05,0
-Paleari,Torino,P,starter,0.573,0.480,15,6.14,4.54,0
-Cristante,Roma,C,starter,0.617,0.476,23,6.11,6.14,0
-N'Dicka,Roma,D,starter,0.569,0.476,19,6,5.89,0
-El Shaarawy,Roma,C,scommessa,0.473,0.475,11,6.09,6.23,0
-Romagnoli,Lazio,D,starter,0.591,0.473,21,6.05,5.95,0
-Matic,Sassuolo,C,starter,0.614,0.472,23,6.09,6.18,0
-Ravaglia F.,Bologna,P,starter,0.556,0.472,13,6.27,4.46,0
-Pedro,Lazio,A,scommessa,0.512,0.472,14,6.04,6.5,0
-Gila,Lazio,D,starter,0.613,0.471,23,5.98,5.89,0
-Marusic,Lazio,D,starter,0.600,0.469,22,5.83,5.81,0
-Coulibaly L.,Lecce,C,starter,0.576,0.469,20,6.08,6.32,0
-Beukema,Napoli,D,scommessa,0.481,0.469,12,5.86,6.05,0
-Malen,Roma,A,scommessa,0.920,0.468,4,6,7,1
-Djuric,Cremonese,A,scommessa,0.374,0.468,3,7,10,0
-Idzes,Sassuolo,D,starter,0.609,0.466,23,5.95,5.93,0
-Meret,Napoli,P,scommessa,0.433,0.465,7,6.25,5.08,0
-Miranda J.,Bologna,D,starter,0.572,0.464,19,5.94,5.97,0
-Ederson D.S.,Atalanta,C,starter,0.590,0.462,20,6.11,6.08,0
-Kuhn,Como,C,scommessa,0.464,0.462,11,5.95,6.23,0
-Tramoni M.,Pisa,C,starter,0.558,0.461,19,5.76,6.13,0
-Raspadori,Atalanta,A,starter,0.920,0.460,3,6.25,7.75,1
-Messias,Genoa,C,scommessa,0.426,0.460,8,6.14,6.57,0
-Zortea,Bologna,D,starter,0.555,0.458,18,5.82,5.85,0
-Barbieri,Cremonese,D,starter,0.528,0.458,17,6.09,6,0
-Tiago Gabriel,Lecce,D,starter,0.602,0.457,23,5.93,5.91,0
-Martinez Jo.,Inter,P,scommessa,0.353,0.456,2,6.25,5.75,0
-Corvi,Parma,P,scommessa,0.537,0.454,12,6,4.5,0
-Acerbi,Inter,D,scommessa,0.461,0.454,11,6.05,5.95,0
-Djimsiti,Atalanta,D,starter,0.588,0.453,21,5.8,5.78,0
-Lazaro,Torino,D,starter,0.597,0.448,23,5.73,5.77,0
-Ellertsson,Genoa,C,starter,0.585,0.448,22,5.9,6.07,0
-Lucumì,Bologna,D,starter,0.509,0.447,15,5.86,6,0
-Obert,Cagliari,D,starter,0.570,0.445,21,5.85,5.78,0
-Britschgi,Parma,D,starter,0.547,0.445,19,5.83,5.86,0
-Durosinmi,Pisa,A,starter,0.800,0.443,4,6.33,7.67,1
-Sulemana K.,Atalanta,A,starter,0.494,0.443,14,6.04,6.46,0
-Vitinha O.,Genoa,A,starter,0.554,0.439,20,5.97,6.42,0
-Borrelli,Cagliari,A,starter,0.565,0.438,21,5.95,6.36,0
-Adzic,Juventus,C,scommessa,0.363,0.438,4,6.12,6.88,0
-Terracciano,Milan,P,scommessa,0.339,0.437,2,6,6,0
-Walukiewicz,Sassuolo,D,starter,0.587,0.434,23,5.82,5.77,0
-Parisi,Fiorentina,D,starter,0.487,0.434,15,6.07,6,0
-Kristensen T.,Udinese,D,starter,0.476,0.434,14,5.85,6,0
-Gallo,Lecce,D,starter,0.591,0.432,24,5.93,5.89,0
-Pisilli,Roma,C,scommessa,0.406,0.431,8,6.07,6.21,0
-Rinaldi,Parma,P,scommessa,0.328,0.431,1,7,6.5,0
-N'Dri,Lecce,C,scommessa,0.429,0.430,10,6,6.56,0
-Fullkrug,Milan,A,scommessa,0.700,0.429,6,6.08,6.58,1
-Bertola,Udinese,D,starter,0.528,0.426,19,5.86,5.86,0
-Rowe,Bologna,C,starter,0.490,0.426,15,6.07,6.07,0
-Cuadrado,Pisa,D,scommessa,0.412,0.426,9,6.11,6.33,0
-Frendrup,Genoa,C,starter,0.580,0.425,23,6.02,6.09,0
-Ekuban,Genoa,A,starter,0.520,0.425,18,5.97,6.38,0
-Comuzzo,Fiorentina,D,starter,0.515,0.424,18,5.74,5.88,0
-Bianchetti,Cremonese,D,starter,0.526,0.423,19,5.79,5.79,0
-Heggem,Bologna,D,starter,0.566,0.422,21,5.85,5.8,0
-Casadei,Torino,C,starter,0.552,0.420,21,5.82,6,0
-Fagioli,Fiorentina,C,starter,0.546,0.419,21,5.92,5.98,0
-Dominguez B.,Bologna,C,scommessa,0.410,0.418,9,5.89,6.17,0
-Marcandalli,Genoa,D,starter,0.497,0.415,17,5.94,5.91,0
-Edmundsson,Verona,D,scommessa,0.323,0.415,2,7,7,0
-Fabbian,Fiorentina,C,starter,0.473,0.414,15,5.82,6.21,0
-Sorensen O.,Parma,C,starter,0.542,0.413,21,5.8,5.9,0
-Elmas,Napoli,C,starter,0.521,0.410,19,5.69,5.72,0
-Ismajli,Torino,D,starter,0.474,0.410,15,5.83,5.87,0
-Folino,Cremonese,D,scommessa,0.365,0.410,6,6,6.5,0
-Kamara H.,Udinese,D,starter,0.469,0.409,15,5.87,5.83,0
-Frese,Verona,D,starter,0.519,0.407,19,5.81,5.72,0
-Folorunsho,Cagliari,C,starter,0.480,0.407,16,6.03,6.12,0
-Estupinan,Milan,D,scommessa,0.433,0.406,9,5.67,5.56,0
-Karlstrom,Udinese,C,starter,0.571,0.405,24,5.98,6.02,0
-Doig,Sassuolo,D,starter,0.552,0.403,22,5.88,5.79,0
-Buksa,Udinese,A,starter,0.449,0.403,13,6,6.62,0
-El Aynaoui,Roma,C,scommessa,0.421,0.403,11,6,5.95,0
-Solomon,Fiorentina,C,scommessa,0.600,0.399,6,6,6.6,1
-Tourè I.,Pisa,C,starter,0.550,0.399,22,5.9,5.95,0
-Valenti,Parma,D,starter,0.489,0.398,17,5.94,5.85,0
-Gilmour,Napoli,C,scommessa,0.358,0.398,6,6,6.42,0
-Moro N.,Bologna,C,starter,0.481,0.397,16,5.88,6.03,0
-Provstgaard,Lazio,D,scommessa,0.393,0.397,9,6.06,6,0
-Athekame,Milan,D,scommessa,0.361,0.397,6,5.92,6.17,0
-Bradaric,Verona,D,starter,0.511,0.395,19,5.78,5.72,0
-Zerbin,Cremonese,C,starter,0.509,0.394,18,5.79,5.88,0
-Piotrowski,Udinese,C,starter,0.516,0.393,20,5.9,6,0
-Smolcic I.,Como,D,starter,0.474,0.392,15,5.9,5.67,0
-Openda,Juventus,A,scommessa,0.448,0.390,14,5.85,6.08,0
-Juan Jesus,Napoli,D,scommessa,0.480,0.388,15,5.86,5.64,0
-Ghilardi,Roma,D,scommessa,0.374,0.388,8,5.93,5.93,0
-Pellegrini Lu.,Lazio,D,starter,0.505,0.387,19,5.87,5.74,0
-Ahanor,Atalanta,D,scommessa,0.451,0.384,14,5.79,5.71,0
-Ferguson,Bologna,C,starter,0.471,0.383,16,5.93,6,0
-Niasse,Verona,C,starter,0.439,0.383,14,5.85,5.88,0
-Deiola,Cagliari,C,scommessa,0.416,0.383,12,6.04,6,0
-Frattesi,Inter,C,scommessa,0.373,0.382,8,6,6,0
-Adopo,Cagliari,C,starter,0.554,0.381,24,5.76,5.85,0
-Gagliardini,Verona,C,starter,0.484,0.380,18,5.97,5.97,0
-Ranieri L.,Fiorentina,D,scommessa,0.495,0.379,19,5.81,5.83,0
-Noslin,Lazio,A,scommessa,0.447,0.379,11,5.8,6.3,0
-Fortini,Fiorentina,D,scommessa,0.413,0.379,12,5.96,5.96,0
-Nzola,Sassuolo,A,scommessa,0.473,0.376,17,5.91,6.19,0
-Baldanzi,Genoa,C,scommessa,0.376,0.373,9,6,6.22,0
-Kolasinac,Atalanta,D,scommessa,0.343,0.372,6,6.2,6.1,0
-Payero,Cremonese,C,scommessa,0.467,0.371,16,6.03,6.03,0
-Freuler,Bologna,C,scommessa,0.462,0.371,16,6,5.8,0
-Ziolkowski,Roma,D,scommessa,0.350,0.370,7,6.07,5.93,0
-Keita M.,Parma,C,starter,0.523,0.369,22,5.93,5.9,0
-Bella-Kotchap,Verona,D,scommessa,0.420,0.368,13,5.88,5.77,0
-Dallinga,Bologna,A,scommessa,0.462,0.364,16,5.77,6,0
-Zhegrova,Juventus,C,scommessa,0.356,0.363,8,6.07,6.07,0
-De Vrij,Inter,D,scommessa,0.298,0.363,3,6.17,6.17,0
-Canestrelli,Pisa,D,scommessa,0.540,0.362,24,5.72,5.67,0
-Lazzari,Lazio,D,scommessa,0.415,0.361,13,5.81,5.73,0
-Musah,Atalanta,C,scommessa,0.413,0.360,12,5.95,5.91,0
-Bernardeschi,Bologna,C,scommessa,0.417,0.359,13,5.79,5.96,0
-Piccoli,Fiorentina,A,scommessa,0.495,0.357,19,5.72,6.06,0
-Pezzella Giu.,Cremonese,D,scommessa,0.464,0.353,18,5.68,5.56,0
-Prati,Torino,C,scommessa,0.492,0.352,20,5.88,5.9,0
-Akinsanmiro,Pisa,C,scommessa,0.407,0.350,13,6,6,0
-Stulic,Lecce,A,scommessa,0.520,0.349,22,5.69,5.95,0
-Ndour,Fiorentina,C,scommessa,0.448,0.347,17,5.72,5.88,0
-Olivera,Napoli,D,scommessa,0.392,0.346,12,5.59,5.5,0
-Mosquera,Verona,A,scommessa,0.407,0.345,13,5.96,6.08,0
-Maldini,Lazio,C,scommessa,0.347,0.344,8,5.86,5.79,0
-Taylor K.,Lazio,C,starter,0.800,0.343,5,5.75,6.5,1
-Nelsson,Verona,D,scommessa,0.519,0.341,23,5.59,5.43,0
-Sulemana I.,Cagliari,C,scommessa,0.303,0.339,5,5.88,6.5,0
-Tsimikas,Roma,D,scommessa,0.339,0.338,8,5.81,5.75,0
-Veiga D.,Lecce,D,scommessa,0.499,0.337,22,5.81,5.67,0
-Floriani Mussolini,Cremonese,D,scommessa,0.418,0.337,15,5.73,5.67,0
-Van Der Brempt,Como,D,scommessa,0.318,0.335,6,6,5.83,0
-Lorran,Pisa,C,scommessa,0.309,0.335,4,5.88,6.62,0
-Pedersen,Torino,D,scommessa,0.442,0.333,17,5.78,5.69,0
-Aebischer,Pisa,C,scommessa,0.513,0.332,23,5.84,5.89,0
-Valentini N.,Verona,D,scommessa,0.370,0.331,11,5.68,5.59,0
-Zè Pedro,Cagliari,D,scommessa,0.374,0.330,9,5.62,5.56,0
-Gaspar K.,Lecce,D,scommessa,0.470,0.329,20,5.84,5.63,0
-Ekhator,Genoa,A,scommessa,0.416,0.329,15,5.93,6.27,0
-Gineitis,Torino,C,scommessa,0.404,0.329,14,5.69,5.69,0
-Iannoni,Sassuolo,C,scommessa,0.285,0.329,4,6,6.62,0
-Vitik,Bologna,D,scommessa,0.374,0.328,11,5.91,5.77,0
-Tavares N.,Lazio,D,scommessa,0.355,0.327,10,5.61,5.56,0
-Zemura,Udinese,D,scommessa,0.351,0.326,10,5.89,5.78,0
-Israel,Torino,P,scommessa,0.371,0.325,9,5.89,3.83,0
-Pierotti,Lecce,C,scommessa,0.507,0.324,23,5.77,5.75,0
-Ordonez C.,Parma,C,scommessa,0.350,0.324,10,5.61,5.39,0
-Angelino,Roma,D,scommessa,0.343,0.324,5,5.8,5.7,0
-Bondo,Cremonese,C,scommessa,0.482,0.323,20,5.9,5.8,0
-Caracciolo A.,Pisa,D,scommessa,0.488,0.322,22,5.86,5.64,0
-Meister,Pisa,A,scommessa,0.469,0.322,19,5.75,6.06,0
-Joao Mario,Bologna,D,scommessa,0.308,0.322,5,5.75,5.88,0
-Nicolussi Caviglia,Parma,C,scommessa,0.348,0.321,10,5.61,5.61,0
-Lykogiannis,Bologna,D,scommessa,0.331,0.321,8,5.71,5.64,0
-Dia,Lazio,A,scommessa,0.451,0.319,14,5.57,5.79,0
-Silvestri,Cremonese,P,scommessa,0.280,0.318,4,6.38,4.62,0
-Sanabria,Cremonese,A,scommessa,0.415,0.316,15,5.89,6.11,0
-Sohm,Bologna,C,scommessa,0.399,0.316,14,5.61,5.61,0
-Ehizibue,Udinese,D,scommessa,0.389,0.314,14,5.65,5.58,0
-Perilli,Verona,P,scommessa,0.263,0.313,3,6.17,3.83,0
-Darmian,Inter,D,scommessa,0.248,0.310,2,6,6,0
-Koopmeiners,Juventus,C,scommessa,0.449,0.309,19,5.67,5.53,0
-Jashari,Milan,C,scommessa,0.284,0.309,5,5.9,5.9,0
-Patric,Lazio,D,scommessa,0.274,0.306,2,6,6,0
-Njie,Torino,A,scommessa,0.269,0.306,4,5.75,6.75,0
-Lipani,Sassuolo,C,scommessa,0.338,0.305,10,5.83,5.83,0
-Pessina Mas.,Bologna,P,scommessa,0.235,0.304,1,6,6,0
-Scuffet,Pisa,P,scommessa,0.316,0.302,7,6.25,3.75,0
-Perin,Juventus,P,scommessa,0.255,0.302,3,6,5,0
-Sergi Roberto,Como,C,scommessa,0.306,0.301,7,5.93,5.79,0
-Sarr A.,Verona,A,scommessa,0.484,0.300,22,5.7,5.66,0
-Rovella,Lazio,C,scommessa,0.291,0.300,6,5.83,5.83,0
-Casale,Bologna,D,scommessa,0.316,0.299,8,5.56,5.56,0
-Almqvist,Parma,C,scommessa,0.309,0.299,8,5.88,5.88,0
-Pongracic,Fiorentina,D,scommessa,0.471,0.297,22,5.71,5.52,0
-Diao,Como,C,scommessa,0.285,0.296,6,5.75,5.75,0
-Masini,Genoa,C,scommessa,0.403,0.295,16,5.93,5.8,0
-Al-Musrati,Verona,C,scommessa,0.328,0.295,9,5.69,5.62,0
+Kelly L.,Juventus,D,semitop,0.639,0.547,21,6.02,6.1,0
+Bernasconi,Atalanta,D,starter,0.555,0.545,13,6.17,6.21,0
+Okoye,Udinese,P,starter,0.622,0.540,16,5.93,4.87,0
+Sottil,Lecce,C,starter,0.603,0.540,18,6.03,6.24,0
+Vardy,Cremonese,A,starter,0.638,0.539,20,5.95,6.63,0
+Pobega,Bologna,C,starter,0.595,0.538,17,5.88,6.28,0
+Tomori,Milan,D,starter,0.624,0.537,19,6,5.95,0
+Adams C.,Torino,A,starter,0.654,0.536,22,6,6.62,0
+Gabbia,Milan,D,starter,0.648,0.536,21,5.98,5.9,0
+Moreo,Pisa,A,starter,0.648,0.535,21,6.08,6.8,0
+Paleari,Torino,P,starter,0.612,0.534,15,6.14,4.54,0
+Skorupski,Bologna,P,starter,0.567,0.534,11,6.1,5.15,0
+Kean,Fiorentina,A,starter,0.645,0.531,21,5.82,6.55,0
+Buongiorno,Napoli,D,starter,0.609,0.531,19,6.06,6.06,0
+Luperto,Cremonese,D,starter,0.614,0.529,20,5.89,5.97,0
+Miretti,Juventus,C,scommessa,0.498,0.527,10,6.22,6.61,0
+Volpato,Sassuolo,C,scommessa,0.522,0.526,12,6.25,6.75,0
+Semper,Pisa,P,starter,0.617,0.525,17,6.18,4.71,0
+Dybala,Roma,A,starter,0.581,0.525,17,6.09,6.44,0
+Dumfries,Inter,D,starter,0.512,0.525,11,6,6.23,0
+Solet,Udinese,D,starter,0.656,0.522,24,6.04,6.13,0
+Pasalic,Atalanta,C,starter,0.620,0.522,19,5.94,6.33,0
+De Winter,Milan,D,starter,0.551,0.522,14,5.93,6.11,0
+De Roon,Atalanta,C,starter,0.632,0.521,20,6.08,6.1,0
+Ederson D.S.,Atalanta,C,starter,0.630,0.519,20,6.11,6.08,0
+Romagnoli,Lazio,D,starter,0.624,0.519,21,6.05,5.95,0
+Matic,Sassuolo,C,starter,0.647,0.518,23,6.09,6.18,0
+Politano,Napoli,C,starter,0.611,0.518,20,6.02,6.15,0
+Vandeputte,Cremonese,C,starter,0.634,0.516,21,6.12,6.26,0
+Felici,Cagliari,C,scommessa,0.499,0.515,11,6.05,6.55,0
+Pinamonti,Sassuolo,A,starter,0.644,0.514,23,5.82,6.3,0
+N'Dicka,Roma,D,starter,0.594,0.511,19,6,5.89,0
+Sorensen O.,Parma,C,starter,0.612,0.509,21,5.8,5.9,0
+Buksa,Udinese,A,starter,0.525,0.509,13,6,6.62,0
+Tourè I.,Pisa,C,starter,0.628,0.508,22,5.9,5.95,0
+Ravaglia F.,Bologna,P,starter,0.582,0.508,13,6.27,4.46,0
+Zaccagni,Lazio,C,starter,0.601,0.505,19,6,6.26,0
+Gatti,Juventus,D,scommessa,0.492,0.505,11,5.91,6.05,0
+Circati,Parma,D,starter,0.589,0.503,19,6.03,6.08,0
+Gila,Lazio,D,starter,0.636,0.502,23,5.98,5.89,0
+Fofana Y.,Milan,C,starter,0.593,0.502,19,5.92,6.08,0
+Rodriguez Je.,Como,A,starter,0.598,0.500,19,6.11,6.29,0
+Moreno Alb.,Como,D,starter,0.461,0.498,8,6.12,6.44,0
+Cabal,Juventus,D,starter,0.452,0.498,8,6.07,6.86,0
+Vasquez,Genoa,D,starter,0.638,0.497,24,6.07,6.04,0
+Coco,Torino,D,starter,0.608,0.496,21,5.98,6.12,0
+Meret,Napoli,P,scommessa,0.455,0.495,7,6.25,5.08,0
+Terracciano F.,Cremonese,D,starter,0.623,0.493,23,5.95,6.07,0
+Corvi,Parma,P,starter,0.564,0.492,12,6,4.5,0
+Acerbi,Inter,D,scommessa,0.489,0.492,11,6.05,5.95,0
+Coulibaly L.,Lecce,C,starter,0.592,0.491,20,6.08,6.32,0
+Idrissi R.,Cagliari,D,starter,0.528,0.485,15,5.93,6.29,0
+Valeri,Parma,D,starter,0.587,0.484,20,6,6,0
+Banda,Lecce,A,starter,0.580,0.484,19,5.97,6.25,0
+Mina,Cagliari,D,starter,0.527,0.484,15,6.03,6.13,0
+Frendrup,Genoa,C,starter,0.620,0.480,23,6.02,6.09,0
+Karlstrom,Udinese,C,starter,0.625,0.479,24,5.98,6.02,0
+Idzes,Sassuolo,D,starter,0.619,0.479,23,5.95,5.93,0
+Zappa,Cagliari,D,starter,0.583,0.479,20,5.92,6.03,0
+Miranda J.,Bologna,D,starter,0.582,0.479,19,5.94,5.97,0
+Openda,Juventus,A,starter,0.512,0.479,14,5.85,6.08,0
+Samardzic,Atalanta,C,starter,0.512,0.479,13,5.96,6.33,0
+Bernede,Verona,C,starter,0.624,0.478,24,5.85,6.04,0
+Hien,Atalanta,D,starter,0.594,0.478,20,5.88,5.85,0
+Barbieri,Cremonese,D,starter,0.543,0.478,17,6.09,6,0
+Luis Henrique,Inter,C,scommessa,0.544,0.476,17,5.88,5.97,0
+El Shaarawy,Roma,C,scommessa,0.472,0.473,11,6.09,6.23,0
+Bellanova,Atalanta,D,starter,0.515,0.472,14,5.92,5.96,0
+Brescianini,Fiorentina,C,scommessa,0.440,0.466,9,6.06,6.75,0
+Messias,Genoa,C,scommessa,0.430,0.465,8,6.14,6.57,0
+Ekuban,Genoa,A,starter,0.548,0.463,18,5.97,6.38,0
+Vergara,Napoli,C,scommessa,0.380,0.461,4,6.5,7.33,0
+Borrelli,Cagliari,A,starter,0.580,0.459,21,5.95,6.36,0
+Gosens,Fiorentina,D,starter,0.517,0.459,16,5.94,6.25,0
+Pedro,Lazio,A,scommessa,0.487,0.458,14,6.04,6.5,0
+Belotti,Cagliari,A,scommessa,0.364,0.456,3,6.33,8.33,0
+Tiago Gabriel,Lecce,D,starter,0.601,0.455,23,5.93,5.91,0
+Djimsiti,Atalanta,D,starter,0.590,0.455,21,5.8,5.78,0
+Beukema,Napoli,D,scommessa,0.471,0.455,12,5.86,6.05,0
+Rensch,Roma,D,scommessa,0.423,0.455,8,6.06,6.19,0
+Angori,Pisa,D,starter,0.572,0.454,21,5.98,6,0
+Gutierrez,Napoli,D,scommessa,0.434,0.454,9,5.94,6.31,0
+Ellertsson,Genoa,C,starter,0.589,0.453,22,5.9,6.07,0
+Marusic,Lazio,D,starter,0.588,0.453,22,5.83,5.81,0
+Smolcic I.,Como,D,starter,0.519,0.453,15,5.9,5.67,0
+Folorunsho,Cagliari,C,starter,0.513,0.453,16,6.03,6.12,0
+Gallo,Lecce,D,starter,0.606,0.452,24,5.93,5.89,0
+Sulemana K.,Atalanta,A,starter,0.500,0.452,14,6.04,6.46,0
+Fullkrug,Milan,A,scommessa,0.700,0.451,6,6.08,6.58,1
+Gagliardini,Verona,C,starter,0.533,0.449,18,5.97,5.97,0
+Dallinga,Bologna,A,starter,0.523,0.449,16,5.77,6,0
+Djuric,Cremonese,A,scommessa,0.361,0.449,3,7,10,0
+Stulic,Lecce,A,starter,0.590,0.446,22,5.69,5.95,0
+Keita M.,Parma,C,starter,0.577,0.445,22,5.93,5.9,0
+Pellegrini Lu.,Lazio,D,starter,0.547,0.445,19,5.87,5.74,0
+Rowe,Bologna,C,starter,0.503,0.445,15,6.07,6.07,0
+Dodò,Fiorentina,D,starter,0.600,0.444,24,5.89,5.91,0
+Juan Jesus,Napoli,D,scommessa,0.520,0.444,15,5.86,5.64,0
+Vitinha O.,Genoa,A,starter,0.558,0.443,20,5.97,6.42,0
+Piccoli,Fiorentina,A,starter,0.556,0.442,19,5.72,6.06,0
+Doig,Sassuolo,D,starter,0.580,0.441,22,5.88,5.79,0
+Norton-Cuffy,Genoa,D,starter,0.574,0.441,22,5.86,5.93,0
+Piotrowski,Udinese,C,starter,0.549,0.439,20,5.9,6,0
+Parisi,Fiorentina,D,starter,0.491,0.439,15,6.07,6,0
+Valenti,Parma,D,starter,0.518,0.438,17,5.94,5.85,0
+Lucumì,Bologna,D,starter,0.503,0.438,15,5.86,6,0
+Heggem,Bologna,D,starter,0.576,0.435,21,5.85,5.8,0
+Britschgi,Parma,D,starter,0.538,0.433,19,5.83,5.86,0
+Adopo,Cagliari,C,starter,0.591,0.432,24,5.76,5.85,0
+Payero,Cremonese,C,starter,0.511,0.432,16,6.03,6.03,0
+Martinez Jo.,Inter,P,scommessa,0.334,0.430,2,6.25,5.75,0
+Obert,Cagliari,D,starter,0.558,0.428,21,5.85,5.78,0
+Zortea,Bologna,D,starter,0.533,0.428,18,5.82,5.85,0
+Ferguson,Bologna,C,starter,0.503,0.428,16,5.93,6,0
+Adzic,Juventus,C,scommessa,0.356,0.428,4,6.12,6.88,0
+Walukiewicz,Sassuolo,D,starter,0.581,0.427,23,5.82,5.77,0
+Casadei,Torino,C,starter,0.558,0.427,21,5.82,6,0
+Elmas,Napoli,C,starter,0.532,0.424,19,5.69,5.72,0
+Moro N.,Bologna,C,starter,0.500,0.424,16,5.88,6.03,0
+Colombo,Genoa,A,starter,0.578,0.423,23,5.86,6.43,0
+Fagioli,Fiorentina,C,starter,0.550,0.423,21,5.92,5.98,0
+Marcandalli,Genoa,D,starter,0.503,0.423,17,5.94,5.91,0
+Cuadrado,Pisa,D,scommessa,0.409,0.423,9,6.11,6.33,0
+Frese,Verona,D,starter,0.530,0.422,19,5.81,5.72,0
+Provstgaard,Lazio,D,scommessa,0.411,0.422,9,6.06,6,0
+Rinaldi,Parma,P,scommessa,0.321,0.421,1,7,6.5,0
+El Aynaoui,Roma,C,scommessa,0.434,0.420,11,6,5.95,0
+Freuler,Bologna,C,starter,0.497,0.419,16,6,5.8,0
+Prati,Torino,C,starter,0.539,0.418,20,5.88,5.9,0
+Bradaric,Verona,D,starter,0.528,0.418,19,5.78,5.72,0
+Bertola,Udinese,D,starter,0.523,0.418,19,5.86,5.86,0
+Musah,Atalanta,C,scommessa,0.455,0.418,12,5.95,5.91,0
+Bondo,Cremonese,C,starter,0.549,0.416,20,5.9,5.8,0
+Edmundsson,Verona,D,scommessa,0.323,0.416,2,7,7,0
+Kristensen T.,Udinese,D,starter,0.461,0.414,14,5.85,6,0
+Ahanor,Atalanta,D,starter,0.472,0.413,14,5.79,5.71,0
+Bella-Kotchap,Verona,D,starter,0.451,0.411,13,5.88,5.77,0
+Malen,Roma,A,starter,0.920,0.410,4,6,7,1
+Durosinmi,Pisa,A,starter,0.800,0.410,4,6.33,7.67,1
+Lazaro,Torino,D,starter,0.569,0.410,23,5.73,5.77,0
+Pisilli,Roma,C,scommessa,0.391,0.410,8,6.07,6.21,0
+Terracciano,Milan,P,scommessa,0.318,0.408,2,6,6,0
+Deiola,Cagliari,C,scommessa,0.433,0.407,12,6.04,6,0
+Frattesi,Inter,C,scommessa,0.390,0.407,8,6,6,0
+Aebischer,Pisa,C,starter,0.566,0.406,23,5.84,5.89,0
+Tramoni M.,Pisa,C,scommessa,0.517,0.404,19,5.76,6.13,0
+Kuhn,Como,A,scommessa,0.428,0.403,11,5.95,6.23,0
+Kolasinac,Atalanta,D,scommessa,0.365,0.403,6,6.2,6.1,0
+Niasse,Verona,C,scommessa,0.452,0.401,14,5.85,5.88,0
+Estupinan,Milan,D,scommessa,0.429,0.401,9,5.67,5.56,0
+Fabbian,Fiorentina,C,scommessa,0.463,0.400,15,5.82,6.21,0
+Sarr A.,Verona,A,starter,0.556,0.399,22,5.7,5.66,0
+Ziolkowski,Roma,D,scommessa,0.371,0.399,7,6.07,5.93,0
+Athekame,Milan,D,scommessa,0.362,0.398,6,5.92,6.17,0
+Zerbin,Cremonese,C,scommessa,0.511,0.397,18,5.79,5.88,0
+Lazzari,Lazio,D,scommessa,0.441,0.397,13,5.81,5.73,0
+Meister,Pisa,A,scommessa,0.522,0.396,19,5.75,6.06,0
+Bianchetti,Cremonese,D,scommessa,0.507,0.396,19,5.79,5.79,0
+Ismajli,Torino,D,scommessa,0.464,0.396,15,5.83,5.87,0
+Zhegrova,Juventus,C,scommessa,0.380,0.396,8,6.07,6.07,0
+Kamara H.,Udinese,D,scommessa,0.460,0.395,15,5.87,5.83,0
+Koopmeiners,Juventus,C,starter,0.510,0.394,19,5.67,5.53,0
+Pierotti,Lecce,C,scommessa,0.556,0.392,23,5.77,5.75,0
+Israel,Torino,P,scommessa,0.419,0.392,9,5.89,3.83,0
+Ranieri L.,Fiorentina,D,scommessa,0.503,0.391,19,5.81,5.83,0
+Comuzzo,Fiorentina,D,scommessa,0.492,0.391,18,5.74,5.88,0
+Fortini,Fiorentina,D,scommessa,0.421,0.390,12,5.96,5.96,0
+Veiga D.,Lecce,D,scommessa,0.537,0.389,22,5.81,5.67,0
+Ghilardi,Roma,D,scommessa,0.376,0.389,8,5.93,5.93,0
+Mosquera,Verona,A,scommessa,0.438,0.388,13,5.96,6.08,0
+Nelsson,Verona,D,starter,0.553,0.387,23,5.59,5.43,0
+Masini,Genoa,C,scommessa,0.470,0.387,16,5.93,5.8,0
+Gilmour,Napoli,C,scommessa,0.350,0.387,6,6,6.42,0
+Vitik,Bologna,D,scommessa,0.415,0.386,11,5.91,5.77,0
+Raspadori,Atalanta,A,starter,0.920,0.385,3,6.25,7.75,1
+Ramadani,Lecce,C,scommessa,0.551,0.384,23,5.84,5.68,0
+Gaspar K.,Lecce,D,scommessa,0.510,0.384,20,5.84,5.63,0
+Caracciolo A.,Pisa,D,scommessa,0.532,0.383,22,5.86,5.64,0
+Bernardeschi,Bologna,C,scommessa,0.434,0.383,13,5.79,5.96,0
+Ekhator,Genoa,A,scommessa,0.452,0.380,15,5.93,6.27,0
+Folino,Cremonese,D,scommessa,0.342,0.378,6,6,6.5,0
+Baldanzi,Genoa,C,scommessa,0.378,0.376,9,6,6.22,0
+Canestrelli,Pisa,D,scommessa,0.549,0.374,24,5.72,5.67,0
+Pedersen,Torino,D,scommessa,0.472,0.374,17,5.78,5.69,0
+Akinsanmiro,Pisa,C,scommessa,0.424,0.374,13,6,6,0
+Olivera,Napoli,D,scommessa,0.411,0.373,12,5.59,5.5,0
+Noslin,Lazio,A,scommessa,0.422,0.371,11,5.8,6.3,0
+Nzola,Sassuolo,A,scommessa,0.469,0.370,17,5.91,6.19,0
+N'Dri,Lecce,A,scommessa,0.387,0.368,10,6,6.56,0
+Pezzella Giu.,Cremonese,D,scommessa,0.474,0.366,18,5.68,5.56,0
+Ndour,Fiorentina,C,scommessa,0.462,0.366,17,5.72,5.88,0
+Van Der Brempt,Como,D,scommessa,0.340,0.365,6,6,5.83,0
+Sanabria,Cremonese,A,scommessa,0.449,0.363,15,5.89,6.11,0
+Floriani Mussolini,Cremonese,D,scommessa,0.436,0.363,15,5.73,5.67,0
+Valentini N.,Verona,D,scommessa,0.391,0.360,11,5.68,5.59,0
+Zemura,Udinese,D,scommessa,0.376,0.360,10,5.89,5.78,0
+Tsimikas,Roma,D,scommessa,0.354,0.360,8,5.81,5.75,0
+Ordonez C.,Parma,C,scommessa,0.375,0.359,10,5.61,5.39,0
+Angelino,Roma,D,scommessa,0.368,0.358,5,5.8,5.7,0
+De Vrij,Inter,D,scommessa,0.294,0.358,3,6.17,6.17,0
+Estevez,Parma,C,scommessa,0.418,0.354,14,5.79,5.71,0
+Pongracic,Fiorentina,D,scommessa,0.511,0.353,22,5.71,5.52,0
+Tavares N.,Lazio,D,scommessa,0.373,0.353,10,5.61,5.56,0
+Grassi,Cremonese,C,scommessa,0.465,0.351,17,5.72,5.66,0
+Calabresi,Pisa,D,scommessa,0.439,0.351,16,5.83,5.67,0
+Marin M.,Pisa,C,scommessa,0.454,0.349,17,5.84,5.72,0
+Dia,Lazio,A,scommessa,0.448,0.349,14,5.57,5.79,0
+Ehizibue,Udinese,D,scommessa,0.414,0.348,14,5.65,5.58,0
+Sergi Roberto,Como,C,scommessa,0.339,0.347,7,5.93,5.79,0
+Lipani,Sassuolo,C,scommessa,0.368,0.346,10,5.83,5.83,0
+Piccinini G.,Pisa,C,scommessa,0.389,0.342,12,5.92,5.83,0
+Zè Pedro,Cagliari,D,scommessa,0.381,0.340,9,5.62,5.56,0
+Tameze,Torino,C,scommessa,0.445,0.336,17,5.65,5.59,0
+Sohm,Bologna,C,scommessa,0.411,0.333,14,5.61,5.61,0
+Dominguez B.,Bologna,A,scommessa,0.352,0.333,9,5.89,6.17,0
+Perilli,Verona,P,scommessa,0.277,0.333,3,6.17,3.83,0
+Gineitis,Torino,C,scommessa,0.406,0.332,14,5.69,5.69,0
+Oristanio,Parma,C,scommessa,0.390,0.331,13,5.71,5.67,0
+Akpa Akpro,Verona,C,scommessa,0.343,0.331,9,5.89,5.67,0
+Iannoni,Sassuolo,C,scommessa,0.284,0.329,4,6,6.62,0
+Taylor K.,Lazio,C,starter,0.800,0.328,5,5.75,6.5,1
+Maleh,Cremonese,C,scommessa,0.361,0.328,10,5.83,5.72,0
+Sulemana I.,Cagliari,C,scommessa,0.294,0.327,5,5.88,6.5,0
+Miller L.,Udinese,C,scommessa,0.339,0.326,9,5.88,5.75,0
+Gimenez,Milan,A,scommessa,0.366,0.325,9,5.56,5.5,0
+Maldini,Lazio,C,scommessa,0.334,0.325,8,5.86,5.79,0
+De Silvestri,Bologna,D,scommessa,0.295,0.322,5,6.1,5.9,0
+Silvestri,Cremonese,P,scommessa,0.283,0.322,4,6.38,4.62,0
+Jashari,Milan,C,scommessa,0.292,0.321,5,5.9,5.9,0
+Al-Musrati,Verona,C,scommessa,0.344,0.317,9,5.69,5.62,0
+Vranckx,Sassuolo,C,scommessa,0.370,0.316,12,5.62,5.54,0
+Harroui,Verona,C,scommessa,0.331,0.314,9,5.69,5.69,0
+Ilic,Torino,C,scommessa,0.309,0.314,7,6,5.86,0
+Ondrejka,Parma,C,scommessa,0.352,0.310,11,5.64,5.59,0
+Scuffet,Pisa,P,scommessa,0.321,0.309,7,6.25,3.75,0
+Dele-Bashiru,Lazio,C,low,0.321,0.308,8,5.71,5.71,0
+Lykogiannis,Bologna,D,scommessa,0.320,0.306,8,5.71,5.64,0
+Camarda,Lecce,A,scommessa,0.415,0.305,16,5.66,5.62,0
+Nicolussi Caviglia,Parma,C,scommessa,0.336,0.305,10,5.61,5.61,0
+Darmian,Inter,D,scommessa,0.244,0.305,2,6,6,0
+Lorran,Pisa,C,scommessa,0.286,0.304,4,5.88,6.62,0
+Morata,Como,A,scommessa,0.367,0.302,12,5.5,5.21,0
+Belahyane,Lazio,C,low,0.317,0.302,8,5.75,5.69,0
+Cheddira,Lecce,A,scommessa,0.338,0.300,10,5.78,6.11,0
+Joao Mario,Bologna,D,scommessa,0.293,0.300,5,5.75,5.88,0
+Solomon,Fiorentina,A,scommessa,0.600,0.299,6,6,6.6,1
+Patric,Lazio,D,scommessa,0.269,0.299,2,6,6,0
+Candè,Sassuolo,D,scommessa,0.310,0.298,8,5.69,5.56,0
+Perin,Juventus,P,scommessa,0.250,0.295,3,6,5,0
 Biraghi,Torino,D,scommessa,0.319,0.294,9,5.56,5.56,0
-Nkounkou,Torino,D,scommessa,0.283,0.293,6,5.75,5.75,0
-De Silvestri,Bologna,D,scommessa,0.273,0.293,5,6.1,5.9,0
-Lovric,Verona,C,scommessa,0.269,0.293,5,5.62,5.75,0
-Gandelman,Lecce,C,scommessa,0.680,0.291,5,5.88,5.88,1
-Diouf,Inter,C,scommessa,0.257,0.290,4,5.67,5.67,0
-Harroui,Verona,C,scommessa,0.313,0.289,9,5.69,5.69,0
-Padelli,Udinese,P,scommessa,0.236,0.288,2,6.25,5.25,0
-Dele-Bashiru,Lazio,C,scommessa,0.307,0.287,8,5.71,5.71,0
-Ndaba,Lecce,D,scommessa,0.277,0.287,6,5.83,5.83,0
-Sala A.,Lecce,C,low,0.255,0.287,4,5.75,6,0
-Belahyane,Lazio,C,scommessa,0.306,0.285,8,5.75,5.69,0
-Calabresi,Pisa,D,scommessa,0.390,0.283,16,5.83,5.67,0
-Ramadani,Lecce,C,scommessa,0.477,0.282,23,5.84,5.68,0
-Slotsager,Verona,D,low,0.261,0.280,5,5.62,5.62,0
-Marianucci,Torino,D,low,0.249,0.280,4,5.67,6,0
-Estevez,Parma,C,scommessa,0.364,0.279,14,5.79,5.71,0
-Oristanio,Parma,C,scommessa,0.353,0.279,13,5.71,5.67,0
-Ilkhan,Torino,C,low,0.295,0.278,8,5.64,5.57,0
-Grassi,Cremonese,C,scommessa,0.409,0.273,17,5.72,5.66,0
-Coulibaly W.,Sassuolo,D,scommessa,0.280,0.273,7,5.42,5.42,0
-Piccinini G.,Pisa,C,scommessa,0.338,0.271,12,5.92,5.83,0
-Miller L.,Udinese,C,low,0.300,0.271,9,5.88,5.75,0
-Tameze,Torino,C,scommessa,0.394,0.266,17,5.65,5.59,0
-Ondrejka,Parma,C,scommessa,0.320,0.266,11,5.64,5.59,0
-Venturino,Roma,C,low,0.226,0.264,3,5.75,5.75,0
-Boga,Juventus,C,scommessa,0.202,0.264,1,0,0,0
-Fazzini,Fiorentina,C,low,0.283,0.263,8,5.81,5.81,0
-Ilic,Torino,C,low,0.273,0.263,7,6,5.86,0
-Bayo V.,Udinese,A,scommessa,0.297,0.260,9,5.75,5.88,0
-Candè,Sassuolo,D,low,0.283,0.260,8,5.69,5.56,0
-Marin M.,Pisa,C,scommessa,0.389,0.259,17,5.84,5.72,0
-Siebert,Lecce,D,low,0.267,0.258,7,5.5,5.5,0
-Rugani,Fiorentina,D,low,0.232,0.258,4,5.88,5.88,0
-Vranckx,Sassuolo,C,low,0.328,0.257,12,5.62,5.54,0
-Akpa Akpro,Verona,C,low,0.290,0.257,9,5.89,5.67,0
-Cheddira,Lecce,A,scommessa,0.306,0.255,10,5.78,6.11,0
-Faye,Cremonese,D,low,0.253,0.254,6,5.75,5.67,0
-Isaac,Verona,A,scommessa,0.450,0.250,1,6,6,1
-Maleh,Cremonese,C,scommessa,0.304,0.249,10,5.83,5.72,0
-Albiol,Pisa,D,low,0.249,0.248,6,5.83,5.75,0
-Morata,Como,A,scommessa,0.327,0.246,12,5.5,5.21,0
-Collocolo,Cremonese,C,low,0.227,0.246,4,6,5.88,0
-Gimenez,Milan,A,scommessa,0.307,0.244,9,5.56,5.5,0
-Odogu,Milan,D,low,0.315,0.243,0,0,0,0
-Torriani,Milan,P,scommessa,0.315,0.243,0,0,0,0
-Hysaj,Lazio,D,low,0.198,0.242,2,5.5,5.5,0
-Lahdo,Como,C,low,0.314,0.241,0,0,0,0
-Calligaris,Inter,P,scommessa,0.313,0.241,0,0,0,0
-Di Gennaro,Inter,P,scommessa,0.313,0.241,0,0,0,0
-Milik,Juventus,A,low,0.313,0.241,0,0,0,0
-Rodriguez Ju.,Cagliari,D,low,0.257,0.241,7,5.58,5.42,0
-Romagna,Sassuolo,D,low,0.207,0.238,3,5.5,5.5,0
-Zapata D.,Torino,A,scommessa,0.340,0.235,14,5.62,5.62,0
-Lukaku,Napoli,A,starter,0.310,0.235,0,0,0,0
-Goldaniga,Como,D,low,0.309,0.235,0,0,0,0
-Gollini,Roma,P,scommessa,0.309,0.235,0,0,0,0
-Zelezny,Roma,P,scommessa,0.309,0.235,0,0,0,0
-Sava,Udinese,P,scommessa,0.271,0.235,7,5.57,3.5,0
-Lirola,Verona,D,scommessa,0.217,0.235,4,5.67,5.5,0
-Cavlina,Como,P,scommessa,0.308,0.234,0,0,0,0
-Tornqvist,Como,P,scommessa,0.308,0.234,0,0,0,0
-Vigorito,Como,P,scommessa,0.308,0.234,0,0,0,0
-Troilo,Parma,D,low,0.276,0.234,9,5.56,5.31,0
-Balentien,Milan,A,low,0.308,0.233,0,0,0,0
-Harrison,Fiorentina,C,scommessa,0.600,0.232,2,5.5,5.5,1
-Santos A.,Napoli,C,scommessa,0.307,0.232,0,0,0,0
-Mazzocchi,Napoli,D,low,0.215,0.232,4,5.75,5.5,0
-Cham,Verona,D,low,0.203,0.232,3,5.17,5.17,0
+Casale,Bologna,D,scommessa,0.311,0.294,8,5.56,5.56,0
+Bayo V.,Udinese,A,scommessa,0.321,0.293,9,5.75,5.88,0
+Rovella,Lazio,C,low,0.285,0.292,6,5.83,5.83,0
+Troilo,Parma,D,scommessa,0.317,0.291,9,5.56,5.31,0
+Diouf,Inter,C,low,0.254,0.285,4,5.67,5.67,0
+Almqvist,Parma,A,scommessa,0.298,0.284,8,5.88,5.88,0
+Fazzini,Fiorentina,C,low,0.295,0.280,8,5.81,5.81,0
+Padelli,Udinese,P,scommessa,0.231,0.280,2,6.25,5.25,0
+Ndaba,Lecce,D,low,0.271,0.279,6,5.83,5.83,0
+Aboukhlal,Torino,A,scommessa,0.322,0.278,10,5.72,5.61,0
+Slotsager,Verona,D,scommessa,0.259,0.277,5,5.62,5.62,0
+Lovric,Verona,C,low,0.257,0.276,5,5.62,5.75,0
+Mazzocchi,Napoli,D,low,0.247,0.276,4,5.75,5.5,0
+Faye,Cremonese,D,low,0.268,0.275,6,5.75,5.67,0
+Diao,Como,A,low,0.272,0.274,6,5.75,5.75,0
+Nkounkou,Torino,D,low,0.268,0.273,6,5.75,5.75,0
+Zapata D.,Torino,A,scommessa,0.366,0.272,14,5.62,5.62,0
+Sava,Udinese,P,scommessa,0.298,0.272,7,5.57,3.5,0
+Rodriguez Ju.,Cagliari,D,scommessa,0.279,0.271,7,5.58,5.42,0
+Njie,Torino,A,scommessa,0.244,0.271,4,5.75,6.75,0
+Marianucci,Torino,D,low,0.240,0.267,4,5.67,6,0
+Collocolo,Cremonese,C,low,0.241,0.266,4,6,5.88,0
+Coulibaly W.,Sassuolo,D,low,0.274,0.265,7,5.42,5.42,0
+Ilkhan,Torino,C,scommessa,0.284,0.263,8,5.64,5.57,0
+Siebert,Lecce,D,low,0.270,0.262,7,5.5,5.5,0
+Albiol,Pisa,D,low,0.258,0.261,6,5.83,5.75,0
+Pessina Mas.,Bologna,P,scommessa,0.204,0.261,1,6,6,0
+Lirola,Verona,D,scommessa,0.235,0.260,4,5.67,5.5,0
+Ndiaye,Parma,D,low,0.270,0.259,7,5.36,5.07,0
+Isaac,Verona,A,low,0.450,0.257,1,6,6,1
+Ceccherini,Cremonese,D,low,0.267,0.257,7,5.5,5.25,0
+Venturino,Roma,C,low,0.221,0.257,3,5.75,5.75,0
+Gandelman,Lecce,C,scommessa,0.680,0.255,5,5.88,5.88,1
+Anjorin,Torino,C,scommessa,0.266,0.253,7,5.67,5.58,0
+Vural,Pisa,C,low,0.276,0.251,8,5.81,5.62,0
+Rugani,Fiorentina,D,low,0.226,0.249,4,5.88,5.88,0
+Otoa,Genoa,D,low,0.260,0.248,7,5.57,5.21,0
+Sala A.,Lecce,C,low,0.223,0.244,4,5.75,6,0
+Pavoletti,Cagliari,A,low,0.222,0.243,4,6,5.83,0
+Zarraga,Udinese,C,low,0.232,0.241,5,5.75,5.62,0
+Odogu,Milan,D,low,0.310,0.236,0,0,0,0
+Sabelli,Genoa,D,low,0.228,0.236,5,5.8,5.4,0
+Hysaj,Lazio,D,low,0.194,0.236,2,5.5,5.5,0
+Torriani,Milan,P,scommessa,0.308,0.233,0,0,0,0
 Obrador,Torino,D,scommessa,0.620,0.231,3,5.75,5.75,1
-Liteta,Cagliari,C,low,0.189,0.231,2,5.75,5.75,0
-Suslov,Verona,C,low,0.304,0.228,0,0,0,0
-Camarda,Lecce,A,scommessa,0.358,0.226,16,5.66,5.62,0
-Oyegoke,Verona,D,low,0.185,0.224,2,5,5,0
-Lamptey,Fiorentina,D,low,0.172,0.223,1,6,6,0
-Pinsoglio,Juventus,P,scommessa,0.299,0.220,0,0,0,0
-Rossi F.,Atalanta,P,scommessa,0.298,0.220,0,0,0,0
-Sportiello,Atalanta,P,scommessa,0.298,0.220,0,0,0,0
-Anjorin,Torino,C,low,0.242,0.220,7,5.67,5.58,0
-Przyborek,Lazio,C,low,0.298,0.219,0,0,0,0
-Contini,Napoli,P,scommessa,0.297,0.218,0,0,0,0
-Ferrante,Napoli,P,scommessa,0.297,0.218,0,0,0,0
-Furlanetto,Lazio,P,scommessa,0.295,0.216,0,0,0,0
-Motta,Lazio,P,scommessa,0.295,0.216,0,0,0,0
-Cremaschi,Parma,C,low,0.295,0.215,0,0,0,0
-Ceccherini,Cremonese,D,low,0.236,0.215,7,5.5,5.25,0
-Boloca,Sassuolo,C,low,0.179,0.215,2,5.75,5.75,0
-Gigot,Lazio,D,low,0.293,0.213,0,0,0,0
-Ndiaye,Parma,D,low,0.237,0.213,7,5.36,5.07,0
-Zarraga,Udinese,C,low,0.211,0.212,5,5.75,5.62,0
-Frigan,Parma,A,low,0.291,0.209,0,0,0,0
-Bakola,Sassuolo,C,low,0.290,0.208,0,0,0,0
-Kouadio,Fiorentina,D,low,0.160,0.206,1,6,6,0
-Vaz,Roma,A,scommessa,0.550,0.203,2,5.75,5.75,1
-Bijlow,Genoa,P,scommessa,0.700,0.202,3,6,3.5,1
-Toniolo,Verona,P,low,0.286,0.202,0,0,0,0
-Okereke,Cremonese,A,low,0.169,0.200,2,6,6,0
-Otoa,Genoa,D,low,0.225,0.199,7,5.57,5.21,0
-Ebosse,Torino,D,low,0.179,0.199,3,5.5,5.5,0
-Albarracin,Cagliari,A,low,0.600,0.198,0,0,0,1
-Helgason,Lecce,C,low,0.178,0.198,3,5.5,5.5,0
-Sabelli,Genoa,D,low,0.200,0.197,5,5.8,5.4,0
-Pedro Felipe,Sassuolo,D,low,0.281,0.196,0,0,0,0
-Pieragnolo,Sassuolo,D,low,0.281,0.196,0,0,0,0
-Amorim,Genoa,C,scommessa,0.580,0.195,0,0,0,1
-Helland,Bologna,D,low,0.580,0.195,0,0,0,1
-Elphege,Parma,A,low,0.450,0.195,0,0,0,1
-Strefezza,Parma,C,scommessa,0.152,0.195,1,0,0,0
-Zaragoza,Roma,C,scommessa,0.152,0.194,1,0,0,0
-Ratkov,Lazio,A,scommessa,0.700,0.193,4,5.62,5.62,1
-Aboukhlal,Torino,A,low,0.260,0.192,10,5.72,5.61,0
-Garcia U.,Sassuolo,D,low,0.150,0.192,1,0,0,0
-Stengs,Pisa,C,low,0.278,0.191,0,0,0,0
-Vural,Pisa,C,low,0.232,0.190,8,5.81,5.62,0
-Pavoletti,Cagliari,A,low,0.185,0.190,4,6,5.83,0
-Onana J.,Genoa,C,low,0.149,0.190,1,5.5,5.5,0
-Turati,Sassuolo,P,low,0.148,0.190,1,5.5,3.5,0
-Ciocci,Cagliari,P,low,0.276,0.189,0,0,0,0
-Satalino,Sassuolo,P,low,0.276,0.189,0,0,0,0
-Sherri,Cagliari,P,low,0.276,0.189,0,0,0,0
-Trepy,Cagliari,A,low,0.148,0.189,1,0,0,0
-Mlacic,Udinese,D,low,0.276,0.188,0,0,0,0
-Arena A.,Roma,A,low,0.148,0.188,1,0,0,0
-Fofana Sa.,Lecce,C,low,0.275,0.187,0,0,0,0
-Marchwinski,Lecce,C,low,0.275,0.187,0,0,0,0
-Nava,Cremonese,P,low,0.275,0.187,0,0,0,0
-Carboni F.,Parma,D,low,0.146,0.186,1,0,0,0
-Raterink,Cagliari,D,low,0.273,0.185,0,0,0,0
-Jean,Lecce,D,low,0.272,0.184,0,0,0,0
-Ngom,Lecce,C,low,0.520,0.183,0,0,0,1
-Iling Junior,Pisa,C,scommessa,0.272,0.183,0,0,0,0
-Sabiri,Fiorentina,C,low,0.143,0.182,1,5.5,5.5,0
-Bowie,Verona,A,scommessa,0.620,0.181,2,5,5,1
-Zatterstrom,Genoa,D,scommessa,0.500,0.180,0,0,0,1
-Gorter,Lecce,C,low,0.141,0.180,1,5.5,5.5,0
-Fruchtl,Lecce,P,low,0.269,0.179,0,0,0,0
-Samooja,Lecce,P,low,0.269,0.179,0,0,0,0
-Perez M.,Lecce,D,low,0.141,0.179,1,5,5,0
-Loyola,Pisa,C,scommessa,0.720,0.178,2,5.5,5.5,1
-Arizala,Udinese,D,low,0.500,0.178,0,0,0,1
-Hojholt,Pisa,C,low,0.200,0.178,6,5.67,5.58,0
-Sommariva,Genoa,P,low,0.154,0.178,2,5.75,3.75,0
-Nunziante,Udinese,P,low,0.267,0.176,0,0,0,0
-Siviero,Torino,P,low,0.267,0.176,0,0,0,0
-Dossena,Cagliari,D,low,0.138,0.175,1,0,0,0
-Moumbagna,Cremonese,A,low,0.186,0.172,5,5.6,5.6,0
-Siegrist,Genoa,P,low,0.263,0.171,0,0,0,0
-Cornet,Genoa,C,low,0.181,0.169,5,5.12,4.38,0
-Denoon,Pisa,D,low,0.144,0.167,2,5.5,5.25,0
-Christensen O.,Fiorentina,P,low,0.259,0.165,0,0,0,0
-Lezzerini,Fiorentina,P,low,0.259,0.165,0,0,0,0
-Bozhinov,Pisa,D,low,0.550,0.163,2,5,4.5,1
-Nicolas,Pisa,P,low,0.257,0.163,0,0,0,0
-Kulenovic,Torino,A,scommessa,0.130,0.163,1,0,0,0
-Moro L.,Sassuolo,A,low,0.169,0.152,5,5.7,5.6,0
-Stojilkovic,Pisa,A,scommessa,0.550,0.150,2,5.5,5.5,1
-Gueye,Udinese,A,low,0.176,0.143,6,5.6,5.5,0
-Coppola F.,Pisa,D,low,0.132,0.134,3,5,4.67,0
+Calligaris,Inter,P,scommessa,0.305,0.230,0,0,0,0
+Di Gennaro,Inter,P,scommessa,0.305,0.230,0,0,0,0
+Cham,Verona,D,low,0.202,0.230,3,5.17,5.17,0
+Romagna,Sassuolo,D,low,0.201,0.230,3,5.5,5.5,0
+Goldaniga,Como,D,low,0.304,0.228,0,0,0,0
+Gueye,Udinese,A,low,0.237,0.228,6,5.6,5.5,0
+Balentien,Milan,A,low,0.303,0.227,0,0,0,0
+Ratkov,Lazio,A,scommessa,0.700,0.225,4,5.62,5.62,1
+Gollini,Roma,P,scommessa,0.302,0.225,0,0,0,0
+Zelezny,Roma,P,scommessa,0.302,0.225,0,0,0,0
+Vaz,Roma,A,scommessa,0.550,0.224,2,5.75,5.75,1
+Cavlina,Como,P,scommessa,0.301,0.224,0,0,0,0
+Tornqvist,Como,P,scommessa,0.301,0.224,0,0,0,0
+Vigorito,Como,P,scommessa,0.301,0.224,0,0,0,0
+Moro L.,Sassuolo,A,low,0.219,0.222,5,5.7,5.6,0
+Milik,Juventus,A,low,0.299,0.221,0,0,0,0
+Lukaku,Napoli,A,starter,0.298,0.219,0,0,0,0
+Hojholt,Pisa,C,low,0.229,0.219,6,5.67,5.58,0
+Ebosse,Torino,D,low,0.193,0.219,3,5.5,5.5,0
+Oyegoke,Verona,D,low,0.181,0.219,2,5,5,0
+Liteta,Cagliari,C,low,0.180,0.218,2,5.75,5.75,0
+Boloca,Sassuolo,C,low,0.180,0.217,2,5.75,5.75,0
+Lahdo,Como,C,low,0.295,0.215,0,0,0,0
+Okereke,Cremonese,A,low,0.180,0.215,2,6,6,0
+Kouadio,Fiorentina,D,low,0.167,0.215,1,6,6,0
+Lamptey,Fiorentina,D,low,0.167,0.215,1,6,6,0
+Santos A.,Napoli,C,scommessa,0.294,0.214,0,0,0,0
+Trepy,Cagliari,A,low,0.165,0.212,1,0,0,0
+Gigot,Lazio,D,low,0.292,0.211,0,0,0,0
+Pinsoglio,Juventus,P,scommessa,0.291,0.210,0,0,0,0
+Rossi F.,Atalanta,P,scommessa,0.291,0.210,0,0,0,0
+Sportiello,Atalanta,P,scommessa,0.291,0.210,0,0,0,0
+Bijlow,Genoa,P,scommessa,0.700,0.208,3,6,3.5,1
+Contini,Napoli,P,scommessa,0.289,0.207,0,0,0,0
+Ferrante,Napoli,P,scommessa,0.289,0.207,0,0,0,0
+Moumbagna,Cremonese,A,low,0.212,0.207,5,5.6,5.6,0
+Furlanetto,Lazio,P,scommessa,0.288,0.206,0,0,0,0
+Motta,Lazio,P,scommessa,0.288,0.206,0,0,0,0
+Boga,Juventus,A,scommessa,0.161,0.206,1,0,0,0
+Zaragoza,Roma,C,scommessa,0.159,0.204,1,0,0,0
+Bowie,Verona,A,scommessa,0.620,0.201,2,5,5,1
+Suslov,Verona,C,low,0.285,0.201,0,0,0,0
+Przyborek,Lazio,C,low,0.282,0.197,0,0,0,0
+Arena A.,Roma,A,low,0.154,0.197,1,0,0,0
+Pedro Felipe,Sassuolo,D,low,0.280,0.194,0,0,0,0
+Pieragnolo,Sassuolo,D,low,0.280,0.194,0,0,0,0
+Raterink,Cagliari,D,low,0.280,0.194,0,0,0,0
+Helland,Bologna,D,low,0.580,0.193,0,0,0,1
+Toniolo,Verona,P,low,0.279,0.193,0,0,0,0
+Helgason,Lecce,C,low,0.175,0.193,3,5.5,5.5,0
+Albarracin,Cagliari,A,low,0.600,0.191,0,0,0,1
+Carboni F.,Parma,D,low,0.149,0.191,1,0,0,0
+Garcia U.,Sassuolo,D,low,0.149,0.191,1,0,0,0
+Dossena,Cagliari,D,low,0.149,0.190,1,0,0,0
+Turati,Sassuolo,P,low,0.149,0.190,1,5.5,3.5,0
+Elphege,Parma,A,low,0.450,0.189,0,0,0,1
+Frigan,Parma,A,low,0.276,0.189,0,0,0,0
+Arizala,Udinese,D,low,0.500,0.188,0,0,0,1
+Bakola,Sassuolo,C,low,0.276,0.188,0,0,0,0
+Cremaschi,Parma,C,low,0.275,0.188,0,0,0,0
+Mlacic,Udinese,D,low,0.275,0.188,0,0,0,0
+Coppola F.,Pisa,D,low,0.168,0.185,3,5,4.67,0
+Denoon,Pisa,D,low,0.156,0.184,2,5.5,5.25,0
+Onana J.,Genoa,C,low,0.144,0.183,1,5.5,5.5,0
+Perez M.,Lecce,D,low,0.144,0.183,1,5,5,0
+Harrison,Fiorentina,C,scommessa,0.600,0.182,2,5.5,5.5,1
+Zatterstrom,Genoa,D,low,0.500,0.181,0,0,0,1
+Jean,Lecce,D,low,0.271,0.181,0,0,0,0
+Sommariva,Genoa,P,low,0.156,0.181,2,5.75,3.75,0
+Satalino,Sassuolo,P,low,0.269,0.180,0,0,0,0
+Strefezza,Parma,C,scommessa,0.141,0.180,1,0,0,0
+Amorim,Genoa,C,scommessa,0.580,0.178,0,0,0,1
+Ciocci,Cagliari,P,low,0.268,0.178,0,0,0,0
+Sherri,Cagliari,P,low,0.268,0.178,0,0,0,0
+Bozhinov,Pisa,D,low,0.550,0.177,2,5,4.5,1
+Nava,Cremonese,P,low,0.268,0.177,0,0,0,0
+Gorter,Lecce,C,low,0.139,0.176,1,5.5,5.5,0
+Loyola,Pisa,C,scommessa,0.720,0.175,2,5.5,5.5,1
+Sabiri,Fiorentina,C,low,0.137,0.174,1,5.5,5.5,0
+Ngom,Lecce,C,low,0.520,0.172,0,0,0,1
+Fofana Sa.,Lecce,C,low,0.264,0.172,0,0,0,0
+Marchwinski,Lecce,C,low,0.264,0.172,0,0,0,0
+Fruchtl,Lecce,P,low,0.262,0.169,0,0,0,0
+Samooja,Lecce,P,low,0.262,0.169,0,0,0,0
+Stojilkovic,Pisa,A,scommessa,0.550,0.167,2,5.5,5.5,1
+Cornet,Genoa,C,low,0.180,0.167,5,5.12,4.38,0
+Siviero,Torino,P,low,0.260,0.166,0,0,0,0
+Nunziante,Udinese,P,low,0.259,0.166,0,0,0,0
+Kulenovic,Torino,A,scommessa,0.131,0.165,1,0,0,0
+Iling Junior,Pisa,C,scommessa,0.258,0.163,0,0,0,0
+Stengs,Pisa,C,low,0.258,0.163,0,0,0,0
+Siegrist,Genoa,P,low,0.256,0.161,0,0,0,0
+Christensen O.,Fiorentina,P,low,0.251,0.154,0,0,0,0
+Lezzerini,Fiorentina,P,low,0.251,0.154,0,0,0,0
+Nicolas,Pisa,P,low,0.250,0.153,0,0,0,0

@@ -656,7 +656,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const loadMarketStandings = async () => {
     try {
-      const res = await fetch(`${API_BASE}/data/standings`);
+      const res = await fetch(`${API_BASE}/data/standings?live=1`);
       if (!res.ok) return;
       const data = await res.json();
       setMarketStandings(Array.isArray(data.items) ? data.items : []);

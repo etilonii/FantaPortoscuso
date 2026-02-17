@@ -16,7 +16,6 @@ from .config import (
     AUTO_LIVE_IMPORT_ROUND,
     AUTO_LIVE_IMPORT_SEASON,
     AUTO_LEGHE_SYNC_ENABLED,
-    AUTO_LEGHE_SYNC_INTERVAL_HOURS,
     AUTO_LEGHE_SYNC_ON_START,
 )
 from .db import Base, engine, SessionLocal
@@ -149,15 +148,10 @@ def create_app() -> FastAPI:
                     await task
 
     if AUTO_LEGHE_SYNC_ENABLED:
-        interval_seconds = max(1, int(AUTO_LEGHE_SYNC_INTERVAL_HOURS)) * 3600
-
         def _run_auto_leghe_sync_once() -> None:
             db = SessionLocal()
             try:
-                result = data.run_auto_leghe_sync(
-                    db,
-                    min_interval_seconds=interval_seconds,
-                )
+                result = data.run_auto_leghe_sync(db)
                 if result.get("skipped"):
                     logger.info("Auto leghe sync skipped: %s", result.get("reason", "not_due"))
                     return
@@ -182,8 +176,9 @@ def create_app() -> FastAPI:
                 await asyncio.to_thread(_run_auto_leghe_sync_once)
 
             while not stop_event.is_set():
+                wait_seconds = max(1, int(data.leghe_sync_seconds_until_next_slot()))
                 try:
-                    await asyncio.wait_for(stop_event.wait(), timeout=interval_seconds)
+                    await asyncio.wait_for(stop_event.wait(), timeout=wait_seconds)
                     break
                 except asyncio.TimeoutError:
                     await asyncio.to_thread(_run_auto_leghe_sync_once)
@@ -195,8 +190,9 @@ def create_app() -> FastAPI:
             app.state.auto_leghe_sync_stop_event = stop_event
             app.state.auto_leghe_sync_task = task
             logger.info(
-                "Auto leghe sync scheduler enabled (interval=%sh, on_start=%s)",
-                AUTO_LEGHE_SYNC_INTERVAL_HOURS,
+                "Auto leghe sync scheduler enabled (slot=%sh, tz=%s, on_start=%s)",
+                data.LEGHE_SYNC_SLOT_HOURS,
+                data.LEGHE_SYNC_TZ,
                 AUTO_LEGHE_SYNC_ON_START,
             )
 

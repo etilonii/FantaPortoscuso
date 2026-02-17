@@ -1,15 +1,17 @@
 import base64
 import csv
 import json
+import math
 import re
 import unicodedata
 from collections import defaultdict
-from datetime import datetime
+from datetime import date, datetime, timedelta, timezone
 from html import unescape as html_unescape
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.error import URLError, HTTPError
 from urllib.request import Request, urlopen
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Query, Body, Depends, Header, HTTPException
 from pydantic import BaseModel, Field
@@ -22,7 +24,6 @@ from apps.api.app.config import (
     BACKUP_DIR,
     BACKUP_KEEP_LAST,
     DATABASE_URL,
-    AUTO_LEGHE_SYNC_INTERVAL_HOURS,
     LEGHE_ALIAS,
     LEGHE_USERNAME,
     LEGHE_PASSWORD,
@@ -86,6 +87,25 @@ REAL_FORMATIONS_CONTEXT_HTML_GLOB = "formazioni*.html"
 VOTI_PAGE_CACHE_PATH = DATA_DIR / "tmp" / "voti_page.html"
 VOTI_BASE_URL = "https://www.fantacalcio.it/voti-fantacalcio-serie-a"
 CALENDAR_BASE_URL = "https://www.fantacalcio.it/serie-a/calendario"
+LEGHE_BASE_URL = "https://leghe.fantacalcio.it"
+LEGHE_SYNC_TZ = ZoneInfo("Europe/Rome")
+LEGHE_SYNC_SLOT_HOURS = 3
+LEGHE_DAILY_ROSE_JOB_NAME = "auto_leghe_sync_rose_daily"
+LEGHE_SYNC_WINDOWS: Tuple[Tuple[int, date, date], ...] = (
+    (26, date(2026, 2, 20), date(2026, 2, 23)),
+    (27, date(2026, 2, 27), date(2026, 3, 2)),
+    (28, date(2026, 3, 6), date(2026, 3, 9)),
+    (29, date(2026, 3, 13), date(2026, 3, 16)),
+    (30, date(2026, 3, 20), date(2026, 3, 23)),
+    (31, date(2026, 4, 3), date(2026, 4, 6)),
+    (32, date(2026, 4, 10), date(2026, 4, 13)),
+    (33, date(2026, 4, 17), date(2026, 4, 20)),
+    (34, date(2026, 4, 24), date(2026, 4, 27)),
+    (35, date(2026, 5, 1), date(2026, 5, 4)),
+    (36, date(2026, 5, 8), date(2026, 5, 11)),
+    (37, date(2026, 5, 15), date(2026, 5, 18)),
+    (38, date(2026, 5, 22), date(2026, 5, 24)),
+)
 STATUS_PATH = DATA_DIR / "status.json"
 SERIEA_CONTEXT_CANDIDATES = [
     DATA_DIR / "incoming" / "manual" / "seriea_context.csv",
@@ -2277,9 +2297,156 @@ def _load_standings_rows() -> List[Dict[str, object]]:
         return []
 
 
+def _build_live_standings_rows(
+    db: Session,
+    *,
+    requested_round: Optional[int] = None,
+) -> Dict[str, object]:
+    base_rows = _load_standings_rows()
+    if not base_rows:
+        return {"items": [], "round": requested_round, "source": "empty"}
+
+    standings_index = _build_standings_index()
+    status_matchday = _load_status_matchday()
+    inferred_matchday_fixtures = _infer_matchday_from_fixtures() if status_matchday is None else None
+    inferred_matchday_stats = (
+        _infer_matchday_from_stats()
+        if status_matchday is None and inferred_matchday_fixtures is None
+        else None
+    )
+    default_matchday = (
+        status_matchday
+        if status_matchday is not None
+        else (inferred_matchday_fixtures if inferred_matchday_fixtures is not None else inferred_matchday_stats)
+    )
+
+    real_rows, available_rounds, _source_path = _load_real_formazioni_rows(standings_index)
+    target_round = requested_round if requested_round is not None else default_matchday
+    if target_round is None and available_rounds:
+        target_round = max(available_rounds)
+    if (
+        requested_round is None
+        and target_round is not None
+        and available_rounds
+        and target_round not in available_rounds
+    ):
+        latest_available = max(available_rounds)
+        if target_round < latest_available:
+            target_round = latest_available
+
+    formazioni_items: List[Dict[str, object]] = []
+    for item in real_rows:
+        item_round = _parse_int(item.get("round"))
+        if target_round is not None and item_round != target_round:
+            continue
+        formazioni_items.append(item)
+
+    source = "real"
+    if not formazioni_items:
+        source = "projection"
+        formazioni_items = _load_projected_formazioni_rows("", standings_index)
+        for item in formazioni_items:
+            item["round"] = target_round
+
+    live_context = _load_live_round_context(db, target_round)
+    _attach_live_scores_to_formations(formazioni_items, live_context)
+
+    live_total_by_team: Dict[str, float] = {}
+    for item in formazioni_items:
+        team_name = str(item.get("team") or "").strip()
+        if not team_name:
+            continue
+        live_total = item.get("totale_live")
+        numeric_live = float(live_total) if isinstance(live_total, (int, float)) else _parse_float(live_total)
+        if numeric_live is None:
+            continue
+        live_total_by_team[normalize_name(team_name)] = float(numeric_live)
+
+    enriched_rows: List[Dict[str, object]] = []
+    covered_keys: Set[str] = set()
+    for idx, row in enumerate(base_rows):
+        team_name = str(row.get("team") or "").strip()
+        if not team_name:
+            continue
+        team_key = normalize_name(team_name)
+        covered_keys.add(team_key)
+
+        pos_value = _parse_int(row.get("pos"))
+        base_pos = pos_value if pos_value is not None else (idx + 1)
+        base_points = float(row.get("points") or 0.0)
+        base_played = _parse_int(row.get("played")) or 0
+        live_total = live_total_by_team.get(team_key)
+
+        points_live = base_points + (live_total if live_total is not None else 0.0)
+        played_live = base_played + (1 if live_total is not None else 0)
+        avg_live = (points_live / played_live) if played_live > 0 else 0.0
+
+        enriched_rows.append(
+            {
+                "base_pos": int(base_pos),
+                "pos": int(base_pos),
+                "team": team_name,
+                "played_base": int(base_played),
+                "played_live": int(played_live),
+                "played": int(played_live),
+                "points_base": round(base_points, 2),
+                "live_total": round(float(live_total), 2) if live_total is not None else None,
+                "points_live": round(points_live, 2),
+                "points": round(points_live, 2),
+                "pts_avg": round(avg_live, 2),
+            }
+        )
+
+    for team_key, live_total in live_total_by_team.items():
+        if team_key in covered_keys:
+            continue
+        team_name = str(team_key or "").strip() or team_key
+        enriched_rows.append(
+            {
+                "base_pos": 9999,
+                "pos": 9999,
+                "team": team_name,
+                "played_base": 0,
+                "played_live": 1,
+                "played": 1,
+                "points_base": 0.0,
+                "live_total": round(float(live_total), 2),
+                "points_live": round(float(live_total), 2),
+                "points": round(float(live_total), 2),
+                "pts_avg": round(float(live_total), 2),
+            }
+        )
+
+    enriched_rows.sort(
+        key=lambda row: (
+            -float(row.get("points_live") or 0.0),
+            int(row.get("base_pos") or 9999),
+            normalize_name(str(row.get("team") or "")),
+        )
+    )
+    for idx, row in enumerate(enriched_rows, start=1):
+        row["live_pos"] = int(idx)
+        row["pos"] = int(idx)
+
+    return {
+        "items": enriched_rows,
+        "round": target_round,
+        "source": source,
+        "status_matchday": status_matchday,
+        "inferred_matchday_fixtures": inferred_matchday_fixtures,
+        "inferred_matchday_stats": inferred_matchday_stats,
+    }
+
+
 @router.get("/standings")
-def standings():
-    return {"items": _load_standings_rows()}
+def standings(
+    live: bool = Query(default=False),
+    round: Optional[int] = Query(default=None, ge=1, le=99),
+    db: Session = Depends(get_db),
+):
+    if not bool(live):
+        return {"items": _load_standings_rows()}
+    return _build_live_standings_rows(db, requested_round=round)
 
 
 def _sort_rows_numeric(
@@ -5587,6 +5754,197 @@ def _extract_lt_appkey_payloads_from_html(source: str) -> List[Dict[str, object]
     return payloads
 
 
+def _extract_formazioni_context_alias(source: str) -> Optional[str]:
+    if not source:
+        return None
+
+    patterns = (
+        r"\balias\s*:\s*['\"]([^'\"]+)['\"]",
+        r"\"alias\"\s*:\s*\"([^\"]+)\"",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, source, flags=re.IGNORECASE)
+        if match is None:
+            continue
+        alias = str(match.group(1) or "").strip().strip("/")
+        if alias:
+            return alias
+    return None
+
+
+def _extract_formazioni_context_app_key(source: str) -> Optional[str]:
+    if not source:
+        return None
+    match = re.search(r"authAppKey\s*:\s*['\"]([^'\"]+)['\"]", source, flags=re.IGNORECASE)
+    if match is None:
+        return None
+    app_key = str(match.group(1) or "").strip()
+    return app_key or None
+
+
+def _extract_formazioni_tmp_entries_from_html(source: str) -> List[Dict[str, object]]:
+    if not source:
+        return []
+
+    pattern = re.compile(
+        r"__\.s\(\s*['\"]tmp['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)",
+        flags=re.IGNORECASE,
+    )
+    entries: List[Dict[str, object]] = []
+    seen_raw: Set[str] = set()
+
+    for match in pattern.finditer(source):
+        raw = str(match.group(1) or "").strip()
+        if not raw or raw in seen_raw:
+            continue
+        seen_raw.add(raw)
+
+        parts = [segment.strip() for segment in raw.split("|")]
+        if len(parts) < 3:
+            continue
+
+        round_value = _parse_int(parts[0])
+        timestamp = _parse_int(parts[1])
+        competition_id = _parse_int(parts[2])
+        last_comp_round = _parse_int(parts[3]) if len(parts) > 3 else None
+        competition_type = _parse_int(parts[4]) if len(parts) > 4 else None
+        team_ids_raw = parts[5] if len(parts) > 5 else ""
+        team_ids = []
+        for token in team_ids_raw.split(","):
+            parsed_team = _parse_int(token)
+            if parsed_team is not None and parsed_team > 0:
+                team_ids.append(int(parsed_team))
+
+        entries.append(
+            {
+                "round": round_value,
+                "timestamp": timestamp,
+                "competition_id": competition_id,
+                "last_comp_round": last_comp_round,
+                "competition_type": competition_type,
+                "team_ids": team_ids,
+            }
+        )
+
+    entries.sort(
+        key=lambda entry: int(_parse_int(entry.get("timestamp")) or 0),
+        reverse=True,
+    )
+    return entries
+
+
+def _download_formazioni_pagina_payload(
+    *,
+    alias: str,
+    app_key: str,
+    competition_id: int,
+    round_value: int,
+    timestamp: int,
+) -> Optional[Dict[str, object]]:
+    if not alias or not app_key:
+        return None
+
+    round_num = _parse_int(round_value)
+    timestamp_num = _parse_int(timestamp)
+    competition_num = _parse_int(competition_id)
+    if round_num is None or timestamp_num is None or competition_num is None:
+        return None
+
+    url = (
+        f"{LEGHE_BASE_URL}/servizi/V1_LegheFormazioni/Pagina"
+        f"?id_comp={int(competition_num)}"
+        f"&r={int(round_num)}"
+        f"&f={int(round_num)}_{int(timestamp_num)}.json"
+    )
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        ),
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "it-IT,it;q=0.9,en-US;q=0.7,en;q=0.6",
+        "app_key": str(app_key),
+        "Referer": f"{LEGHE_BASE_URL}/{alias}/formazioni/{int(round_num)}",
+        "X-Requested-With": "XMLHttpRequest",
+    }
+    req = Request(url, headers=headers, method="GET")
+    try:
+        with urlopen(req, timeout=30) as response:
+            payload_bytes = response.read()
+    except (HTTPError, URLError, TimeoutError, ValueError):
+        return None
+
+    try:
+        parsed = json.loads(payload_bytes.decode("utf-8", errors="replace"))
+    except Exception:
+        return None
+    if not isinstance(parsed, dict):
+        return None
+
+    return _build_formazioni_payload_from_service_response(parsed, round_hint=round_num)
+
+
+def _refresh_formazioni_appkey_from_context_tmp(
+    source: str,
+    round_value: Optional[int],
+) -> Optional[Path]:
+    requested_round = _parse_int(round_value)
+    if not source:
+        return None
+
+    app_key = _extract_formazioni_context_app_key(source)
+    alias = str(LEGHE_ALIAS or _extract_formazioni_context_alias(source) or "").strip()
+    if not app_key or not alias:
+        return None
+
+    entries = _extract_formazioni_tmp_entries_from_html(source)
+    if not entries:
+        return None
+
+    now_ts = datetime.utcnow().timestamp()
+
+    for entry in entries:
+        round_num = _parse_int(entry.get("round"))
+        timestamp_num = _parse_int(entry.get("timestamp"))
+        competition_id = _parse_int(entry.get("competition_id"))
+        if round_num is None or timestamp_num is None or competition_id is None:
+            continue
+        if requested_round is not None and int(round_num) != int(requested_round):
+            continue
+
+        cache_key = f"context_pagina_{int(competition_id)}_{int(round_num)}_{int(timestamp_num)}"
+        cached_round_path = REAL_FORMATIONS_TMP_DIR / f"formazioni_{int(round_num)}_appkey.json"
+        last_ts = float(_FORMAZIONI_REMOTE_REFRESH_CACHE.get(cache_key, 0.0) or 0.0)
+        if now_ts - last_ts < 90:
+            if cached_round_path.exists():
+                return cached_round_path
+            continue
+
+        payload: Optional[Dict[str, object]] = None
+        try:
+            payload = _download_formazioni_pagina_payload(
+                alias=alias,
+                app_key=app_key,
+                competition_id=int(competition_id),
+                round_value=int(round_num),
+                timestamp=int(timestamp_num),
+            )
+        finally:
+            _FORMAZIONI_REMOTE_REFRESH_CACHE[cache_key] = now_ts
+
+        if not payload:
+            continue
+
+        try:
+            written_path = _write_formazioni_appkey_payload(payload, int(round_num))
+        except Exception:
+            continue
+        return written_path
+
+    return None
+
+
 def _extract_appkey_payload_rounds(payload: Dict[str, object]) -> List[int]:
     rounds: Set[int] = set()
     data_section = payload.get("data") if isinstance(payload, dict) else None
@@ -5643,13 +6001,14 @@ def _refresh_formazioni_appkey_from_context_html(round_value: Optional[int]) -> 
             continue
 
         payloads = _extract_lt_appkey_payloads_from_html(source)
-        if not payloads:
-            continue
+        matched_requested_round = False
 
         for payload in payloads:
             payload_rounds = _extract_appkey_payload_rounds(payload)
             if requested_round is not None and payload_rounds and requested_round not in payload_rounds:
                 continue
+            if requested_round is not None and payload_rounds and requested_round in payload_rounds:
+                matched_requested_round = True
 
             if requested_round is not None:
                 selected_round = requested_round
@@ -5671,6 +6030,23 @@ def _refresh_formazioni_appkey_from_context_html(round_value: Optional[int]) -> 
             if current_mtime >= refreshed_mtime:
                 refreshed_path = written_path
                 refreshed_mtime = current_mtime
+
+        should_try_tmp = not payloads or (
+            requested_round is not None and not matched_requested_round
+        )
+        if not should_try_tmp:
+            continue
+
+        tmp_path = _refresh_formazioni_appkey_from_context_tmp(source, requested_round)
+        if tmp_path is None:
+            continue
+        try:
+            tmp_mtime = tmp_path.stat().st_mtime
+        except Exception:
+            tmp_mtime = -1.0
+        if tmp_mtime >= refreshed_mtime:
+            refreshed_path = tmp_path
+            refreshed_mtime = tmp_mtime
 
     return refreshed_path
 
@@ -7154,6 +7530,88 @@ def _claim_scheduled_job_run(
         return False
 
 
+def _leghe_sync_local_now(now_utc: Optional[datetime] = None) -> datetime:
+    current = now_utc if now_utc is not None else datetime.now(tz=timezone.utc)
+    if current.tzinfo is None:
+        current = current.replace(tzinfo=timezone.utc)
+    else:
+        current = current.astimezone(timezone.utc)
+    return current.astimezone(LEGHE_SYNC_TZ)
+
+
+def _leghe_sync_round_for_local_dt(local_dt: datetime) -> Optional[int]:
+    local_day = local_dt.date()
+    for matchday, start_day, end_day in LEGHE_SYNC_WINDOWS:
+        if start_day <= local_day <= end_day:
+            return int(matchday)
+    return None
+
+
+def _leghe_sync_slot_start_local(local_dt: datetime) -> datetime:
+    slot_hours = max(1, int(LEGHE_SYNC_SLOT_HOURS))
+    slot_hour = (int(local_dt.hour) // slot_hours) * slot_hours
+    return local_dt.replace(hour=slot_hour, minute=0, second=0, microsecond=0)
+
+
+def leghe_sync_seconds_until_next_slot(now_utc: Optional[datetime] = None) -> int:
+    local_now = _leghe_sync_local_now(now_utc)
+    slot_start_local = _leghe_sync_slot_start_local(local_now)
+    next_slot_local = slot_start_local + timedelta(hours=max(1, int(LEGHE_SYNC_SLOT_HOURS)))
+    delta_seconds = int(math.ceil((next_slot_local - local_now).total_seconds()))
+    return max(1, delta_seconds)
+
+
+def _claim_scheduled_job_slot(
+    db: Session,
+    *,
+    job_name: str,
+    slot_ts: int,
+) -> bool:
+    target_ts = max(0, int(slot_ts))
+
+    state = db.query(ScheduledJobState).filter(ScheduledJobState.job_name == job_name).first()
+    if state is None:
+        db.add(
+            ScheduledJobState(
+                job_name=job_name,
+                last_run_ts=0,
+                updated_at=datetime.utcnow(),
+            )
+        )
+        try:
+            db.commit()
+        except Exception:
+            db.rollback()
+        state = db.query(ScheduledJobState).filter(ScheduledJobState.job_name == job_name).first()
+        if state is None:
+            return False
+
+    previous_ts = int(state.last_run_ts or 0)
+    if previous_ts >= target_ts:
+        return False
+
+    try:
+        updated = (
+            db.query(ScheduledJobState)
+            .filter(
+                ScheduledJobState.job_name == job_name,
+                ScheduledJobState.last_run_ts == previous_ts,
+            )
+            .update(
+                {
+                    ScheduledJobState.last_run_ts: target_ts,
+                    ScheduledJobState.updated_at: datetime.utcnow(),
+                },
+                synchronize_session=False,
+            )
+        )
+        db.commit()
+        return bool(updated == 1)
+    except Exception:
+        db.rollback()
+        return False
+
+
 def run_auto_live_import(
     db: Session,
     *,
@@ -7186,19 +7644,88 @@ def run_auto_leghe_sync(
     *,
     min_interval_seconds: Optional[int] = None,
     run_pipeline: bool = True,
+    now_utc: Optional[datetime] = None,
 ) -> Dict[str, object]:
-    if min_interval_seconds is not None:
-        claimed = _claim_scheduled_job_run(
-            db,
-            job_name="auto_leghe_sync",
-            min_interval_seconds=int(min_interval_seconds),
-        )
-        if not claimed:
+    _ = min_interval_seconds
+
+    local_now = _leghe_sync_local_now(now_utc)
+    scheduled_matchday = _leghe_sync_round_for_local_dt(local_now)
+    if scheduled_matchday is None:
+        if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
             return {
                 "ok": True,
                 "skipped": True,
-                "reason": "not_due_or_claimed_by_other_instance",
+                "reason": "outside_scheduled_match_windows",
+                "local_time": local_now.isoformat(),
+                "timezone": str(LEGHE_SYNC_TZ),
+                "missing_leghe_env": True,
+                "required": ["LEGHE_ALIAS", "LEGHE_USERNAME", "LEGHE_PASSWORD"],
             }
+
+        day_start_local = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+        day_start_utc_ts = int(day_start_local.astimezone(timezone.utc).timestamp())
+        claimed_daily_rose = _claim_scheduled_job_slot(
+            db,
+            job_name=LEGHE_DAILY_ROSE_JOB_NAME,
+            slot_ts=day_start_utc_ts,
+        )
+        if not claimed_daily_rose:
+            return {
+                "ok": True,
+                "skipped": True,
+                "reason": "outside_scheduled_match_windows_and_daily_rose_already_synced",
+                "local_time": local_now.isoformat(),
+                "daily_slot_local": day_start_local.isoformat(),
+                "timezone": str(LEGHE_SYNC_TZ),
+            }
+
+        try:
+            result = run_leghe_sync_and_pipeline(
+                alias=LEGHE_ALIAS,
+                username=LEGHE_USERNAME,
+                password=LEGHE_PASSWORD,
+                date_stamp=local_now.date().isoformat(),
+                competition_id=LEGHE_COMPETITION_ID,
+                competition_name=LEGHE_COMPETITION_NAME,
+                formations_matchday=LEGHE_FORMATIONS_MATCHDAY,
+                download_rose=True,
+                download_classifica=False,
+                download_formazioni=False,
+                download_formazioni_xlsx=False,
+                fetch_quotazioni=True,
+                fetch_global_stats=True,
+                run_pipeline=bool(run_pipeline),
+            )
+            if isinstance(result, dict):
+                result["mode"] = "daily_rose_sync"
+                result["daily_slot_local"] = day_start_local.isoformat()
+                result["timezone"] = str(LEGHE_SYNC_TZ)
+            return result
+        except LegheSyncError as exc:
+            return {
+                "ok": False,
+                "error": str(exc),
+                "mode": "daily_rose_sync",
+                "daily_slot_local": day_start_local.isoformat(),
+                "timezone": str(LEGHE_SYNC_TZ),
+            }
+
+    slot_start_local = _leghe_sync_slot_start_local(local_now)
+    slot_start_utc_ts = int(slot_start_local.astimezone(timezone.utc).timestamp())
+    claimed = _claim_scheduled_job_slot(
+        db,
+        job_name="auto_leghe_sync",
+        slot_ts=slot_start_utc_ts,
+    )
+    if not claimed:
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "slot_already_processed_or_claimed_by_other_instance",
+            "matchday": int(scheduled_matchday),
+            "slot_start_local": slot_start_local.isoformat(),
+            "timezone": str(LEGHE_SYNC_TZ),
+        }
 
     if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
         return {
@@ -7206,22 +7733,36 @@ def run_auto_leghe_sync(
             "skipped": True,
             "reason": "missing_leghe_env",
             "required": ["LEGHE_ALIAS", "LEGHE_USERNAME", "LEGHE_PASSWORD"],
+            "matchday": int(scheduled_matchday),
+            "slot_start_local": slot_start_local.isoformat(),
+            "timezone": str(LEGHE_SYNC_TZ),
         }
 
     try:
-        return run_leghe_sync_and_pipeline(
+        result = run_leghe_sync_and_pipeline(
             alias=LEGHE_ALIAS,
             username=LEGHE_USERNAME,
             password=LEGHE_PASSWORD,
+            date_stamp=local_now.date().isoformat(),
             competition_id=LEGHE_COMPETITION_ID,
             competition_name=LEGHE_COMPETITION_NAME,
-            formations_matchday=LEGHE_FORMATIONS_MATCHDAY,
+            formations_matchday=int(scheduled_matchday),
+            fetch_quotazioni=True,
+            fetch_global_stats=True,
             run_pipeline=bool(run_pipeline),
         )
+        if isinstance(result, dict):
+            result["scheduled_matchday"] = int(scheduled_matchday)
+            result["slot_start_local"] = slot_start_local.isoformat()
+            result["timezone"] = str(LEGHE_SYNC_TZ)
+        return result
     except LegheSyncError as exc:
         return {
             "ok": False,
             "error": str(exc),
+            "scheduled_matchday": int(scheduled_matchday),
+            "slot_start_local": slot_start_local.isoformat(),
+            "timezone": str(LEGHE_SYNC_TZ),
         }
 
 
@@ -7246,14 +7787,14 @@ def import_live_votes(
 def admin_leghe_sync(
     force: bool = Query(default=False),
     run_pipeline: bool = Query(default=True),
+    fetch_quotazioni: bool = Query(default=False),
+    fetch_global_stats: bool = Query(default=False),
     formations_matchday: Optional[int] = Query(default=None, ge=1, le=99),
     db: Session = Depends(get_db),
     x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
     authorization: str | None = Header(default=None, alias="Authorization"),
 ):
     _require_admin_key(x_admin_key, db, authorization)
-
-    interval_seconds = max(1, int(AUTO_LEGHE_SYNC_INTERVAL_HOURS)) * 3600
 
     if force:
         if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
@@ -7269,6 +7810,8 @@ def admin_leghe_sync(
                 competition_id=LEGHE_COMPETITION_ID,
                 competition_name=LEGHE_COMPETITION_NAME,
                 formations_matchday=formations_matchday or LEGHE_FORMATIONS_MATCHDAY,
+                fetch_quotazioni=bool(fetch_quotazioni),
+                fetch_global_stats=bool(fetch_global_stats),
                 run_pipeline=bool(run_pipeline),
             )
         except LegheSyncError as exc:
@@ -7276,7 +7819,6 @@ def admin_leghe_sync(
 
     result = run_auto_leghe_sync(
         db,
-        min_interval_seconds=interval_seconds,
         run_pipeline=bool(run_pipeline),
     )
     if result.get("ok") is False:

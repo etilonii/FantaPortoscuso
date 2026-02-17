@@ -119,10 +119,17 @@ Nota formazioni:
 
 ### Scheduler in-app
 - `AUTO_LEGHE_SYNC_ENABLED=1`
-- `AUTO_LEGHE_SYNC_INTERVAL_HOURS=12`
 - `AUTO_LEGHE_SYNC_ON_START=1` (opzionale)
+
+Comportamento scheduler:
+- slot fissi ogni 3 ore (`00:00`, `03:00`, `06:00`, `09:00`, `12:00`, `15:00`, `18:00`, `21:00`) durante le finestre giornate configurate (26-38)
+- fuori dalle finestre partita: un solo sync giornaliero "daily rose" (rose + quotazioni + stats globali)
 
 ### Trigger manuale (admin)
 Endpoint:
 - `POST /data/admin/leghe/sync` (richiede `X-Admin-Key` o bearer admin)
-- query: `force=1` per bypassare l'intervallo, `formations_matchday=NN` per forzare la giornata
+- query:
+  - `force=1` per forzare subito
+  - `formations_matchday=NN` per forzare la giornata
+  - `fetch_quotazioni=1` per import quotazioni Fantacalcio
+  - `fetch_global_stats=1` per import statistiche globali Fantacalcio

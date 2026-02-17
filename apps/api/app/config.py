@@ -60,7 +60,6 @@ AUTO_LIVE_IMPORT_SEASON = get_env("AUTO_LIVE_IMPORT_SEASON", "").strip()
 
 # Leghe Fantacalcio sync (download XLSX + run local pipeline)
 AUTO_LEGHE_SYNC_ENABLED = get_env_bool("AUTO_LEGHE_SYNC_ENABLED", False)
-AUTO_LEGHE_SYNC_INTERVAL_HOURS = get_env_int("AUTO_LEGHE_SYNC_INTERVAL_HOURS", 12, min_value=1)
 AUTO_LEGHE_SYNC_ON_START = get_env_bool("AUTO_LEGHE_SYNC_ON_START", False)
 
 LEGHE_ALIAS = get_env_optional("LEGHE_ALIAS")

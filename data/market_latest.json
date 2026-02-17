@@ -1,6 +1,71 @@
 {
   "items": [
     {
+      "team": "Antibro",
+      "date": "2026-02-17",
+      "out": "Vasquez D. *",
+      "out_squadra": "Roma",
+      "out_value": 1.0,
+      "in": "Gollini",
+      "in_squadra": "Rom",
+      "in_value": 1.0,
+      "delta": 0.0,
+      "out_ruolo": "P",
+      "in_ruolo": "P"
+    },
+    {
+      "team": "ISGOPPAISI2",
+      "date": "2026-02-17",
+      "out": "Vasquez D. *",
+      "out_squadra": "Roma",
+      "out_value": 1.0,
+      "in": "Gollini",
+      "in_squadra": "Rom",
+      "in_value": 1.0,
+      "delta": 0.0,
+      "out_ruolo": "P",
+      "in_ruolo": "P"
+    },
+    {
+      "team": "MARCIO TEAM",
+      "date": "2026-02-17",
+      "out": "Mandas *",
+      "out_squadra": "Lazio",
+      "out_value": 1.0,
+      "in": "Nicolas",
+      "in_squadra": "Pis",
+      "in_value": 1.0,
+      "delta": 0.0,
+      "out_ruolo": "P",
+      "in_ruolo": "P"
+    },
+    {
+      "team": "Nastro Azzurro",
+      "date": "2026-02-17",
+      "out": "Vasquez D. *",
+      "out_squadra": "Roma",
+      "out_value": 1.0,
+      "in": "Gollini",
+      "in_squadra": "Rom",
+      "in_value": 1.0,
+      "delta": 0.0,
+      "out_ruolo": "P",
+      "in_ruolo": "P"
+    },
+    {
+      "team": "Non troppo cattivi",
+      "date": "2026-02-17",
+      "out": "Vasquez D. *",
+      "out_squadra": "Roma",
+      "out_value": 1.0,
+      "in": "Gollini",
+      "in_squadra": "Rom",
+      "in_value": 1.0,
+      "delta": 0.0,
+      "out_ruolo": "P",
+      "in_ruolo": "P"
+    },
+    {
       "team": "A.C.TUA CUCS",
       "date": "2026-02-06",
       "out": "Ravaglia F.",
@@ -6964,8 +7029,8 @@
     {
       "team": "Antibro",
       "delta": 9.0,
-      "changed_count": 10,
-      "last_date": "2026-02-06"
+      "changed_count": 12,
+      "last_date": "2026-02-17"
     },
     {
       "team": "A.C.TUA CUCS",
@@ -7042,8 +7107,8 @@
     {
       "team": "Nastro Azzurro",
       "delta": 6.0,
-      "changed_count": 16,
-      "last_date": "2026-02-06"
+      "changed_count": 17,
+      "last_date": "2026-02-17"
     },
     {
       "team": "LosPollosHermanos",
@@ -7126,8 +7191,8 @@
     {
       "team": "Non troppo cattivi",
       "delta": 2.0,
-      "changed_count": 14,
-      "last_date": "2026-02-06"
+      "changed_count": 16,
+      "last_date": "2026-02-17"
     },
     {
       "team": "Kung-Fu Pandev",
@@ -7162,8 +7227,8 @@
     {
       "team": "MARCIO TEAM",
       "delta": 1.0,
-      "changed_count": 12,
-      "last_date": "2026-02-06"
+      "changed_count": 14,
+      "last_date": "2026-02-17"
     },
     {
       "team": "LE 4 M",
@@ -7288,8 +7353,8 @@
     {
       "team": "ISGOPPAISI2",
       "delta": -12.0,
-      "changed_count": 12,
-      "last_date": "2026-02-06"
+      "changed_count": 14,
+      "last_date": "2026-02-17"
     },
     {
       "team": "FC Spiaze",

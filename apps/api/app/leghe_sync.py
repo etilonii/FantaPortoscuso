@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 import os
 import re
@@ -7,6 +8,7 @@ import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
+from html import unescape as html_unescape
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
@@ -17,6 +19,70 @@ import http.cookiejar
 
 
 LEGHE_BASE_URL = "https://leghe.fantacalcio.it/"
+FANTACALCIO_BASE_URL = "https://www.fantacalcio.it"
+FANTACALCIO_LOGIN_PAGE_URL = f"{FANTACALCIO_BASE_URL}/login"
+FANTACALCIO_LOGIN_API_URL = f"{FANTACALCIO_BASE_URL}/api/v1/User/login"
+FANTACALCIO_EXCEL_PRICES_ENDPOINT = "/api/v1/Excel/prices/20/1"
+FANTACALCIO_EXCEL_STATS_ENDPOINT = "/api/v1/Excel/stats/20/1"
+FANTACALCIO_QUOTAZIONI_BASE_URL = "https://www.fantacalcio.it/quotazioni-fantacalcio"
+FANTACALCIO_STATS_BASE_URL = "https://www.fantacalcio.it/statistiche-serie-a"
+
+TEAM_ABBR_MAP = {
+    "ATA": "Atalanta",
+    "BOL": "Bologna",
+    "CAG": "Cagliari",
+    "COM": "Como",
+    "CRE": "Cremonese",
+    "EMP": "Empoli",
+    "FIO": "Fiorentina",
+    "GEN": "Genoa",
+    "INT": "Inter",
+    "JUV": "Juventus",
+    "LAZ": "Lazio",
+    "LEC": "Lecce",
+    "MIL": "Milan",
+    "NAP": "Napoli",
+    "PAR": "Parma",
+    "PIS": "Pisa",
+    "ROM": "Roma",
+    "SAS": "Sassuolo",
+    "TOR": "Torino",
+    "UDI": "Udinese",
+    "VER": "Verona",
+}
+
+ROLE_CLASSIC_MAP = {
+    "p": "P",
+    "d": "D",
+    "c": "C",
+    "a": "A",
+}
+
+ROLE_IMPORT_MAP = {
+    "POR": "P",
+    "P": "P",
+    "DIF": "D",
+    "D": "D",
+    "CEN": "C",
+    "C": "C",
+    "ATT": "A",
+    "A": "A",
+}
+
+STATS_INCOMING_SPECS: tuple[tuple[str, str, str, bool], ...] = (
+    ("gol", "Gol fatti", "gol", False),
+    ("assist", "Assist", "ass", False),
+    ("ammonizioni", "Ammonizioni", "amm", False),
+    ("espulsioni", "Espulsioni", "esp", False),
+    ("autogol", "Autogol", "autogol", False),
+    ("rigoriparati", "Rigori parati", "rp", False),
+    ("gol_subiti", "Gol subiti", "gs", True),
+    ("rigorisegnati", "Rigori segnati", "rigori_segnati", False),
+    ("rigorisbagliati", "Rigori sbagliati", "rigori_sbagliati", False),
+    ("partite", "Partite giocate", "pg", False),
+    ("mediavoto", "Mediavoto", "mv", False),
+    ("fantamedia", "Fantamedia", "mfv", False),
+)
 
 DEFAULT_USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -55,6 +121,750 @@ def _data_dir() -> Path:
 
 def _today_stamp() -> str:
     return date.today().strftime("%Y-%m-%d")
+
+
+def _season_slug_for(dt: datetime) -> str:
+    if dt.month >= 7:
+        start_year = dt.year
+        end_short = str(dt.year + 1)[2:4]
+        return f"{start_year}-{end_short}"
+    prev_year = dt.year - 1
+    curr_short = str(dt.year)[2:4]
+    return f"{prev_year}-{curr_short}"
+
+
+def _strip_html_text(value: str) -> str:
+    text = re.sub(r"<[^>]+>", " ", str(value or ""))
+    text = html_unescape(text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def _parse_number(value: str, *, default: float = 0.0) -> float:
+    raw = str(value or "").strip()
+    if not raw:
+        return default
+    raw = raw.replace("\xa0", "").replace(" ", "")
+    # Handle common locale formats:
+    # - Italian decimals: 6,82
+    # - EN decimals: 6.82
+    # - Thousand separators: 1.234,56 or 1,234.56
+    if "," in raw and "." in raw:
+        if raw.rfind(",") > raw.rfind("."):
+            raw = raw.replace(".", "").replace(",", ".")
+        else:
+            raw = raw.replace(",", "")
+    elif "," in raw:
+        raw = raw.replace(".", "").replace(",", ".")
+    elif raw.count(".") > 1:
+        raw = raw.replace(".", "")
+    elif raw.count(".") == 1:
+        left, right = raw.split(".", 1)
+        if left.lstrip("-").isdigit() and right.isdigit() and len(right) == 3:
+            raw = left + right
+
+    raw = re.sub(r"[^0-9.\-]", "", raw)
+    if raw in {"", "-", ".", "-."}:
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        return default
+
+
+def _parse_int_number(value: str, *, default: int = 0) -> int:
+    return int(round(_parse_number(value, default=float(default))))
+
+
+def _extract_row_col_text(body: str, key: str) -> str:
+    match = re.search(
+        rf'<td[^>]*data-col-key="{re.escape(key)}"[^>]*>(.*?)</td>',
+        body,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    if match is None:
+        return ""
+    return _strip_html_text(match.group(1))
+
+
+def _parse_rigori_cell(value: str) -> tuple[int, int]:
+    raw = str(value or "").strip()
+    match = re.search(r"(\d+)\s*/\s*(\d+)", raw)
+    if match is None:
+        scored = _parse_int_number(raw, default=0)
+        return max(0, scored), 0
+    scored = max(0, int(match.group(1)))
+    attempted = max(0, int(match.group(2)))
+    missed = max(0, attempted - scored)
+    return scored, missed
+
+
+def _normalize_stats_header(value: object) -> str:
+    text = str(value or "").strip().lower()
+    text = re.sub(r"\s+", " ", text)
+    text = text.replace(".", "").replace(":", "")
+    return text
+
+
+def _pick_stats_column(columns: dict[str, str], aliases: list[str], *, startswith: bool = False) -> str:
+    for alias in aliases:
+        key = _normalize_stats_header(alias)
+        if key in columns:
+            return columns[key]
+    if startswith:
+        for alias in aliases:
+            key = _normalize_stats_header(alias)
+            for col_key, col_name in columns.items():
+                if col_key.startswith(key):
+                    return col_name
+    return ""
+
+
+def _build_cookie_opener() -> tuple[object, http.cookiejar.CookieJar]:
+    jar = http.cookiejar.CookieJar()
+    opener = build_opener(HTTPCookieProcessor(jar))
+    return opener, jar
+
+
+def _fantacalcio_login(
+    opener,
+    *,
+    username: str,
+    password: str,
+) -> dict[str, object]:
+    try:
+        _http_read_bytes(
+            opener,
+            FANTACALCIO_LOGIN_PAGE_URL,
+            headers={"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"},
+            timeout_seconds=20,
+        )
+    except Exception:
+        # Best effort warm-up for cookies; do not fail hard here.
+        pass
+
+    payload = json.dumps({"username": username, "password": password}).encode("utf-8")
+    body, _ = _http_read_bytes(
+        opener,
+        FANTACALCIO_LOGIN_API_URL,
+        method="POST",
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json, text/plain, */*",
+            "Referer": FANTACALCIO_LOGIN_PAGE_URL,
+            "Origin": FANTACALCIO_BASE_URL,
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        data=payload,
+        timeout_seconds=30,
+    )
+
+    try:
+        parsed = json.loads(body.decode("utf-8", errors="replace"))
+    except Exception as exc:
+        return {
+            "ok": False,
+            "error": f"Fantacalcio login parse error: {exc}",
+            "response": {},
+        }
+
+    if not isinstance(parsed, dict):
+        return {
+            "ok": False,
+            "error": "Fantacalcio login response non valida",
+            "response": {},
+        }
+
+    success = bool(parsed.get("success"))
+    if success:
+        return {"ok": True, "response": parsed}
+
+    errors = parsed.get("errors") if isinstance(parsed.get("errors"), list) else []
+    error_msg = "; ".join(str(item.get("message") or "") for item in errors if isinstance(item, dict)).strip()
+    return {
+        "ok": False,
+        "error": error_msg or "Fantacalcio login failed",
+        "response": parsed,
+    }
+
+
+def _download_fantacalcio_excel_authenticated(
+    opener,
+    *,
+    endpoint_path: str,
+    referer: str,
+    out_path: Path,
+) -> dict[str, object]:
+    endpoint = str(endpoint_path or "").strip()
+    if not endpoint.startswith("/"):
+        endpoint = f"/{endpoint}"
+    url = f"{FANTACALCIO_BASE_URL}{endpoint}"
+    body, resp_headers = _http_read_bytes(
+        opener,
+        url,
+        method="GET",
+        headers={
+            "Accept": (
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,"
+                "application/vnd.ms-excel,application/octet-stream,*/*"
+            ),
+            "Referer": referer,
+            "Origin": FANTACALCIO_BASE_URL,
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        timeout_seconds=45,
+    )
+    if not _looks_like_xlsx(resp_headers, body):
+        snippet = body[:200].decode("utf-8", errors="replace")
+        return {
+            "ok": False,
+            "warning": f"Excel endpoint non ha restituito XLSX: {snippet}",
+            "url": url,
+            "path": str(out_path),
+        }
+
+    _atomic_write_bytes(out_path, body)
+    return {
+        "ok": True,
+        "url": url,
+        "path": str(out_path),
+        "bytes": int(len(body)),
+        "content_type": str(resp_headers.get("content-type") or ""),
+    }
+
+
+def _extract_fantacalcio_stats_rows_from_xlsx(path: Path) -> list[dict[str, object]]:
+    try:
+        import pandas as pd
+    except Exception as exc:
+        raise LegheSyncError(f"Pandas non disponibile per parsing stats xlsx: {exc}") from exc
+
+    if not path.exists():
+        return []
+
+    sheets = pd.read_excel(path, sheet_name=None, header=None)
+    if not isinstance(sheets, dict) or not sheets:
+        raise LegheSyncError("File stats xlsx senza fogli leggibili.")
+
+    selected_sheet: str | int | None = None
+    header_row: int | None = None
+    for sheet_name, raw in sheets.items():
+        if raw is None or raw.empty:
+            continue
+        for i in range(min(20, len(raw))):
+            row = [_normalize_stats_header(v) for v in raw.iloc[i].tolist()]
+            if "nome" in row and "squadra" in row:
+                selected_sheet = sheet_name
+                header_row = i
+                break
+        if selected_sheet is not None:
+            break
+
+    if selected_sheet is None or header_row is None:
+        raise LegheSyncError("Header row Nome/Squadra non trovato nel file stats xlsx.")
+
+    frame = pd.read_excel(path, sheet_name=selected_sheet, header=header_row)
+    frame = frame.rename(columns={col: str(col).strip() for col in frame.columns})
+    columns = {_normalize_stats_header(col): str(col) for col in frame.columns}
+
+    col_id = _pick_stats_column(columns, ["Id"])
+    col_role = _pick_stats_column(columns, ["Ruolo"])
+    col_name = _pick_stats_column(columns, ["Nome"])
+    col_team = _pick_stats_column(columns, ["Squadra"])
+    if not col_name or not col_team:
+        raise LegheSyncError("Colonne Nome/Squadra mancanti nel file stats xlsx.")
+
+    stats_cols = {
+        "gol": _pick_stats_column(columns, ["Gol fatti"]),
+        "ass": _pick_stats_column(columns, ["Assist"]),
+        "amm": _pick_stats_column(columns, ["Ammonizioni"]),
+        "esp": _pick_stats_column(columns, ["Espulsioni"]),
+        "autogol": _pick_stats_column(columns, ["Autogol"]),
+        "gs": _pick_stats_column(columns, ["Gol subiti"]),
+        "rp": _pick_stats_column(columns, ["Rigori parati"]),
+        "rigori_segnati": _pick_stats_column(columns, ["Rigori segnati"]),
+        "rigori_sbagliati": _pick_stats_column(columns, ["Rigori sbagliati"], startswith=True),
+        "pg": _pick_stats_column(columns, ["Partite giocate"]),
+        "mv": _pick_stats_column(columns, ["Mediavoto"]),
+        "mfv": _pick_stats_column(columns, ["Fantamedia"]),
+    }
+
+    out: list[dict[str, object]] = []
+    for idx, row in frame.iterrows():
+        player_name = str(row.get(col_name, "")).strip() if col_name else ""
+        if not player_name:
+            continue
+
+        role_raw = str(row.get(col_role, "")).strip().upper() if col_role else ""
+        role = ROLE_IMPORT_MAP.get(role_raw, role_raw[:1] if role_raw else "")
+
+        team_raw = str(row.get(col_team, "")).strip() if col_team else ""
+        team_upper = team_raw.upper()
+        team = TEAM_ABBR_MAP.get(team_upper, team_raw.title() if team_raw else "")
+
+        item: dict[str, object] = {
+            "ID": int(_parse_number(str(row.get(col_id, idx + 1) if col_id else idx + 1), default=float(idx + 1))),
+            "Giocatore": player_name,
+            "Posizione": role,
+            "Squadra": team,
+        }
+        for key, col_name_stat in stats_cols.items():
+            if not col_name_stat:
+                item[key] = 0
+                continue
+            value = row.get(col_name_stat, 0)
+            if key in {"mv", "mfv"}:
+                item[key] = round(float(_parse_number(str(value), default=0.0)), 2)
+            else:
+                item[key] = int(_parse_number(str(value), default=0.0))
+        out.append(item)
+
+    out.sort(
+        key=lambda row: (
+            str(row.get("Posizione") or ""),
+            str(row.get("Giocatore") or "").lower(),
+        )
+    )
+    return out
+
+
+def _write_stats_bundle_files(
+    *,
+    stat_rows: list[dict[str, object]],
+    out_dir: Path,
+    stamp: str,
+) -> list[dict[str, object]]:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    generated_files: list[dict[str, object]] = []
+    for prefix, label, source_key, goalkeepers_only in STATS_INCOMING_SPECS:
+        path = out_dir / f"{prefix}_{stamp}.csv"
+        out_rows: list[dict[str, object]] = []
+        for row in stat_rows:
+            if goalkeepers_only and str(row.get("Posizione") or "").upper() != "P":
+                continue
+            value = row.get(source_key, 0)
+            numeric_value = _parse_number(value, default=0.0)
+            if numeric_value <= 0:
+                continue
+            rendered_value: object
+            if label in {"Mediavoto", "Fantamedia"}:
+                rendered_value = round(float(numeric_value), 2)
+            else:
+                rendered_value = int(round(float(numeric_value)))
+            out_rows.append(
+                {
+                    "ID": len(out_rows) + 1,
+                    "Giocatore": str(row.get("Giocatore") or ""),
+                    "Posizione": str(row.get("Posizione") or ""),
+                    "Squadra": str(row.get("Squadra") or ""),
+                    label: rendered_value,
+                }
+            )
+
+        fields = ["ID", "Giocatore", "Posizione", "Squadra", label]
+        with path.open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(out_rows)
+        generated_files.append(
+            {
+                "prefix": prefix,
+                "label": label,
+                "path": str(path),
+                "rows": int(len(out_rows)),
+            }
+        )
+    return generated_files
+
+
+def _extract_fantacalcio_quotazioni_rows_from_xlsx(path: Path) -> list[dict[str, object]]:
+    try:
+        import pandas as pd
+    except Exception as exc:
+        raise LegheSyncError(f"Pandas non disponibile per parsing quotazioni xlsx: {exc}") from exc
+
+    if not path.exists():
+        return []
+
+    raw = pd.read_excel(path, header=None)
+    header_row: int | None = None
+    for i in range(min(20, len(raw))):
+        row = [_normalize_stats_header(v) for v in raw.iloc[i].tolist()]
+        if "nome" in row and ("qta" in row or "prezzoattuale" in row):
+            header_row = i
+            break
+    if header_row is None:
+        raise LegheSyncError("Header row Nome/Qt.A non trovato nel file quotazioni xlsx.")
+
+    frame = pd.read_excel(path, header=header_row)
+    frame = frame.rename(columns={col: str(col).strip() for col in frame.columns})
+    columns = {_normalize_stats_header(col): str(col) for col in frame.columns}
+
+    col_name = _pick_stats_column(columns, ["Nome", "Giocatore"])
+    col_team = _pick_stats_column(columns, ["Squadra", "Team"])
+    col_role = _pick_stats_column(columns, ["R", "Ruolo"])
+    col_qi = _pick_stats_column(columns, ["Qt.I", "Qti", "PrezzoIniziale"])
+    col_qa = _pick_stats_column(columns, ["Qt.A", "Qta", "PrezzoAttuale"])
+
+    if not col_name or not col_qa:
+        raise LegheSyncError("Colonne Nome/Qt.A mancanti nel file quotazioni xlsx.")
+
+    out: list[dict[str, object]] = []
+    for _, row in frame.iterrows():
+        player_name = str(row.get(col_name, "")).strip()
+        if not player_name:
+            continue
+
+        qa = _parse_number(str(row.get(col_qa, "")), default=0.0)
+        if qa <= 0:
+            continue
+        qi = _parse_number(str(row.get(col_qi, "")), default=qa) if col_qi else qa
+
+        role_raw = str(row.get(col_role, "")).strip().upper() if col_role else ""
+        role = ROLE_IMPORT_MAP.get(role_raw, role_raw[:1] if role_raw else "")
+
+        team_raw = str(row.get(col_team, "")).strip() if col_team else ""
+        team_upper = team_raw.upper()
+        team = TEAM_ABBR_MAP.get(team_upper, team_raw.title() if team_raw else "")
+
+        out.append(
+            {
+                "Giocatore": player_name,
+                "Squadra": team,
+                "Ruolo": role,
+                "PrezzoIniziale": int(round(max(0.0, qi))),
+                "PrezzoAttuale": int(round(max(0.0, qa))),
+            }
+        )
+
+    out.sort(
+        key=lambda row: (
+            str(row.get("Ruolo") or ""),
+            str(row.get("Giocatore") or "").lower(),
+        )
+    )
+    return out
+
+
+def _extract_fantacalcio_quotazioni_rows_from_html(source: str) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    if not source:
+        return rows
+
+    row_pattern = re.compile(
+        r'<tr\s+class="player-row"(?P<head>[^>]*)>(?P<body>.*?)</tr>',
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    for match in row_pattern.finditer(source):
+        head = str(match.group("head") or "")
+        body = str(match.group("body") or "")
+
+        role_match = re.search(r'data-filter-role-classic="([a-z])"', head, flags=re.IGNORECASE)
+        role_raw = str(role_match.group(1) if role_match else "").strip().lower()
+        role = ROLE_CLASSIC_MAP.get(role_raw, role_raw.upper()[:1] if role_raw else "")
+
+        name_match = re.search(r'<th[^>]*class="player-name"[^>]*>.*?<span>(.*?)</span>', body, flags=re.DOTALL)
+        name = _strip_html_text(name_match.group(1) if name_match else "")
+        if not name:
+            continue
+
+        team_match = re.search(r'<td[^>]*data-col-key="sq"[^>]*>(.*?)</td>', body, flags=re.DOTALL)
+        team_abbr = _strip_html_text(team_match.group(1) if team_match else "").upper()
+        team = TEAM_ABBR_MAP.get(team_abbr, team_abbr.title() if team_abbr else "")
+
+        qi_match = re.search(r'<td[^>]*data-col-key="c_qi"[^>]*>(.*?)</td>', body, flags=re.DOTALL)
+        qa_match = re.search(r'<td[^>]*data-col-key="c_qa"[^>]*>(.*?)</td>', body, flags=re.DOTALL)
+        qi = _parse_number(_strip_html_text(qi_match.group(1) if qi_match else ""), default=0.0)
+        qa = _parse_number(_strip_html_text(qa_match.group(1) if qa_match else ""), default=0.0)
+        if qa <= 0:
+            continue
+
+        rows.append(
+            {
+                "Giocatore": name,
+                "Squadra": team,
+                "Ruolo": role,
+                "PrezzoIniziale": int(round(qi)),
+                "PrezzoAttuale": int(round(qa)),
+            }
+        )
+
+    rows.sort(
+        key=lambda row: (
+            str(row.get("Ruolo") or ""),
+            str(row.get("Giocatore") or "").lower(),
+        )
+    )
+    return rows
+
+
+def _extract_fantacalcio_stats_rows_from_html(source: str) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    if not source:
+        return rows
+
+    row_pattern = re.compile(
+        r'<tr\s+class="player-row"(?P<head>[^>]*)>(?P<body>.*?)</tr>',
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    for match in row_pattern.finditer(source):
+        head = str(match.group("head") or "")
+        body = str(match.group("body") or "")
+
+        role_match = re.search(r'data-filter-role-classic="([a-z])"', head, flags=re.IGNORECASE)
+        role_raw = str(role_match.group(1) if role_match else "").strip().lower()
+        role = ROLE_CLASSIC_MAP.get(role_raw, role_raw.upper()[:1] if role_raw else "")
+
+        name_match = re.search(r'<th[^>]*class="player-name"[^>]*>.*?<span>(.*?)</span>', body, flags=re.DOTALL)
+        name = _strip_html_text(name_match.group(1) if name_match else "")
+        if not name:
+            continue
+
+        team_abbr = _extract_row_col_text(body, "sq").upper()
+        if not team_abbr:
+            continue
+
+        rig_scored, rig_missed = _parse_rigori_cell(_extract_row_col_text(body, "rig"))
+        rows.append(
+            {
+                "Giocatore": name,
+                "Posizione": role,
+                "Squadra": team_abbr,
+                "pg": _parse_int_number(_extract_row_col_text(body, "pg"), default=0),
+                "mv": _parse_number(_extract_row_col_text(body, "mv"), default=0.0),
+                "mfv": _parse_number(_extract_row_col_text(body, "mfv"), default=0.0),
+                "gol": _parse_int_number(_extract_row_col_text(body, "gol"), default=0),
+                "gs": _parse_int_number(_extract_row_col_text(body, "gs"), default=0),
+                "autogol": 0,
+                "rigori_segnati": rig_scored,
+                "rigori_sbagliati": rig_missed,
+                "rp": _parse_int_number(_extract_row_col_text(body, "rp"), default=0),
+                "ass": _parse_int_number(_extract_row_col_text(body, "ass"), default=0),
+                "amm": _parse_int_number(_extract_row_col_text(body, "amm"), default=0),
+                "esp": _parse_int_number(_extract_row_col_text(body, "esp"), default=0),
+            }
+        )
+
+    rows.sort(
+        key=lambda row: (
+            str(row.get("Posizione") or ""),
+            str(row.get("Giocatore") or "").lower(),
+        )
+    )
+    return rows
+
+
+def download_fantacalcio_stats_csv_bundle(
+    *,
+    season_slug: str | None = None,
+    date_stamp: str | None = None,
+    out_dir: Path | None = None,
+    username: str | None = None,
+    password: str | None = None,
+) -> dict[str, object]:
+    now = datetime.now(tz=timezone.utc)
+    resolved_slug = (season_slug or _season_slug_for(now)).strip()
+    if not re.match(r"^\d{4}-\d{2}$", resolved_slug):
+        raise LegheSyncError(f"season_slug non valido (atteso YYYY-YY): {resolved_slug}")
+
+    stamp = (date_stamp or _today_stamp()).strip()
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", stamp):
+        raise LegheSyncError(f"date_stamp non valido (atteso YYYY-MM-DD): {stamp}")
+
+    resolved_out_dir = out_dir or (_data_dir() / "incoming" / "stats")
+    url = f"{FANTACALCIO_STATS_BASE_URL}/{resolved_slug}"
+    resolved_out_dir.mkdir(parents=True, exist_ok=True)
+
+    warnings: list[str] = []
+    source_kind = "html_public"
+    auth_attempted = bool((username or "").strip() and (password or "").strip())
+    auth_ok = False
+    stat_rows: list[dict[str, object]] = []
+    xlsx_path = resolved_out_dir / f"statistiche_{stamp}.xlsx"
+
+    if auth_attempted:
+        opener, _ = _build_cookie_opener()
+        login_result = _fantacalcio_login(
+            opener,
+            username=str(username or "").strip(),
+            password=str(password or "").strip(),
+        )
+        auth_ok = bool(login_result.get("ok"))
+        if not auth_ok:
+            warnings.append(str(login_result.get("error") or "Fantacalcio login failed"))
+        else:
+            downloaded_xlsx = _download_fantacalcio_excel_authenticated(
+                opener,
+                endpoint_path=FANTACALCIO_EXCEL_STATS_ENDPOINT,
+                referer=url,
+                out_path=xlsx_path,
+            )
+            if bool(downloaded_xlsx.get("ok")):
+                try:
+                    stat_rows = _extract_fantacalcio_stats_rows_from_xlsx(xlsx_path)
+                    if stat_rows:
+                        source_kind = "xlsx_authenticated"
+                except Exception as exc:
+                    warnings.append(f"stats xlsx parse failed: {exc}")
+            else:
+                warnings.append(str(downloaded_xlsx.get("warning") or "stats xlsx download failed"))
+
+    if not stat_rows:
+        opener = build_opener()
+        body, _ = _http_read_bytes(
+            opener,
+            url,
+            headers={
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Referer": f"{FANTACALCIO_BASE_URL}/",
+            },
+            timeout_seconds=45,
+        )
+        source = body.decode("utf-8", errors="replace")
+        stat_rows = _extract_fantacalcio_stats_rows_from_html(source)
+
+    if not stat_rows:
+        result: dict[str, object] = {
+            "ok": False,
+            "warning": "No stats rows parsed from sources",
+            "url": url,
+            "season_slug": resolved_slug,
+            "source": source_kind,
+            "auth_attempted": auth_attempted,
+            "auth_ok": auth_ok,
+            "rows": 0,
+            "files": [],
+        }
+        if warnings:
+            result["warnings"] = warnings
+        return result
+
+    generated_files = _write_stats_bundle_files(
+        stat_rows=stat_rows,
+        out_dir=resolved_out_dir,
+        stamp=stamp,
+    )
+    result = {
+        "ok": True,
+        "url": url,
+        "season_slug": resolved_slug,
+        "source": source_kind,
+        "auth_attempted": auth_attempted,
+        "auth_ok": auth_ok,
+        "xlsx_path": str(xlsx_path) if source_kind == "xlsx_authenticated" else None,
+        "rows": int(len(stat_rows)),
+        "files": generated_files,
+    }
+    if warnings:
+        result["warnings"] = warnings
+    return result
+
+
+def download_fantacalcio_quotazioni_csv(
+    *,
+    season_slug: str | None = None,
+    date_stamp: str | None = None,
+    out_path: Path | None = None,
+    username: str | None = None,
+    password: str | None = None,
+) -> dict[str, object]:
+    now = datetime.now(tz=timezone.utc)
+    resolved_slug = (season_slug or _season_slug_for(now)).strip()
+    if not re.match(r"^\d{4}-\d{2}$", resolved_slug):
+        raise LegheSyncError(f"season_slug non valido (atteso YYYY-YY): {resolved_slug}")
+
+    stamp = (date_stamp or _today_stamp()).strip()
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", stamp):
+        raise LegheSyncError(f"date_stamp non valido (atteso YYYY-MM-DD): {stamp}")
+
+    resolved_out = out_path or (_data_dir() / "incoming" / "quotazioni" / f"quotazioni_{stamp}.csv")
+    url = f"{FANTACALCIO_QUOTAZIONI_BASE_URL}/{resolved_slug}"
+    warnings: list[str] = []
+    source_kind = "html_public"
+    auth_attempted = bool((username or "").strip() and (password or "").strip())
+    auth_ok = False
+    rows: list[dict[str, object]] = []
+    xlsx_path = resolved_out.with_suffix(".xlsx")
+
+    if auth_attempted:
+        opener, _ = _build_cookie_opener()
+        login_result = _fantacalcio_login(
+            opener,
+            username=str(username or "").strip(),
+            password=str(password or "").strip(),
+        )
+        auth_ok = bool(login_result.get("ok"))
+        if not auth_ok:
+            warnings.append(str(login_result.get("error") or "Fantacalcio login failed"))
+        else:
+            _ensure_parent(xlsx_path)
+            downloaded_xlsx = _download_fantacalcio_excel_authenticated(
+                opener,
+                endpoint_path=FANTACALCIO_EXCEL_PRICES_ENDPOINT,
+                referer=url,
+                out_path=xlsx_path,
+            )
+            if bool(downloaded_xlsx.get("ok")):
+                try:
+                    rows = _extract_fantacalcio_quotazioni_rows_from_xlsx(xlsx_path)
+                    if rows:
+                        source_kind = "xlsx_authenticated"
+                except Exception as exc:
+                    warnings.append(f"quotazioni xlsx parse failed: {exc}")
+            else:
+                warnings.append(str(downloaded_xlsx.get("warning") or "quotazioni xlsx download failed"))
+
+    if not rows:
+        opener = build_opener()
+        body, _ = _http_read_bytes(
+            opener,
+            url,
+            headers={
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Referer": f"{FANTACALCIO_BASE_URL}/",
+            },
+            timeout_seconds=45,
+        )
+        source = body.decode("utf-8", errors="replace")
+        rows = _extract_fantacalcio_quotazioni_rows_from_html(source)
+
+    if not rows:
+        result: dict[str, object] = {
+            "ok": False,
+            "warning": "No quotazioni rows parsed from sources",
+            "url": url,
+            "season_slug": resolved_slug,
+            "source": source_kind,
+            "auth_attempted": auth_attempted,
+            "auth_ok": auth_ok,
+            "path": str(resolved_out),
+            "rows": 0,
+        }
+        if warnings:
+            result["warnings"] = warnings
+        return result
+
+    _ensure_parent(resolved_out)
+    fields = ["Giocatore", "Squadra", "Ruolo", "PrezzoIniziale", "PrezzoAttuale"]
+    with resolved_out.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
+
+    result = {
+        "ok": True,
+        "url": url,
+        "season_slug": resolved_slug,
+        "source": source_kind,
+        "auth_attempted": auth_attempted,
+        "auth_ok": auth_ok,
+        "xlsx_path": str(xlsx_path) if source_kind == "xlsx_authenticated" else None,
+        "path": str(resolved_out),
+        "rows": int(len(rows)),
+    }
+    if warnings:
+        result["warnings"] = warnings
+    return result
 
 
 def _http_read_bytes(
@@ -804,6 +1614,10 @@ def run_leghe_sync_and_pipeline(
     download_classifica: bool = True,
     download_formazioni: bool = True,
     download_formazioni_xlsx: bool = True,
+    fetch_quotazioni: bool = False,
+    quotazioni_season_slug: str | None = None,
+    fetch_global_stats: bool = False,
+    stats_season_slug: str | None = None,
     run_pipeline: bool = True,
 ) -> dict[str, object]:
     stamp = (date_stamp or _today_stamp()).strip()
@@ -829,6 +1643,7 @@ def run_leghe_sync_and_pipeline(
     context: LegheContext | None = None
     downloaded: dict[str, dict[str, object]] = {}
     pipeline_runs: list[dict[str, object]] = []
+    pipeline_warnings: list[str] = []
     effective_formations_matchday: int | None = formations_matchday
 
     try:
@@ -918,88 +1733,149 @@ def run_leghe_sync_and_pipeline(
         root = _repo_root()
 
         if run_pipeline:
-            # 1) classifica -> pipeline_v2 (legacy data/classifica.csv)
-            steps["strength"] = "running"
-            _write_status(
-                {
-                    "last_update": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
-                    "result": "running",
-                    "message": "Aggiornamento in corso: Classifica...",
-                    "season": _season_for(datetime.now(tz=timezone.utc)),
-                    "update_id": update_id,
-                    "steps": steps,
-                }
-            )
-            pipeline_runs.append(
-                _run_subprocess(
-                    [sys.executable, str(root / "scripts" / "pipeline_v2.py"), "--domains", "classifica", "--date", stamp],
-                    cwd=root,
+            def _write_running_status(message: str) -> None:
+                _write_status(
+                    {
+                        "last_update": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
+                        "result": "running",
+                        "message": message,
+                        "season": _season_for(datetime.now(tz=timezone.utc)),
+                        "update_id": update_id,
+                        "matchday": int(effective_formations_matchday) if effective_formations_matchday else None,
+                        "steps": steps,
+                    }
                 )
-            )
-            if pipeline_runs[-1]["returncode"] != 0:
-                raise LegheSyncError(f"pipeline_v2 classifica failed (rc={pipeline_runs[-1]['returncode']})")
-            steps["strength"] = "ok"
 
-            # 2) rose -> update_data (legacy data/rose_fantaportoscuso.csv + market_latest.json)
+            def _run_pipeline_step(
+                argv: list[str],
+                *,
+                label: str,
+                fatal: bool = True,
+            ) -> None:
+                run_item = _run_subprocess(argv, cwd=root)
+                pipeline_runs.append(run_item)
+                if int(run_item.get("returncode") or 0) == 0:
+                    return
+                if fatal:
+                    raise LegheSyncError(f"{label} failed (rc={run_item.get('returncode')})")
+                pipeline_warnings.append(f"{label} failed (rc={run_item.get('returncode')})")
+
+            # 1) classifica + rose/quotazioni (+ market)
             steps["rose"] = "running"
-            _write_status(
-                {
-                    "last_update": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
-                    "result": "running",
-                    "message": "Aggiornamento in corso: Rose...",
-                    "season": _season_for(datetime.now(tz=timezone.utc)),
-                    "update_id": update_id,
-                    "steps": steps,
-                }
+            _write_running_status("Aggiornamento in corso: Rose/Quotazioni...")
+            _run_pipeline_step(
+                [
+                    sys.executable,
+                    str(root / "scripts" / "pipeline_v2.py"),
+                    "--domains",
+                    "classifica",
+                    "--date",
+                    stamp,
+                ],
+                label="pipeline_v2 classifica",
+                fatal=True,
             )
-            pipeline_runs.append(
-                _run_subprocess(
-                    [
-                        sys.executable,
-                        str(root / "scripts" / "update_data.py"),
-                        "--auto",
-                        "--date",
-                        stamp,
-                        "--keep",
-                        "5",
-                    ],
-                    cwd=root,
-                )
+            if fetch_quotazioni:
+                try:
+                    quotazioni_result = download_fantacalcio_quotazioni_csv(
+                        season_slug=quotazioni_season_slug,
+                        date_stamp=stamp,
+                        username=username,
+                        password=password,
+                    )
+                    downloaded["quotazioni"] = dict(quotazioni_result)
+                    if not bool(quotazioni_result.get("ok")):
+                        pipeline_warnings.append(
+                            "fetch_quotazioni non ha prodotto righe utilizzabili"
+                        )
+                except Exception as exc:
+                    pipeline_warnings.append(f"fetch_quotazioni failed: {exc}")
+            _run_pipeline_step(
+                [
+                    sys.executable,
+                    str(root / "scripts" / "update_data.py"),
+                    "--auto",
+                    "--date",
+                    stamp,
+                    "--keep",
+                    "5",
+                ],
+                label="update_data",
+                fatal=True,
             )
-            if pipeline_runs[-1]["returncode"] != 0:
-                raise LegheSyncError(f"update_data failed (rc={pipeline_runs[-1]['returncode']})")
             steps["rose"] = "ok"
 
-            # 3) report: tiers + strength ranking (fast, helps UI)
-            _write_status(
-                {
-                    "last_update": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
-                    "result": "running",
-                    "message": "Aggiornamento in corso: Report...",
-                    "season": _season_for(datetime.now(tz=timezone.utc)),
-                    "update_id": update_id,
-                    "steps": steps,
-                }
+            # 2) statistiche (stats/*.csv + statistiche_giocatori.csv + eventuali update DB csv)
+            steps["stats"] = "running"
+            _write_running_status("Aggiornamento in corso: Statistiche...")
+            if fetch_global_stats:
+                try:
+                    global_stats_result = download_fantacalcio_stats_csv_bundle(
+                        season_slug=stats_season_slug,
+                        date_stamp=stamp,
+                        username=username,
+                        password=password,
+                    )
+                    downloaded["global_stats"] = dict(global_stats_result)
+                    if not bool(global_stats_result.get("ok")):
+                        pipeline_warnings.append(
+                            "fetch_global_stats non ha prodotto righe utilizzabili"
+                        )
+                except Exception as exc:
+                    pipeline_warnings.append(f"fetch_global_stats failed: {exc}")
+            _run_pipeline_step(
+                [
+                    sys.executable,
+                    str(root / "scripts" / "clean_stats_batch.py"),
+                ],
+                label="clean_stats_batch",
+                fatal=True,
             )
-            pipeline_runs.append(
-                _run_subprocess([sys.executable, str(root / "scripts" / "build_player_tiers.py")], cwd=root)
+            steps["stats"] = "ok"
+
+            # 3) forza squadra / XI / report premium
+            steps["strength"] = "running"
+            _write_running_status("Aggiornamento in corso: Forza squadra e XI...")
+            _run_pipeline_step(
+                [
+                    sys.executable,
+                    str(root / "scripts" / "update_fixtures.py"),
+                ],
+                label="update_fixtures",
+                fatal=False,
             )
-            if pipeline_runs[-1]["returncode"] != 0:
-                raise LegheSyncError(f"build_player_tiers failed (rc={pipeline_runs[-1]['returncode']})")
-            pipeline_runs.append(
-                _run_subprocess(
-                    [
-                        sys.executable,
-                        str(root / "scripts" / "build_team_strength_ranking.py"),
-                        "--snapshot",
-                        "--snapshot-date",
-                        stamp,
-                    ],
-                    cwd=root,
-                )
+            _run_pipeline_step(
+                [
+                    sys.executable,
+                    str(root / "scripts" / "build_player_tiers.py"),
+                ],
+                label="build_player_tiers",
+                fatal=True,
             )
-            if pipeline_runs[-1]["returncode"] != 0:
-                raise LegheSyncError(f"build_team_strength_ranking failed (rc={pipeline_runs[-1]['returncode']})")
+            _run_pipeline_step(
+                [
+                    sys.executable,
+                    str(root / "scripts" / "build_team_strength_ranking.py"),
+                    "--snapshot",
+                    "--snapshot-date",
+                    stamp,
+                ],
+                label="build_team_strength_ranking",
+                fatal=True,
+            )
+            _run_pipeline_step(
+                [
+                    sys.executable,
+                    str(root / "scripts" / "build_season_predictions.py"),
+                    "--start-round",
+                    "25",
+                    "--end-round",
+                    "38",
+                ],
+                label="build_season_predictions",
+                fatal=False,
+            )
+            steps["strength"] = "ok"
 
         steps.setdefault("stats", "pending")
         _write_status(
@@ -1032,6 +1908,7 @@ def run_leghe_sync_and_pipeline(
             "cookies": len(list(jar)),
             "downloaded": downloaded,
             "pipeline": pipeline_runs,
+            "warnings": pipeline_warnings,
         }
     except Exception as exc:
         # Best-effort: mark status as error.
