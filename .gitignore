@@ -4,13 +4,20 @@
 
 # Python
 __pycache__/
+**/__pycache__/
 *.py[cod]
+*.pyc
 .pytest_cache/
 
 # Node
 apps/web/node_modules/
-apps/web/.env
+apps/web/dist/
 .vercel/
+
+# Environment secrets
+.env
+.env.local
+apps/web/.env
 
 # Local DB / runtime
 app.db
@@ -25,17 +32,23 @@ data/archive/
 data/tmp/
 data/reports/*missing_report.txt
 data/reports/update_all_log.txt
+data/reports/*.log
+
 # Runtime/generated outputs
 data/status.json
 data/backups/
 data/reports/history/
+
 # Pipeline v2 runtime artifacts
 data/staging/
 data/marts/
 data/db/pipeline_v2.db
 data/db/pipeline_v2_state.json
+
 # Keep tracked template
 !data/status.example.json
-**/__pycache__/
-*.pyc
-apps/web/dist/
+
+# Root temp/debug artifacts
+tmpclaude-*
+nul
+Classifica_FantaPortoscuso-*.xlsx

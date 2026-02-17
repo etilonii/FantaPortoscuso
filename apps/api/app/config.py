@@ -47,13 +47,17 @@ def get_env_optional(name: str) -> str | None:
 APP_NAME = get_env("APP_NAME", "FantaPortoscuso API")
 DATABASE_URL = get_env("DATABASE_URL", "sqlite:///./data/db/app.db")
 KEY_LENGTH = int(get_env("KEY_LENGTH", "8"))
-AUTH_SECRET = get_env("AUTH_SECRET", "fp-dev-secret-change-me")
+_auth_secret_raw = os.getenv("AUTH_SECRET", "").strip()
+if not _auth_secret_raw:
+    import secrets as _secrets
+    _auth_secret_raw = _secrets.token_urlsafe(32)
+AUTH_SECRET = _auth_secret_raw
 RATE_LIMIT_REQUESTS = int(get_env("RATE_LIMIT_REQUESTS", "120"))
 RATE_LIMIT_WINDOW_SECONDS = int(get_env("RATE_LIMIT_WINDOW_SECONDS", "60"))
 BACKUP_DIR = get_env("BACKUP_DIR", "./data/backups")
 BACKUP_KEEP_LAST = int(get_env("BACKUP_KEEP_LAST", "20"))
 AUTO_LIVE_IMPORT_ENABLED = get_env_bool("AUTO_LIVE_IMPORT_ENABLED", True)
-AUTO_LIVE_IMPORT_INTERVAL_HOURS = get_env_int("AUTO_LIVE_IMPORT_INTERVAL_HOURS", 12, min_value=1)
+AUTO_LIVE_IMPORT_INTERVAL_HOURS = get_env_int("AUTO_LIVE_IMPORT_INTERVAL_HOURS", 3, min_value=1)
 AUTO_LIVE_IMPORT_ON_START = get_env_bool("AUTO_LIVE_IMPORT_ON_START", True)
 AUTO_LIVE_IMPORT_ROUND = get_env_optional_int("AUTO_LIVE_IMPORT_ROUND")
 AUTO_LIVE_IMPORT_SEASON = get_env("AUTO_LIVE_IMPORT_SEASON", "").strip()

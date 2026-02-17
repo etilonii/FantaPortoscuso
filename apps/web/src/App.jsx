@@ -569,7 +569,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setSummary(data);
-    } catch {}
+    } catch {
+      console.warn("loadSummary failed");
+    }
   };
 
   const loadDataStatus = async () => {
@@ -639,7 +641,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         .sort((a, b) => a.localeCompare(b, "it", { sensitivity: "base" }));
       setTeams(items);
       if (items.length && !selectedTeam) setSelectedTeam(items[0]);
-    } catch {}
+    } catch {
+      console.warn("loadTeams failed");
+    }
   };
 
   const loadRoster = async (teamName) => {
@@ -651,7 +655,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setRoster(data.items || []);
-    } catch {}
+    } catch {
+      console.warn("loadRoster failed");
+    }
   };
 
   const loadMarketStandings = async () => {
@@ -660,7 +666,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setMarketStandings(Array.isArray(data.items) ? data.items : []);
-    } catch {}
+    } catch {
+      console.warn("loadMarketStandings failed");
+    }
   };
 
   const loadFormazioni = async (roundValue = null, orderValue = null) => {
@@ -717,7 +725,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       } else {
         setFormationRound("");
       }
-    } catch {}
+    } catch {
+      console.warn("loadFormazioni failed");
+    }
   };
 
   const onFormationRoundChange = (nextRound) => {
@@ -935,7 +945,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setQuoteList(data.items || []);
-    } catch {}
+    } catch {
+      console.warn("loadListone failed");
+    }
   };
 
   const loadTopQuotesAllRoles = async () => {
@@ -960,7 +972,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         (a, b) => Number(b.PrezzoAttuale || 0) - Number(a.PrezzoAttuale || 0)
       );
       setTopQuotesAll(items);
-    } catch {}
+    } catch {
+      console.warn("loadTopQuotesAllRoles failed");
+    }
   };
 
   const teamNameSet = useMemo(() => {
@@ -992,7 +1006,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setPlusvalenze(data.items || []);
-    } catch {}
+    } catch {
+      console.warn("loadPlusvalenze failed");
+    }
   };
 
   const loadAllPlusvalenze = async () => {
@@ -1005,7 +1021,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setAllPlusvalenze(data.items || []);
-    } catch {}
+    } catch {
+      console.warn("loadAllPlusvalenze failed");
+    }
   };
 
   const tabToColumn = (tab) => {
@@ -1048,7 +1066,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setStatsItems(data.items || []);
-    } catch {}
+    } catch {
+      console.warn("loadStatList failed");
+    }
   };
 
   const runSearch = async (searchValue) => {
@@ -1207,7 +1227,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         const data = await statsRes.json();
         setPlayerStats(data.item || null);
       }
-    } catch {}
+    } catch {
+      console.warn("openPlayer failed");
+    }
   };
 
   /* ===========================
@@ -1641,7 +1663,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setAdminKeys(data || []);
-    } catch {}
+    } catch {
+      console.warn("loadAdminKeys failed");
+    }
   };
 
   const createNewKey = async () => {
@@ -1659,7 +1683,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setNewKey(data.key || "");
       setAdminNotice("Key creata.");
       loadAdminKeys();
-    } catch {}
+    } catch {
+      setAdminNotice("Errore durante la creazione della key.");
+    }
   };
 
   const loadAdminStatus = async () => {
@@ -1671,7 +1697,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setAdminStatus(data || null);
-    } catch {}
+    } catch {
+      console.warn("loadAdminStatus failed");
+    }
   };
 
   const loadAdminTeamKeys = async () => {
@@ -1683,7 +1711,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       const data = await res.json();
       setAdminTeamKeys(data || []);
-    } catch {}
+    } catch {
+      console.warn("loadAdminTeamKeys failed");
+    }
   };
 
   const refreshMarketAdmin = async () => {
@@ -1697,7 +1727,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setAdminNotice("Mercato aggiornato.");
       loadAdminStatus();
       loadMarket();
-    } catch {}
+    } catch {
+      setAdminNotice("Errore aggiornamento mercato.");
+    }
   };
 
   const setAdminForKey = async () => {
@@ -1717,7 +1749,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setAdminNotice(`Key ${key.toUpperCase()} promossa ad admin.`);
       setAdminSetAdminKey("");
       loadAdminKeys();
-    } catch {}
+    } catch {
+      setAdminNotice("Errore promozione key ad admin.");
+    }
   };
 
   const assignTeamKey = async () => {
@@ -1739,7 +1773,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setAdminTeamKey("");
       setAdminTeamName("");
       loadAdminTeamKeys();
-    } catch {}
+    } catch {
+      setAdminNotice("Errore associazione team-key.");
+    }
   };
 
   const loadAdminResetUsage = async (keyValue) => {
@@ -1819,7 +1855,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setAdminNotice(`Importate ${raw.length} key.`);
       setAdminImportKeys("");
       loadAdminKeys();
-    } catch {}
+    } catch {
+      setAdminNotice("Errore importazione key.");
+    }
   };
 
   const importTeamKeysAdmin = async () => {
@@ -1848,7 +1886,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setAdminNotice(`Importate ${items.length} associazioni team.`);
       setAdminImportTeamKeys("");
       loadAdminTeamKeys();
-    } catch {}
+    } catch {
+      setAdminNotice("Errore importazione associazioni team.");
+    }
   };
 
   const deleteTeamKeyAdmin = async (keyValue) => {
@@ -1867,7 +1907,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!res.ok) return;
       setAdminNotice(`Associazione rimossa: ${key.toUpperCase()}.`);
       loadAdminTeamKeys();
-    } catch {}
+    } catch {
+      setAdminNotice("Errore rimozione associazione.");
+    }
   };
 
   const loadPremiumInsights = async (force = false) => {

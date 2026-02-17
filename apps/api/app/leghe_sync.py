@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import logging
 import os
 import re
 import subprocess
@@ -100,6 +101,9 @@ class LegheContext:
     current_turn: int | None
     last_calculated_matchday: int | None
     suggested_formations_matchday: int | None
+
+
+_logger = logging.getLogger(__name__)
 
 
 class LegheSyncError(RuntimeError):
@@ -894,6 +898,7 @@ def _http_read_bytes(
         try:
             body = exc.read()  # type: ignore[attr-defined]
         except Exception:
+            _logger.debug("Failed to read HTTP error body for %s", url, exc_info=True)
             body = b""
         snippet = body[:400].decode("utf-8", errors="replace")
         raise LegheSyncError(f"HTTP {exc.code} for {url} | body={snippet}") from exc

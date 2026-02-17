@@ -1,6 +1,7 @@
 import base64
 import csv
 import json
+import logging
 import math
 import re
 import unicodedata
@@ -51,6 +52,8 @@ from apps.api.app.models import (
 )
 from apps.api.app.utils.names import normalize_name, strip_star, is_starred
 
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/data", tags=["data"])
 
@@ -1529,7 +1532,7 @@ def _load_residual_credits_map() -> Dict[str, float]:
                     _RESIDUAL_CREDITS_CACHE["data"] = credits
                     return credits
         except Exception:
-            pass
+            logger.debug("Failed to parse residual credits from %s", path, exc_info=True)
 
     try:
         import pandas as pd
@@ -1660,7 +1663,7 @@ def _build_market_placeholder() -> Dict[str, List[Dict[str, str]]]:
                     "teams": data.get("teams", []) or [],
                 }
             except Exception:
-                pass
+                logger.debug("Failed to parse market JSON payload from %s", MARKET_PATH, exc_info=True)
         return {"items": [], "teams": []}
     rose_rows = _read_csv(ROSE_PATH)
     quot_rows = _read_csv(QUOT_PATH)
@@ -2368,10 +2371,10 @@ def _build_live_standings_rows(
             and available_rounds
             and latest_live_votes_round in available_rounds
             and (target_round is None or int(latest_live_votes_round) > int(target_round))
-            and _is_round_completed_from_fixtures(latest_live_votes_round)
         ):
             target_round = int(latest_live_votes_round)
-            promoted_round_from_completed_votes = int(latest_live_votes_round)
+            if _is_round_completed_from_fixtures(latest_live_votes_round):
+                promoted_round_from_completed_votes = int(latest_live_votes_round)
 
     formazioni_items: List[Dict[str, object]] = []
     for item in real_rows:
@@ -5523,6 +5526,7 @@ def _context_html_candidates() -> List[Path]:
                 reverse=True,
             )
         except Exception:
+            logger.debug("Failed to list context HTML candidates", exc_info=True)
             dynamic_paths = []
         for dynamic_path in dynamic_paths:
             _register(dynamic_path)
@@ -5555,8 +5559,7 @@ def _refresh_formazioni_context_html_live() -> Optional[Path]:
             formations_matchday=LEGHE_FORMATIONS_MATCHDAY,
         )
     except Exception:
-        # Keep fallback behavior via local cache if live refresh fails.
-        pass
+        logger.warning("Formazioni live refresh failed, using local cache", exc_info=True)
     finally:
         _FORMAZIONI_REMOTE_REFRESH_CACHE["last_ts"] = now_ts
 
@@ -5811,6 +5814,7 @@ def _decode_appkey_payload_token(token: str) -> Optional[Dict[str, object]]:
         try:
             decoded = base64.b64decode(padded)
         except Exception:
+            logger.debug("Base64 decode failed for appkey token candidate")
             continue
 
         payload: object
@@ -5820,6 +5824,7 @@ def _decode_appkey_payload_token(token: str) -> Optional[Dict[str, object]]:
             try:
                 payload = json.loads(decoded.decode("utf-8-sig"))
             except Exception:
+                logger.debug("JSON decode failed for appkey token candidate")
                 continue
 
         if not isinstance(payload, dict):
@@ -6181,6 +6186,7 @@ def _refresh_formazioni_appkey_from_service(round_value: Optional[int]) -> Optio
             team_ids=team_ids,
         )
     except Exception:
+        logger.warning("Formazioni service fetch failed for round %s", requested_round, exc_info=True)
         _FORMAZIONI_REMOTE_REFRESH_CACHE[cache_key] = now_ts
         return None
 
@@ -6809,9 +6815,6 @@ def _load_real_formazioni_rows_from_appkey_json(
 
     if source_path is None and current_turn is not None:
         source_path = _refresh_formazioni_appkey_from_service(current_turn)
-    if source_path is None and LEGHE_ALIAS:
-        # With live mode enabled, avoid serving stale cached appkey payloads.
-        return [], [], None
     if source_path is None:
         source_path = _latest_formazioni_appkey_path()
     if source_path is None:
@@ -7601,6 +7604,7 @@ def _claim_scheduled_job_run(
         try:
             db.commit()
         except Exception:
+            logger.debug("Scheduled job state commit failed for %s", job_name, exc_info=True)
             db.rollback()
         state = db.query(ScheduledJobState).filter(ScheduledJobState.job_name == job_name).first()
         if state is None:
@@ -7683,6 +7687,7 @@ def _claim_scheduled_job_slot(
         try:
             db.commit()
         except Exception:
+            logger.debug("Scheduled job state commit failed for %s", job_name, exc_info=True)
             db.rollback()
         state = db.query(ScheduledJobState).filter(ScheduledJobState.job_name == job_name).first()
         if state is None:
