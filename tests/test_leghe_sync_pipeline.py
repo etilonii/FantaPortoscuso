@@ -366,3 +366,33 @@ def test_download_fantacalcio_quotazioni_prefers_authenticated_xlsx(monkeypatch,
     assert result["source"] == "xlsx_authenticated"
     assert result["rows"] == 1
     assert out_path.exists()
+
+
+def test_extract_fantacalcio_stats_rows_from_xlsx_short_headers(tmp_path):
+    import pandas as pd
+
+    path = tmp_path / "stats_short.xlsx"
+    frame = pd.DataFrame(
+        [
+            ["Statistiche Fantacalcio Stagione 2025 26"],
+            ["Id", "R", "Rm", "Nome", "Squadra", "Pv", "Mv", "Fm", "Gf", "Gs", "Rp", "Rc", "R+", "R-", "Ass", "Amm", "Esp", "Au"],
+            [4312, "P", "Por", "Maignan", "Milan", 23, 6.39, 5.8, 0, 18, 2, 0, 0, 0, 0, 3, 0, 0],
+            [9001, "A", "Pc", "Lautaro", "Inter", 24, 6.82, 8.15, 12, 0, 0, 0, 3, 1, 4, 1, 0, 0],
+        ]
+    )
+    with pd.ExcelWriter(path) as writer:
+        frame.to_excel(writer, sheet_name="Tutti", header=False, index=False)
+
+    rows = ls._extract_fantacalcio_stats_rows_from_xlsx(path)
+    assert len(rows) == 2
+
+    lautaro = next(item for item in rows if item["Giocatore"] == "Lautaro")
+    assert lautaro["Posizione"] == "A"
+    assert lautaro["Squadra"] == "Inter"
+    assert lautaro["pg"] == 24
+    assert lautaro["mv"] == 6.82
+    assert lautaro["mfv"] == 8.15
+    assert lautaro["gol"] == 12
+    assert lautaro["rigori_segnati"] == 3
+    assert lautaro["rigori_sbagliati"] == 1
+    assert lautaro["ass"] == 4

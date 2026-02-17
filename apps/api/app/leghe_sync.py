@@ -367,26 +367,26 @@ def _extract_fantacalcio_stats_rows_from_xlsx(path: Path) -> list[dict[str, obje
     frame = frame.rename(columns={col: str(col).strip() for col in frame.columns})
     columns = {_normalize_stats_header(col): str(col) for col in frame.columns}
 
-    col_id = _pick_stats_column(columns, ["Id"])
-    col_role = _pick_stats_column(columns, ["Ruolo"])
+    col_id = _pick_stats_column(columns, ["Id", "ID"])
+    col_role = _pick_stats_column(columns, ["Ruolo", "R"])
     col_name = _pick_stats_column(columns, ["Nome"])
     col_team = _pick_stats_column(columns, ["Squadra"])
     if not col_name or not col_team:
         raise LegheSyncError("Colonne Nome/Squadra mancanti nel file stats xlsx.")
 
     stats_cols = {
-        "gol": _pick_stats_column(columns, ["Gol fatti"]),
-        "ass": _pick_stats_column(columns, ["Assist"]),
-        "amm": _pick_stats_column(columns, ["Ammonizioni"]),
-        "esp": _pick_stats_column(columns, ["Espulsioni"]),
-        "autogol": _pick_stats_column(columns, ["Autogol"]),
-        "gs": _pick_stats_column(columns, ["Gol subiti"]),
-        "rp": _pick_stats_column(columns, ["Rigori parati"]),
-        "rigori_segnati": _pick_stats_column(columns, ["Rigori segnati"]),
-        "rigori_sbagliati": _pick_stats_column(columns, ["Rigori sbagliati"], startswith=True),
-        "pg": _pick_stats_column(columns, ["Partite giocate"]),
-        "mv": _pick_stats_column(columns, ["Mediavoto"]),
-        "mfv": _pick_stats_column(columns, ["Fantamedia"]),
+        "gol": _pick_stats_column(columns, ["Gol fatti", "Gf"]),
+        "ass": _pick_stats_column(columns, ["Assist", "Ass"]),
+        "amm": _pick_stats_column(columns, ["Ammonizioni", "Amm"]),
+        "esp": _pick_stats_column(columns, ["Espulsioni", "Esp"]),
+        "autogol": _pick_stats_column(columns, ["Autogol", "Au"]),
+        "gs": _pick_stats_column(columns, ["Gol subiti", "Gs"]),
+        "rp": _pick_stats_column(columns, ["Rigori parati", "Rp"]),
+        "rigori_segnati": _pick_stats_column(columns, ["Rigori segnati", "R+", "R +"], startswith=True),
+        "rigori_sbagliati": _pick_stats_column(columns, ["Rigori sbagliati", "R-", "R -"], startswith=True),
+        "pg": _pick_stats_column(columns, ["Partite giocate", "Presenze", "Pv"]),
+        "mv": _pick_stats_column(columns, ["Mediavoto", "Mv"]),
+        "mfv": _pick_stats_column(columns, ["Fantamedia", "Fm"]),
     }
 
     out: list[dict[str, object]] = []
