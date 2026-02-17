@@ -1,1 +1,244 @@
 ID,Giocatore,Posizione,Squadra,Gol fatti
+1,Adams C.,A,Torino,4
+2,Addai,A,Como,3
+3,Banda,A,Lecce,3
+4,Belotti,A,Cagliari,2
+5,Benedyczak,A,Parma,1
+6,Berardi,A,Sassuolo,5
+7,Bonazzoli,A,Cremonese,5
+8,Bonny,A,Inter,5
+9,Borrelli,A,Cagliari,3
+10,Bravo,A,Udinese,1
+11,Buksa,A,Udinese,1
+12,Camarda,A,Lecce,1
+13,Cambiaghi,A,Bologna,3
+14,Cancellieri,A,Lazio,3
+15,Castellanos,A,Lazio,2
+16,Castro S.,A,Bologna,7
+17,Cheddira,A,Lecce,1
+18,Colombo,A,Genoa,6
+19,Cutrone,A,Parma,1
+20,Dallinga,A,Bologna,1
+21,David,A,Juventus,5
+22,Davis K.,A,Udinese,7
+23,De Ketelaere,A,Atalanta,3
+24,De Luca,A,Cremonese,1
+25,Dia,A,Lazio,1
+26,Douvikas,A,Como,8
+27,Dovbyk,A,Roma,3
+28,Durosinmi,A,Pisa,1
+29,Dybala,A,Roma,2
+30,Ekhator,A,Genoa,2
+31,Ekuban,A,Genoa,2
+32,Esposito F.P.,A,Inter,4
+33,Esposito Se.,A,Cagliari,3
+34,Ferguson E.,A,Roma,3
+35,Fullkrug,A,Milan,1
+36,Giovane,A,Napoli,3
+37,Hojlund,A,Napoli,8
+38,Johnsen,A,Cremonese,1
+39,Kean,A,Fiorentina,7
+40,Kilicsoy,A,Cagliari,4
+41,Krstovic,A,Atalanta,7
+42,Kuhn,A,Como,1
+43,Lang,A,Napoli,1
+44,Laurientè,A,Sassuolo,4
+45,Leao,A,Milan,7
+46,Lookman,A,Atalanta,2
+47,Lucca,A,Napoli,1
+48,Malen,A,Roma,5
+49,Martinez L.,A,Inter,14
+50,Meister,A,Pisa,2
+51,Moreo,A,Pisa,5
+52,N'Dri,A,Lecce,2
+53,Ngonge,A,Torino,1
+54,Njie,A,Torino,1
+55,Nkunku,A,Milan,5
+56,Noslin,A,Lazio,2
+57,Nzola,A,Sassuolo,3
+58,Openda,A,Juventus,1
+59,Orban G.,A,Verona,7
+60,Pedro,A,Lazio,3
+61,Pellegrino M.,A,Parma,7
+62,Piccoli,A,Fiorentina,2
+63,Pinamonti,A,Sassuolo,5
+64,Raspadori,A,Atalanta,1
+65,Sanabria,A,Cremonese,1
+66,Scamacca,A,Atalanta,6
+67,Simeone,A,Torino,5
+68,Solomon,A,Fiorentina,2
+69,Soulè,A,Roma,6
+70,Stulic,A,Lecce,2
+71,Sulemana K.,A,Atalanta,2
+72,Thuram,A,Inter,7
+73,Vardy,A,Cremonese,5
+74,Vitinha O.,A,Genoa,3
+75,Vlahovic,A,Juventus,3
+76,Yildiz,A,Juventus,8
+77,Zapata D.,A,Torino,1
+78,Adopo,C,Cagliari,1
+79,Adzic,C,Juventus,1
+80,Aebischer,C,Pisa,1
+81,Atta,C,Udinese,2
+82,Baldanzi,C,Genoa,1
+83,Barella,C,Inter,1
+84,Basic,C,Lazio,1
+85,Baturina,C,Como,4
+86,Berisha M.,C,Lecce,2
+87,Bernabè,C,Parma,3
+88,Bernardeschi,C,Bologna,1
+89,Bernede,C,Verona,1
+90,Brescianini,C,Fiorentina,2
+91,Calhanoglu,C,Inter,7
+92,Caqueret,C,Como,1
+93,Casadei,C,Torino,3
+94,Cataldi,C,Lazio,3
+95,Conceicao,C,Juventus,2
+96,Coulibaly L.,C,Lecce,2
+97,Cristante,C,Roma,1
+98,Da Cunha,C,Como,2
+99,De Bruyne,C,Napoli,4
+100,De Roon,C,Atalanta,1
+101,Ederson D.S.,C,Atalanta,1
+102,Ekkelenkamp,C,Udinese,3
+103,Ellertsson,C,Genoa,1
+104,Fabbian,C,Fiorentina,2
+105,Fadera,C,Sassuolo,2
+106,Fagioli,C,Fiorentina,1
+107,Felici,C,Cagliari,2
+108,Ferguson,C,Bologna,1
+109,Fofana Y.,C,Milan,1
+110,Folorunsho,C,Cagliari,1
+111,Frendrup,C,Genoa,1
+112,Gaetano,C,Cagliari,2
+113,Gagliardini,C,Verona,1
+114,Gandelman,C,Lecce,1
+115,Gilmour,C,Napoli,1
+116,Gudmundsson A.,C,Fiorentina,4
+117,Guendouzi,C,Lazio,2
+118,Harroui,C,Verona,1
+119,Iannoni,C,Sassuolo,1
+120,Isaksen,C,Lazio,3
+121,Karlstrom,C,Udinese,1
+122,Konè I.,C,Sassuolo,4
+123,Konè M.,C,Roma,2
+124,Kostic,C,Juventus,3
+125,Leris,C,Pisa,1
+126,Lobotka,C,Napoli,1
+127,Locatelli,C,Juventus,1
+128,Loftus-Cheek,C,Milan,3
+129,Lorran,C,Pisa,1
+130,Loyola,C,Pisa,1
+131,Luis Henrique,C,Inter,1
+132,Malinovskyi,C,Genoa,5
+133,Mandragora,C,Fiorentina,6
+134,Matic,C,Sassuolo,1
+135,Mazzitelli,C,Cagliari,2
+136,McKennie,C,Juventus,4
+137,McTominay,C,Napoli,6
+138,Messias,C,Genoa,1
+139,Miretti,C,Juventus,1
+140,Mkhitaryan,C,Inter,1
+141,Modric,C,Milan,2
+142,Moro N.,C,Bologna,1
+143,Ndour,C,Fiorentina,1
+144,Neres,C,Napoli,3
+145,Odgaard,C,Bologna,4
+146,Ordonez C.,C,Parma,1
+147,Orsolini,C,Bologna,7
+148,Pasalic,C,Atalanta,2
+149,Payero,C,Cremonese,1
+150,Paz N.,C,Como,8
+151,Pellegrini Lo.,C,Roma,3
+152,Perrone,C,Como,2
+153,Piotrowski,C,Udinese,1
+154,Pobega,C,Bologna,2
+155,Prati,C,Torino,1
+156,Pulisic,C,Milan,8
+157,Rabiot,C,Milan,4
+158,Ricci S.,C,Milan,1
+159,Saelemaekers,C,Milan,2
+160,Samardzic,C,Atalanta,1
+161,Santos A.,C,Napoli,1
+162,Serdar,C,Verona,2
+163,Sorensen O.,C,Parma,1
+164,Sottil,C,Lecce,1
+165,Sucic P.,C,Inter,1
+166,Sulemana I.,C,Cagliari,1
+167,Taylor K.,C,Lazio,1
+168,Thorsby,C,Cremonese,3
+169,Thorstvedt,C,Sassuolo,2
+170,Thuram K.,C,Juventus,1
+171,Tourè I.,C,Pisa,1
+172,Tramoni M.,C,Pisa,2
+173,Vazquez,C,Cremonese,1
+174,Vergara,C,Napoli,1
+175,Vlasic,C,Torino,6
+176,Volpato,C,Sassuolo,1
+177,Zaccagni,C,Lazio,3
+178,Zalewski,C,Atalanta,2
+179,Zambo Anguissa,C,Napoli,4
+180,Zaniolo,C,Udinese,5
+181,Zielinski,C,Inter,5
+182,Akanji,D,Inter,1
+183,Athekame,D,Milan,1
+184,Bartesaghi,D,Milan,2
+185,Baschirotto,D,Cremonese,2
+186,Bastoni,D,Inter,1
+187,Belghali,D,Verona,2
+188,Beukema,D,Napoli,1
+189,Bisseck,D,Inter,2
+190,Bremer,D,Juventus,3
+191,Cabal,D,Juventus,2
+192,Cambiaso,D,Juventus,2
+193,Carlos Augusto,D,Inter,1
+194,Celik,D,Roma,1
+195,Circati,D,Parma,1
+196,Coco,D,Torino,1
+197,Comuzzo,D,Fiorentina,1
+198,Cuadrado,D,Pisa,1
+199,De Winter,D,Milan,1
+200,Delprato,D,Parma,1
+201,Di Lorenzo,D,Napoli,1
+202,Dimarco,D,Inter,5
+203,Dumfries,D,Inter,1
+204,Folino,D,Cremonese,1
+205,Frese,D,Verona,1
+206,Gatti,D,Juventus,1
+207,Gosens,D,Fiorentina,2
+208,Gutierrez,D,Napoli,1
+209,Hermoso,D,Roma,1
+210,Hien,D,Atalanta,1
+211,Holm,D,Juventus,1
+212,Idrissi R.,D,Cagliari,2
+213,Kabasele,D,Udinese,2
+214,Kalulu,D,Juventus,2
+215,Kelly L.,D,Juventus,1
+216,Kempf,D,Como,3
+217,Kossounou,D,Atalanta,1
+218,Kristensen T.,D,Udinese,1
+219,Lucumì,D,Bologna,1
+220,Luperto,D,Cremonese,1
+221,Maripan,D,Torino,2
+222,Martin,D,Genoa,1
+223,Mina,D,Cagliari,1
+224,Miranda J.,D,Bologna,1
+225,Moreno Alb.,D,Como,1
+226,Muharemovic,D,Sassuolo,2
+227,Norton-Cuffy,D,Genoa,1
+228,Ostigard,D,Genoa,4
+229,Palestra,D,Cagliari,1
+230,Pavlovic,D,Milan,2
+231,Posch,D,Como,1
+232,Ramon,D,Como,2
+233,Ranieri L.,D,Fiorentina,1
+234,Rrahmani,D,Napoli,1
+235,Scalvini,D,Atalanta,2
+236,Solet,D,Udinese,3
+237,Spinazzola,D,Napoli,3
+238,Terracciano F.,D,Cremonese,2
+239,Tiago Gabriel,D,Lecce,1
+240,Vojvoda,D,Como,1
+241,Wesley,D,Roma,3
+242,Zanoli,D,Udinese,1
+243,Zappacosta,D,Atalanta,1

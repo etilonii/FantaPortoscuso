@@ -1,1 +1,518 @@
 ID,Giocatore,Posizione,Squadra,Fantamedia
+1,Aboukhlal,A,Torino,5.64
+2,Adams C.,A,Torino,6.5
+3,Addai,A,Como,6.54
+4,Almqvist,A,Parma,5.88
+5,Ambrosino,A,Napoli,5.5
+6,Banda,A,Lecce,6.42
+7,Bayo V.,A,Udinese,5.8
+8,Belotti,A,Cagliari,8.33
+9,Benedyczak,A,Parma,6.3
+10,Berardi,A,Sassuolo,7.53
+11,Boga,A,Juventus,6.75
+12,Bonazzoli,A,Cremonese,6.8
+13,Bonny,A,Inter,7.61
+14,Borrelli,A,Cagliari,6.36
+15,Bowie,A,Verona,5.75
+16,Bravo,A,Udinese,6.62
+17,Buksa,A,Udinese,6.08
+18,Camarda,A,Lecce,5.62
+19,Cambiaghi,A,Bologna,6.64
+20,Cancellieri,A,Lazio,6.41
+21,Castellanos,A,Lazio,6.82
+22,Castro S.,A,Bologna,7.09
+23,Cheddira,A,Lecce,6.05
+24,Colombo,A,Genoa,6.54
+25,Cutrone,A,Parma,5.93
+26,Dallinga,A,Bologna,5.97
+27,David,A,Juventus,6.48
+28,Davis K.,A,Udinese,7.27
+29,De Ketelaere,A,Atalanta,6.69
+30,De Luca,A,Cremonese,10.0
+31,Dia,A,Lazio,5.79
+32,Diao,A,Como,5.75
+33,Djuric,A,Cremonese,5.88
+34,Dominguez B.,A,Bologna,6.15
+35,Douvikas,A,Como,7.23
+36,Dovbyk,A,Roma,6.83
+37,Durosinmi,A,Pisa,7.12
+38,Dybala,A,Roma,6.44
+39,Dzeko,A,Fiorentina,5.56
+40,Ekhator,A,Genoa,6.25
+41,Ekuban,A,Genoa,6.32
+42,Esposito F.P.,A,Inter,7.13
+43,Esposito Se.,A,Cagliari,6.67
+44,Ferguson E.,A,Roma,6.86
+45,Fullkrug,A,Milan,5.86
+46,Gimenez,A,Milan,5.5
+47,Giovane,A,Napoli,6.56
+48,Gueye,A,Udinese,5.42
+49,Hojlund,A,Napoli,7.31
+50,Immobile,A,Bologna,5.5
+51,Isaac,A,Verona,6.0
+52,Johnsen,A,Cremonese,6.28
+53,Kean,A,Fiorentina,6.84
+54,Kilicsoy,A,Cagliari,7.36
+55,Kouamè,A,Fiorentina,6.0
+56,Krstovic,A,Atalanta,7.32
+57,Kuhn,A,Como,6.21
+58,Kulenovic,A,Torino,5.5
+59,Lang,A,Napoli,6.32
+60,Laurientè,A,Sassuolo,6.73
+61,Leao,A,Milan,7.41
+62,Lookman,A,Atalanta,6.4
+63,Lucca,A,Napoli,6.0
+64,Luvumbo,A,Cagliari,5.8
+65,Malen,A,Roma,9.7
+66,Martinez L.,A,Inter,8.18
+67,Meister,A,Pisa,6.0
+68,Morata,A,Como,5.12
+69,Moreo,A,Pisa,6.7
+70,Moro L.,A,Sassuolo,5.6
+71,Mosquera,A,Verona,6.08
+72,Moumbagna,A,Cremonese,5.6
+73,N'Dri,A,Lecce,6.45
+74,Ngonge,A,Torino,6.0
+75,Njie,A,Torino,6.75
+76,Nkunku,A,Milan,7.06
+77,Noslin,A,Lazio,6.12
+78,Nzola,A,Sassuolo,6.17
+79,Okereke,A,Cremonese,6.0
+80,Openda,A,Juventus,6.08
+81,Orban G.,A,Verona,6.77
+82,Pavoletti,A,Cagliari,5.75
+83,Pedro,A,Lazio,6.75
+84,Pellegrino M.,A,Parma,6.82
+85,Piccoli,A,Fiorentina,6.06
+86,Pierini,A,Sassuolo,5.88
+87,Pinamonti,A,Sassuolo,6.46
+88,Raspadori,A,Atalanta,7.38
+89,Ratkov,A,Lazio,5.7
+90,Rodriguez Je.,A,Como,6.28
+91,Sanabria,A,Cremonese,6.03
+92,Sarr A.,A,Verona,5.65
+93,Scamacca,A,Atalanta,7.37
+94,Simeone,A,Torino,6.79
+95,Solomon,A,Fiorentina,7.07
+96,Soulè,A,Roma,7.02
+97,Stojilkovic,A,Pisa,5.5
+98,Stulic,A,Lecce,5.95
+99,Sulemana K.,A,Atalanta,6.4
+100,Thuram,A,Inter,7.61
+101,Vardy,A,Cremonese,6.55
+102,Vaz,A,Roma,5.67
+103,Vitinha O.,A,Genoa,6.4
+104,Vlahovic,A,Juventus,6.65
+105,Yildiz,A,Juventus,7.48
+106,Zapata D.,A,Torino,5.68
+107,Adopo,C,Cagliari,5.83
+108,Adzic,C,Juventus,6.88
+109,Aebischer,C,Pisa,5.85
+110,Akinsanmiro,C,Pisa,5.96
+111,Akpa Akpro,C,Verona,5.65
+112,Al-Musrati,C,Verona,5.7
+113,Anjorin,C,Torino,5.64
+114,Asllani,C,Torino,5.25
+115,Atta,C,Udinese,6.82
+116,Bailey,C,Roma,5.7
+117,Baldanzi,C,Genoa,6.2
+118,Barella,C,Inter,6.41
+119,Basic,C,Lazio,6.34
+120,Baturina,C,Como,7.54
+121,Belahyane,C,Lazio,5.69
+122,Berisha M.,C,Lecce,6.92
+123,Bernabè,C,Parma,6.58
+124,Bernardeschi,C,Bologna,6.07
+125,Bernede,C,Verona,6.04
+126,Boloca,C,Sassuolo,5.75
+127,Bondo,C,Cremonese,5.8
+128,Brescianini,C,Fiorentina,6.55
+129,Calhanoglu,C,Inter,7.53
+130,Caqueret,C,Como,6.41
+131,Carboni V.,C,Genoa,5.6
+132,Casadei,C,Torino,6.18
+133,Cataldi,C,Lazio,6.5
+134,Chukwueze,C,Milan,5.5
+135,Collocolo,C,Cremonese,5.88
+136,Conceicao,C,Juventus,6.53
+137,Cornet,C,Genoa,4.5
+138,Coulibaly L.,C,Lecce,6.3
+139,Cristante,C,Roma,6.15
+140,Da Cunha,C,Como,6.36
+141,De Bruyne,C,Napoli,7.81
+142,De Roon,C,Atalanta,6.07
+143,Deiola,C,Cagliari,6.0
+144,Dele-Bashiru,C,Lazio,5.61
+145,Diouf,C,Inter,5.9
+146,Ederson D.S.,C,Atalanta,6.29
+147,Ekkelenkamp,C,Udinese,6.4
+148,El Aynaoui,C,Roma,5.95
+149,El Shaarawy,C,Roma,6.23
+150,Ellertsson,C,Genoa,6.07
+151,Elmas,C,Napoli,5.85
+152,Estevez,C,Parma,5.71
+153,Fabbian,C,Fiorentina,6.2
+154,Fadera,C,Sassuolo,6.17
+155,Fagioli,C,Fiorentina,6.2
+156,Fazzini,C,Fiorentina,5.81
+157,Felici,C,Cagliari,6.55
+158,Ferguson,C,Bologna,5.97
+159,Fini,C,Genoa,5.5
+160,Fofana Y.,C,Milan,6.05
+161,Folorunsho,C,Cagliari,6.12
+162,Frattesi,C,Inter,6.0
+163,Frendrup,C,Genoa,6.06
+164,Freuler,C,Bologna,5.88
+165,Gaetano,C,Cagliari,6.34
+166,Gagliardini,C,Verona,5.97
+167,Gandelman,C,Lecce,6.7
+168,Gilmour,C,Napoli,6.42
+169,Gineitis,C,Torino,5.73
+170,Gorter,C,Lecce,5.5
+171,Grassi,C,Cremonese,5.69
+172,Gronbaek,C,Genoa,5.25
+173,Gudmundsson A.,C,Fiorentina,6.59
+174,Guendouzi,C,Lazio,6.31
+175,Harrison,C,Fiorentina,6.33
+176,Harroui,C,Verona,6.11
+177,Helgason,C,Lecce,5.5
+178,Hernani,C,Parma,5.67
+179,Hojholt,C,Pisa,5.58
+180,Iannoni,C,Sassuolo,6.62
+181,Ilic,C,Torino,5.86
+182,Iling Junior,C,Pisa,6.5
+183,Ilkhan,C,Torino,5.83
+184,Isaksen,C,Lazio,6.72
+185,Jashari,C,Milan,5.9
+186,Kaba,C,Lecce,5.73
+187,Karlstrom,C,Udinese,5.98
+188,Kastanos,C,Verona,6.0
+189,Keita M.,C,Parma,6.0
+190,Konè I.,C,Sassuolo,6.61
+191,Konè M.,C,Roma,6.61
+192,Koopmeiners,C,Juventus,5.55
+193,Kostic,C,Juventus,7.2
+194,Leris,C,Pisa,6.26
+195,Lipani,C,Sassuolo,5.82
+196,Liteta,C,Cagliari,5.75
+197,Lobotka,C,Napoli,6.22
+198,Locatelli,C,Juventus,6.44
+199,Loftus-Cheek,C,Milan,6.68
+200,Lorran,C,Pisa,6.62
+201,Lovric,C,Verona,5.8
+202,Loyola,C,Pisa,7.17
+203,Luis Henrique,C,Inter,6.17
+204,Maldini,C,Lazio,5.94
+205,Maleh,C,Cremonese,5.68
+206,Malinovskyi,C,Genoa,6.74
+207,Mandragora,C,Fiorentina,6.74
+208,Marin M.,C,Pisa,5.71
+209,Masini,C,Genoa,5.81
+210,Matic,C,Sassuolo,6.07
+211,Mazzitelli,C,Cagliari,6.95
+212,McKennie,C,Juventus,6.89
+213,McTominay,C,Napoli,7.26
+214,Messias,C,Genoa,6.44
+215,Miller L.,C,Udinese,5.75
+216,Miretti,C,Juventus,6.5
+217,Mkhitaryan,C,Inter,6.25
+218,Modric,C,Milan,6.86
+219,Moro N.,C,Bologna,6.06
+220,Musah,C,Atalanta,5.91
+221,Ndour,C,Fiorentina,5.88
+222,Neres,C,Napoli,6.84
+223,Niasse,C,Verona,5.8
+224,Nicolussi Caviglia,C,Parma,5.95
+225,Odgaard,C,Bologna,6.69
+226,Onana J.,C,Genoa,5.5
+227,Ondrejka,C,Parma,5.62
+228,Ordonez C.,C,Parma,5.85
+229,Oristanio,C,Parma,5.64
+230,Orsolini,C,Bologna,6.93
+231,Pasalic,C,Atalanta,6.39
+232,Payero,C,Cremonese,6.0
+233,Paz N.,C,Como,7.25
+234,Pellegrini Lo.,C,Roma,6.53
+235,Perrone,C,Como,6.48
+236,Piccinini G.,C,Pisa,5.83
+237,Pierotti,C,Lecce,5.74
+238,Pierret,C,Lecce,6.0
+239,Piotrowski,C,Udinese,6.0
+240,Pisilli,C,Roma,6.17
+241,Pobega,C,Bologna,6.09
+242,Politano,C,Napoli,6.12
+243,Prati,C,Torino,5.9
+244,Pulisic,C,Milan,8.07
+245,Rabiot,C,Milan,7.29
+246,Ramadani,C,Lecce,5.7
+247,Ricci S.,C,Milan,6.42
+248,Richardson,C,Fiorentina,5.5
+249,Rovella,C,Lazio,5.86
+250,Rowe,C,Bologna,6.16
+251,Sabiri,C,Fiorentina,5.5
+252,Saelemaekers,C,Milan,6.64
+253,Sala A.,C,Lecce,6.0
+254,Samardzic,C,Atalanta,6.32
+255,Santos A.,C,Napoli,10.5
+256,Sarmiento J.,C,Cremonese,5.9
+257,Serdar,C,Verona,6.22
+258,Sergi Roberto,C,Como,5.79
+259,Sohm,C,Bologna,5.57
+260,Sorensen O.,C,Parma,5.91
+261,Sottil,C,Lecce,6.22
+262,Stanciu,C,Genoa,4.75
+263,Strefezza,C,Parma,6.25
+264,Sucic P.,C,Inter,6.33
+265,Sulemana I.,C,Cagliari,6.4
+266,Tameze,C,Torino,5.59
+267,Taylor K.,C,Lazio,6.25
+268,Tete Morente,C,Lecce,5.57
+269,Thorsby,C,Cremonese,6.89
+270,Thorstvedt,C,Sassuolo,6.26
+271,Thuram K.,C,Juventus,6.32
+272,Tourè I.,C,Pisa,5.93
+273,Tramoni M.,C,Pisa,6.08
+274,Vandeputte,C,Cremonese,6.26
+275,Vazquez,C,Cremonese,6.54
+276,Vecino,C,Lazio,5.96
+277,Venturino,C,Roma,5.67
+278,Vergara,C,Napoli,6.8
+279,Vlasic,C,Torino,6.67
+280,Volpato,C,Sassuolo,6.75
+281,Vranckx,C,Sassuolo,5.54
+282,Vural,C,Pisa,5.62
+283,Zaccagni,C,Lazio,6.26
+284,Zalewski,C,Atalanta,6.66
+285,Zambo Anguissa,C,Napoli,7.64
+286,Zaniolo,C,Udinese,6.92
+287,Zaragoza,C,Roma,6.25
+288,Zarraga,C,Udinese,5.6
+289,Zerbin,C,Cremonese,5.89
+290,Zhegrova,C,Juventus,6.0
+291,Zielinski,C,Inter,7.33
+292,Acerbi,D,Inter,5.95
+293,Ahanor,D,Atalanta,5.63
+294,Akanji,D,Inter,6.32
+295,Albiol,D,Pisa,5.75
+296,Angelino,D,Roma,5.7
+297,Angori,D,Pisa,6.0
+298,Athekame,D,Milan,6.36
+299,Barbieri,D,Cremonese,6.0
+300,Bartesaghi,D,Milan,6.37
+301,Baschirotto,D,Cremonese,6.16
+302,Bastoni,D,Inter,6.5
+303,Belghali,D,Verona,6.47
+304,Bella-Kotchap,D,Verona,5.79
+305,Bellanova,D,Atalanta,5.96
+306,Bernasconi,D,Atalanta,6.25
+307,Bertola,D,Udinese,5.8
+308,Beukema,D,Napoli,6.08
+309,Bianchetti,D,Cremonese,5.79
+310,Biraghi,D,Torino,5.56
+311,Bisseck,D,Inter,6.75
+312,Bonfanti,D,Pisa,5.56
+313,Bozhinov,D,Pisa,5.17
+314,Bradaric,D,Verona,5.7
+315,Bremer,D,Juventus,7.13
+316,Britschgi,D,Parma,5.82
+317,Buongiorno,D,Napoli,5.92
+318,Cabal,D,Juventus,6.56
+319,Calabresi,D,Pisa,5.69
+320,Cambiaso,D,Juventus,5.96
+321,Candè,D,Sassuolo,5.56
+322,Canestrelli,D,Pisa,5.7
+323,Caracciolo A.,D,Pisa,5.74
+324,Carlos Augusto,D,Inter,6.35
+325,Casale,D,Bologna,5.56
+326,Ceccherini,D,Cremonese,5.29
+327,Celik,D,Roma,6.4
+328,Cham,D,Verona,5.17
+329,Circati,D,Parma,6.02
+330,Coco,D,Torino,6.05
+331,Comuzzo,D,Fiorentina,5.83
+332,Coppola F.,D,Pisa,4.67
+333,Coulibaly W.,D,Sassuolo,5.38
+334,Cuadrado,D,Pisa,6.33
+335,Darmian,D,Inter,6.0
+336,De Silvestri,D,Bologna,5.9
+337,De Vrij,D,Inter,6.17
+338,De Winter,D,Milan,6.11
+339,Delprato,D,Parma,5.94
+340,Dembelè A.,D,Torino,5.0
+341,Denoon,D,Pisa,5.25
+342,Di Lorenzo,D,Napoli,6.22
+343,Di Pardo,D,Cagliari,5.5
+344,Diego Carlos,D,Como,5.97
+345,Dimarco,D,Inter,7.96
+346,Djimsiti,D,Atalanta,5.77
+347,Dodò,D,Fiorentina,5.9
+348,Doig,D,Sassuolo,5.78
+349,Dossena,D,Cagliari,4.5
+350,Dumfries,D,Inter,6.23
+351,Ebosse,D,Torino,5.5
+352,Edmundsson,D,Verona,6.75
+353,Ehizibue,D,Udinese,5.57
+354,Estupinan,D,Milan,5.56
+355,Faye,D,Cremonese,5.67
+356,Floriani Mussolini,D,Cremonese,5.67
+357,Folino,D,Cremonese,6.5
+358,Fortini,D,Fiorentina,5.96
+359,Frese,D,Verona,5.71
+360,Gabbia,D,Milan,5.89
+361,Gallo,D,Lecce,5.9
+362,Garcia U.,D,Sassuolo,6.75
+363,Gaspar K.,D,Lecce,5.6
+364,Gatti,D,Juventus,6.05
+365,Ghilardi,D,Roma,6.06
+366,Gila,D,Lazio,5.9
+367,Goglichidze,D,Udinese,5.58
+368,Gosens,D,Fiorentina,6.25
+369,Gutierrez,D,Napoli,6.1
+370,Heggem,D,Bologna,5.81
+371,Hermoso,D,Roma,6.15
+372,Hien,D,Atalanta,5.85
+373,Holm,D,Juventus,6.59
+374,Hysaj,D,Lazio,5.5
+375,Idrissi R.,D,Cagliari,6.2
+376,Idzes,D,Sassuolo,5.9
+377,Ismajli,D,Torino,5.87
+378,Jimenez A.,D,Milan,5.0
+379,Joao Mario,D,Bologna,5.92
+380,Juan Jesus,D,Napoli,5.53
+381,Kabasele,D,Udinese,6.34
+382,Kalulu,D,Juventus,6.44
+383,Kamara H.,D,Udinese,5.83
+384,Kelly L.,D,Juventus,6.11
+385,Kempf,D,Como,6.69
+386,Kolasinac,D,Atalanta,6.07
+387,Kossounou,D,Atalanta,6.21
+388,Kouadio,D,Fiorentina,6.0
+389,Kouassi,D,Lecce,5.5
+390,Kristensen T.,D,Udinese,5.97
+391,Lamptey,D,Fiorentina,6.0
+392,Lazaro,D,Torino,5.73
+393,Lazzari,D,Lazio,5.73
+394,Lirola,D,Verona,5.5
+395,Lovik,D,Parma,5.58
+396,Lucumì,D,Bologna,5.91
+397,Luperto,D,Cremonese,6.05
+398,Lykogiannis,D,Bologna,5.56
+399,Mancini,D,Roma,6.08
+400,Marcandalli,D,Genoa,5.89
+401,Marianucci,D,Torino,5.7
+402,Maripan,D,Torino,6.15
+403,Martin,D,Genoa,6.26
+404,Marusic,D,Lazio,5.83
+405,Marì,D,Fiorentina,5.3
+406,Masina,D,Torino,5.62
+407,Mateus Lusuardi,D,Pisa,5.67
+408,Mazzocchi,D,Napoli,5.5
+409,Mina,D,Cagliari,6.13
+410,Miranda J.,D,Bologna,5.98
+411,Moreno Alb.,D,Como,6.33
+412,Muharemovic,D,Sassuolo,5.82
+413,N'Dicka,D,Roma,5.98
+414,Ndaba,D,Lecce,5.83
+415,Ndiaye,D,Parma,5.07
+416,Nelsson,D,Verona,5.48
+417,Nkounkou,D,Torino,5.75
+418,Norton-Cuffy,D,Genoa,5.96
+419,Obert,D,Cagliari,5.79
+420,Obrador,D,Torino,5.83
+421,Olivera,D,Napoli,5.54
+422,Ostigard,D,Genoa,6.53
+423,Otoa,D,Genoa,5.21
+424,Oyegoke,D,Verona,5.0
+425,Palestra,D,Cagliari,6.67
+426,Palma,D,Udinese,5.5
+427,Parisi,D,Fiorentina,5.88
+428,Patric,D,Lazio,5.75
+429,Pavard,D,Inter,6.5
+430,Pavlovic,D,Milan,6.5
+431,Pedersen,D,Torino,5.67
+432,Pellegrini Lu.,D,Lazio,5.74
+433,Perez M.,D,Lecce,5.0
+434,Pezzella Giu.,D,Cremonese,5.55
+435,Pongracic,D,Fiorentina,5.59
+436,Posch,D,Como,6.38
+437,Provstgaard,D,Lazio,6.0
+438,Ramon,D,Como,6.33
+439,Ranieri L.,D,Fiorentina,5.82
+440,Rensch,D,Roma,6.19
+441,Rodriguez Ju.,D,Cagliari,5.5
+442,Romagna,D,Sassuolo,5.5
+443,Romagnoli,D,Lazio,5.9
+444,Rrahmani,D,Napoli,6.25
+445,Rugani,D,Fiorentina,5.88
+446,Rui Modesto,D,Udinese,6.25
+447,Sabelli,D,Genoa,5.4
+448,Scalvini,D,Atalanta,6.62
+449,Siebert,D,Lecce,5.5
+450,Slotsager,D,Verona,5.7
+451,Smolcic I.,D,Como,5.67
+452,Solet,D,Udinese,6.4
+453,Spinazzola,D,Napoli,6.9
+454,Tavares N.,D,Lazio,5.64
+455,Terracciano F.,D,Cremonese,6.04
+456,Tiago Gabriel,D,Lecce,5.93
+457,Tomori,D,Milan,5.98
+458,Troilo,D,Parma,5.11
+459,Tsimikas,D,Roma,5.78
+460,Unai Nunez,D,Verona,5.59
+461,Valenti,D,Parma,5.83
+462,Valentini N.,D,Verona,5.59
+463,Valeri,D,Parma,6.02
+464,Valle,D,Como,6.14
+465,Van Der Brempt,D,Como,5.83
+466,Vasquez,D,Genoa,6.02
+467,Veiga D.,D,Lecce,5.68
+468,Viti,D,Fiorentina,5.33
+469,Vitik,D,Bologna,5.79
+470,Vojvoda,D,Como,6.2
+471,Walukiewicz,D,Sassuolo,5.73
+472,Wesley,D,Roma,6.43
+473,Zanoli,D,Udinese,6.29
+474,Zappa,D,Cagliari,6.03
+475,Zappacosta,D,Atalanta,6.11
+476,Zemura,D,Udinese,5.73
+477,Ziolkowski,D,Roma,5.93
+478,Zortea,D,Bologna,5.87
+479,Zè Pedro,D,Cagliari,5.5
+480,Audero,P,Cremonese,5.17
+481,Bijlow,P,Genoa,4.0
+482,Butez,P,Como,5.44
+483,Caprile,P,Cagliari,4.94
+484,Carnesecchi,P,Atalanta,5.84
+485,Corvi,P,Parma,4.77
+486,De Gea,P,Fiorentina,4.74
+487,Di Gregorio,P,Juventus,5.18
+488,Falcone,P,Lecce,5.38
+489,Israel,P,Torino,3.83
+490,Leali,P,Genoa,4.8
+491,Maignan,P,Milan,5.8
+492,Martinez Jo.,P,Inter,5.75
+493,Meret,P,Napoli,4.79
+494,Milinkovic-Savic V.,P,Napoli,5.67
+495,Montipò,P,Verona,4.66
+496,Muric,P,Sassuolo,4.58
+497,Nicolas,P,Pisa,4.0
+498,Okoye,P,Udinese,4.76
+499,Padelli,P,Udinese,5.25
+500,Paleari,P,Torino,4.53
+501,Perilli,P,Verona,3.83
+502,Perin,P,Juventus,5.0
+503,Pessina Mas.,P,Bologna,6.0
+504,Provedel,P,Lazio,5.38
+505,Ravaglia F.,P,Bologna,4.46
+506,Rinaldi,P,Parma,6.5
+507,Sava,P,Udinese,3.5
+508,Scuffet,P,Pisa,4.07
+509,Semper,P,Pisa,4.71
+510,Silvestri,P,Cremonese,4.62
+511,Skorupski,P,Bologna,5.12
+512,Sommariva,P,Genoa,3.75
+513,Sommer,P,Inter,5.04
+514,Suzuki,P,Parma,4.95
+515,Svilar,P,Roma,5.66
+516,Terracciano,P,Milan,6.0
+517,Turati,P,Sassuolo,3.5

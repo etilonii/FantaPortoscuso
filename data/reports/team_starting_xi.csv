@@ -1,85 +1,85 @@
 Pos,Team,ForzaTitolari,ModuloMigliore,Portiere,Difensori,Centrocampisti,Attaccanti
-1,SPARROW,808.21,4-4-2,Maignan,Dimarco; Palestra; Wesley; Martin,McTominay; McKennie; Paz N.; Gudmundsson A.,Martinez L.; Esposito F.P.
-2,Tana delle Tigri,797.05,3-4-3,Carnesecchi,Dimarco; Martin; Solet,McTominay; Pulisic; Atta; Paz N.,Martinez L.; Leao; Berardi
-3,XLiverpuh,793.91,3-4-3,Svilar,Palestra; Kempf; Valle,Pulisic; Atta; Zielinski; Zaniolo,Martinez L.; Yildiz; Hojlund
-4,Pi-Ciaccio,786.58,3-4-3,Maignan,Bremer; Mancini; Martin,McTominay; Atta; Rabiot; Paz N.,Martinez L.; Douvikas; David
-5,Leonte FC,785.71,4-3-3,Di Gregorio,Bastoni; Bremer; Pavlovic; Djimsiti,McTominay; Pulisic; Basic,Martinez L.; Leao; Soulè
-6,Fc Cortomuso,778.20,3-5-2,Milinkovic-Savic V.,Palestra; Pavlovic; Martin,McTominay; Pulisic; Paz N.; Malinovskyi; Orsolini,Martinez L.; Leao
-7,Plu-Team,776.20,3-4-3,Di Gregorio,Wesley; Bartesaghi; Martin,Pulisic; Da Cunha; Paz N.; Saelemaekers,Martinez L.; Esposito F.P.; Bonny
-8,Sarzanello Team,773.71,3-4-3,Maignan,Wesley; Scalvini; Martin,Atta; Paz N.; Ekkelenkamp; Sucic P.,Martinez L.; Yildiz; Esposito F.P.
-9,Concali Craboni FC,772.44,4-4-2,Provedel,Dimarco; Palestra; Akanji; Baschirotto,Pulisic; Zambo Anguissa; Paz N.; Barella,Douvikas; Bonazzoli
-10,Peaky Tunas,770.37,3-4-3,Di Gregorio,Bastoni; Di Lorenzo; Terracciano F.,Pulisic; Konè I.; Paz N.; Barella,Martinez L.; Yildiz; Leao
-11,A.C.TUA CUCS,770.30,3-4-3,Sommer,Kempf; Martin; Valeri,Pulisic; Calhanoglu; McKennie; Zaniolo,Martinez L.; Yildiz; Leao
-12,LE 4 M,770.12,3-5-2,Di Gregorio,Palestra; Martin; Delprato,Pulisic; McKennie; Zielinski; Zaniolo; Paz N.,Martinez L.; Hojlund
-13,Lunarossa,769.84,3-4-3,Sommer,Wesley; Bartesaghi; Mina,McTominay; Pulisic; Baturina; Paz N.,Martinez L.; Yildiz; Hojlund
-14,Pro secco,769.14,3-4-3,Maignan,Vojvoda; Terracciano F.; Hien,McTominay; Pulisic; Vlasic; Paz N.,Martinez L.; Douvikas; Hojlund
-15,pacho team,767.74,3-4-3,Milinkovic-Savic V.,Ramon; Baschirotto; Martin,Atta; McKennie; Baturina; Paz N.,Martinez L.; Yildiz; Hojlund
-16,F.C Pennic Hellas,765.84,3-4-3,Milinkovic-Savic V.,Dimarco; Valle; Muharemovic,Atta; Zaniolo; Vlasic; Basic,Martinez L.; Esposito F.P.; Hojlund
-17,FC Buttarighe,765.33,3-5-2,De Gea,Kalulu; Delprato; Mina,McTominay; Modric; Pulisic; Zielinski; Paz N.,Martinez L.; Esposito F.P.
-18,SerSi-FC,763.62,3-5-2,Sommer,Palestra; Ostigard; Martin,McTominay; Pulisic; Atta; Rabiot; Paz N.,Douvikas; Hojlund
-19,ISGOPPAISI2,762.25,3-4-3,Svilar,Kalulu; Vojvoda; Rrahmani,McTominay; Calhanoglu; Paz N.; Gudmundsson A.,Bonny; Soulè; Scamacca
-20,TomMat-iga,760.69,3-4-3,Maignan,Ramon; Martin; Tiago Gabriel,McTominay; Pulisic; Paz N.; Orsolini,Martinez L.; Scamacca; Thuram
-21,BOBONE32,760.41,3-4-3,De Gea,Pavlovic; Ramon; Tiago Gabriel,McTominay; Zielinski; Paz N.; Saelemaekers,Martinez L.; Douvikas; Leao
-22,EquipoA,760.34,4-3-3,Milinkovic-Savic V.,Palestra; Ramon; Zappacosta; Rrahmani,Pulisic; Paz N.; Orsolini,Martinez L.; Yildiz; Berardi
-23,OnlyFans,759.86,3-4-3,Carnesecchi,Palestra; Martin; Terracciano F.,McTominay; Pulisic; Zaniolo; Thuram K.,Leao; Thuram; Berardi
-24,LEONE,759.46,4-3-3,Milinkovic-Savic V.,Bremer; Wesley; Pavlovic; Kempf,Atta; Paz N.; Saelemaekers,Berardi; Davis K.; Simeone
-25,Ipa Bali,759.28,4-4-2,Maignan,Ramon; Ostigard; Martin; Luperto,McTominay; Pulisic; Paz N.; Malinovskyi,Martinez L.; Berardi
-26,scarsenal,758.79,3-5-2,Caprile,Pavlovic; Ramon; N'Dicka,McTominay; Atta; McKennie; Saelemaekers; Lobotka,Martinez L.; Scamacca
-27,Antibro,757.23,3-4-3,Svilar,Dimarco; Martin; Cambiaso,Pulisic; Vlasic; Paz N.; Malinovskyi,Martinez L.; Berardi; Esposito Se.
-28,FC Galli,755.82,3-4-3,Svilar,Kalulu; Akanji; Bellanova,Pulisic; Zielinski; Basic; Malinovskyi,Martinez L.; Leao; Hojlund
-29,ROCKY 3,755.36,4-3-3,Milinkovic-Savic V.,Palestra; Wesley; Martin; Tomori,Rabiot; Paz N.; Ederson D.S.,Martinez L.; Douvikas; Berardi
-30,Temptation Haaland,754.62,3-4-3,Maignan,Dimarco; Valeri; Barbieri,McTominay; Pulisic; Baturina; Paz N.,Martinez L.; David; Malen
-31,I COMPARI,754.51,3-4-3,Caprile,Martin; Solet; Terracciano F.,McTominay; Pulisic; Baturina; Paz N.,Martinez L.; Leao; Soulè
-32,FC Spiaze,754.33,3-4-3,Di Gregorio,Dimarco; Palestra; Tiago Gabriel,Pulisic; Paz N.; Leris; Ricci S.,Martinez L.; Hojlund; De Ketelaere
-33,Malmö FF,754.18,3-4-3,Di Gregorio,Wesley; Buongiorno; Gila,McTominay; Modric; Ekkelenkamp; Malinovskyi,Martinez L.; Bonny; Berardi
-34,Boiali,752.07,3-4-3,Maignan,Ramon; Delprato; Vasquez,McTominay; Zaniolo; Paz N.; Orsolini,Martinez L.; Douvikas; Kean
-35,Collocolo Team,749.65,3-4-3,Sommer,Belghali; Rrahmani; N'Dicka,McTominay; Pulisic; Baturina; Gudmundsson A.,Martinez L.; Leao; Pellegrino M.
-36,DonBosko46,749.64,3-4-3,Sommer,Mancini; Vojvoda; Cambiaso,McTominay; Pulisic; Saelemaekers; Orsolini,Martinez L.; Hojlund; De Ketelaere
-37,AC DENTI,748.53,3-4-3,Sommer,Cambiaso; Terracciano F.; Tiago Gabriel,McTominay; Pulisic; McKennie; Paz N.,Martinez L.; Yildiz; Hojlund
-38,BANDITI,745.91,3-4-3,De Gea,Martin; Muharemovic; Valeri,Pulisic; Calhanoglu; Rabiot; Paz N.,Martinez L.; Douvikas; Soulè
-39,MARCIO TEAM,744.94,3-4-3,Di Gregorio,Palestra; Muharemovic; Hermoso,McTominay; Pulisic; Paz N.; Orsolini,Martinez L.; Berardi; Malen
-40,SPOSTATI,744.23,3-4-3,De Gea,Palestra; Martin; Valle,Pulisic; Paz N.; Isaksen; Mazzitelli,Martinez L.; Leao; Hojlund
-41,Non troppo cattivi,743.20,4-4-2,Svilar,Dimarco; Martin; Muharemovic; Norton-Cuffy,McTominay; Pulisic; Paz N.; Orsolini,Martinez L.; Malen
-42,Scarzooka,742.38,3-5-2,Di Gregorio,Akanji; Vojvoda; Tiago Gabriel,Pulisic; Calhanoglu; Da Cunha; Isaksen; Zalewski,Martinez L.; Douvikas
-43,SMOG,740.21,3-4-3,Milinkovic-Savic V.,Kempf; Martin; Delprato,McKennie; Zaniolo; Paz N.; Gudmundsson A.,Martinez L.; Kilicsoy; David
-44,BinuSpuntu,740.03,3-5-2,Sommer,Belghali; Terracciano F.; Valeri,McTominay; Atta; McKennie; Da Cunha; Paz N.,Martinez L.; Hojlund
-45,i fratelli merda,739.81,3-5-2,Carnesecchi,Belghali; De Winter; Dumfries,Da Cunha; Paz N.; Loftus-Cheek; Barella; Thuram K.,Martinez L.; Yildiz
-46,Sisal Palace,738.53,3-4-3,Svilar,Akanji; Cambiaso; Tomori,Pulisic; McKennie; Barella; Thuram K.,Douvikas; Hojlund; Scamacca
-47,CISCO TEAM,738.04,3-4-3,Milinkovic-Savic V.,Bremer; Cambiaso; Valeri,Pulisic; Paz N.; Pellegrini Lo.; Mazzitelli,Martinez L.; Berardi; Ferguson E.
-48,Mapoitta,737.88,3-4-3,Sommer,Vojvoda; Zappacosta; Cambiaso,McTominay; McKennie; Zaniolo; Paz N.,Leao; Scamacca; Thuram
-49,Nastro Azzurro,737.65,3-5-2,Svilar,Gabbia; Angori; Gosens,McTominay; Pulisic; McKennie; Baturina; Paz N.,Martinez L.; David
-50,mezzebirre,737.60,4-3-3,Maignan,Wesley; Kempf; Holm; Hermoso,Pulisic; Neres; Odgaard,Leao; Davis K.; Addai
-51,real donk,736.64,3-4-3,Svilar,Wesley; Vojvoda; Ostigard,Pulisic; Zaniolo; Thuram K.; Pasalic,Esposito F.P.; Pellegrino M.; Nkunku
-52,CuginiDiCampagna,735.57,4-3-3,Carnesecchi,Wesley; Ramon; Muharemovic; Tiago Gabriel,Pulisic; Zaniolo; Orsolini,Martinez L.; David; Kean
-53,LosPollosHermanos,733.49,3-5-2,Maignan,Dimarco; Delprato; Dumfries,McTominay; Atta; McKennie; Zielinski; Ekkelenkamp,Pinamonti; Malen
-54,SPERA EBBASTA,733.08,3-4-3,Sommer,Wesley; Valeri; Tiago Gabriel,Pulisic; Rabiot; Konè I.; Paz N.,Martinez L.; Hojlund; Kean
-55,puerto rosso blu,732.85,3-4-3,Skorupski,Palestra; Wesley; Vojvoda,McTominay; Saelemaekers; Gudmundsson A.; Malinovskyi,Douvikas; Scamacca; Thuram
-56,FC Plasmon,731.92,4-3-3,Provedel,Dimarco; Martin; Cambiaso; Miranda J.,Pulisic; Paz N.; Malinovskyi,Martinez L.; David; Kean
-57,PEAKY BLINDERS,729.32,3-4-3,Di Gregorio,Martin; Valeri; Barbieri,Pulisic; Rabiot; Zaniolo; Paz N.,Martinez L.; Hojlund; David
-58,Riccardigno,728.58,3-4-3,Maignan,Kempf; Valeri; Tiago Gabriel,Pulisic; Zaniolo; Paz N.; Isaksen,Douvikas; Bonazzoli; Kilicsoy
-59,Imperatori del culo,728.54,4-3-3,Maignan,Bastoni; Ostigard; Cambiaso; Tiago Gabriel,Pulisic; Gudmundsson A.; Orsolini,Martinez L.; David; Kean
-60,Piovra73,726.17,3-4-3,Maignan,Cambiaso; Terracciano F.; Tiago Gabriel,McTominay; Paz N.; Mazzitelli; Orsolini,Martinez L.; Berardi; Giovane
-61,DEEDPULLY,725.17,3-4-3,Svilar,Dimarco; Muharemovic; De Winter,Pulisic; Zaniolo; Loftus-Cheek; Zalewski,Berardi; Kilicsoy; David
-62,i bro,723.90,3-4-3,Svilar,Bernasconi; Mina; Tiago Gabriel,McTominay; Pulisic; McKennie; Mkhitaryan,Douvikas; Hojlund; Thuram
-63,kalashnikov,723.63,3-4-3,Skorupski,Pavlovic; Cambiaso; Rrahmani,McTominay; Pulisic; Zaniolo; Gudmundsson A.,Douvikas; Scamacca; Kean
-64,Real Mellandro,723.55,3-4-3,Maignan,Barbieri; Tiago Gabriel; Norton-Cuffy,Pulisic; Zaniolo; Paz N.; Zaccagni,Martinez L.; Yildiz; Berardi
-65,Due Amici al Var,723.29,3-4-3,Di Gregorio,Wesley; Tomori; Tiago Gabriel,McTominay; Zaniolo; Paz N.; Orsolini,Martinez L.; David; Kean
-66,SILVEDO,721.78,4-3-3,Maignan,Palestra; Vasquez; Terracciano F.; Idrissi R.,Zaniolo; Paz N.; Orsolini,Martinez L.; Berardi; David
-67,SAGATU,720.49,3-4-3,Sommer,Cambiaso; Terracciano F.; Doig,Pulisic; Atta; McKennie; Baturina,Martinez L.; Giovane; David
-68,Longobarda,720.17,4-3-3,Maignan,Akanji; Cambiaso; Vasquez; Dodò,McTominay; Konè M.; Paz N.,Soulè; Berardi; Kean
-69,lagg,716.28,3-4-3,Maignan,Wesley; Martin; Miranda J.,McKennie; Da Cunha; Paz N.; Malinovskyi,Scamacca; David; Kean
-70,ProPro Proibito,714.21,3-4-3,Sommer,Rrahmani; Luperto; Valeri,McTominay; Zaniolo; Paz N.; Thuram K.,Martinez L.; Kilicsoy; David
-71,HeineKean,713.82,3-4-3,Svilar,Ramon; Cambiaso; Tiago Gabriel,McTominay; Loftus-Cheek; Gudmundsson A.; Conceicao,Hojlund; Thuram; David
-72,Lions,712.94,3-4-3,Di Gregorio,Cambiaso; Tiago Gabriel; Bellanova,McTominay; Pulisic; Paz N.; Loftus-Cheek,Douvikas; Thuram; Cancellieri
-73,Sciabolata Classica,712.75,3-4-3,Svilar,Martin; Angori; Bellanova,McTominay; Zielinski; Vlasic; Paz N.,Hojlund; Berardi; David
-74,Giubbentus,711.39,3-4-3,Maignan,Tiago Gabriel; Norton-Cuffy; Smolcic I.,Pulisic; McKennie; Zaniolo; Zaccagni,Martinez L.; Scamacca; David
-75,CLAN,708.02,3-5-2,Di Gregorio,Wesley; Lazaro; Gutierrez,McTominay; Modric; Baturina; Zalewski; Malinovskyi,Hojlund; Thuram
-76,buttiglia25,706.77,4-3-3,Svilar,Martin; Dumfries; Idrissi R.; Tiago Gabriel,McTominay; Pulisic; Zaccagni,Yildiz; Hojlund; Thuram
-77,BARAKALLAHOUFIK,704.86,4-3-3,Provedel,Palestra; Cambiaso; Bellanova; Doig,Pulisic; Paz N.; Orsolini,Douvikas; Scamacca; Kean
-78,coach 71,703.13,3-4-3,Maignan,N'Dicka; Terracciano F.; Dumfries,Zielinski; Zaniolo; Paz N.; Malinovskyi,Hojlund; Giovane; Nkunku
-79,Fc nipiri,701.16,4-3-3,Milinkovic-Savic V.,Scalvini; Akanji; Di Lorenzo; Solet,Paz N.; Thuram K.; Orsolini,Bonny; Berardi; David
-80,Kung-Fu Pandev,698.10,3-4-3,Sommer,Wesley; Tiago Gabriel; Doig,McKennie; Vlasic; Paz N.; Conceicao,Soulè; Hojlund; David
-81,Hellas merdona,697.34,4-3-3,De Gea,Mancini; Terracciano F.; Dumfries; Tiago Gabriel,Pulisic; Paz N.; Malinovskyi,Martinez L.; Leao; Kilicsoy
-82,KARABE 1975,691.17,3-4-3,Skorupski,Pavlovic; Zappacosta; Valeri,Zielinski; Baturina; Gudmundsson A.; Thorstvedt,Hojlund; Scamacca; Esposito Se.
-83,Evergreen,690.01,5-4-1,De Gea,Dimarco; Palestra; Ostigard; Hermoso; Kossounou,Zielinski; Gudmundsson A.; Zalewski; Sucic P.,David
-84,I Cigni,671.61,4-3-3,Sommer,Valle; Hermoso; Valeri; Dodò,Baturina; Isaksen; Politano,Martinez L.; Berardi; Malen
+1,SPARROW,872.02,3-4-3,Maignan,Dimarco; Palestra; Wesley,McTominay; Paz N.; McKennie; Gudmundsson A.,Martinez L.; Esposito F.P.; Malen
+2,Tana delle Tigri,867.72,3-4-3,Carnesecchi,Dimarco; Solet; Martin,McTominay; Pulisic; Paz N.; Atta,Martinez L.; Leao; Berardi
+3,XLiverpuh,860.99,3-4-3,Svilar,Palestra; Kempf; Valle,Pulisic; Zielinski; Paz N.; Atta,Martinez L.; Yildiz; Hojlund
+4,Fc Cortomuso,847.30,3-4-3,Milinkovic-Savic V.,Palestra; Pavlovic; Martin,McTominay; Pulisic; Paz N.; Orsolini,Martinez L.; Leao; Malen
+5,LE 4 M,837.06,3-5-2,Di Gregorio,Palestra; Solet; Martin,Pulisic; Zielinski; Paz N.; McKennie; Zaniolo,Martinez L.; Hojlund
+6,Lunarossa,834.26,3-4-3,Sommer,Wesley; Bartesaghi; Mina,McTominay; Pulisic; Paz N.; Baturina,Martinez L.; Yildiz; Hojlund
+7,Pi-Ciaccio,831.55,3-4-3,Maignan,Bremer; Martin; Mancini,McTominay; Paz N.; Rabiot; Atta,Martinez L.; Douvikas; David
+8,A.C.TUA CUCS,830.00,3-4-3,Sommer,Kempf; Martin; Valeri,Pulisic; Calhanoglu; Paz N.; McKennie,Martinez L.; Yildiz; Leao
+9,Temptation Haaland,829.64,3-4-3,Maignan,Dimarco; Valeri; Bellanova,McTominay; Pulisic; Paz N.; Baturina,Martinez L.; Malen; David
+10,pacho team,825.78,3-4-3,Milinkovic-Savic V.,Ramon; Baschirotto; Martin,Paz N.; McKennie; Baturina; Atta,Martinez L.; Yildiz; Hojlund
+11,Concali Craboni FC,825.57,4-4-2,Provedel,Dimarco; Palestra; Akanji; Baschirotto,Pulisic; Paz N.; Zambo Anguissa; Barella,Douvikas; Bonazzoli
+12,TomMat-iga,824.21,3-4-3,Maignan,Ramon; Martin; Gosens,McTominay; Pulisic; Paz N.; Orsolini,Martinez L.; Thuram; Malen
+13,Pro secco,824.16,3-4-3,Maignan,Vojvoda; Terracciano F.; Zappa,McTominay; Pulisic; Paz N.; Vlasic,Martinez L.; Hojlund; Douvikas
+14,Plu-Team,824.04,3-4-3,Di Gregorio,Wesley; Bartesaghi; Martin,Pulisic; Paz N.; Saelemaekers; Orsolini,Martinez L.; Bonny; Esposito F.P.
+15,Non troppo cattivi,822.37,4-4-2,Svilar,Dimarco; Martin; Muharemovic; Norton-Cuffy,McTominay; Pulisic; Paz N.; Orsolini,Martinez L.; Malen
+16,FC Galli,821.92,3-4-3,Svilar,Kalulu; Akanji; Bellanova,Pulisic; Zielinski; Malinovskyi; Pasalic,Martinez L.; Leao; Hojlund
+17,Leonte FC,821.73,4-3-3,Di Gregorio,Bremer; Bastoni; Pavlovic; Dodò,McTominay; Pulisic; Basic,Martinez L.; Leao; Soulè
+18,Ipa Bali,820.85,3-4-3,Maignan,Ramon; Martin; Ostigard,McTominay; Pulisic; Paz N.; Malinovskyi,Martinez L.; Malen; Berardi
+19,EquipoA,819.87,4-3-3,Milinkovic-Savic V.,Palestra; Ramon; Zappacosta; Rrahmani,Pulisic; Paz N.; Orsolini,Martinez L.; Yildiz; Malen
+20,SerSi-FC,819.66,3-5-2,Sommer,Palestra; Martin; Valle,McTominay; Pulisic; Paz N.; Rabiot; Atta,Hojlund; Douvikas
+21,ISGOPPAISI2,819.53,3-4-3,Svilar,Kalulu; Vojvoda; Rrahmani,McTominay; Calhanoglu; Paz N.; Gudmundsson A.,Bonny; Soulè; Scamacca
+22,Peaky Tunas,818.93,3-4-3,Di Gregorio,Bastoni; Di Lorenzo; Terracciano F.,Pulisic; Paz N.; Barella; Konè I.,Martinez L.; Yildiz; Leao
+23,FC Buttarighe,816.99,3-5-2,De Gea,Kalulu; Delprato; Norton-Cuffy,McTominay; Pulisic; Zielinski; Modric; Paz N.,Martinez L.; Esposito F.P.
+24,Antibro,816.83,3-4-3,Svilar,Dimarco; Martin; Cambiaso,Pulisic; Paz N.; Vlasic; Malinovskyi,Martinez L.; Berardi; Esposito Se.
+25,BOBONE32,815.49,3-4-3,De Gea,Pavlovic; Ramon; Norton-Cuffy,McTominay; Zielinski; Paz N.; Saelemaekers,Martinez L.; Leao; Douvikas
+26,I COMPARI,815.18,3-4-3,Caprile,Solet; Martin; Terracciano F.,McTominay; Pulisic; Paz N.; Baturina,Martinez L.; Leao; Soulè
+27,AC DENTI,813.24,3-4-3,Sommer,Cambiaso; Terracciano F.; Norton-Cuffy,McTominay; Pulisic; Paz N.; McKennie,Martinez L.; Yildiz; Hojlund
+28,Sarzanello Team,811.84,3-4-3,Maignan,Wesley; Martin; Scalvini,Paz N.; Atta; Pasalic; Sucic P.,Martinez L.; Yildiz; Esposito F.P.
+29,LEONE,808.76,5-3-2,Milinkovic-Savic V.,Bremer; Pavlovic; Wesley; Bisseck; Kempf,Paz N.; Saelemaekers; Atta,Davis K.; Berardi
+30,FC Spiaze,808.28,3-4-3,Di Gregorio,Dimarco; Palestra; Norton-Cuffy,Pulisic; Paz N.; Ricci S.; Leris,Martinez L.; Hojlund; De Ketelaere
+31,OnlyFans,804.66,3-4-3,Carnesecchi,Palestra; Martin; Terracciano F.,McTominay; Pulisic; Zaniolo; Thuram K.,Leao; Thuram; Berardi
+32,LosPollosHermanos,802.53,3-5-2,Maignan,Dimarco; Dumfries; Delprato,McTominay; Zielinski; McKennie; Atta; Orsolini,Malen; Pinamonti
+33,MARCIO TEAM,802.50,3-4-3,Di Gregorio,Palestra; Hermoso; Muharemovic,McTominay; Pulisic; Paz N.; Orsolini,Martinez L.; Malen; Berardi
+34,Nastro Azzurro,801.98,3-5-2,Svilar,Gabbia; Gosens; Angori,McTominay; Pulisic; Paz N.; McKennie; Baturina,Martinez L.; Malen
+35,DonBosko46,800.66,3-4-3,Sommer,Vojvoda; Mancini; Cambiaso,McTominay; Pulisic; Saelemaekers; Orsolini,Martinez L.; Hojlund; De Ketelaere
+36,FC Plasmon,800.48,4-3-3,Provedel,Dimarco; Martin; Cambiaso; Miranda J.,Pulisic; Paz N.; Malinovskyi,Martinez L.; Malen; Kean
+37,Mapoitta,800.06,3-4-3,Sommer,Vojvoda; Zappacosta; Cambiaso,McTominay; Paz N.; McKennie; Zaniolo,Leao; Thuram; Scamacca
+38,Boiali,799.77,3-4-3,Maignan,Ramon; Delprato; Vasquez,McTominay; Paz N.; Zaniolo; Orsolini,Martinez L.; Douvikas; Malen
+39,ROCKY 3,799.58,4-3-3,Milinkovic-Savic V.,Palestra; Wesley; Martin; Tomori,Paz N.; Rabiot; Ederson D.S.,Martinez L.; Douvikas; Berardi
+40,F.C Pennic Hellas,798.77,3-4-3,Milinkovic-Savic V.,Dimarco; Valle; Muharemovic,Atta; Zaniolo; Vlasic; Ederson D.S.,Martinez L.; Hojlund; Esposito F.P.
+41,SPOSTATI,797.69,3-4-3,De Gea,Palestra; Martin; Valle,Pulisic; Paz N.; Isaksen; Mazzitelli,Martinez L.; Leao; Hojlund
+42,Scarzooka,797.08,3-4-3,Di Gregorio,Akanji; Vojvoda; Norton-Cuffy,Pulisic; Calhanoglu; Zalewski; Isaksen,Martinez L.; Douvikas; Malen
+43,scarsenal,796.05,3-4-3,Caprile,Pavlovic; Ramon; Norton-Cuffy,McTominay; McKennie; Saelemaekers; Atta,Martinez L.; Malen; Scamacca
+44,BinuSpuntu,793.53,3-5-2,Sommer,Belghali; Terracciano F.; Valeri,McTominay; Paz N.; McKennie; Saelemaekers; Atta,Martinez L.; Hojlund
+45,BANDITI,790.63,3-4-3,De Gea,Martin; Valeri; Muharemovic,Pulisic; Calhanoglu; Paz N.; Rabiot,Martinez L.; Douvikas; Soulè
+46,Sisal Palace,790.60,3-4-3,Svilar,Akanji; Cambiaso; Tomori,Pulisic; McKennie; Barella; Thuram K.,Thuram; Hojlund; Douvikas
+47,i fratelli merda,785.87,3-5-2,Carnesecchi,Belghali; De Winter; Dumfries,Paz N.; Loftus-Cheek; Barella; Bernabè; Da Cunha,Martinez L.; Yildiz
+48,puerto rosso blu,784.63,3-4-3,Skorupski,Palestra; Wesley; Vojvoda,McTominay; Saelemaekers; Malinovskyi; Gudmundsson A.,Thuram; Douvikas; Scamacca
+49,Malmö FF,784.47,3-4-3,Di Gregorio,Wesley; De Winter; Terracciano F.,McTominay; Modric; Malinovskyi; Ekkelenkamp,Martinez L.; Bonny; Berardi
+50,Collocolo Team,784.46,3-4-3,Sommer,Belghali; Rrahmani; Valeri,McTominay; Pulisic; Baturina; Gudmundsson A.,Martinez L.; Leao; Pellegrino M.
+51,SPERA EBBASTA,782.46,3-4-3,Sommer,Wesley; Valeri; Bellanova,Pulisic; Paz N.; Rabiot; Konè I.,Martinez L.; Hojlund; Kean
+52,PEAKY BLINDERS,780.09,3-4-3,Di Gregorio,Martin; Valeri; Norton-Cuffy,Pulisic; Paz N.; Rabiot; Zaniolo,Martinez L.; Hojlund; David
+53,CISCO TEAM,778.93,3-4-3,Milinkovic-Savic V.,Bremer; Cambiaso; Valeri,Pulisic; Paz N.; Pellegrini Lo.; Mazzitelli,Martinez L.; Berardi; Ferguson E.
+54,DEEDPULLY,778.82,3-5-2,Svilar,Dimarco; De Winter; Muharemovic,Pulisic; Loftus-Cheek; Zalewski; Zaniolo; Orsolini,Berardi; David
+55,real donk,777.47,3-4-3,Svilar,Wesley; Vojvoda; Ostigard,Pulisic; Zaniolo; Pasalic; Thuram K.,Esposito F.P.; Krstovic; Nkunku
+56,i bro,776.94,3-4-3,Svilar,Bernasconi; Mina; Dodò,McTominay; Pulisic; McKennie; Miretti,Thuram; Hojlund; Douvikas
+57,Imperatori del culo,776.59,4-3-3,Maignan,Bastoni; Cambiaso; Ostigard; Bellanova,Pulisic; Orsolini; Gudmundsson A.,Martinez L.; Malen; Kean
+58,Due Amici al Var,776.41,3-4-3,Di Gregorio,Wesley; Tomori; Dodò,McTominay; Paz N.; Zaniolo; Orsolini,Martinez L.; Malen; Kean
+59,CLAN,776.16,3-4-3,Di Gregorio,Wesley; Lazaro; Gutierrez,McTominay; Modric; Baturina; Zalewski,Thuram; Hojlund; Malen
+60,Sciabolata Classica,774.00,3-4-3,Svilar,Martin; Angori; Bellanova,McTominay; Zielinski; Paz N.; Vlasic,Hojlund; Berardi; Kean
+61,SMOG,772.73,3-4-3,Milinkovic-Savic V.,Kempf; Martin; Delprato,Paz N.; McKennie; Zaniolo; Gudmundsson A.,Martinez L.; Kean; David
+62,BARAKALLAHOUFIK,770.90,4-3-3,Provedel,Palestra; Cambiaso; Norton-Cuffy; Gosens,Pulisic; Paz N.; Orsolini,Douvikas; Malen; Scamacca
+63,Lions,769.86,3-5-2,Di Gregorio,Cambiaso; Gosens; Bellanova,McTominay; Pulisic; Paz N.; Loftus-Cheek; Pasalic,Thuram; Douvikas
+64,Piovra73,769.28,3-4-3,Maignan,Cambiaso; Terracciano F.; Tiago Gabriel,McTominay; Paz N.; Orsolini; Mazzitelli,Martinez L.; Berardi; Giovane
+65,coach 71,766.22,3-4-3,Maignan,Dumfries; Terracciano F.; Norton-Cuffy,Zielinski; Paz N.; Zaniolo; Malinovskyi,Hojlund; Malen; Nkunku
+66,CuginiDiCampagna,765.23,4-3-3,Carnesecchi,Wesley; Ramon; Muharemovic; Tiago Gabriel,Pulisic; Zaniolo; Orsolini,Martinez L.; Kean; David
+67,HeineKean,765.21,3-4-3,Svilar,Ramon; Cambiaso; Angori,McTominay; Loftus-Cheek; Gudmundsson A.; Conceicao,Thuram; Hojlund; David
+68,Real Mellandro,764.91,3-4-3,Maignan,Norton-Cuffy; Tiago Gabriel; Barbieri,Pulisic; Paz N.; Zaniolo; Zaccagni,Martinez L.; Yildiz; Malen
+69,Riccardigno,763.22,3-4-3,Maignan,Kempf; Valeri; Gosens,Pulisic; Paz N.; Zaniolo; Isaksen,Douvikas; Bonazzoli; David
+70,Fc nipiri,762.87,4-3-3,Milinkovic-Savic V.,Di Lorenzo; Akanji; Solet; Scalvini,Paz N.; Orsolini; Thuram K.,Bonny; Berardi; David
+71,buttiglia25,762.25,4-3-3,Svilar,Martin; Dumfries; Idrissi R.; Bellanova,McTominay; Pulisic; Zaccagni,Yildiz; Thuram; Hojlund
+72,mezzebirre,761.98,4-3-3,Maignan,Wesley; Kempf; Holm; Hermoso,Pulisic; Neres; Odgaard,Leao; Davis K.; Addai
+73,SILVEDO,761.49,4-3-3,Maignan,Palestra; Terracciano F.; Idrissi R.; Vasquez,Paz N.; Zaniolo; Orsolini,Martinez L.; Berardi; David
+74,SAGATU,760.66,3-4-3,Sommer,Cambiaso; Terracciano F.; Gosens,Pulisic; McKennie; Baturina; Atta,Martinez L.; Giovane; Kean
+75,Longobarda,759.26,4-3-3,Maignan,Akanji; Cambiaso; Vasquez; Dodò,McTominay; Paz N.; Konè M.,Soulè; Berardi; Kean
+76,ProPro Proibito,757.80,3-4-3,Sommer,Rrahmani; Luperto; Valeri,McTominay; Paz N.; Zalewski; Zaniolo,Martinez L.; David; Kilicsoy
+77,kalashnikov,757.05,3-4-3,Skorupski,Pavlovic; Cambiaso; Rrahmani,McTominay; Pulisic; Zaniolo; Gudmundsson A.,Douvikas; Scamacca; Kean
+78,lagg,756.40,3-4-3,Maignan,Wesley; Martin; Miranda J.,Paz N.; McKennie; Malinovskyi; Da Cunha,Scamacca; Kean; David
+79,Hellas merdona,752.58,4-3-3,De Gea,Mancini; Dumfries; Terracciano F.; Norton-Cuffy,Pulisic; Paz N.; Malinovskyi,Martinez L.; Leao; Malen
+80,Kung-Fu Pandev,747.55,3-4-3,Sommer,Wesley; Norton-Cuffy; Tiago Gabriel,Paz N.; McKennie; Vlasic; Conceicao,Hojlund; Soulè; Kean
+81,Giubbentus,739.77,3-4-3,Maignan,Norton-Cuffy; Tiago Gabriel; Obert,Pulisic; McKennie; Zaniolo; Zaccagni,Martinez L.; Scamacca; David
+82,KARABE 1975,739.14,3-4-3,Skorupski,Pavlovic; Zappacosta; Valeri,Zielinski; Baturina; Gudmundsson A.; Ederson D.S.,Hojlund; Scamacca; Kean
+83,Evergreen,735.88,4-5-1,De Gea,Dimarco; Palestra; Ostigard; Kossounou,Zielinski; Zalewski; Gudmundsson A.; Sucic P.; Politano,David
+84,I Cigni,723.95,4-3-3,Sommer,Valle; Hermoso; Valeri; Norton-Cuffy,Baturina; Isaksen; Politano,Martinez L.; Malen; Berardi

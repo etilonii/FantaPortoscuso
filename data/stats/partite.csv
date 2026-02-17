@@ -1,1 +1,518 @@
-
+Giocatore,Posizione,Squadra,Partite
+Baschirotto,D,Cremonese,25
+Bernabè,C,Parma,25
+Canestrelli,D,Pisa,25
+Carnesecchi,P,Atalanta,25
+De Gea,P,Fiorentina,25
+Dodò,D,Fiorentina,25
+Kalulu,D,Juventus,25
+Karlstrom,C,Udinese,25
+Mandragora,C,Fiorentina,25
+Martinez L.,A,Inter,25
+Pellegrino M.,A,Parma,25
+Provedel,P,Lazio,25
+Solet,D,Udinese,25
+Svilar,P,Roma,25
+Vasquez,D,Genoa,25
+Adopo,C,Cagliari,24
+Aebischer,C,Pisa,24
+Bernede,C,Verona,24
+Butez,P,Como,24
+Caprile,P,Cagliari,24
+Colombo,A,Genoa,24
+Cristante,C,Roma,24
+Delprato,D,Parma,24
+Falcone,P,Lecce,24
+Frendrup,C,Genoa,24
+Gallo,D,Lecce,24
+Gila,D,Lazio,24
+Giovane,A,Napoli,24
+Idzes,D,Sassuolo,24
+Laurientè,A,Sassuolo,24
+Lazaro,D,Torino,24
+Locatelli,C,Juventus,24
+Mancini,D,Roma,24
+Muric,P,Sassuolo,24
+Nelsson,D,Verona,24
+Paz N.,C,Como,24
+Pinamonti,A,Sassuolo,24
+Soulè,A,Roma,24
+Terracciano F.,D,Cremonese,24
+Vlasic,C,Torino,24
+Walukiewicz,D,Sassuolo,24
+Yildiz,A,Juventus,24
+Adams C.,A,Torino,23
+Barella,C,Inter,23
+Cambiaso,D,Juventus,23
+Caracciolo A.,D,Pisa,23
+Di Lorenzo,D,Napoli,23
+Dimarco,D,Inter,23
+Doig,D,Sassuolo,23
+Ellertsson,C,Genoa,23
+Esposito Se.,A,Cagliari,23
+Keita M.,C,Parma,23
+Maignan,P,Milan,23
+Malinovskyi,C,Genoa,23
+Maripan,D,Torino,23
+Marusic,D,Lazio,23
+Matic,C,Sassuolo,23
+McTominay,C,Napoli,23
+Norton-Cuffy,D,Genoa,23
+Palestra,D,Cagliari,23
+Pierotti,C,Lecce,23
+Pongracic,D,Fiorentina,23
+Ramadani,C,Lecce,23
+Sarr A.,A,Verona,23
+Sommer,P,Inter,23
+Tiago Gabriel,D,Lecce,23
+Tourè I.,C,Pisa,23
+Wesley,D,Roma,23
+Akanji,D,Inter,22
+Angori,D,Pisa,22
+Bastoni,D,Inter,22
+Bonazzoli,A,Cremonese,22
+Casadei,C,Torino,22
+Castro S.,A,Bologna,22
+Cataldi,C,Lazio,22
+Coco,D,Torino,22
+Da Cunha,C,Como,22
+Davis K.,A,Udinese,22
+Di Gregorio,P,Juventus,22
+Djimsiti,D,Atalanta,22
+Douvikas,A,Como,22
+Fagioli,C,Fiorentina,22
+Gabbia,D,Milan,22
+Gaetano,C,Cagliari,22
+Gudmundsson A.,C,Fiorentina,22
+Kean,A,Fiorentina,22
+Kelly L.,D,Juventus,22
+Konè I.,C,Sassuolo,22
+Konè M.,C,Roma,22
+McKennie,C,Juventus,22
+Modric,C,Milan,22
+Montipò,P,Verona,22
+Moreo,A,Pisa,22
+Muharemovic,D,Sassuolo,22
+Orban G.,A,Verona,22
+Orsolini,C,Bologna,22
+Perrone,C,Como,22
+Saelemaekers,C,Milan,22
+Sorensen O.,C,Parma,22
+Stulic,A,Lecce,22
+Thuram K.,C,Juventus,22
+Veiga D.,D,Lecce,22
+Zappacosta,D,Atalanta,22
+Audero,P,Cremonese,21
+Borrelli,A,Cagliari,21
+David,A,Juventus,21
+De Ketelaere,A,Atalanta,21
+De Roon,C,Atalanta,21
+Ederson D.S.,C,Atalanta,21
+Ekkelenkamp,C,Udinese,21
+Fadera,C,Sassuolo,21
+Heggem,D,Bologna,21
+Hojlund,A,Napoli,21
+Leris,C,Pisa,21
+Luperto,D,Cremonese,21
+Martin,D,Genoa,21
+Obert,D,Cagliari,21
+Politano,C,Napoli,21
+Prati,C,Torino,21
+Ramon,D,Como,21
+Romagnoli,D,Lazio,21
+Valeri,D,Parma,21
+Vandeputte,C,Cremonese,21
+Vardy,A,Cremonese,21
+Vitinha O.,A,Genoa,21
+Atta,C,Udinese,20
+Bertola,D,Udinese,20
+Bondo,C,Cremonese,20
+Bradaric,D,Verona,20
+Britschgi,D,Parma,20
+Buongiorno,D,Napoli,20
+Celik,D,Roma,20
+Circati,D,Parma,20
+Coulibaly L.,C,Lecce,20
+Elmas,C,Napoli,20
+Fofana Y.,C,Milan,20
+Gaspar K.,D,Lecce,20
+Hien,D,Atalanta,20
+Koopmeiners,C,Juventus,20
+Krstovic,A,Atalanta,20
+Leali,P,Genoa,20
+Lobotka,C,Napoli,20
+Miranda J.,D,Bologna,20
+N'Dicka,D,Roma,20
+Pavlovic,D,Milan,20
+Piotrowski,C,Udinese,20
+Rodriguez Je.,A,Como,20
+Spinazzola,D,Napoli,20
+Tomori,D,Milan,20
+Tramoni M.,C,Pisa,20
+Vojvoda,D,Como,20
+Zaniolo,C,Udinese,20
+Banda,A,Lecce,19
+Bartesaghi,D,Milan,19
+Bianchetti,D,Cremonese,19
+Ekuban,A,Genoa,19
+Esposito F.P.,A,Inter,19
+Frese,D,Verona,19
+Loftus-Cheek,C,Milan,19
+Meister,A,Pisa,19
+Ostigard,D,Genoa,19
+Pasalic,C,Atalanta,19
+Pellegrini Lu.,D,Lazio,19
+Pezzella Giu.,D,Cremonese,19
+Ranieri L.,D,Fiorentina,19
+Simeone,A,Torino,19
+Thorstvedt,C,Sassuolo,19
+Thuram,A,Inter,19
+Zaccagni,C,Lazio,19
+Zalewski,C,Atalanta,19
+Zanoli,D,Udinese,19
+Zappa,D,Cagliari,19
+Zortea,D,Bologna,19
+Barbieri,D,Cremonese,18
+Cambiaghi,A,Bologna,18
+Comuzzo,D,Fiorentina,18
+Gagliardini,C,Verona,18
+Grassi,C,Cremonese,18
+Luis Henrique,C,Inter,18
+Marcandalli,D,Genoa,18
+Milinkovic-Savic V.,P,Napoli,18
+Mkhitaryan,C,Inter,18
+Nzola,A,Sassuolo,18
+Pedersen,D,Torino,18
+Piccoli,A,Fiorentina,18
+Ricci S.,C,Milan,18
+Serdar,C,Verona,18
+Sottil,C,Lecce,18
+Sucic P.,C,Inter,18
+Valenti,D,Parma,18
+Valle,D,Como,18
+Zerbin,C,Cremonese,18
+Zielinski,C,Inter,18
+Calhanoglu,C,Inter,17
+Cancellieri,A,Lazio,17
+Caqueret,C,Como,17
+Carlos Augusto,D,Inter,17
+Conceicao,C,Juventus,17
+Dybala,A,Roma,17
+Freuler,C,Bologna,17
+Hermoso,D,Roma,17
+Leao,A,Milan,17
+Marin M.,C,Pisa,17
+Moro N.,C,Bologna,17
+Ndour,C,Fiorentina,17
+Ngonge *,A,Torino,17
+Okoye,P,Udinese,17
+Payero,C,Cremonese,17
+Pellegrini Lo.,C,Roma,17
+Pobega,C,Bologna,17
+Rabiot,C,Milan,17
+Semper,P,Pisa,17
+Tameze,C,Torino,17
+Unai Nunez *,D,Verona,17
+Basic,C,Lazio,16
+Belghali,D,Verona,16
+Calabresi,D,Pisa,16
+Camarda,A,Lecce,16
+Dallinga,A,Bologna,16
+Ekhator,A,Genoa,16
+Ferguson,C,Bologna,16
+Folorunsho,C,Cagliari,16
+Gosens,D,Fiorentina,16
+Guendouzi,C,Lazio,16
+Isaksen,C,Lazio,16
+Kabasele,D,Udinese,16
+Kempf,D,Como,16
+Lucumì,D,Bologna,16
+Masini,C,Genoa,16
+Neres,C,Napoli,16
+Nkunku,A,Milan,16
+Odgaard,C,Bologna,16
+Paleari,P,Torino,16
+Parisi,D,Fiorentina,16
+Rowe,C,Bologna,16
+Rrahmani,D,Napoli,16
+Sanabria,A,Cremonese,16
+Ahanor,D,Atalanta,15
+Berardi,A,Sassuolo,15
+Bremer,D,Juventus,15
+Diego Carlos,D,Como,15
+Fabbian,C,Fiorentina,15
+Floriani Mussolini,D,Cremonese,15
+Gineitis,C,Torino,15
+Idrissi R.,D,Cagliari,15
+Ismajli,D,Torino,15
+Juan Jesus,D,Napoli,15
+Kamara H.,D,Udinese,15
+Kristensen T.,D,Udinese,15
+Mina,D,Cagliari,15
+Niasse,C,Verona,15
+Pulisic,C,Milan,15
+Scamacca,A,Atalanta,15
+Smolcic I.,D,Como,15
+Sohm,C,Bologna,15
+Sulemana K.,A,Atalanta,15
+Tete Morente *,C,Lecce,15
+Akinsanmiro,C,Pisa,14
+Asllani *,C,Torino,14
+Bella-Kotchap,D,Verona,14
+Bellanova,D,Atalanta,14
+Bernardeschi,C,Bologna,14
+Bernasconi,D,Atalanta,14
+Bisseck,D,Inter,14
+Bonny,A,Inter,14
+Cutrone *,A,Parma,14
+De Winter,D,Milan,14
+Dia,A,Lazio,14
+Ehizibue,D,Udinese,14
+Estevez,C,Parma,14
+Ferguson E.,A,Roma,14
+Lang *,A,Napoli,14
+Oristanio,C,Parma,14
+Pedro,A,Lazio,14
+Samardzic,C,Atalanta,14
+Thorsby,C,Cremonese,14
+Zapata D.,A,Torino,14
+Beukema,D,Napoli,13
+Buksa,A,Udinese,13
+Corvi,P,Parma,13
+Lazzari,D,Lazio,13
+Morata,A,Como,13
+Openda,A,Juventus,13
+Ravaglia F.,P,Bologna,13
+Vazquez *,C,Cremonese,13
+Vlahovic,A,Juventus,13
+Addai,A,Como,12
+Baturina,C,Como,12
+Berisha M.,C,Lecce,12
+Deiola,C,Cagliari,12
+Dovbyk,A,Roma,12
+Fortini,D,Fiorentina,12
+Kossounou,D,Atalanta,12
+Kuhn,A,Como,12
+Mosquera,A,Verona,12
+Noslin,A,Lazio,12
+Olivera,D,Napoli,12
+Ondrejka,C,Parma,12
+Piccinini G.,C,Pisa,12
+Scalvini,D,Atalanta,12
+Skorupski,P,Bologna,12
+Vecino *,C,Lazio,12
+Vitik,D,Bologna,12
+Volpato,C,Sassuolo,12
+Vranckx,C,Sassuolo,12
+Aboukhlal,A,Torino,11
+Acerbi,D,Inter,11
+Castellanos *,A,Lazio,11
+Dumfries,D,Inter,11
+El Aynaoui,C,Roma,11
+El Shaarawy,C,Roma,11
+Felici,C,Cagliari,11
+Gatti,D,Juventus,11
+Holm,D,Juventus,11
+Kaba *,C,Lecce,11
+Kilicsoy,A,Cagliari,11
+Lipani,C,Sassuolo,11
+Maleh,C,Cremonese,11
+Musah,C,Atalanta,11
+Nicolussi Caviglia,C,Parma,11
+Suzuki,P,Parma,11
+Tavares N.,D,Lazio,11
+Valentini N.,D,Verona,11
+Zambo Anguissa,C,Napoli,11
+Zemura,D,Udinese,11
+Akpa Akpro,C,Verona,10
+Al-Musrati,C,Verona,10
+Baldanzi,C,Genoa,10
+Bayo V.,A,Udinese,10
+Benedyczak *,A,Parma,10
+Brescianini,C,Fiorentina,10
+Carboni V. *,C,Genoa,10
+Cheddira,A,Lecce,10
+Dominguez B.,A,Bologna,10
+Gutierrez,D,Napoli,10
+Kostic,C,Juventus,10
+Lookman *,A,Atalanta,10
+Luvumbo *,A,Cagliari,10
+Marì,D,Fiorentina,10
+Mazzitelli,C,Cagliari,10
+Miller L.,C,Udinese,10
+Miretti,C,Juventus,10
+N'Dri,A,Lecce,10
+Ordonez C.,C,Parma,10
+Provstgaard,D,Lazio,10
+Biraghi,D,Torino,9
+Bonfanti *,D,Pisa,9
+Cabal,D,Juventus,9
+Cuadrado,D,Pisa,9
+Dele-Bashiru,C,Lazio,9
+Estupinan,D,Milan,9
+Ghilardi,D,Roma,9
+Gimenez,A,Milan,9
+Harroui,C,Verona,9
+Ilkhan,C,Torino,9
+Israel,P,Torino,9
+Johnsen *,A,Cremonese,9
+Lucca *,A,Napoli,9
+Maldini,C,Lazio,9
+Messias,C,Genoa,9
+Moreno Alb.,D,Como,9
+Pisilli,C,Roma,9
+Troilo,D,Parma,9
+Tsimikas,D,Roma,9
+Zè Pedro,D,Cagliari,9
+Almqvist,A,Parma,8
+Belahyane,C,Lazio,8
+Candè,D,Sassuolo,8
+Casale,D,Bologna,8
+Coulibaly W.,D,Sassuolo,8
+De Bruyne,C,Napoli,8
+Dzeko *,A,Fiorentina,8
+Fazzini,C,Fiorentina,8
+Frattesi,C,Inter,8
+Lykogiannis,D,Bologna,8
+Posch *,D,Como,8
+Rensch,D,Roma,8
+Vural,C,Pisa,8
+Zhegrova,C,Juventus,8
+Anjorin,C,Torino,7
+Athekame,D,Milan,7
+Ceccherini,D,Cremonese,7
+Fullkrug,A,Milan,7
+Ilic,C,Torino,7
+Kolasinac,D,Atalanta,7
+Meret,P,Napoli,7
+Ndiaye,D,Parma,7
+Otoa,D,Genoa,7
+Rodriguez Ju.,D,Cagliari,7
+Rovella,C,Lazio,7
+Sava,P,Udinese,7
+Scuffet,P,Pisa,7
+Sergi Roberto,C,Como,7
+Solomon,A,Fiorentina,7
+Ziolkowski,D,Roma,7
+Albiol,D,Pisa,6
+Diao,A,Como,6
+Faye,D,Cremonese,6
+Folino,D,Cremonese,6
+Gilmour,C,Napoli,6
+Goglichidze *,D,Udinese,6
+Gueye,A,Udinese,6
+Hojholt,C,Pisa,6
+Immobile *,A,Bologna,6
+Joao Mario,D,Bologna,6
+Lovik *,D,Parma,6
+Ndaba,D,Lecce,6
+Nkounkou,D,Torino,6
+Siebert,D,Lecce,6
+Taylor K.,C,Lazio,6
+Van Der Brempt,D,Como,6
+Vitik,D,Fiorentina,6
+Angelino,D,Roma,5
+Bailey *,C,Roma,5
+Cornet,C,Genoa,5
+De Silvestri,D,Bologna,5
+Diouf,C,Inter,5
+Gandelman,C,Lecce,5
+Jashari,C,Milan,5
+Lovric,C,Verona,5
+Malen,A,Roma,5
+Marianucci,D,Torino,5
+Moro L.,A,Sassuolo,5
+Moumbagna,A,Cremonese,5
+Ratkov,A,Lazio,5
+Sabelli,D,Genoa,5
+Sarmiento J. *,C,Cremonese,5
+Slotsager,D,Verona,5
+Sulemana I.,C,Cagliari,5
+Vergara,C,Napoli,5
+Zarraga,C,Udinese,5
+Adzic,C,Juventus,4
+Bijlow,P,Genoa,4
+Buksa,A,Udinese,4
+Collocolo,C,Cremonese,4
+Djuric,A,Cremonese,4
+Durosinmi,A,Pisa,4
+Iannoni,C,Sassuolo,4
+Kouassi *,D,Lecce,4
+Lirola,D,Verona,4
+Lorran,C,Pisa,4
+Masina *,D,Torino,4
+Mazzocchi,D,Napoli,4
+Njie,A,Torino,4
+Palma *,D,Udinese,4
+Pavoletti,A,Cagliari,4
+Pierini *,A,Sassuolo,4
+Raspadori,A,Atalanta,4
+Rugani,D,Fiorentina,4
+Sala A.,C,Lecce,4
+Silvestri,P,Cremonese,4
+Stanciu *,C,Genoa,4
+Belotti,A,Cagliari,3
+Bozhinov,D,Pisa,3
+Cham,D,Verona,3
+Coppola F.,D,Pisa,3
+De Vrij,D,Inter,3
+Ebosse,D,Torino,3
+Harrison,C,Fiorentina,3
+Helgason,C,Lecce,3
+Hernani *,C,Parma,3
+Loyola,C,Pisa,3
+Mateus Lusuardi *,D,Pisa,3
+Obrador,D,Torino,3
+Perilli,P,Verona,3
+Perin,P,Juventus,3
+Romagna,D,Sassuolo,3
+Stojilkovic,A,Pisa,3
+Vaz,A,Roma,3
+Venturino,C,Roma,3
+Boga,A,Juventus,2
+Boloca,C,Sassuolo,2
+Bowie,A,Verona,2
+Darmian,D,Inter,2
+Denoon,D,Pisa,2
+Edmundsson,D,Verona,2
+Garcia U.,D,Sassuolo,2
+Gronbaek *,C,Genoa,2
+Hysaj,D,Lazio,2
+Liteta,C,Cagliari,2
+Martinez Jo.,P,Inter,2
+Okereke,A,Cremonese,2
+Oyegoke,D,Verona,2
+Padelli,P,Udinese,2
+Patric,D,Lazio,2
+Rui Modesto *,D,Udinese,2
+Sommariva,P,Genoa,2
+Strefezza,C,Parma,2
+Terracciano,P,Milan,2
+Zaragoza,C,Roma,2
+Ambrosino *,A,Napoli,1
+Chukwueze,C,Milan,1
+Dembelè A. *,D,Torino,1
+Di Pardo *,D,Cagliari,1
+Djuric,A,Cremonese,1
+Dossena,D,Cagliari,1
+Fini *,C,Genoa,1
+Gorter,C,Lecce,1
+Iling Junior,C,Pisa,1
+Isaac,A,Verona,1
+Jimenez A.,D,Milan,1
+Kastanos *,C,Verona,1
+Kouadio,D,Fiorentina,1
+Kouamè *,A,Fiorentina,1
+Kulenovic,A,Torino,1
+Lamptey,D,Fiorentina,1
+Nicolas,P,Pisa,1
+Onana J.,C,Genoa,1
+Pavard,D,Inter,1
+Perez M.,D,Lecce,1
+Pessina Mas.,P,Bologna,1
+Pierret *,C,Lecce,1
+Richardson *,C,Fiorentina,1
+Rinaldi,P,Parma,1
+Sabiri,C,Fiorentina,1
+Santos A.,C,Napoli,1
+Turati,P,Sassuolo,1
