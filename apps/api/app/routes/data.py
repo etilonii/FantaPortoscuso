@@ -2466,6 +2466,8 @@ def _build_live_standings_rows(
         for item in formazioni_items:
             item["round"] = target_round
 
+    target_round_int = _parse_int(target_round)
+
     live_context = _load_live_round_context(db, target_round)
     _attach_live_scores_to_formations(formazioni_items, live_context)
 
@@ -2503,6 +2505,14 @@ def _build_live_standings_rows(
         if base_played <= 0 and fallback_base_played > 0:
             base_played = int(fallback_base_played)
         live_total = live_total_by_team.get(team_key)
+        # Avoid double counting when official standings already include the
+        # same round currently available in live totals.
+        if (
+            live_total is not None
+            and target_round_int is not None
+            and int(base_played) >= int(target_round_int)
+        ):
+            live_total = None
 
         points_live = base_points + (live_total if live_total is not None else 0.0)
         played_live = base_played + (1 if live_total is not None else 0)
