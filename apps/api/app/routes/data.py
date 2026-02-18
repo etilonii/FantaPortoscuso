@@ -2254,9 +2254,9 @@ def teams():
 def _load_standings_rows() -> List[Dict[str, object]]:
     base_dir = Path(__file__).resolve().parents[4]
     candidates = [
-        base_dir / "Classifica_FantaPortoscuso-25.xlsx",
-        DATA_DIR / "classifica.xlsx",
         DATA_DIR / "incoming" / "classifica" / "classifica.xlsx",
+        DATA_DIR / "classifica.xlsx",
+        base_dir / "Classifica_FantaPortoscuso-25.xlsx",
         DATA_DIR / "classifica.csv",
     ]
     source = next((p for p in candidates if p.exists()), None)
