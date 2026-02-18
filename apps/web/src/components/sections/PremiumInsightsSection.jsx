@@ -18,6 +18,53 @@ const formatPercent = (value) => {
   return `${(parsed * 100).toFixed(1).replace(".", ",")}%`;
 };
 
+const formatSignedNumber = (value, digits = 2) => {
+  const parsed = toNumber(value);
+  if (parsed === null) return "-";
+  const abs = Math.abs(parsed).toFixed(digits).replace(".", ",");
+  const sign = parsed > 0 ? "+" : parsed < 0 ? "-" : "";
+  return `${sign}${abs}`;
+};
+
+const resolveLiveDelta = (row) => {
+  const explicitLive = toNumber(row?.live_total);
+  if (explicitLive !== null) return explicitLive;
+  const pointsLive = toNumber(row?.points_live ?? row?.points);
+  const pointsBase = toNumber(row?.points_base);
+  if (pointsLive === null || pointsBase === null) return null;
+  return pointsLive - pointsBase;
+};
+
+const buildLiveTrendMeta = (liveDelta, average) => {
+  const value = toNumber(liveDelta);
+  if (value === null) {
+    return { tierClass: "neutral", arrow: "→", pctDiff: null };
+  }
+  const safeAverage = toNumber(average);
+  if (safeAverage === null || Math.abs(safeAverage) < 0.0001) {
+    return { tierClass: "neutral", arrow: value >= 0 ? "↑" : "↓", pctDiff: null };
+  }
+
+  const pctDiff = ((value - safeAverage) / Math.abs(safeAverage)) * 100;
+  let tierClass = "neutral";
+  if (pctDiff <= -25) tierClass = "down-5";
+  else if (pctDiff <= -20) tierClass = "down-4";
+  else if (pctDiff <= -15) tierClass = "down-3";
+  else if (pctDiff <= -10) tierClass = "down-2";
+  else if (pctDiff < -5) tierClass = "down-1";
+  else if (pctDiff >= 25) tierClass = "up-5";
+  else if (pctDiff >= 20) tierClass = "up-4";
+  else if (pctDiff >= 15) tierClass = "up-3";
+  else if (pctDiff >= 10) tierClass = "up-2";
+  else if (pctDiff > 5) tierClass = "up-1";
+
+  return {
+    tierClass,
+    arrow: value > 0 ? "↑" : value < 0 ? "↓" : "→",
+    pctDiff,
+  };
+};
+
 export default function PremiumInsightsSection({
   mode,
   insights,
@@ -195,6 +242,13 @@ export default function PremiumInsightsSection({
 
   if (mode === "classifica-lega") {
     const rows = Array.isArray(leagueStandings) ? leagueStandings : [];
+    const liveValues = rows
+      .map((row) => resolveLiveDelta(row))
+      .filter((value) => Number.isFinite(value));
+    const liveAverage =
+      liveValues.length > 0
+        ? liveValues.reduce((sum, value) => sum + Number(value), 0) / liveValues.length
+        : null;
     return (
       <ReportSection
         eyebrow="Lega"
@@ -208,6 +262,27 @@ export default function PremiumInsightsSection({
           { key: "pos", label: "Pos", render: (row) => row?.pos ?? "-" },
           { key: "team", label: "Team" },
           { key: "points", label: "Pt Tot", render: (row) => formatNumber(row?.points, 2) },
+          {
+            key: "live_delta",
+            label: "Live Δ",
+            render: (row) => {
+              const delta = resolveLiveDelta(row);
+              if (!Number.isFinite(delta)) return "-";
+              const trend = buildLiveTrendMeta(delta, liveAverage);
+              const averageLabel = formatNumber(liveAverage, 2);
+              const diffLabel =
+                trend.pctDiff === null ? "-" : `${formatSignedNumber(trend.pctDiff, 1)}%`;
+              return (
+                <span
+                  className={`live-trend-pill ${trend.tierClass}`}
+                  title={`Live ${formatSignedNumber(delta, 2)} | Media giornata ${averageLabel} | Scarto ${diffLabel}`}
+                >
+                  <span className="live-trend-arrow">{trend.arrow}</span>
+                  <span className="live-trend-value">{formatSignedNumber(delta, 2)}</span>
+                </span>
+              );
+            },
+          },
           { key: "played", label: "PG", render: (row) => formatNumber(row?.played, 0) },
           { key: "pts_avg", label: "Media", render: (row) => formatNumber(row?.pts_avg, 2) },
         ]}
