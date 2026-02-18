@@ -519,15 +519,15 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
                 if _looks_like_team_name_cell(next_left_team) and _looks_like_team_name_cell(next_right_team):
                     break
 
-                left_label = normalize_name(row[0] if len(row) > 0 else "")
-                right_label = normalize_name(row[6] if len(row) > 6 else "")
-                if left_label == "modificatorecapitano":
+                left_labels = [normalize_name(value) for value in row[0:6]]
+                right_labels = [normalize_name(value) for value in row[6:12]]
+                if "modificatorecapitano" in left_labels:
                     left_mod_capitano = _parse_layout_metric(row, 0, 6)
-                if right_label == "modificatorecapitano":
+                if "modificatorecapitano" in right_labels:
                     right_mod_capitano = _parse_layout_metric(row, 6, 12)
-                if left_label.startswith("totale"):
+                if any(label.startswith("totale") for label in left_labels):
                     left_totale_precalc = _parse_layout_metric(row, 0, 6)
-                if right_label.startswith("totale"):
+                if any(label.startswith("totale") for label in right_labels):
                     right_totale_precalc = _parse_layout_metric(row, 6, 12)
 
                 left_role = _strict_role_from_layout_cell(row[0] if len(row) > 0 else "")
