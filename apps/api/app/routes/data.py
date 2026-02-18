@@ -2360,6 +2360,7 @@ def _build_live_standings_rows(
         else (inferred_matchday_fixtures if inferred_matchday_fixtures is not None else inferred_matchday_stats)
     )
     target_round = requested_round if requested_round is not None else default_matchday
+    initial_target_round = _parse_int(target_round)
     base_played_hint = max((_parse_int(row.get("played")) or 0) for row in base_rows) if base_rows else 0
 
     real_rows, available_rounds, _source_path = _load_real_formazioni_rows(
@@ -2402,6 +2403,12 @@ def _build_live_standings_rows(
     ):
         # When standings source lacks PG, derive the baseline as previous round.
         fallback_base_played = int(target_round) - 1
+
+    if target_round is not None and _parse_int(target_round) != initial_target_round:
+        real_rows, available_rounds, _source_path = _load_real_formazioni_rows(
+            standings_index,
+            preferred_round=target_round,
+        )
 
     formazioni_items: List[Dict[str, object]] = []
     for item in real_rows:
