@@ -6547,6 +6547,29 @@ def _load_team_id_position_index_from_formazioni_html() -> Dict[int, int]:
             index[team_id] = pos
         if index:
             return index
+
+        # Fallback when currentCompetition is not available: infer the ordering
+        # from tmp entries (team_ids array is typically aligned to standings pos).
+        tmp_entries = _extract_formazioni_tmp_entries_from_html(raw)
+        for entry in tmp_entries:
+            raw_team_ids = entry.get("team_ids")
+            if not isinstance(raw_team_ids, list):
+                continue
+            team_ids: List[int] = []
+            seen: Set[int] = set()
+            for raw_id in raw_team_ids:
+                parsed_id = _parse_int(raw_id)
+                if parsed_id is None or parsed_id <= 0:
+                    continue
+                if parsed_id in seen:
+                    continue
+                seen.add(parsed_id)
+                team_ids.append(int(parsed_id))
+            if len(team_ids) < 10:
+                continue
+            inferred_index = {team_id: pos for pos, team_id in enumerate(team_ids, start=1)}
+            if inferred_index:
+                return inferred_index
     return {}
 
 
