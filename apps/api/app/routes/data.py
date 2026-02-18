@@ -94,6 +94,8 @@ LEGHE_BASE_URL = "https://leghe.fantacalcio.it"
 LEGHE_SYNC_TZ = ZoneInfo("Europe/Rome")
 LEGHE_SYNC_SLOT_HOURS = 3
 LEGHE_DAILY_ROSE_JOB_NAME = "auto_leghe_sync_rose_daily"
+LEGHE_DAILY_LIVE_JOB_NAME = "auto_leghe_sync_live_daily"
+LEGHE_DAILY_LIVE_HOUR_LOCAL = 12
 LEGHE_SYNC_WINDOWS: Tuple[Tuple[int, date, date], ...] = (
     (26, date(2026, 2, 20), date(2026, 2, 23)),
     (27, date(2026, 2, 27), date(2026, 3, 2)),
@@ -7935,6 +7937,74 @@ def run_auto_live_import(
     )
 
 
+def _run_daily_live_noon_import_if_due(
+    db: Session,
+    *,
+    local_now: datetime,
+) -> Dict[str, object]:
+    day_start_local = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+    noon_local = day_start_local.replace(hour=int(LEGHE_DAILY_LIVE_HOUR_LOCAL))
+    if local_now < noon_local:
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "before_daily_live_noon_slot",
+            "daily_slot_local": noon_local.isoformat(),
+            "timezone": str(LEGHE_SYNC_TZ),
+        }
+
+    noon_utc_ts = int(noon_local.astimezone(timezone.utc).timestamp())
+    claimed_noon_live = _claim_scheduled_job_slot(
+        db,
+        job_name=LEGHE_DAILY_LIVE_JOB_NAME,
+        slot_ts=noon_utc_ts,
+    )
+    if not claimed_noon_live:
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "daily_live_noon_already_synced",
+            "daily_slot_local": noon_local.isoformat(),
+            "timezone": str(LEGHE_SYNC_TZ),
+        }
+
+    reference_round = _leghe_sync_reference_round_for_local_dt(local_now)
+    if reference_round is None:
+        reference_round = _latest_round_with_live_votes(db)
+
+    try:
+        result = run_auto_live_import(
+            db,
+            configured_round=reference_round,
+        )
+    except HTTPException as exc:
+        detail = exc.detail if hasattr(exc, "detail") else str(exc)
+        return {
+            "ok": False,
+            "error": str(detail),
+            "mode": "daily_live_noon_import",
+            "daily_slot_local": noon_local.isoformat(),
+            "timezone": str(LEGHE_SYNC_TZ),
+            "scheduled_round": int(reference_round) if reference_round is not None else None,
+        }
+    except Exception as exc:
+        return {
+            "ok": False,
+            "error": str(exc),
+            "mode": "daily_live_noon_import",
+            "daily_slot_local": noon_local.isoformat(),
+            "timezone": str(LEGHE_SYNC_TZ),
+            "scheduled_round": int(reference_round) if reference_round is not None else None,
+        }
+
+    if isinstance(result, dict):
+        result["mode"] = "daily_live_noon_import"
+        result["daily_slot_local"] = noon_local.isoformat()
+        result["timezone"] = str(LEGHE_SYNC_TZ)
+        result["scheduled_round"] = int(reference_round) if reference_round is not None else None
+    return result
+
+
 def run_auto_leghe_sync(
     db: Session,
     *,
@@ -7947,7 +8017,15 @@ def run_auto_leghe_sync(
     local_now = _leghe_sync_local_now(now_utc)
     scheduled_matchday = _leghe_sync_round_for_local_dt(local_now)
     if scheduled_matchday is None:
+        daily_live_noon_result = _run_daily_live_noon_import_if_due(
+            db,
+            local_now=local_now,
+        )
+        daily_live_noon_skipped = bool(daily_live_noon_result.get("skipped"))
+
         if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
+            if not daily_live_noon_skipped:
+                return daily_live_noon_result
             return {
                 "ok": True,
                 "skipped": True,
@@ -7956,6 +8034,7 @@ def run_auto_leghe_sync(
                 "timezone": str(LEGHE_SYNC_TZ),
                 "missing_leghe_env": True,
                 "required": ["LEGHE_ALIAS", "LEGHE_USERNAME", "LEGHE_PASSWORD"],
+                "daily_live_noon": daily_live_noon_result,
             }
 
         day_start_local = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -7966,6 +8045,8 @@ def run_auto_leghe_sync(
             slot_ts=day_start_utc_ts,
         )
         if not claimed_daily_rose:
+            if not daily_live_noon_skipped:
+                return daily_live_noon_result
             return {
                 "ok": True,
                 "skipped": True,
@@ -7973,6 +8054,7 @@ def run_auto_leghe_sync(
                 "local_time": local_now.isoformat(),
                 "daily_slot_local": day_start_local.isoformat(),
                 "timezone": str(LEGHE_SYNC_TZ),
+                "daily_live_noon": daily_live_noon_result,
             }
 
         try:
@@ -7996,6 +8078,7 @@ def run_auto_leghe_sync(
                 result["mode"] = "daily_rose_sync"
                 result["daily_slot_local"] = day_start_local.isoformat()
                 result["timezone"] = str(LEGHE_SYNC_TZ)
+                result["daily_live_noon"] = daily_live_noon_result
             return result
         except LegheSyncError as exc:
             return {
@@ -8004,6 +8087,7 @@ def run_auto_leghe_sync(
                 "mode": "daily_rose_sync",
                 "daily_slot_local": day_start_local.isoformat(),
                 "timezone": str(LEGHE_SYNC_TZ),
+                "daily_live_noon": daily_live_noon_result,
             }
 
     slot_start_local = _leghe_sync_slot_start_local(local_now)
