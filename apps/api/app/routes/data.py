@@ -6862,7 +6862,6 @@ def _overlay_decisive_badges_from_round_results(
     *,
     round_value: Optional[int],
     season_slug: Optional[str],
-    db: Session,
     club_index: Dict[str, str],
 ) -> int:
     target_round = _parse_int(round_value)
@@ -6897,73 +6896,6 @@ def _overlay_decisive_badges_from_round_results(
                 row["gol_vittoria"] = merged_gv
                 row["gol_pareggio"] = merged_gp
                 applied += 1
-
-    fixture_rows = _load_fixture_rows_for_live(db, club_index)
-    opponent_by_team: Dict[str, str] = {}
-    for fixture in fixture_rows:
-        if _parse_int(fixture.get("round")) != target_round:
-            continue
-        team_name = _display_team_name(str(fixture.get("team") or ""), club_index)
-        opponent_name = _display_team_name(str(fixture.get("opponent") or ""), club_index)
-        team_key = normalize_name(team_name)
-        opponent_key = normalize_name(opponent_name)
-        if not team_key or not opponent_key or team_key == opponent_key:
-            continue
-        opponent_by_team[team_key] = opponent_key
-
-    if not opponent_by_team:
-        return 0
-
-    goals_scored_by_team: Dict[str, int] = defaultdict(int)
-    autogol_by_team: Dict[str, int] = defaultdict(int)
-    for row in rows:
-        team_name = _display_team_name(str(row.get("team") or ""), club_index)
-        team_key = normalize_name(team_name)
-        if not team_key:
-            continue
-        goals_scored_by_team[team_key] += max(0, int(_parse_int(row.get("goal")) or 0))
-        goals_scored_by_team[team_key] += max(0, int(_parse_int(row.get("rigore_segnato")) or 0))
-        autogol_by_team[team_key] += max(0, int(_parse_int(row.get("autogol")) or 0))
-
-    for row in rows:
-        team_name = _display_team_name(str(row.get("team") or ""), club_index)
-        team_key = normalize_name(team_name)
-        opponent_key = opponent_by_team.get(team_key, "")
-        if not team_key or not opponent_key:
-            continue
-
-        current_gv = max(0, int(_parse_int(row.get("gol_vittoria")) or 0))
-        current_gp = max(0, int(_parse_int(row.get("gol_pareggio")) or 0))
-        if current_gv > 0 or current_gp > 0:
-            continue
-
-        player_goals = max(0, int(_parse_int(row.get("goal")) or 0)) + max(
-            0, int(_parse_int(row.get("rigore_segnato")) or 0)
-        )
-        if player_goals <= 0:
-            continue
-
-        team_goals_from_players = int(goals_scored_by_team.get(team_key, 0))
-        opponent_goals_from_players = int(goals_scored_by_team.get(opponent_key, 0))
-        team_own_goals = int(autogol_by_team.get(team_key, 0))
-        opponent_own_goals = int(autogol_by_team.get(opponent_key, 0))
-
-        # Deterministic fallback only when the scorer is the sole scorer for their
-        # team and no own-goal noise exists on the opponent side.
-        if opponent_own_goals != 0:
-            continue
-        if team_goals_from_players != player_goals:
-            continue
-
-        team_total = team_goals_from_players + opponent_own_goals
-        opponent_total = opponent_goals_from_players + team_own_goals
-
-        if team_total > opponent_total:
-            row["gol_vittoria"] = 1
-            applied += 1
-        elif team_total == opponent_total and team_total > 0:
-            row["gol_pareggio"] = 1
-            applied += 1
 
     return applied
 
@@ -7712,12 +7644,11 @@ def _upsert_live_player_vote_internal(
         fantavote_value = None
         event_counts = {field: 0 for field in LIVE_EVENT_FIELDS}
     elif vote_value is not None and fantavote_value is not None:
-        event_counts = _infer_decisive_events_from_fantavote(
-            vote_value,
-            fantavote_value,
-            event_counts,
-            bonus_map,
-        )
+        # Do not infer decisive-goal badges from vote/fantavote deltas:
+        # this can create false positives (e.g. assigning a "gol pareggio"
+        # to the wrong scorer). We rely on explicit source events plus
+        # appkey/calendar overlays for decisive badges.
+        event_counts = dict(event_counts)
 
     # Persist the computed fantasy vote (including bonuses/maluses) so downstream
     # sections don't rely on stale raw source values.
@@ -7927,7 +7858,6 @@ def _import_live_votes_internal(
         rows,
         round_value=resolved_round,
         season_slug=season_slug,
-        db=db,
         club_index=club_index,
     )
 
