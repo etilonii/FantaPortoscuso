@@ -612,13 +612,12 @@ def _read_tabular_rows(path: Path) -> List[Dict[str, str]]:
         if not frames:
             return []
 
+        extracted = _extract_dual_layout_formazioni_rows(path)
+        if extracted:
+            return extracted
+
         lineup_frames = [frame for frame in frames if _frame_looks_like_lineups(frame)]
         frames_to_scan = lineup_frames or frames
-
-        if not lineup_frames:
-            extracted = _extract_dual_layout_formazioni_rows(path)
-            if extracted:
-                return extracted
 
         for frame in frames_to_scan:
             if frame is None or frame.empty:
