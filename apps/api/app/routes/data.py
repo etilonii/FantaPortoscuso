@@ -2325,11 +2325,6 @@ def _backfill_standings_played_if_missing(rows: List[Dict[str, object]]) -> List
         fallback_played = _max_completed_round_from_fixtures()
 
     if fallback_played is None or fallback_played <= 0:
-        inferred_matchday_stats = _infer_matchday_from_stats()
-        if inferred_matchday_stats is not None and inferred_matchday_stats > 1:
-            fallback_played = inferred_matchday_stats - 1
-
-    if fallback_played is None or fallback_played <= 0:
         return rows
 
     for row in rows:
@@ -2393,6 +2388,16 @@ def _build_live_standings_rows(
                 target_round = int(latest_live_votes_round)
                 if _is_round_completed_from_fixtures(latest_live_votes_round):
                     promoted_round_from_completed_votes = int(latest_live_votes_round)
+    fallback_base_played = 0
+    if (
+        requested_round is None
+        and latest_live_votes_round is not None
+        and target_round is not None
+        and int(latest_live_votes_round) == int(target_round)
+        and int(target_round) > 1
+    ):
+        # When standings source lacks PG, derive the baseline as previous round.
+        fallback_base_played = int(target_round) - 1
 
     formazioni_items: List[Dict[str, object]] = []
     for item in real_rows:
@@ -2442,6 +2447,8 @@ def _build_live_standings_rows(
         base_pos = pos_value if pos_value is not None else (idx + 1)
         base_points = float(row.get("points") or 0.0)
         base_played = _parse_int(row.get("played")) or 0
+        if base_played <= 0 and fallback_base_played > 0:
+            base_played = int(fallback_base_played)
         live_total = live_total_by_team.get(team_key)
 
         points_live = base_points + (live_total if live_total is not None else 0.0)
