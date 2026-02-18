@@ -1365,8 +1365,13 @@ def _build_fixtures_from_csv(teams_data: Dict[str, Dict[str, object]]) -> List[D
 
 def _resolve_current_round(rounds: List[int]) -> int:
     status_matchday = _load_status_matchday()
+    scheduled_reference_round = _leghe_sync_reference_round_now()
+    if status_matchday is not None and scheduled_reference_round is not None:
+        return max(int(status_matchday), int(scheduled_reference_round))
     if status_matchday is not None:
         return status_matchday
+    if scheduled_reference_round is not None:
+        return int(scheduled_reference_round)
 
     inferred_from_fixtures = _infer_matchday_from_fixtures()
     if inferred_from_fixtures is not None:
@@ -7716,6 +7721,31 @@ def _leghe_sync_round_for_local_dt(local_dt: datetime) -> Optional[int]:
     return None
 
 
+def _leghe_sync_reference_round_for_local_dt(local_dt: datetime) -> Optional[int]:
+    if not LEGHE_SYNC_WINDOWS:
+        return None
+
+    local_day = local_dt.date()
+    ordered_windows = sorted(LEGHE_SYNC_WINDOWS, key=lambda item: item[1])
+    previous_round: Optional[int] = None
+
+    for matchday, start_day, end_day in ordered_windows:
+        current_round = int(matchday)
+        if start_day <= local_day <= end_day:
+            return current_round
+        if local_day < start_day:
+            if previous_round is not None:
+                return int(previous_round)
+            return max(1, current_round - 1)
+        previous_round = current_round
+
+    return int(previous_round) if previous_round is not None else None
+
+
+def _leghe_sync_reference_round_now() -> Optional[int]:
+    return _leghe_sync_reference_round_for_local_dt(_leghe_sync_local_now())
+
+
 def _leghe_sync_slot_start_local(local_dt: datetime) -> datetime:
     slot_hours = max(1, int(LEGHE_SYNC_SLOT_HOURS))
     slot_hour = (int(local_dt.hour) // slot_hours) * slot_hours
@@ -8016,6 +8046,8 @@ def formazioni(
 
     standings_index = _build_standings_index()
     status_matchday = _load_status_matchday()
+    scheduled_reference_round = _leghe_sync_reference_round_now()
+    latest_live_votes_round = _latest_round_with_live_votes(db)
     inferred_matchday_fixtures = _infer_matchday_from_fixtures() if status_matchday is None else None
     inferred_matchday_stats = (
         _infer_matchday_from_stats()
@@ -8029,13 +8061,46 @@ def formazioni(
     )
     real_rows, available_rounds, source_path = _load_real_formazioni_rows(standings_index)
 
-    target_round = round if round is not None else default_matchday
+    target_round = (
+        round
+        if round is not None
+        else (
+            int(scheduled_reference_round)
+            if scheduled_reference_round is not None
+            else default_matchday
+        )
+    )
+    if round is None and latest_live_votes_round is not None:
+        if target_round is None or int(latest_live_votes_round) > int(target_round):
+            target_round = int(latest_live_votes_round)
     if target_round is None and available_rounds:
         target_round = max(available_rounds)
-    if round is None and target_round is not None and available_rounds and target_round not in available_rounds:
-        latest_available = max(available_rounds)
-        if target_round < latest_available:
-            target_round = latest_available
+
+    club_index = _load_club_name_index()
+    fixture_rows_for_rounds = _load_fixture_rows_for_live(db, club_index)
+    fixture_rounds = _rounds_from_fixture_rows(fixture_rows_for_rounds)
+    schedule_rounds = [int(matchday) for matchday, _start, _end in LEGHE_SYNC_WINDOWS]
+    payload_rounds_set: Set[int] = {
+        int(value)
+        for value in available_rounds
+        if isinstance(value, int) and int(value) > 0
+    }
+    payload_rounds_set.update(fixture_rounds)
+    payload_rounds_set.update(schedule_rounds)
+    if schedule_rounds:
+        payload_rounds_set.add(max(1, min(schedule_rounds) - 1))
+    for extra_round in (
+        target_round,
+        status_matchday,
+        inferred_matchday_fixtures,
+        inferred_matchday_stats,
+        latest_live_votes_round,
+        scheduled_reference_round,
+    ):
+        parsed_extra = _parse_int(extra_round)
+        if parsed_extra is not None and parsed_extra > 0:
+            payload_rounds_set.add(int(parsed_extra))
+    payload_rounds = sorted(payload_rounds_set)
 
     real_items = []
     if real_rows:
@@ -8059,12 +8124,14 @@ def formazioni(
             "items": real_items[:limit],
             "round": target_round,
             "source": "real",
-            "available_rounds": available_rounds,
+            "available_rounds": payload_rounds,
             "order_by": selected_order,
             "order_allowed": allowed_orders,
             "status_matchday": status_matchday,
             "inferred_matchday_fixtures": inferred_matchday_fixtures,
             "inferred_matchday_stats": inferred_matchday_stats,
+            "scheduled_reference_round": scheduled_reference_round,
+            "latest_live_votes_round": latest_live_votes_round,
             "source_path": str(source_path) if source_path else "",
             "note": "",
         }
@@ -8078,11 +8145,6 @@ def formazioni(
         projected_items.sort(key=_formations_sort_live_key)
     else:
         projected_items.sort(key=_formations_sort_key)
-
-    payload_rounds = available_rounds[:]
-    if target_round is not None and target_round not in payload_rounds:
-        payload_rounds.append(target_round)
-        payload_rounds.sort()
 
     if source_path is None:
         note = "File formazioni reali non trovato: mostrato XI migliore ordinato per classifica."
@@ -8104,6 +8166,8 @@ def formazioni(
         "status_matchday": status_matchday,
         "inferred_matchday_fixtures": inferred_matchday_fixtures,
         "inferred_matchday_stats": inferred_matchday_stats,
+        "scheduled_reference_round": scheduled_reference_round,
+        "latest_live_votes_round": latest_live_votes_round,
         "source_path": str(source_path) if source_path else "",
         "note": note,
     }
