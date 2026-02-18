@@ -35,6 +35,15 @@ const resolveLiveDelta = (row) => {
   return pointsLive - pointsBase;
 };
 
+const resolvePositionDelta = (row) => {
+  const livePos = toNumber(row?.live_pos ?? row?.pos);
+  const basePos = toNumber(row?.base_pos ?? row?.played_base_pos ?? row?.pos);
+  if (!Number.isFinite(livePos) || !Number.isFinite(basePos) || livePos <= 0 || basePos <= 0) {
+    return null;
+  }
+  return Math.trunc(basePos) - Math.trunc(livePos);
+};
+
 const buildLiveTrendMeta = (liveDelta, average) => {
   const value = toNumber(liveDelta);
   if (value === null) {
@@ -63,6 +72,20 @@ const buildLiveTrendMeta = (liveDelta, average) => {
     arrow: value > 0 ? "↑" : value < 0 ? "↓" : "→",
     pctDiff,
   };
+};
+
+const buildPositionTrendMeta = (positionDelta) => {
+  const value = toNumber(positionDelta);
+  if (value === null || !Number.isFinite(value)) {
+    return { tierClass: "neutral", arrow: "-", value: 0 };
+  }
+  if (value > 0) {
+    return { tierClass: "up", arrow: "↑", value: Math.trunc(value) };
+  }
+  if (value < 0) {
+    return { tierClass: "down", arrow: "↓", value: Math.trunc(value) };
+  }
+  return { tierClass: "neutral", arrow: "-", value: 0 };
 };
 
 export default function PremiumInsightsSection({
@@ -279,6 +302,27 @@ export default function PremiumInsightsSection({
                 >
                   <span className="live-trend-arrow">{trend.arrow}</span>
                   <span className="live-trend-value">{formatSignedNumber(delta, 2)}</span>
+                </span>
+              );
+            },
+          },
+          {
+            key: "position_delta",
+            label: "Pos Δ",
+            render: (row) => {
+              const delta = resolvePositionDelta(row);
+              const trend = buildPositionTrendMeta(delta);
+              const basePos = toNumber(row?.base_pos);
+              const livePos = toNumber(row?.live_pos ?? row?.pos);
+              const title =
+                Number.isFinite(basePos) && Number.isFinite(livePos)
+                  ? `Posizione ${Math.trunc(basePos)} → ${Math.trunc(livePos)}`
+                  : "Variazione posizione live";
+              const signed = trend.value > 0 ? `+${trend.value}` : String(trend.value);
+              return (
+                <span className={`position-trend-pill ${trend.tierClass}`} title={title}>
+                  <span className="position-trend-arrow">{trend.arrow}</span>
+                  <span className="position-trend-value">{signed}</span>
                 </span>
               );
             },

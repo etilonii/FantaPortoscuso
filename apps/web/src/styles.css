@@ -3444,6 +3444,45 @@ body.admin-menu-open .admin-menu-overlay {
   background: rgba(36, 179, 58, 0.24);
 }
 
+.position-trend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+.position-trend-arrow {
+  font-size: 0.86rem;
+  line-height: 1;
+}
+
+.position-trend-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.position-trend-pill.up {
+  color: #63d46f;
+  border-color: rgba(56, 192, 77, 0.58);
+  background: rgba(56, 192, 77, 0.2);
+}
+
+.position-trend-pill.down {
+  color: #ff6f6f;
+  border-color: rgba(255, 90, 78, 0.58);
+  background: rgba(255, 90, 78, 0.2);
+}
+
+.position-trend-pill.neutral {
+  color: #8cc8ff;
+  border-color: rgba(86, 170, 245, 0.5);
+  background: rgba(86, 170, 245, 0.18);
+}
+
 body.theme-light .live-trend-pill.neutral {
   color: #4d647d;
   border-color: rgba(77, 100, 125, 0.25);
@@ -3488,6 +3527,20 @@ body.theme-light .live-trend-pill.up-4 {
 
 body.theme-light .live-trend-pill.up-5 {
   color: #0f5222;
+}
+
+body.theme-light .position-trend-pill.up {
+  color: #1e6f2d;
+}
+
+body.theme-light .position-trend-pill.down {
+  color: #a12f2f;
+}
+
+body.theme-light .position-trend-pill.neutral {
+  color: #1f5f9e;
+  border-color: rgba(31, 95, 158, 0.35);
+  background: rgba(31, 95, 158, 0.12);
 }
 
 .inline-field {
