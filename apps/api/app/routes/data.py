@@ -2200,6 +2200,7 @@ def _load_standings_rows() -> List[Dict[str, object]]:
     candidates = [
         base_dir / "Classifica_FantaPortoscuso-25.xlsx",
         DATA_DIR / "classifica.xlsx",
+        DATA_DIR / "incoming" / "classifica" / "classifica.xlsx",
         DATA_DIR / "classifica.csv",
     ]
     source = next((p for p in candidates if p.exists()), None)

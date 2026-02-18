@@ -369,6 +369,7 @@ def _parse_classifica(path: Path) -> pd.DataFrame:
         "team": "Squadra",
         "partitegiocate": "Partite Giocate",
         "pg": "Partite Giocate",
+        "g": "Partite Giocate",
         "pttotali": "Pt. totali",
         "puntitotali": "Pt. totali",
         "punti": "Pt. totali",
