@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
@@ -13,6 +15,30 @@ def extract_bearer_token(authorization: str | None) -> str | None:
         return None
     token = value[7:].strip()
     return token or None
+
+
+def block_state_for_key(record: AccessKey, now: datetime | None = None) -> tuple[bool, bool]:
+    blocked_at = getattr(record, "blocked_at", None)
+    if blocked_at is None:
+        return False, False
+
+    ref = now or datetime.utcnow()
+    blocked_until = getattr(record, "blocked_until", None)
+    if blocked_until is not None and blocked_until <= ref:
+        record.blocked_at = None
+        record.blocked_until = None
+        record.blocked_reason = None
+        return False, True
+    return True, False
+
+
+def ensure_key_not_blocked(db: Session, record: AccessKey) -> None:
+    is_blocked, changed = block_state_for_key(record)
+    if changed:
+        db.add(record)
+        db.commit()
+    if is_blocked:
+        raise HTTPException(status_code=403, detail="Key sospesa")
 
 
 def access_key_from_bearer(authorization: str | None, db: Session) -> AccessKey | None:
@@ -31,6 +57,5 @@ def access_key_from_bearer(authorization: str | None, db: Session) -> AccessKey 
     record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
     if not record or not record.used:
         raise HTTPException(status_code=401, detail="Token non valido")
-    if getattr(record, "blocked_at", None) is not None:
-        raise HTTPException(status_code=403, detail="Key sospesa")
+    ensure_key_not_blocked(db, record)
     return record

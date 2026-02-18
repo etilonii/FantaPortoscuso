@@ -48,6 +48,9 @@ class AdminKeyItem(BaseModel):
     device_count: int = 0
     team: str | None = None
     note: str | None = None
+    blocked: bool = False
+    blocked_until: str | None = None
+    blocked_reason: str | None = None
     created_at: str | None = None
     used_at: str | None = None
     last_seen_at: str | None = None
@@ -112,6 +115,16 @@ class KeyDeleteRequest(BaseModel):
 class KeyNoteRequest(BaseModel):
     key: str = Field(min_length=1)
     note: str | None = Field(default=None, max_length=255)
+
+
+class KeyBlockRequest(BaseModel):
+    key: str = Field(min_length=1)
+    hours: int = Field(default=24, ge=1, le=168)
+    reason: str | None = Field(default=None, max_length=128)
+
+
+class KeyUnblockRequest(BaseModel):
+    key: str = Field(min_length=1)
 
 
 class PingRequest(BaseModel):

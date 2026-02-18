@@ -20,7 +20,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
 from apps.api.app.backup import run_backup_fail_fast
-from apps.api.app.auth_utils import access_key_from_bearer
+from apps.api.app.auth_utils import access_key_from_bearer, ensure_key_not_blocked
 from apps.api.app.config import (
     BACKUP_DIR,
     BACKUP_KEEP_LAST,
@@ -815,6 +815,7 @@ def _require_admin_key(
         raise HTTPException(status_code=403, detail="Admin key non valida")
     if not record.used:
         raise HTTPException(status_code=403, detail="Admin key non ancora attivata")
+    ensure_key_not_blocked(db, record)
 
 
 def _resolve_access_key_for_request(
@@ -831,8 +832,7 @@ def _resolve_access_key_for_request(
         record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
         if not record or not record.used:
             raise HTTPException(status_code=401, detail="Key non valida")
-        if getattr(record, "blocked_at", None) is not None:
-            raise HTTPException(status_code=403, detail="Key sospesa")
+        ensure_key_not_blocked(db, record)
 
     return record
 

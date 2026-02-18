@@ -8,7 +8,12 @@ from sqlalchemy.orm import sessionmaker
 from apps.api.app.db import Base
 from apps.api.app.models import AccessKey, DeviceSession, KeyReset, RefreshToken, TeamKey
 from apps.api.app.routes import auth as auth_routes
-from apps.api.app.schemas import KeyDeleteRequest, KeyNoteRequest
+from apps.api.app.schemas import (
+    KeyBlockRequest,
+    KeyDeleteRequest,
+    KeyNoteRequest,
+    KeyUnblockRequest,
+)
 
 
 def _build_db_session():
@@ -163,4 +168,83 @@ def test_set_key_note_admin_updates_and_clears():
     record = db.query(AccessKey).filter(AccessKey.key == "user00001").first()
     assert record is not None
     assert record.note is None
+    db.close()
+
+
+def test_set_key_block_admin_and_unblock():
+    db = _build_db_session()
+    db.add_all(
+        [
+            AccessKey(key="admin0001", used=True, is_admin=True),
+            AccessKey(key="user00001", used=True, is_admin=False),
+        ]
+    )
+    db.commit()
+
+    blocked = auth_routes.set_key_block_admin(
+        payload=KeyBlockRequest(key="user00001", hours=24, reason="Test blocco"),
+        x_admin_key="admin0001",
+        authorization=None,
+        db=db,
+    )
+    assert blocked["status"] == "ok"
+    assert blocked["blocked"] is True
+    assert blocked["blocked_until"]
+    assert blocked["blocked_reason"] == "Test blocco"
+
+    listed = auth_routes.list_keys(
+        x_admin_key="admin0001",
+        authorization=None,
+        db=db,
+    )
+    listed_map = {item.key: item for item in listed}
+    assert listed_map["user00001"].blocked is True
+    assert listed_map["user00001"].blocked_until is not None
+    assert listed_map["user00001"].blocked_reason == "Test blocco"
+
+    unblocked = auth_routes.clear_key_block_admin(
+        payload=KeyUnblockRequest(key="user00001"),
+        x_admin_key="admin0001",
+        authorization=None,
+        db=db,
+    )
+    assert unblocked["status"] == "ok"
+    assert unblocked["blocked"] is False
+
+    record = db.query(AccessKey).filter(AccessKey.key == "user00001").first()
+    assert record is not None
+    assert record.blocked_at is None
+    assert record.blocked_until is None
+    assert record.blocked_reason is None
+    db.close()
+
+
+def test_expired_key_block_is_cleared_on_session_check():
+    db = _build_db_session()
+    expired_at = datetime.utcnow() - timedelta(hours=3)
+    expired_until = datetime.utcnow() - timedelta(hours=1)
+    db.add(
+        AccessKey(
+            key="user00001",
+            used=True,
+            is_admin=False,
+            blocked_at=expired_at,
+            blocked_until=expired_until,
+            blocked_reason="Vecchio blocco",
+        )
+    )
+    db.commit()
+
+    response = auth_routes.session_info(
+        x_access_key="user00001",
+        authorization=None,
+        db=db,
+    )
+    assert response["status"] == "ok"
+
+    record = db.query(AccessKey).filter(AccessKey.key == "user00001").first()
+    assert record is not None
+    assert record.blocked_at is None
+    assert record.blocked_until is None
+    assert record.blocked_reason is None
     db.close()

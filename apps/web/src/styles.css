@@ -3003,6 +3003,68 @@ body.admin-menu-open .admin-menu-overlay {
   cursor: wait;
 }
 
+.admin-key-actions {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-width: 124px;
+}
+
+.key-blocked {
+  color: #ffcd9a;
+}
+
+.key-blocked-reason {
+  display: block;
+}
+
+.key-block-btn {
+  border-color: rgba(243, 155, 52, 0.65);
+  background: rgba(243, 155, 52, 0.12);
+  color: #ffe2bf;
+  transition: transform 0.16s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.key-block-btn:hover:not(:disabled) {
+  border-color: rgba(243, 155, 52, 0.9);
+  background: rgba(243, 155, 52, 0.2);
+  box-shadow: 0 10px 18px rgba(95, 60, 22, 0.3);
+  transform: translateY(-1px);
+}
+
+.key-block-btn:active:not(:disabled) {
+  background: rgba(243, 155, 52, 0.28);
+  border-color: rgba(255, 203, 140, 0.98);
+  box-shadow: 0 3px 8px rgba(95, 60, 22, 0.28);
+  transform: translateY(0) scale(0.97);
+}
+
+.key-block-btn.is-unblock {
+  border-color: rgba(91, 209, 255, 0.65);
+  background: rgba(91, 209, 255, 0.13);
+  color: #d4f4ff;
+}
+
+.key-block-btn.is-unblock:hover:not(:disabled) {
+  border-color: rgba(91, 209, 255, 0.9);
+  background: rgba(91, 209, 255, 0.22);
+  box-shadow: 0 10px 18px rgba(14, 62, 83, 0.32);
+}
+
+.key-block-btn.is-unblock:active:not(:disabled) {
+  background: rgba(91, 209, 255, 0.3);
+  border-color: rgba(167, 233, 255, 0.98);
+  box-shadow: 0 3px 8px rgba(14, 62, 83, 0.28);
+}
+
+.key-block-btn.is-loading,
+.key-block-btn:disabled {
+  opacity: 0.72;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
+
 .key-delete-btn {
   border-color: rgba(255, 112, 112, 0.6);
   background: rgba(255, 112, 112, 0.1);
@@ -3544,6 +3606,46 @@ body.theme-light .key-delete-btn:active:not(:disabled) {
   border-color: rgba(176, 42, 74, 0.82);
   background: rgba(176, 42, 74, 0.26);
   box-shadow: 0 4px 10px rgba(105, 25, 44, 0.2);
+}
+
+body.theme-light .key-blocked {
+  color: #8a4d03;
+}
+
+body.theme-light .key-block-btn {
+  color: #8a4d03;
+  border-color: rgba(196, 120, 22, 0.46);
+  background: rgba(196, 120, 22, 0.12);
+}
+
+body.theme-light .key-block-btn:hover:not(:disabled) {
+  border-color: rgba(196, 120, 22, 0.72);
+  background: rgba(196, 120, 22, 0.2);
+  box-shadow: 0 10px 18px rgba(114, 72, 24, 0.16);
+}
+
+body.theme-light .key-block-btn:active:not(:disabled) {
+  border-color: rgba(196, 120, 22, 0.84);
+  background: rgba(196, 120, 22, 0.28);
+  box-shadow: 0 4px 10px rgba(114, 72, 24, 0.2);
+}
+
+body.theme-light .key-block-btn.is-unblock {
+  color: #13577d;
+  border-color: rgba(42, 140, 196, 0.48);
+  background: rgba(42, 140, 196, 0.12);
+}
+
+body.theme-light .key-block-btn.is-unblock:hover:not(:disabled) {
+  border-color: rgba(42, 140, 196, 0.74);
+  background: rgba(42, 140, 196, 0.2);
+  box-shadow: 0 10px 18px rgba(34, 84, 115, 0.16);
+}
+
+body.theme-light .key-block-btn.is-unblock:active:not(:disabled) {
+  border-color: rgba(42, 140, 196, 0.84);
+  background: rgba(42, 140, 196, 0.28);
+  box-shadow: 0 4px 10px rgba(34, 84, 115, 0.2);
 }
 
 body.theme-light .login-shell,

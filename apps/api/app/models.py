@@ -24,6 +24,7 @@ class AccessKey(Base):
     used = Column(Boolean, default=False, nullable=False)
     is_admin = Column(Boolean, default=False, nullable=False)
     blocked_at = Column(DateTime, nullable=True)
+    blocked_until = Column(DateTime, nullable=True)
     blocked_reason = Column(String(128), nullable=True)
     device_id = Column(String(128), nullable=True)
     user_agent_hash = Column(String(128), nullable=True)
@@ -223,6 +224,8 @@ def ensure_schema(engine) -> None:
             conn.execute(text("ALTER TABLE access_keys ADD COLUMN is_admin BOOLEAN DEFAULT 0"))
         if "blocked_at" not in columns:
             conn.execute(text("ALTER TABLE access_keys ADD COLUMN blocked_at DATETIME"))
+        if "blocked_until" not in columns:
+            conn.execute(text("ALTER TABLE access_keys ADD COLUMN blocked_until DATETIME"))
         if "blocked_reason" not in columns:
             conn.execute(text("ALTER TABLE access_keys ADD COLUMN blocked_reason VARCHAR(128)"))
         if "note" not in columns:

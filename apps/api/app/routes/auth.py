@@ -10,7 +10,12 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from ..backup import run_backup_fail_fast
-from ..auth_utils import access_key_from_bearer, extract_bearer_token
+from ..auth_utils import (
+    access_key_from_bearer,
+    block_state_for_key,
+    ensure_key_not_blocked,
+    extract_bearer_token,
+)
 from ..config import (
     BACKUP_DIR,
     BACKUP_KEEP_LAST,
@@ -32,9 +37,11 @@ from ..schemas import (
     ImportKeysRequest,
     ImportTeamKeysRequest,
     KeyCreateResponse,
+    KeyBlockRequest,
     KeyDeleteRequest,
     KeyNoteRequest,
     KeyResetUsageResponse,
+    KeyUnblockRequest,
     LoginRequest,
     LoginResponse,
     LogoutRequest,
@@ -73,6 +80,7 @@ MARKET_LATEST_PATH = DATA_DIR / "market_latest.json"
 
 MAX_KEY_RESETS_PER_SEASON = 3
 RESET_COOLDOWN_HOURS = 24
+DEFAULT_KEY_BLOCK_HOURS = 24
 
 
 def _current_season(now: datetime | None = None) -> str:
@@ -185,6 +193,7 @@ def _require_admin_key(
         raise HTTPException(status_code=403, detail="Admin key non valida")
     if not record.used:
         raise HTTPException(status_code=403, detail="Admin key non ancora attivata")
+    ensure_key_not_blocked(db, record)
     return record
 
 
@@ -242,7 +251,12 @@ def list_keys(
     )
     reset_map = {row.key: row for row in reset_rows}
     items: list[AdminKeyItem] = []
+    dirty_block_state = False
     for k in keys:
+        blocked, changed = block_state_for_key(k, now=now)
+        if changed:
+            db.add(k)
+            dirty_block_state = True
         items.append(
             AdminKeyItem(
                 key=k.key,
@@ -252,6 +266,9 @@ def list_keys(
                 device_count=device_count_map.get(k.key, 0),
                 team=team_map.get(k.key),
                 note=k.note,
+                blocked=blocked,
+                blocked_until=k.blocked_until.isoformat() if k.blocked_until else None,
+                blocked_reason=k.blocked_reason,
                 created_at=k.created_at.isoformat() if k.created_at else None,
                 used_at=k.used_at.isoformat() if k.used_at else None,
                 last_seen_at=last_seen_map.get(k.key).isoformat()
@@ -268,6 +285,8 @@ def list_keys(
                 ),
             )
         )
+    if dirty_block_state:
+        db.commit()
     return items
 
 
@@ -347,6 +366,66 @@ def set_key_note_admin(
     db.add(record)
     db.commit()
     return {"status": "ok", "key": key_value, "note": record.note}
+
+
+@router.post("/admin/key-block")
+def set_key_block_admin(
+    payload: KeyBlockRequest,
+    x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    admin_record = _require_admin_key(x_admin_key, db, authorization)
+    key_value = payload.key.strip().lower()
+    if not key_value:
+        raise HTTPException(status_code=400, detail="Key non valida")
+    if key_value == admin_record.key:
+        raise HTTPException(status_code=400, detail="Impossibile bloccare la key admin in uso")
+
+    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Key non trovata")
+
+    now = datetime.utcnow()
+    hours = int(payload.hours or DEFAULT_KEY_BLOCK_HOURS)
+    until = now + timedelta(hours=hours)
+    reason_value = (payload.reason or "").strip() or None
+    record.blocked_at = now
+    record.blocked_until = until
+    record.blocked_reason = reason_value
+    db.add(record)
+    db.commit()
+    return {
+        "status": "ok",
+        "key": key_value,
+        "blocked": True,
+        "blocked_until": until.isoformat(),
+        "blocked_reason": reason_value,
+    }
+
+
+@router.post("/admin/key-unblock")
+def clear_key_block_admin(
+    payload: KeyUnblockRequest,
+    x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+    key_value = payload.key.strip().lower()
+    if not key_value:
+        raise HTTPException(status_code=400, detail="Key non valida")
+
+    record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
+    if not record:
+        raise HTTPException(status_code=404, detail="Key non trovata")
+
+    record.blocked_at = None
+    record.blocked_until = None
+    record.blocked_reason = None
+    db.add(record)
+    db.commit()
+    return {"status": "ok", "key": key_value, "blocked": False}
 
 
 @router.post("/admin/set-admin")
@@ -433,8 +512,7 @@ def session_info(
         record = db.query(AccessKey).filter(AccessKey.key == key_value).first()
         if not record or not record.used:
             raise HTTPException(status_code=401, detail="Key non valida")
-        if getattr(record, "blocked_at", None) is not None:
-            raise HTTPException(status_code=403, detail="Key sospesa")
+        ensure_key_not_blocked(db, record)
 
     team_row = db.query(TeamKey).filter(TeamKey.key == record.key).first()
     team_name = team_row.team if team_row else None
@@ -671,8 +749,7 @@ def ping(
             raise HTTPException(status_code=401, detail="Key non valida")
         if not access_key.used:
             raise HTTPException(status_code=403, detail="Key non ancora attivata")
-        if getattr(access_key, "blocked_at", None) is not None:
-            raise HTTPException(status_code=403, detail="Key sospesa")
+        ensure_key_not_blocked(db, access_key)
     session = db.query(DeviceSession).filter(DeviceSession.device_id == device_id).first()
     if session:
         session.last_seen_at = datetime.utcnow()
@@ -693,8 +770,7 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
     access_key = db.query(AccessKey).filter(AccessKey.key == key_value).first()
     if not access_key:
         raise HTTPException(status_code=401, detail="Key non valida")
-    if getattr(access_key, "blocked_at", None) is not None:
-        raise HTTPException(status_code=403, detail="Key sospesa")
+    ensure_key_not_blocked(db, access_key)
 
     # First use binds the device
     if not access_key.used:
@@ -789,8 +865,7 @@ def refresh_tokens(payload: RefreshRequest, db: Session = Depends(get_db)):
     access_key = db.query(AccessKey).filter(AccessKey.id == record.key_id).first()
     if not access_key:
         raise HTTPException(status_code=401, detail="Refresh token non valido")
-    if getattr(access_key, "blocked_at", None) is not None:
-        raise HTTPException(status_code=403, detail="Key sospesa")
+    ensure_key_not_blocked(db, access_key)
 
     record.revoked_at = now
     record.last_used_at = now

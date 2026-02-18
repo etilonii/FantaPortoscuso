@@ -344,6 +344,7 @@ export default function App() {
   const [adminKeyNotesDraft, setAdminKeyNotesDraft] = useState({});
   const [adminSavingNoteKey, setAdminSavingNoteKey] = useState("");
   const [adminDeletingKey, setAdminDeletingKey] = useState("");
+  const [adminBlockingKey, setAdminBlockingKey] = useState("");
 
   /* ===== MERCATO + SUGGEST ===== */
   const [marketView, setMarketView] = useState("players");
@@ -1951,6 +1952,66 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
   };
 
+  const blockAdminKey = async (keyValue, hours = 24) => {
+    if (!isAdmin) return;
+    const key = String(keyValue || "").trim().toLowerCase();
+    if (!key) return;
+    if (adminBlockingKey === key) return;
+    setAdminBlockingKey(key);
+    try {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/key-block`, {
+        method: "POST",
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
+        body: JSON.stringify({ key, hours }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAdminNotice(data?.detail || "Errore blocco key.");
+        return;
+      }
+      setAdminNotice(
+        `Key ${key.toUpperCase()} bloccata fino a ${formatLastAccess(data?.blocked_until)}.`
+      );
+      loadAdminKeys();
+    } catch {
+      setAdminNotice("Errore blocco key.");
+    } finally {
+      setAdminBlockingKey("");
+    }
+  };
+
+  const unblockAdminKey = async (keyValue) => {
+    if (!isAdmin) return;
+    const key = String(keyValue || "").trim().toLowerCase();
+    if (!key) return;
+    if (adminBlockingKey === key) return;
+    setAdminBlockingKey(key);
+    try {
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/key-unblock`, {
+        method: "POST",
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
+        body: JSON.stringify({ key }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAdminNotice(data?.detail || "Errore sblocco key.");
+        return;
+      }
+      setAdminNotice(`Key ${key.toUpperCase()} sbloccata.`);
+      loadAdminKeys();
+    } catch {
+      setAdminNotice("Errore sblocco key.");
+    } finally {
+      setAdminBlockingKey("");
+    }
+  };
+
   const deleteAdminKey = async (keyValue) => {
     if (!isAdmin) return;
     const key = String(keyValue || "").trim().toLowerCase();
@@ -3056,6 +3117,8 @@ useEffect(() => {
                         const noteDraft = String(adminKeyNotesDraft[rowKey] ?? item?.note ?? "");
                         const savingNote = adminSavingNoteKey === rowKey;
                         const deletingKey = adminDeletingKey === rowKey;
+                        const blockingKey = adminBlockingKey === rowKey;
+                        const isBlocked = Boolean(item?.blocked);
                         return (
                           <div key={item.key} className="list-item player-card">
                             <div>
@@ -3071,6 +3134,15 @@ useEffect(() => {
                               <span className="muted">
                                 Ultimo accesso: {item.online ? "Online" : formatLastAccess(item.last_seen_at || item.used_at)}
                               </span>
+                              <span className={isBlocked ? "muted key-blocked" : "muted"}>
+                                Blocco:{" "}
+                                {isBlocked
+                                  ? `attivo fino a ${formatLastAccess(item.blocked_until)}`
+                                  : "nessuno"}
+                              </span>
+                              {isBlocked && item.blocked_reason ? (
+                                <span className="muted key-blocked-reason">Motivo: {item.blocked_reason}</span>
+                              ) : null}
                               <span className="muted key-note-preview">
                                 Nota: {String(item.note || "").trim() || "-"}
                               </span>
@@ -3085,19 +3157,40 @@ useEffect(() => {
                                 <button
                                   className={savingNote ? "ghost note-save-btn is-loading" : "ghost note-save-btn"}
                                   onClick={() => saveAdminKeyNote(rowKey)}
-                                  disabled={savingNote || deletingKey}
+                                  disabled={savingNote || deletingKey || blockingKey}
                                 >
                                   {savingNote ? "Salvataggio..." : "Salva nota"}
                                 </button>
                               </div>
                             </div>
-                            <button
-                              className={deletingKey ? "ghost key-delete-btn is-loading" : "ghost key-delete-btn"}
-                              onClick={() => deleteAdminKey(item.key)}
-                              disabled={deletingKey || savingNote}
-                            >
-                              {deletingKey ? "Eliminazione..." : "Elimina"}
-                            </button>
+                            <div className="admin-key-actions">
+                              <button
+                                className={
+                                  blockingKey
+                                    ? "ghost key-block-btn is-loading"
+                                    : isBlocked
+                                    ? "ghost key-block-btn is-unblock"
+                                    : "ghost key-block-btn"
+                                }
+                                onClick={() =>
+                                  isBlocked ? unblockAdminKey(item.key) : blockAdminKey(item.key, 24)
+                                }
+                                disabled={blockingKey || deletingKey || savingNote}
+                              >
+                                {blockingKey
+                                  ? "Aggiorno..."
+                                  : isBlocked
+                                  ? "Sblocca"
+                                  : "Blocca 24h"}
+                              </button>
+                              <button
+                                className={deletingKey ? "ghost key-delete-btn is-loading" : "ghost key-delete-btn"}
+                                onClick={() => deleteAdminKey(item.key)}
+                                disabled={deletingKey || savingNote || blockingKey}
+                              >
+                                {deletingKey ? "Eliminazione..." : "Elimina"}
+                              </button>
+                            </div>
                           </div>
                         );
                       })

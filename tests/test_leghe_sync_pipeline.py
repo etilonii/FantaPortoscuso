@@ -182,6 +182,31 @@ def test_extract_fantacalcio_stats_rows_from_html_parses_rows():
     assert row["ass"] == 4
 
 
+def test_extract_kickest_cleansheet_rows_from_html_parses_rows():
+    html = """
+    <html><body>
+      <script>
+        function getRawData() {
+          return [
+            {"position_id":"1","position":"Goalkeeper","display_name":"Y. Sommer","team_code":"INT","team_name":"Inter","tot":"12"},
+            {"position_id":"2","position":"Defender","display_name":"A. Bastoni","team_code":"INT","team_name":"Inter","tot":"3"},
+            {"position_id":"1","position":"Goalkeeper","display_name":"M. Svilar","team_code":"ROM","team_name":"Roma","tot":"11"}
+          ];
+        }
+      </script>
+    </body></html>
+    """
+
+    rows = ls._extract_kickest_cleansheet_rows_from_html(html)
+    assert len(rows) == 2
+    assert rows[0]["Giocatore"] == "Y. Sommer"
+    assert rows[0]["Posizione"] == "P"
+    assert rows[0]["Squadra"] == "Inter"
+    assert rows[0]["cleansheet"] == 12
+    assert rows[1]["Giocatore"] == "M. Svilar"
+    assert rows[1]["cleansheet"] == 11
+
+
 def test_run_leghe_sync_fetches_global_stats_when_enabled(monkeypatch):
     monkeypatch.setattr(ls, "_build_leghe_opener", lambda: (object(), []))
     monkeypatch.setattr(ls, "fetch_leghe_context", lambda opener, *, alias: _fake_context())
@@ -311,6 +336,15 @@ def test_download_fantacalcio_stats_prefers_authenticated_xlsx(monkeypatch, tmp_
         "_http_read_bytes",
         lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("HTML fallback should not be used")),
     )
+    monkeypatch.setattr(
+        ls,
+        "download_kickest_cleansheet_csv",
+        lambda **kwargs: {
+            "ok": True,
+            "path": str(tmp_path / "cleansheet_2026-02-20.csv"),
+            "rows": 2,
+        },
+    )
 
     result = ls.download_fantacalcio_stats_csv_bundle(
         season_slug="2025-26",
@@ -324,6 +358,33 @@ def test_download_fantacalcio_stats_prefers_authenticated_xlsx(monkeypatch, tmp_
     assert result["source"] == "xlsx_authenticated"
     assert result["rows"] == 1
     assert (tmp_path / "gol_2026-02-20.csv").exists()
+
+
+def test_download_kickest_cleansheet_csv_writes_csv(monkeypatch, tmp_path):
+    html = """
+    <script>
+      function getRawData() {
+        return [
+          {"position_id":"1","position":"Goalkeeper","display_name":"Y. Sommer","team_code":"INT","team_name":"Inter","tot":"12"},
+          {"position_id":"1","position":"Goalkeeper","display_name":"M. Svilar","team_code":"ROM","team_name":"Roma","tot":"11"}
+        ];
+      }
+    </script>
+    """
+    monkeypatch.setattr(ls, "_http_read_bytes", lambda *args, **kwargs: (html.encode("utf-8"), {}))
+
+    result = ls.download_kickest_cleansheet_csv(
+        date_stamp="2026-02-20",
+        out_dir=tmp_path,
+    )
+
+    assert result["ok"] is True
+    assert result["rows"] == 2
+    path = tmp_path / "cleansheet_2026-02-20.csv"
+    assert path.exists()
+    content = path.read_text(encoding="utf-8")
+    assert "Y. Sommer" in content
+    assert "Cleansheet" in content
 
 
 def test_download_fantacalcio_quotazioni_prefers_authenticated_xlsx(monkeypatch, tmp_path):

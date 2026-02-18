@@ -27,6 +27,7 @@ FANTACALCIO_EXCEL_PRICES_ENDPOINT = "/api/v1/Excel/prices/20/1"
 FANTACALCIO_EXCEL_STATS_ENDPOINT = "/api/v1/Excel/stats/20/1"
 FANTACALCIO_QUOTAZIONI_BASE_URL = "https://www.fantacalcio.it/quotazioni-fantacalcio"
 FANTACALCIO_STATS_BASE_URL = "https://www.fantacalcio.it/statistiche-serie-a"
+KICKEST_CLEANSHEET_URL = "https://www.kickest.it/it/serie-a/statistiche/giocatori/clean-sheet"
 
 TEAM_ABBR_MAP = {
     "ATA": "Atalanta",
@@ -481,6 +482,132 @@ def _write_stats_bundle_files(
     return generated_files
 
 
+def _extract_kickest_cleansheet_rows_from_html(source: str) -> list[dict[str, object]]:
+    if not source:
+        return []
+
+    block_match = re.search(
+        r"function\s+getRawData\s*\(\)\s*\{[\s\S]*?return\s*(\[[\s\S]*?\])\s*;\s*\}",
+        source,
+        flags=re.IGNORECASE,
+    )
+    if block_match is None:
+        return []
+
+    try:
+        raw_rows = json.loads(block_match.group(1))
+    except Exception:
+        return []
+
+    if not isinstance(raw_rows, list):
+        return []
+
+    out: list[dict[str, object]] = []
+    for entry in raw_rows:
+        if not isinstance(entry, dict):
+            continue
+
+        position_id = str(entry.get("position_id") or "").strip()
+        position_name = str(entry.get("position") or "").strip().lower()
+        is_goalkeeper = position_id == "1" or "goalkeeper" in position_name
+        if not is_goalkeeper:
+            continue
+
+        clean_sheet_value = _parse_int_number(entry.get("tot"), default=0)
+        if clean_sheet_value <= 0:
+            continue
+
+        player_name = str(entry.get("display_name") or entry.get("match_name") or "").strip()
+        if not player_name:
+            first_name = str(entry.get("first_name") or "").strip()
+            last_name = str(entry.get("last_name") or "").strip()
+            player_name = " ".join(part for part in [first_name, last_name] if part).strip()
+        if not player_name:
+            continue
+
+        team_raw = str(entry.get("team_name") or entry.get("team_code") or "").strip()
+        team_upper = team_raw.upper()
+        team = TEAM_ABBR_MAP.get(team_upper, team_raw.title() if team_raw else "")
+
+        out.append(
+            {
+                "Giocatore": player_name,
+                "Posizione": "P",
+                "Squadra": team,
+                "cleansheet": clean_sheet_value,
+            }
+        )
+
+    out.sort(
+        key=lambda row: (
+            -int(row.get("cleansheet") or 0),
+            str(row.get("Giocatore") or "").lower(),
+        )
+    )
+    for idx, row in enumerate(out, start=1):
+        row["ID"] = idx
+    return out
+
+
+def download_kickest_cleansheet_csv(
+    *,
+    date_stamp: str | None = None,
+    out_dir: Path | None = None,
+) -> dict[str, object]:
+    stamp = (date_stamp or _today_stamp()).strip()
+    if not re.match(r"^\d{4}-\d{2}-\d{2}$", stamp):
+        raise LegheSyncError(f"date_stamp non valido (atteso YYYY-MM-DD): {stamp}")
+
+    resolved_out_dir = out_dir or (_data_dir() / "incoming" / "stats")
+    resolved_out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = resolved_out_dir / f"cleansheet_{stamp}.csv"
+
+    opener = build_opener()
+    body, _ = _http_read_bytes(
+        opener,
+        KICKEST_CLEANSHEET_URL,
+        headers={
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Referer": "https://www.kickest.it/",
+        },
+        timeout_seconds=45,
+    )
+    source = body.decode("utf-8", errors="replace")
+    rows = _extract_kickest_cleansheet_rows_from_html(source)
+    if not rows:
+        return {
+            "ok": False,
+            "warning": "No cleansheet rows parsed from Kickest source",
+            "url": KICKEST_CLEANSHEET_URL,
+            "path": str(out_path),
+            "rows": 0,
+        }
+
+    fields = ["ID", "Giocatore", "Posizione", "Squadra", "Cleansheet"]
+    rendered_rows = [
+        {
+            "ID": int(row.get("ID") or idx + 1),
+            "Giocatore": str(row.get("Giocatore") or ""),
+            "Posizione": str(row.get("Posizione") or "P"),
+            "Squadra": str(row.get("Squadra") or ""),
+            "Cleansheet": int(_parse_number(row.get("cleansheet"), default=0.0)),
+        }
+        for idx, row in enumerate(rows)
+    ]
+    with out_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rendered_rows)
+
+    return {
+        "ok": True,
+        "url": KICKEST_CLEANSHEET_URL,
+        "path": str(out_path),
+        "rows": int(len(rendered_rows)),
+        "source": "kickest_html",
+    }
+
+
 def _extract_fantacalcio_quotazioni_rows_from_xlsx(path: Path) -> list[dict[str, object]]:
     try:
         import pandas as pd
@@ -748,6 +875,30 @@ def download_fantacalcio_stats_csv_bundle(
         out_dir=resolved_out_dir,
         stamp=stamp,
     )
+    try:
+        kickest_result = download_kickest_cleansheet_csv(
+            date_stamp=stamp,
+            out_dir=resolved_out_dir,
+        )
+        if bool(kickest_result.get("ok")):
+            generated_files.append(
+                {
+                    "prefix": "cleansheet",
+                    "label": "Cleansheet",
+                    "path": str(kickest_result.get("path") or ""),
+                    "rows": int(kickest_result.get("rows") or 0),
+                    "source": "kickest_html",
+                }
+            )
+        else:
+            warnings.append(
+                str(
+                    kickest_result.get("warning")
+                    or "kickest cleansheet download failed"
+                )
+            )
+    except Exception as exc:
+        warnings.append(f"kickest cleansheet fetch failed: {exc}")
     result = {
         "ok": True,
         "url": url,
