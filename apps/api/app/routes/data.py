@@ -2216,7 +2216,13 @@ def _load_standings_rows() -> List[Dict[str, object]]:
                     continue
                 pos_raw = str(row.get("Pos") or row.get("Posizione") or "").strip()
                 pts_raw = str(row.get("Pt. totali") or row.get("Punti") or "").strip()
-                played_raw = str(row.get("Partite Giocate") or row.get("PG") or "").strip()
+                played_raw = str(
+                    row.get("Partite Giocate")
+                    or row.get("PG")
+                    or row.get("G")
+                    or row.get("Giocate")
+                    or ""
+                ).strip()
                 try:
                     pos = int(float(pos_raw.replace(",", "."))) if pos_raw else idx + 1
                 except ValueError:
@@ -2260,13 +2266,18 @@ def _load_standings_rows() -> List[Dict[str, object]]:
         played_col = None
 
         for k, v in col_map.items():
+            normalized_key = str(k).replace(".", "").strip().lower()
             if pos_col is None and (k == "pos" or "posizione" in k):
                 pos_col = v
             if team_col is None and ("squadra" in k or k == "team"):
                 team_col = v
             if points_col is None and ("pt" in k and "tot" in k):
                 points_col = v
-            if played_col is None and ("partite" in k or k in {"pg", "23"}):
+            if played_col is None and (
+                "partite" in normalized_key
+                or "giocate" in normalized_key
+                or normalized_key in {"pg", "g", "giornate", "giornata", "23"}
+            ):
                 played_col = v
 
         if team_col is None:
