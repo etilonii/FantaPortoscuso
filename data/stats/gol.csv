@@ -88,7 +88,7 @@ Bisseck,D,Inter,2
 Brescianini,C,Fiorentina,2
 Cabal,D,Juventus,2
 Cambiaso,D,Juventus,2
-Castellanos *,A,Lazio,2
+Castellanos *,,Lazio,2
 Conceicao,C,Juventus,2
 Coulibaly L.,C,Lecce,2
 Da Cunha,C,Como,2
@@ -100,16 +100,16 @@ Fadera,C,Sassuolo,2
 Felici,C,Cagliari,2
 Gaetano,C,Cagliari,2
 Gosens,D,Fiorentina,2
-Guendouzi,C,Lazio,2
 Idrissi R.,D,Cagliari,2
 Kabasele,D,Udinese,2
 Kalulu,D,Juventus,2
 Konè M.,C,Roma,2
-Lookman *,A,Atalanta,2
+Lookman *,,Atalanta,2
 Maripan,D,Torino,2
 Mazzitelli,C,Cagliari,2
 Meister,A,Pisa,2
 Modric,C,Milan,2
+Moro N.,C,Bologna,2
 Muharemovic,D,Sassuolo,2
 N'Dri,A,Lecce,2
 Noslin,A,Lazio,2
@@ -138,11 +138,10 @@ Baldanzi,C,Genoa,1
 Barella,C,Inter,1
 Basic,C,Lazio,1
 Bastoni,D,Inter,1
-Benedyczak *,A,Parma,1
+Benedyczak *,,Parma,1
 Bernardeschi,C,Bologna,1
 Bernede,C,Verona,1
 Beukema,D,Napoli,1
-Buksa,A,Udinese,1
 Buksa,A,Udinese,1
 Camarda,A,Lecce,1
 Caqueret,C,Como,1
@@ -154,13 +153,13 @@ Coco,D,Torino,1
 Comuzzo,D,Fiorentina,1
 Cristante,C,Roma,1
 Cuadrado,D,Pisa,1
-Cutrone *,A,Parma,1
+Cutrone *,,Parma,1
 Dallinga,A,Bologna,1
+Delprato,D,Parma,1
 De Roon,C,Atalanta,1
 De Winter,D,Milan,1
-Delprato,D,Parma,1
-Di Lorenzo,D,Napoli,1
 Dia,A,Lazio,1
+Di Lorenzo,D,Napoli,1
 Djuric,A,Cremonese,1
 Dumfries,D,Inter,1
 Durosinmi,A,Pisa,1
@@ -184,19 +183,19 @@ Hermoso,D,Roma,1
 Hien,D,Atalanta,1
 Holm,D,Juventus,1
 Iannoni,C,Sassuolo,1
-Johnsen *,A,Cremonese,1
+Johnsen *,,Cremonese,1
 Karlstrom,C,Udinese,1
 Kelly L.,D,Juventus,1
 Kossounou,D,Atalanta,1
 Kristensen T.,D,Udinese,1
 Kuhn,A,Como,1
-Lang *,A,Napoli,1
+Lang *,,Napoli,1
 Leris,C,Pisa,1
 Lobotka,C,Napoli,1
 Locatelli,C,Juventus,1
 Lorran,C,Pisa,1
 Loyola,C,Pisa,1
-Lucca *,A,Napoli,1
+Lucca *,,Napoli,1
 Lucumì,D,Bologna,1
 Luis Henrique,C,Inter,1
 Luperto,D,Cremonese,1
@@ -208,9 +207,8 @@ Miranda J.,D,Bologna,1
 Miretti,C,Juventus,1
 Mkhitaryan,C,Inter,1
 Moreno Alb.,D,Como,1
-Moro N.,C,Bologna,1
 Ndour,C,Fiorentina,1
-Ngonge *,A,Torino,1
+Ngonge *,,Torino,1
 Njie,A,Torino,1
 Norton-Cuffy,D,Genoa,1
 Openda,A,Juventus,1
@@ -218,7 +216,7 @@ Ordonez C.,C,Parma,1
 Palestra,D,Cagliari,1
 Payero,C,Cremonese,1
 Piotrowski,C,Udinese,1
-Posch *,D,Como,1
+Posch *,,Como,1
 Prati,C,Torino,1
 Ranieri L.,D,Fiorentina,1
 Raspadori,A,Atalanta,1
@@ -235,7 +233,7 @@ Taylor K.,C,Lazio,1
 Thuram K.,C,Juventus,1
 Tiago Gabriel,D,Lecce,1
 Tourè I.,C,Pisa,1
-Vazquez *,C,Cremonese,1
+Vazquez *,,Cremonese,1
 Vergara,C,Napoli,1
 Vojvoda,D,Como,1
 Volpato,C,Sassuolo,1
