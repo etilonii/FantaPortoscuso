@@ -449,6 +449,17 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
 
     extracted: List[Dict[str, str]] = []
 
+    def _parse_layout_metric(cells: List[str], start: int, end: int) -> Optional[float]:
+        # Metrics in Leghe dual layout can shift by one/two columns; scan the
+        # side slice instead of relying on a fixed index.
+        for idx in range(start, end):
+            if idx < 0 or idx >= len(cells):
+                continue
+            parsed = _parse_float(cells[idx])
+            if parsed is not None:
+                return parsed
+        return None
+
     for sheet_name, frame in sheets.items():
         if frame is None or frame.empty:
             continue
@@ -491,6 +502,8 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
             right_players: List[Tuple[str, str]] = []
             left_mod_capitano: Optional[float] = None
             right_mod_capitano: Optional[float] = None
+            left_totale_precalc: Optional[float] = None
+            right_totale_precalc: Optional[float] = None
             cursor = index + 2
             while cursor < len(rows):
                 row = rows[cursor]
@@ -503,9 +516,13 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
                 left_label = normalize_name(row[0] if len(row) > 0 else "")
                 right_label = normalize_name(row[6] if len(row) > 6 else "")
                 if left_label == "modificatorecapitano":
-                    left_mod_capitano = _parse_float(row[4] if len(row) > 4 else "")
+                    left_mod_capitano = _parse_layout_metric(row, 1, 6)
                 if right_label == "modificatorecapitano":
-                    right_mod_capitano = _parse_float(row[10] if len(row) > 10 else "")
+                    right_mod_capitano = _parse_layout_metric(row, 7, 12)
+                if left_label.startswith("totale"):
+                    left_totale_precalc = _parse_layout_metric(row, 1, 6)
+                if right_label.startswith("totale"):
+                    right_totale_precalc = _parse_layout_metric(row, 7, 12)
 
                 left_role = _strict_role_from_layout_cell(row[0] if len(row) > 0 else "")
                 left_name = _canonicalize_name(row[1] if len(row) > 1 else "")
@@ -551,6 +568,15 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
                             else (
                                 str(right_mod_capitano)
                                 if team_name == right_team and right_mod_capitano is not None
+                                else ""
+                            )
+                        ),
+                        "totale_precalc": (
+                            str(left_totale_precalc)
+                            if team_name == left_team and left_totale_precalc is not None
+                            else (
+                                str(right_totale_precalc)
+                                if team_name == right_team and right_totale_precalc is not None
                                 else ""
                             )
                         ),
@@ -5566,6 +5592,19 @@ def _attach_live_scores_to_formations(
         captain_modifier = _compute_captain_modifier(effective_item, player_scores, regulation)
         mod_difesa = float(defense_modifier.get("value") or 0.0)
         mod_capitano = float(captain_modifier.get("value") or 0.0)
+        captain_player = str(captain_modifier.get("captain_player") or "").strip()
+        captain_vote = _safe_number(captain_modifier.get("captain_vote"))
+
+        # Final fallback for sparse xlsx payloads: when captain data is missing
+        # and no captain modifier can be resolved, infer it from the official
+        # lineup total if available.
+        if not captain_player and captain_vote is None and abs(mod_capitano) < 0.0001 and base_count:
+            total_precalc = _safe_number(item.get("totale_precalc"))
+            if total_precalc is not None:
+                inferred_mod_cap = round(float(total_precalc) - (base_total + mod_difesa), 2)
+                if abs(inferred_mod_cap) <= 2.0:
+                    mod_capitano = inferred_mod_cap
+
         live_total = round(base_total + mod_difesa + mod_capitano, 2) if base_count else None
         base_total_value = round(base_total, 2) if base_count else None
 
@@ -5596,8 +5635,8 @@ def _attach_live_scores_to_formations(
             "mod_capitano": round(mod_capitano, 2),
             "totale_live": live_total,
             "difesa_average_vote": defense_modifier.get("average_vote"),
-            "captain_player": captain_modifier.get("captain_player"),
-            "captain_vote": captain_modifier.get("captain_vote"),
+            "captain_player": captain_player,
+            "captain_vote": captain_vote,
         }
 
 
@@ -7432,6 +7471,18 @@ def _load_real_formazioni_rows(
                             "mod_capitano",
                             "modificatore_capitano",
                             "modificatorecapitano",
+                        ],
+                    )
+                ),
+                "totale_precalc": _parse_float(
+                    _pick_row_value(
+                        normalized_row,
+                        [
+                            "totale_precalc",
+                            "totale",
+                            "totale_live",
+                            "total_live",
+                            "total",
                         ],
                     )
                 ),
