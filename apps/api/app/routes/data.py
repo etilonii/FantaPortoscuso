@@ -2359,10 +2359,13 @@ def _build_live_standings_rows(
         if status_matchday is not None
         else (inferred_matchday_fixtures if inferred_matchday_fixtures is not None else inferred_matchday_stats)
     )
+    target_round = requested_round if requested_round is not None else default_matchday
     base_played_hint = max((_parse_int(row.get("played")) or 0) for row in base_rows) if base_rows else 0
 
-    real_rows, available_rounds, _source_path = _load_real_formazioni_rows(standings_index)
-    target_round = requested_round if requested_round is not None else default_matchday
+    real_rows, available_rounds, _source_path = _load_real_formazioni_rows(
+        standings_index,
+        preferred_round=target_round,
+    )
     if target_round is None and available_rounds:
         target_round = max(available_rounds)
     if (
@@ -5634,6 +5637,51 @@ def _refresh_formazioni_context_html_live() -> Optional[Path]:
     return target_path if target_path.exists() else None
 
 
+def _refresh_formazioni_xlsx_for_round(round_value: Optional[int]) -> Optional[Path]:
+    requested_round = _parse_int(round_value)
+    if (
+        requested_round is None
+        or requested_round <= 0
+        or not LEGHE_ALIAS
+        or not LEGHE_USERNAME
+        or not LEGHE_PASSWORD
+    ):
+        return None
+
+    out_path = DATA_DIR / "incoming" / "formazioni" / "formazioni.xlsx"
+    cache_key = f"formazioni_xlsx_round_{int(requested_round)}"
+    now_ts = datetime.utcnow().timestamp()
+    last_ts = float(_FORMAZIONI_REMOTE_REFRESH_CACHE.get(cache_key, 0.0) or 0.0)
+    if now_ts - last_ts < 180 and out_path.exists():
+        return out_path
+
+    try:
+        result = refresh_formazioni_context_from_leghe(
+            alias=LEGHE_ALIAS,
+            out_path=REAL_FORMATIONS_TMP_DIR / "formazioni_page.html",
+            username=LEGHE_USERNAME,
+            password=LEGHE_PASSWORD,
+            out_xlsx_path=out_path,
+            competition_id=LEGHE_COMPETITION_ID,
+            competition_name=LEGHE_COMPETITION_NAME,
+            formations_matchday=int(requested_round),
+        )
+        xlsx_meta = result.get("formazioni_xlsx") if isinstance(result, dict) else {}
+        xlsx_meta = xlsx_meta if isinstance(xlsx_meta, dict) else {}
+        selected_round = _parse_int(xlsx_meta.get("selected_matchday"))
+        rows_count = _parse_int(xlsx_meta.get("rows")) or 0
+        if out_path.exists() and rows_count > 0 and (
+            selected_round is None or int(selected_round) == int(requested_round)
+        ):
+            return out_path
+    except Exception:
+        logger.debug("Unable to refresh formazioni xlsx for round %s", requested_round, exc_info=True)
+    finally:
+        _FORMAZIONI_REMOTE_REFRESH_CACHE[cache_key] = now_ts
+
+    return out_path if out_path.exists() else None
+
+
 def _extract_current_turn_from_formazioni_context_html() -> Optional[int]:
     pattern = re.compile(r'currentTurn\s*:\s*"?(?P<turn>\d+)"?', re.IGNORECASE)
     for candidate in _context_html_candidates():
@@ -6872,15 +6920,26 @@ def _parse_formazioni_payload_to_items(
 
 def _load_real_formazioni_rows_from_appkey_json(
     standings_index: Dict[str, Dict[str, object]],
+    *,
+    preferred_round: Optional[int] = None,
 ) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
     current_turn = _extract_current_turn_from_formazioni_context_html()
+    requested_round = _parse_int(preferred_round)
     source_path: Optional[Path] = None
 
+    if requested_round is not None:
+        cached_round_path = REAL_FORMATIONS_TMP_DIR / f"formazioni_{int(requested_round)}_appkey.json"
+        if cached_round_path.exists():
+            source_path = cached_round_path
+    if source_path is None and requested_round is not None:
+        source_path = _refresh_formazioni_appkey_from_context_html(requested_round)
     if current_turn is not None:
-        source_path = _refresh_formazioni_appkey_from_context_html(current_turn)
+        source_path = source_path or _refresh_formazioni_appkey_from_context_html(current_turn)
     if source_path is None:
         source_path = _refresh_formazioni_appkey_from_context_html(None)
 
+    if source_path is None and requested_round is not None:
+        source_path = _refresh_formazioni_appkey_from_service(requested_round)
     if source_path is None and current_turn is not None:
         source_path = _refresh_formazioni_appkey_from_service(current_turn)
     if source_path is None:
@@ -6894,6 +6953,17 @@ def _load_real_formazioni_rows_from_appkey_json(
         return [], [], None
 
     items, rounds = _parse_formazioni_payload_to_items(payload, standings_index)
+    if requested_round is not None and requested_round not in rounds and LEGHE_ALIAS and LEGHE_USERNAME and LEGHE_PASSWORD:
+        service_path = _refresh_formazioni_appkey_from_service(requested_round)
+        if service_path is not None:
+            try:
+                service_payload = json.loads(service_path.read_text(encoding="utf-8-sig"))
+            except Exception:
+                service_payload = {}
+            service_items, service_rounds = _parse_formazioni_payload_to_items(service_payload, standings_index)
+            if service_items and requested_round in service_rounds:
+                return service_items, service_rounds, service_path
+
     if (
         current_turn is not None
         and current_turn not in rounds
@@ -7068,14 +7138,26 @@ def _merge_real_formations_with_appkey(
 
 def _load_real_formazioni_rows(
     standings_index: Optional[Dict[str, Dict[str, object]]],
+    *,
+    preferred_round: Optional[int] = None,
 ) -> tuple[List[Dict[str, object]], List[int], Optional[Path]]:
     standings_index = standings_index or {}
+    requested_round = _parse_int(preferred_round)
     _refresh_formazioni_context_html_live()
 
-    appkey_items, appkey_rounds, appkey_source = _load_real_formazioni_rows_from_appkey_json(standings_index)
+    appkey_items, appkey_rounds, appkey_source = _load_real_formazioni_rows_from_appkey_json(
+        standings_index,
+        preferred_round=requested_round,
+    )
+    fallback_appkey_items: List[Dict[str, object]] = []
     if appkey_items:
         _recompute_forza_titolari(appkey_items)
-        return appkey_items, appkey_rounds, appkey_source
+        if requested_round is None or requested_round in appkey_rounds:
+            return appkey_items, appkey_rounds, appkey_source
+        fallback_appkey_items = appkey_items
+
+    if requested_round is not None:
+        _refresh_formazioni_xlsx_for_round(requested_round)
 
     candidate_paths: List[Path] = []
     for folder in REAL_FORMATIONS_DIR_CANDIDATES:
@@ -7213,7 +7295,14 @@ def _load_real_formazioni_rows(
         rounds_in_items.update(rounds)
         available_rounds = sorted(rounds_in_items)
         _recompute_forza_titolari(merged_items)
+        if requested_round is not None:
+            has_requested_round = any(_parse_int(item.get("round")) == requested_round for item in merged_items)
+            if not has_requested_round:
+                continue
         return merged_items, available_rounds, source_path
+
+    if fallback_appkey_items:
+        return fallback_appkey_items, appkey_rounds, appkey_source
 
     return [], [], None
 
@@ -8059,8 +8148,6 @@ def formazioni(
         if status_matchday is not None
         else (inferred_matchday_fixtures if inferred_matchday_fixtures is not None else inferred_matchday_stats)
     )
-    real_rows, available_rounds, source_path = _load_real_formazioni_rows(standings_index)
-
     target_round = (
         round
         if round is not None
@@ -8073,6 +8160,11 @@ def formazioni(
     if round is None and latest_live_votes_round is not None:
         if target_round is None or int(latest_live_votes_round) > int(target_round):
             target_round = int(latest_live_votes_round)
+
+    real_rows, available_rounds, source_path = _load_real_formazioni_rows(
+        standings_index,
+        preferred_round=target_round,
+    )
     if target_round is None and available_rounds:
         target_round = max(available_rounds)
 
