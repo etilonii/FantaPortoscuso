@@ -3946,12 +3946,23 @@ def _extract_scorer_events_from_match_summary_html(html_text: str) -> List[Dict[
     )
     source = block_match.group(1) if block_match else html_text
     events: List[Dict[str, object]] = []
-    li_pattern = re.compile(r"<li class=['\"](home|away)[^'\"]*['\"]>(.*?)</li>", flags=re.IGNORECASE | re.DOTALL)
+    li_pattern = re.compile(
+        r"<li[^>]*class=['\"]([^'\"]+)['\"][^>]*>(.*?)</li>",
+        flags=re.IGNORECASE | re.DOTALL,
+    )
 
-    for idx, (side_raw, item_html) in enumerate(li_pattern.findall(source)):
-        side = str(side_raw or "").strip().lower()
+    for idx, (class_raw, item_html) in enumerate(li_pattern.findall(source)):
+        class_tokens = {str(token or "").strip().lower() for token in str(class_raw or "").split() if token}
+        if not class_tokens:
+            continue
+
+        side = "home" if "home" in class_tokens else ("away" if "away" in class_tokens else "")
         if side not in {"home", "away"}:
             continue
+        # `type-aut` is an own goal: count it for the opposite side, never for
+        # the scorer bonus attribution.
+        is_own_goal = any(token == "type-aut" or token.startswith("type-aut") for token in class_tokens)
+        effective_side = "away" if (is_own_goal and side == "home") else ("home" if is_own_goal else side)
 
         name_match = re.search(
             r"<a[^>]*class=['\"][^'\"]*player-name[^'\"]*['\"][^>]*>.*?<span>([^<]+)</span>",
@@ -3986,11 +3997,13 @@ def _extract_scorer_events_from_match_summary_html(html_text: str) -> List[Dict[
 
         events.append(
             {
-                "side": side,
+                "side": effective_side,
+                "raw_side": side,
                 "player": player_name,
                 "minute_raw": minute_raw,
                 "minute_base": minute_base,
                 "minute_extra": minute_extra,
+                "own_goal": bool(is_own_goal),
                 "order": idx,
             }
         )
@@ -4010,6 +4023,8 @@ def _decisive_badge_from_scorer_events(
 
     if home_goals == away_goals:
         last_event = events[-1]
+        if bool(last_event.get("own_goal")):
+            return None
         return {
             "event": "gol_pareggio",
             "side": str(last_event.get("side") or ""),
@@ -4024,6 +4039,8 @@ def _decisive_badge_from_scorer_events(
                 continue
             count += 1
             if count == threshold:
+                if bool(item.get("own_goal")):
+                    return None
                 return {
                     "event": "gol_vittoria",
                     "side": "home",
@@ -4038,6 +4055,8 @@ def _decisive_badge_from_scorer_events(
             continue
         count += 1
         if count == threshold:
+            if bool(item.get("own_goal")):
+                return None
             return {
                 "event": "gol_vittoria",
                 "side": "away",
