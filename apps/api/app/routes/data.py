@@ -489,6 +489,8 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
 
             left_players: List[Tuple[str, str]] = []
             right_players: List[Tuple[str, str]] = []
+            left_mod_capitano: Optional[float] = None
+            right_mod_capitano: Optional[float] = None
             cursor = index + 2
             while cursor < len(rows):
                 row = rows[cursor]
@@ -497,6 +499,13 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
                 next_right_team = _canonicalize_name(row[6]) if len(row) > 6 else ""
                 if _looks_like_team_name_cell(next_left_team) and _looks_like_team_name_cell(next_right_team):
                     break
+
+                left_label = normalize_name(row[0] if len(row) > 0 else "")
+                right_label = normalize_name(row[6] if len(row) > 6 else "")
+                if left_label == "modificatorecapitano":
+                    left_mod_capitano = _parse_float(row[4] if len(row) > 4 else "")
+                if right_label == "modificatorecapitano":
+                    right_mod_capitano = _parse_float(row[10] if len(row) > 10 else "")
 
                 left_role = _strict_role_from_layout_cell(row[0] if len(row) > 0 else "")
                 left_name = _canonicalize_name(row[1] if len(row) > 1 else "")
@@ -536,6 +545,15 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
                         "centrocampisti": ";".join(centrocampisti),
                         "attaccanti": ";".join(attaccanti),
                         "panchina": ";".join(name for _, name in reserves),
+                        "mod_capitano_precalc": (
+                            str(left_mod_capitano)
+                            if team_name == left_team and left_mod_capitano is not None
+                            else (
+                                str(right_mod_capitano)
+                                if team_name == right_team and right_mod_capitano is not None
+                                else ""
+                            )
+                        ),
                     }
                 )
 
@@ -5442,6 +5460,13 @@ def _compute_captain_modifier(
             break
 
     if selected_vote is None:
+        fallback_value = _safe_number(item.get("mod_capitano_precalc"))
+        if fallback_value is not None:
+            return {
+                "value": round(float(fallback_value), 2),
+                "captain_player": "",
+                "captain_vote": None,
+            }
         return {"value": 0.0, "captain_player": "", "captain_vote": None}
 
     bands = captain_cfg.get("bands")
@@ -7456,6 +7481,17 @@ def _load_real_formazioni_rows(
                 "vice_capitano": _pick_row_value(
                     normalized_row,
                     ["vice_capitano", "vicecapitano", "vicecaptain", "vice", "vc"],
+                ),
+                "mod_capitano_precalc": _parse_float(
+                    _pick_row_value(
+                        normalized_row,
+                        [
+                            "mod_capitano_precalc",
+                            "mod_capitano",
+                            "modificatore_capitano",
+                            "modificatorecapitano",
+                        ],
+                    )
                 ),
                 "round": round_value,
                 "source": "real",
