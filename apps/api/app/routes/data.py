@@ -2402,6 +2402,28 @@ def _build_live_standings_rows(
             continue
         formazioni_items.append(item)
 
+    if not formazioni_items and target_round is not None:
+        # Try an explicit round refresh before falling back to projection.
+        try:
+            forced_source = (
+                _refresh_formazioni_appkey_from_context_html(target_round)
+                or _refresh_formazioni_appkey_from_service(target_round)
+                or _latest_formazioni_appkey_path()
+            )
+            if forced_source is not None and forced_source.exists():
+                forced_payload = json.loads(forced_source.read_text(encoding="utf-8-sig"))
+                forced_items, _forced_rounds = _parse_formazioni_payload_to_items(forced_payload, standings_index)
+                filtered_items = [
+                    item
+                    for item in forced_items
+                    if _parse_int(item.get("round")) == int(target_round)
+                ]
+                if filtered_items:
+                    _recompute_forza_titolari(filtered_items)
+                    formazioni_items = filtered_items
+        except Exception:
+            logger.debug("Unable to refresh real formations for target round %s", target_round, exc_info=True)
+
     source = "real"
     if not formazioni_items:
         source = "projection"
