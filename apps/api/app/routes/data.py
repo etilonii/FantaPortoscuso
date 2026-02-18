@@ -455,9 +455,15 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
         for idx in range(start, end):
             if idx < 0 or idx >= len(cells):
                 continue
-            parsed = _parse_float(cells[idx])
+            raw_cell = str(cells[idx] or "").strip()
+            parsed = _parse_float(raw_cell)
             if parsed is not None:
                 return parsed
+            embedded = re.search(r"-?\d+(?:[.,]\d+)?", raw_cell)
+            if embedded:
+                parsed_embedded = _parse_float(embedded.group(0))
+                if parsed_embedded is not None:
+                    return parsed_embedded
         return None
 
     for sheet_name, frame in sheets.items():
@@ -516,13 +522,13 @@ def _extract_dual_layout_formazioni_rows(path: Path) -> List[Dict[str, str]]:
                 left_label = normalize_name(row[0] if len(row) > 0 else "")
                 right_label = normalize_name(row[6] if len(row) > 6 else "")
                 if left_label == "modificatorecapitano":
-                    left_mod_capitano = _parse_layout_metric(row, 1, 6)
+                    left_mod_capitano = _parse_layout_metric(row, 0, 6)
                 if right_label == "modificatorecapitano":
-                    right_mod_capitano = _parse_layout_metric(row, 7, 12)
+                    right_mod_capitano = _parse_layout_metric(row, 6, 12)
                 if left_label.startswith("totale"):
-                    left_totale_precalc = _parse_layout_metric(row, 1, 6)
+                    left_totale_precalc = _parse_layout_metric(row, 0, 6)
                 if right_label.startswith("totale"):
-                    right_totale_precalc = _parse_layout_metric(row, 7, 12)
+                    right_totale_precalc = _parse_layout_metric(row, 6, 12)
 
                 left_role = _strict_role_from_layout_cell(row[0] if len(row) > 0 else "")
                 left_name = _canonicalize_name(row[1] if len(row) > 1 else "")
