@@ -6160,7 +6160,7 @@ def _refresh_formazioni_appkey_from_context_tmp(
         return None
 
     entries = _extract_formazioni_tmp_entries_from_html(source)
-    if not entries:
+    if not entries and requested_round is None:
         return None
 
     now_ts = datetime.utcnow().timestamp()
@@ -6213,6 +6213,21 @@ def _refresh_formazioni_appkey_from_context_tmp(
             if timestamp_num is None or competition_id is None:
                 continue
             explicit_candidates.append((int(timestamp_num), int(competition_id)))
+        if not explicit_candidates:
+            competition_literal = _extract_js_object_literal(source, "currentCompetition")
+            if competition_literal:
+                try:
+                    parsed_competition = json.loads(competition_literal)
+                except Exception:
+                    parsed_competition = {}
+                if isinstance(parsed_competition, dict):
+                    competition_id = _parse_int(parsed_competition.get("id"))
+                    timestamp_num = _parse_int(parsed_competition.get("state"))
+                    if competition_id is not None and timestamp_num is not None:
+                        explicit_candidates.append((int(timestamp_num), int(competition_id)))
+        if not explicit_candidates and LEGHE_COMPETITION_ID is not None:
+            fallback_timestamp = int(datetime.utcnow().timestamp() * 1000)
+            explicit_candidates.append((fallback_timestamp, int(LEGHE_COMPETITION_ID)))
         explicit_candidates.sort(reverse=True)
 
         cached_round_path = REAL_FORMATIONS_TMP_DIR / f"formazioni_{int(requested_round)}_appkey.json"
