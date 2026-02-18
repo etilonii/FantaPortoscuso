@@ -2375,14 +2375,10 @@ def _build_live_standings_rows(
     if requested_round is None:
         latest_live_votes_round = _latest_round_with_live_votes(db)
         if latest_live_votes_round is not None:
-            live_round_available = (not available_rounds) or (latest_live_votes_round in available_rounds)
             should_promote_from_live = bool(
-                live_round_available
-                and (
-                    target_round is None
-                    or int(latest_live_votes_round) > int(target_round)
-                    or int(latest_live_votes_round) > int(base_played_hint)
-                )
+                target_round is None
+                or int(latest_live_votes_round) > int(target_round)
+                or int(latest_live_votes_round) > int(base_played_hint)
             )
             if should_promote_from_live:
                 target_round = int(latest_live_votes_round)
