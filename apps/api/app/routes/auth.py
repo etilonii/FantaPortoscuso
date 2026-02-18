@@ -80,7 +80,6 @@ MARKET_LATEST_PATH = DATA_DIR / "market_latest.json"
 
 MAX_KEY_RESETS_PER_SEASON = 3
 RESET_COOLDOWN_HOURS = 24
-DEFAULT_KEY_BLOCK_HOURS = 24
 
 
 def _current_season(now: datetime | None = None) -> str:
@@ -387,11 +386,9 @@ def set_key_block_admin(
         raise HTTPException(status_code=404, detail="Key non trovata")
 
     now = datetime.utcnow()
-    hours = int(payload.hours or DEFAULT_KEY_BLOCK_HOURS)
-    until = now + timedelta(hours=hours)
     reason_value = (payload.reason or "").strip() or None
     record.blocked_at = now
-    record.blocked_until = until
+    record.blocked_until = None
     record.blocked_reason = reason_value
     db.add(record)
     db.commit()
@@ -399,7 +396,7 @@ def set_key_block_admin(
         "status": "ok",
         "key": key_value,
         "blocked": True,
-        "blocked_until": until.isoformat(),
+        "blocked_until": None,
         "blocked_reason": reason_value,
     }
 

@@ -182,14 +182,14 @@ def test_set_key_block_admin_and_unblock():
     db.commit()
 
     blocked = auth_routes.set_key_block_admin(
-        payload=KeyBlockRequest(key="user00001", hours=24, reason="Test blocco"),
+        payload=KeyBlockRequest(key="user00001", reason="Test blocco"),
         x_admin_key="admin0001",
         authorization=None,
         db=db,
     )
     assert blocked["status"] == "ok"
     assert blocked["blocked"] is True
-    assert blocked["blocked_until"]
+    assert blocked["blocked_until"] is None
     assert blocked["blocked_reason"] == "Test blocco"
 
     listed = auth_routes.list_keys(
@@ -199,7 +199,7 @@ def test_set_key_block_admin_and_unblock():
     )
     listed_map = {item.key: item for item in listed}
     assert listed_map["user00001"].blocked is True
-    assert listed_map["user00001"].blocked_until is not None
+    assert listed_map["user00001"].blocked_until is None
     assert listed_map["user00001"].blocked_reason == "Test blocco"
 
     unblocked = auth_routes.clear_key_block_admin(

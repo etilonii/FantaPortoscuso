@@ -1952,7 +1952,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
   };
 
-  const blockAdminKey = async (keyValue, hours = 24) => {
+  const blockAdminKey = async (keyValue) => {
     if (!isAdmin) return;
     const key = String(keyValue || "").trim().toLowerCase();
     if (!key) return;
@@ -1965,16 +1965,14 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           legacyAdminKey: true,
           extraHeaders: { "Content-Type": "application/json" },
         }),
-        body: JSON.stringify({ key, hours }),
+        body: JSON.stringify({ key }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setAdminNotice(data?.detail || "Errore blocco key.");
         return;
       }
-      setAdminNotice(
-        `Key ${key.toUpperCase()} bloccata fino a ${formatLastAccess(data?.blocked_until)}.`
-      );
+      setAdminNotice(`Key ${key.toUpperCase()} bloccata fino a sblocco manuale.`);
       loadAdminKeys();
     } catch {
       setAdminNotice("Errore blocco key.");
@@ -3137,7 +3135,9 @@ useEffect(() => {
                               <span className={isBlocked ? "muted key-blocked" : "muted"}>
                                 Blocco:{" "}
                                 {isBlocked
-                                  ? `attivo fino a ${formatLastAccess(item.blocked_until)}`
+                                  ? item.blocked_until
+                                    ? `attivo fino a ${formatLastAccess(item.blocked_until)}`
+                                    : "attivo (sblocco manuale)"
                                   : "nessuno"}
                               </span>
                               {isBlocked && item.blocked_reason ? (
@@ -3173,7 +3173,7 @@ useEffect(() => {
                                     : "ghost key-block-btn"
                                 }
                                 onClick={() =>
-                                  isBlocked ? unblockAdminKey(item.key) : blockAdminKey(item.key, 24)
+                                  isBlocked ? unblockAdminKey(item.key) : blockAdminKey(item.key)
                                 }
                                 disabled={blockingKey || deletingKey || savingNote}
                               >
@@ -3181,7 +3181,7 @@ useEffect(() => {
                                   ? "Aggiorno..."
                                   : isBlocked
                                   ? "Sblocca"
-                                  : "Blocca 24h"}
+                                  : "Blocca"}
                               </button>
                               <button
                                 className={deletingKey ? "ghost key-delete-btn is-loading" : "ghost key-delete-btn"}

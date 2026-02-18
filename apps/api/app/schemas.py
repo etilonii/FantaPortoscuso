@@ -119,7 +119,6 @@ class KeyNoteRequest(BaseModel):
 
 class KeyBlockRequest(BaseModel):
     key: str = Field(min_length=1)
-    hours: int = Field(default=24, ge=1, le=168)
     reason: str | None = Field(default=None, max_length=128)
 
 
