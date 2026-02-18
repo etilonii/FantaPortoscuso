@@ -2347,6 +2347,7 @@ def _build_live_standings_rows(
         if status_matchday is not None
         else (inferred_matchday_fixtures if inferred_matchday_fixtures is not None else inferred_matchday_stats)
     )
+    base_played_hint = max((_parse_int(row.get("played")) or 0) for row in base_rows) if base_rows else 0
 
     real_rows, available_rounds, _source_path = _load_real_formazioni_rows(standings_index)
     target_round = requested_round if requested_round is not None else default_matchday
@@ -2366,15 +2367,20 @@ def _build_live_standings_rows(
     promoted_round_from_completed_votes: Optional[int] = None
     if requested_round is None:
         latest_live_votes_round = _latest_round_with_live_votes(db)
-        if (
-            latest_live_votes_round is not None
-            and available_rounds
-            and latest_live_votes_round in available_rounds
-            and (target_round is None or int(latest_live_votes_round) > int(target_round))
-        ):
-            target_round = int(latest_live_votes_round)
-            if _is_round_completed_from_fixtures(latest_live_votes_round):
-                promoted_round_from_completed_votes = int(latest_live_votes_round)
+        if latest_live_votes_round is not None:
+            live_round_available = (not available_rounds) or (latest_live_votes_round in available_rounds)
+            should_promote_from_live = bool(
+                live_round_available
+                and (
+                    target_round is None
+                    or int(latest_live_votes_round) > int(target_round)
+                    or int(latest_live_votes_round) > int(base_played_hint)
+                )
+            )
+            if should_promote_from_live:
+                target_round = int(latest_live_votes_round)
+                if _is_round_completed_from_fixtures(latest_live_votes_round):
+                    promoted_round_from_completed_votes = int(latest_live_votes_round)
 
     formazioni_items: List[Dict[str, object]] = []
     for item in real_rows:
@@ -2662,7 +2668,8 @@ def _load_status_matchday() -> Optional[int]:
     if not STATUS_PATH.exists():
         return None
     try:
-        raw = json.loads(STATUS_PATH.read_text(encoding="utf-8"))
+        # status.json may be written with UTF-8 BOM by external tools.
+        raw = json.loads(STATUS_PATH.read_text(encoding="utf-8-sig"))
         if not isinstance(raw, dict):
             return None
         return _parse_int(raw.get("matchday"))

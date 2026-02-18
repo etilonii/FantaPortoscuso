@@ -111,7 +111,8 @@ def data_status():
 
     if STATUS_PATH.exists():
         try:
-            raw = json.loads(STATUS_PATH.read_text(encoding="utf-8"))
+            # status.json may include BOM when produced by some editors/scripts.
+            raw = json.loads(STATUS_PATH.read_text(encoding="utf-8-sig"))
             if isinstance(raw, dict):
                 return _normalize_payload(raw, fallback)
         except Exception:
