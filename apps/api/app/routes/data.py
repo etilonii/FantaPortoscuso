@@ -4389,6 +4389,23 @@ def _extract_fantacalcio_voti_rows(
                 events[event_key] = max(0, int(parsed_count))
 
             has_events = any(int(events.get(field, 0)) > 0 for field in LIVE_EVENT_FIELDS)
+
+            # Fantacalcio sometimes emits masked "55" grades for subentrati
+            # with no valid rating; treat this specific pattern as SV.
+            raw_vote_compact = str(raw_vote or "").strip()
+            raw_fantavote_compact = str(raw_fantavote or "").strip()
+            row_html_lower = row_html.lower()
+            if (
+                not is_sv
+                and not has_events
+                and raw_vote_compact == "55"
+                and raw_fantavote_compact == "55"
+                and ("in.webp" in row_html_lower or "subentrato" in row_html_lower)
+            ):
+                vote_value = None
+                fantavote_value = None
+                is_sv = True
+
             if vote_value is None and not is_sv and not has_events:
                 skipped_rows += 1
                 rows.append(
@@ -5397,12 +5414,24 @@ def _compute_captain_modifier(
     if not bool(captain_cfg.get("enabled")):
         return {"value": 0.0, "captain_player": "", "captain_vote": None}
 
-    captain_name = str(item.get("capitano") or item.get("captain") or "").strip()
-    vice_name = str(item.get("vice_capitano") or item.get("vicecaptain") or "").strip()
+    vice_enabled = bool(captain_cfg.get("vice_captain_enabled", True))
+    captain_name = _canonicalize_name(str(item.get("capitano") or item.get("captain") or "").strip())
+    vice_name = _canonicalize_name(
+        str(
+            item.get("vice_capitano")
+            or item.get("vicecaptain")
+            or item.get("vice_captain")
+            or ""
+        ).strip()
+    )
     selected_player = ""
     selected_vote = None
 
-    for candidate in (captain_name, vice_name):
+    candidates: List[str] = [captain_name]
+    if vice_enabled:
+        candidates.append(vice_name)
+
+    for candidate in candidates:
         if not candidate:
             continue
         payload = _player_score_lookup(player_scores, candidate)
@@ -6174,6 +6203,53 @@ def _refresh_formazioni_appkey_from_context_tmp(
             continue
         return written_path
 
+    # Historical rounds might not be listed in "tmp" entries when current matchday
+    # has already advanced. Try the requested round explicitly using recent entries.
+    if requested_round is not None:
+        explicit_candidates: List[Tuple[int, int]] = []
+        for entry in entries:
+            timestamp_num = _parse_int(entry.get("timestamp"))
+            competition_id = _parse_int(entry.get("competition_id"))
+            if timestamp_num is None or competition_id is None:
+                continue
+            explicit_candidates.append((int(timestamp_num), int(competition_id)))
+        explicit_candidates.sort(reverse=True)
+
+        cached_round_path = REAL_FORMATIONS_TMP_DIR / f"formazioni_{int(requested_round)}_appkey.json"
+        for timestamp_num, competition_id in explicit_candidates[:5]:
+            cache_key = (
+                f"context_pagina_forced_{int(competition_id)}_"
+                f"{int(requested_round)}_{int(timestamp_num)}"
+            )
+            last_ts = float(_FORMAZIONI_REMOTE_REFRESH_CACHE.get(cache_key, 0.0) or 0.0)
+            if now_ts - last_ts < 90:
+                if cached_round_path.exists():
+                    return cached_round_path
+                continue
+
+            payload: Optional[Dict[str, object]] = None
+            try:
+                payload = _download_formazioni_pagina_payload(
+                    alias=alias,
+                    app_key=app_key,
+                    competition_id=int(competition_id),
+                    round_value=int(requested_round),
+                    timestamp=int(timestamp_num),
+                )
+            finally:
+                _FORMAZIONI_REMOTE_REFRESH_CACHE[cache_key] = now_ts
+
+            if not payload:
+                continue
+            payload_rounds = _extract_appkey_payload_rounds(payload)
+            if payload_rounds and int(requested_round) not in payload_rounds:
+                continue
+            try:
+                written_path = _write_formazioni_appkey_payload(payload, int(requested_round))
+            except Exception:
+                continue
+            return written_path
+
     return None
 
 
@@ -6478,29 +6554,108 @@ def _build_standings_team_by_pos(
 
 def _extract_appkey_captains(cap_raw: object, players: List[Dict[str, object]]) -> tuple[str, str]:
     by_id: Dict[str, str] = {}
+    player_names: Set[str] = set()
     for player in players:
         if not isinstance(player, dict):
             continue
         player_name = _canonicalize_name(str(player.get("n") or ""))
         if not player_name:
             continue
-        for key in ("id", "i", "id_s"):
+        player_names.add(player_name)
+        for key in ("id", "i", "id_s", "tk"):
             value = str(player.get(key) or "").strip()
             if value:
                 by_id[value] = player_name
 
-    names: List[str] = []
-    for token in re.split(r"[;,|]+", str(cap_raw or "")):
-        current = token.strip()
-        if not current:
+    tokens: List[str] = []
+    if isinstance(cap_raw, (list, tuple, set)):
+        tokens = [str(value or "").strip() for value in cap_raw]
+    elif isinstance(cap_raw, dict):
+        ordered_keys = (
+            "captain",
+            "capitano",
+            "cap",
+            "c",
+            "vice_captain",
+            "vicecapitano",
+            "vice",
+            "vc",
+            "ids",
+            "id",
+        )
+        for key in ordered_keys:
+            value = cap_raw.get(key)
+            if isinstance(value, (list, tuple, set)):
+                tokens.extend(str(item or "").strip() for item in value)
+            elif value not in (None, ""):
+                tokens.append(str(value).strip())
+    else:
+        raw_text = str(cap_raw or "").strip()
+        if raw_text:
+            if raw_text.startswith("[") or raw_text.startswith("{"):
+                try:
+                    decoded = json.loads(raw_text)
+                except Exception:
+                    decoded = None
+                if isinstance(decoded, (list, tuple, set)):
+                    tokens.extend(str(item or "").strip() for item in decoded)
+                elif isinstance(decoded, dict):
+                    for key in (
+                        "captain",
+                        "capitano",
+                        "cap",
+                        "c",
+                        "vice_captain",
+                        "vicecapitano",
+                        "vice",
+                        "vc",
+                        "ids",
+                        "id",
+                    ):
+                        value = decoded.get(key)
+                        if isinstance(value, (list, tuple, set)):
+                            tokens.extend(str(item or "").strip() for item in value)
+                        elif value not in (None, ""):
+                            tokens.append(str(value).strip())
+            if not tokens:
+                tokens.extend(part.strip() for part in re.split(r"[;,|/]+", raw_text) if part.strip())
+            if not tokens:
+                tokens.append(raw_text)
+
+    cleaned_tokens: List[str] = []
+    numeric_tokens: List[str] = []
+    for token in tokens:
+        cleaned = re.sub(r"^[\s\[\]\(\)\{\}\"']+|[\s\[\]\(\)\{\}\"']+$", "", str(token or ""))
+        if not cleaned:
             continue
-        player_name = by_id.get(current)
+        cleaned_tokens.append(cleaned)
+        for numeric in re.findall(r"\d+", cleaned):
+            numeric_tokens.append(str(int(numeric)))
+
+    names: List[str] = []
+    seen_tokens: Set[str] = set()
+    for current in [*cleaned_tokens, *numeric_tokens]:
+        cleaned_current = str(current or "").strip()
+        if not cleaned_current:
+            continue
+        dedupe_key = cleaned_current.lower()
+        if dedupe_key in seen_tokens:
+            continue
+        seen_tokens.add(dedupe_key)
+
+        player_name = by_id.get(cleaned_current)
+        if player_name is None and cleaned_current.isdigit():
+            player_name = by_id.get(str(int(cleaned_current)))
         if not player_name:
-            player_name = _canonicalize_name(current)
+            canonical_token = _canonicalize_name(cleaned_current)
+            if canonical_token in player_names:
+                player_name = canonical_token
         if not player_name:
             continue
         if player_name not in names:
             names.append(player_name)
+        if len(names) >= 2:
+            break
 
     captain = names[0] if names else ""
     vice = names[1] if len(names) > 1 else ""
