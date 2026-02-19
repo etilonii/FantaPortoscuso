@@ -479,6 +479,47 @@ def _write_round_incoming_snapshot(rows: List[Dict[str, object]], data_dir: Path
     return target
 
 
+def _fixture_merge_key(row: Dict[str, object]) -> Tuple[object, ...]:
+    match_id = _safe_int(row.get("match_id"))
+    if match_id is not None and match_id > 0:
+        return ("id", int(match_id))
+    return (
+        "teams",
+        int(_safe_int(row.get("round")) or 0),
+        _normalize_team_key(row.get("home")),
+        _normalize_team_key(row.get("away")),
+    )
+
+
+def _fixture_quality(row: Dict[str, object]) -> Tuple[int, int, int]:
+    status = int(_safe_int(row.get("match_status")) or 0)
+    has_score = 1 if _safe_int(row.get("home_score")) is not None and _safe_int(row.get("away_score")) is not None else 0
+    has_kickoff = 1 if _normalize_space(row.get("kickoff_iso")) else 0
+    return status, has_score, has_kickoff
+
+
+def _merge_fixture_snapshots(
+    primary_rows: List[Dict[str, object]],
+    secondary_rows: List[Dict[str, object]],
+) -> List[Dict[str, object]]:
+    merged: Dict[Tuple[object, ...], Dict[str, object]] = {}
+    for row in [*secondary_rows, *primary_rows]:
+        key = _fixture_merge_key(row)
+        current = merged.get(key)
+        if current is None or _fixture_quality(row) >= _fixture_quality(current):
+            merged[key] = dict(row)
+
+    out = list(merged.values())
+    out.sort(
+        key=lambda item: (
+            int(_safe_int(item.get("round")) or 0),
+            _normalize_team_key(item.get("home")),
+            _normalize_team_key(item.get("away")),
+        )
+    )
+    return out
+
+
 def run(round_value: Optional[int], season_slug: Optional[str]) -> Dict[str, object]:
     resolved_season = _normalize_space(season_slug) or _infer_season_slug()
     target_round = int(round_value) if round_value and int(round_value) > 0 else None
@@ -508,6 +549,10 @@ def run(round_value: Optional[int], season_slug: Optional[str]) -> Dict[str, obj
 
     standings_rows = _extract_standings_rows(standings_html)
     fixture_rows = _extract_fixture_rows(html_text, effective_round)
+    if standings_round is not None and standings_html is not html_text:
+        previous_round_fixture_rows = _extract_fixture_rows(standings_html, standings_round)
+        if previous_round_fixture_rows:
+            fixture_rows = _merge_fixture_snapshots(fixture_rows, previous_round_fixture_rows)
     if not standings_rows:
         raise RuntimeError("Impossibile estrarre classifica Serie A dalla pagina.")
     if not fixture_rows:

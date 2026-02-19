@@ -82,6 +82,32 @@ const buildPositionTrendMeta = (positionDelta) => {
   return { tierClass: "neutral", arrow: "-", value: 0 };
 };
 
+const normalizeFormToken = (token) => {
+  const value = String(token ?? "").trim().toUpperCase();
+  if (!value) return "";
+  const first = value[0];
+  if (first === "W" || first === "V") return "W";
+  if (first === "D" || first === "N" || first === "X") return "D";
+  if (first === "L" || first === "P" || first === "S") return "L";
+  return "";
+};
+
+const parseLastFiveResults = (value) => {
+  const raw = String(value ?? "").trim();
+  if (!raw) return [];
+  const spacedTokens = raw
+    .split(/[\s,;|/]+/)
+    .map((item) => normalizeFormToken(item))
+    .filter(Boolean);
+  if (spacedTokens.length > 0) {
+    return spacedTokens.slice(-5);
+  }
+  return (raw.match(/[A-Za-z]/g) || [])
+    .map((item) => normalizeFormToken(item))
+    .filter(Boolean)
+    .slice(-5);
+};
+
 export default function PremiumInsightsSection({
   mode,
   insights,
@@ -343,13 +369,13 @@ export default function PremiumInsightsSection({
 
   if (mode === "classifica-fixtures-seriea") {
     const liveRows = Array.isArray(serieaLiveTable) ? serieaLiveTable : [];
-    const liveValues = liveRows
-      .map((row) => resolveLiveDelta(row))
-      .filter((value) => Number.isFinite(value));
-    const liveAverage =
-      liveValues.length > 0
-        ? liveValues.reduce((sum, value) => sum + Number(value), 0) / liveValues.length
-        : null;
+    const last5ByTeam = new Map();
+    serieaTable.forEach((row) => {
+      const key = String(row?.Squad || row?.Team || row?.team || "").trim().toLowerCase();
+      if (!key) return;
+      const value = String(row?.Last5 || row?.last5 || "").trim();
+      if (value) last5ByTeam.set(key, value);
+    });
     const selectedRoundLabel =
       Number.isFinite(currentRound) && currentRound > 0
         ? currentRound
@@ -400,7 +426,7 @@ export default function PremiumInsightsSection({
                   <th>Pos</th>
                   <th>Squadra</th>
                   <th>Pt</th>
-                  <th>Live Î”</th>
+                  <th>Last 5</th>
                   <th>Pos Î”</th>
                   <th>PG</th>
                   <th>GF</th>
@@ -410,12 +436,14 @@ export default function PremiumInsightsSection({
               </thead>
               <tbody>
                 {(liveRows.length > 0 ? liveRows : serieaTable).map((row, index) => {
-                  const liveDelta = resolveLiveDelta(row);
-                  const liveTrend = buildLiveTrendMeta(liveDelta, liveAverage);
                   const posDelta = resolvePositionDelta(row);
                   const posTrend = buildPositionTrendMeta(posDelta);
                   const posValue = toNumber(row?.live_pos ?? row?.Pos ?? row?.pos);
                   const teamName = row?.team || row?.Squad || row?.Team || "-";
+                  const teamKey = String(teamName || "").trim().toLowerCase();
+                  const formRaw = row?.last5 ?? row?.Last5 ?? last5ByTeam.get(teamKey) ?? "";
+                  const formTokens = parseLastFiveResults(formRaw);
+                  const latestFormIndex = formTokens.length - 1;
                   const pointsValue = toNumber(row?.points_live ?? row?.Pts ?? row?.points);
                   const playedValue = toNumber(row?.played_live ?? row?.MP ?? row?.played);
                   const gfValue = toNumber(row?.gf_live ?? row?.GF);
@@ -430,19 +458,24 @@ export default function PremiumInsightsSection({
                       <td>{teamName}</td>
                       <td>{Number.isFinite(pointsValue) ? formatNumber(pointsValue, 0) : "-"}</td>
                       <td>
-                        <span
-                          className={`live-trend-pill ${liveTrend.tierClass}`}
-                          title={
-                            Number.isFinite(liveDelta)
-                              ? `Scarto live ${formatSignedNumber(liveDelta, 2)}`
-                              : "Nessuna variazione live"
-                          }
-                        >
-                          <span className="live-trend-arrow">{liveTrend.arrow}</span>
-                          <span className="live-trend-value">
-                            {Number.isFinite(liveDelta) ? formatSignedNumber(liveDelta, 2) : "-"}
+                        {formTokens.length > 0 ? (
+                          <span className="last5-track" title={`Ultime 5: ${formTokens.join(" ")}`}>
+                            {formTokens.map((token, tokenIndex) => {
+                              const tone = token === "W" ? "win" : token === "D" ? "draw" : "loss";
+                              const latestClass = tokenIndex === latestFormIndex ? "latest" : "";
+                              return (
+                                <span
+                                  key={`${teamName}-last5-${tokenIndex}`}
+                                  className={`last5-pill ${tone} ${latestClass}`.trim()}
+                                >
+                                  {token}
+                                </span>
+                              );
+                            })}
                           </span>
-                        </span>
+                        ) : (
+                          <span className="muted">-</span>
+                        )}
                       </td>
                       <td>
                         <span className={`position-trend-pill ${posTrend.tierClass}`}>

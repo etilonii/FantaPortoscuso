@@ -2860,29 +2860,33 @@ def _build_seriea_live_snapshot(
     elif target_round is None or target_round not in available_rounds:
         target_round = available_rounds[-1] if available_rounds else None
 
+    normalized_fixtures_by_round: Dict[int, List[Dict[str, object]]] = {}
+    for item in fixture_rows:
+        round_value = _parse_int(item.get("round"))
+        if round_value is None or round_value <= 0:
+            continue
+        match_status = _parse_int(item.get("match_status")) or 0
+        fixture_state = _seriea_fixture_state(match_status)
+        home_score = _parse_int(item.get("home_score"))
+        away_score = _parse_int(item.get("away_score"))
+        normalized_fixtures_by_round.setdefault(int(round_value), []).append(
+            {
+                "round": int(round_value),
+                "home_team": str(item.get("home_team") or ""),
+                "away_team": str(item.get("away_team") or ""),
+                "home_score": home_score,
+                "away_score": away_score,
+                "match_status": int(match_status),
+                "state": fixture_state,
+                "kickoff_iso": str(item.get("kickoff_iso") or ""),
+                "match_url": str(item.get("match_url") or ""),
+                "match_id": _parse_int(item.get("match_id")),
+            }
+        )
+
     fixtures_for_round: List[Dict[str, object]] = []
     if target_round is not None:
-        for item in fixture_rows:
-            if _parse_int(item.get("round")) != target_round:
-                continue
-            match_status = _parse_int(item.get("match_status")) or 0
-            fixture_state = _seriea_fixture_state(match_status)
-            home_score = _parse_int(item.get("home_score"))
-            away_score = _parse_int(item.get("away_score"))
-            fixtures_for_round.append(
-                {
-                    "round": int(target_round),
-                    "home_team": str(item.get("home_team") or ""),
-                    "away_team": str(item.get("away_team") or ""),
-                    "home_score": home_score,
-                    "away_score": away_score,
-                    "match_status": int(match_status),
-                    "state": fixture_state,
-                    "kickoff_iso": str(item.get("kickoff_iso") or ""),
-                    "match_url": str(item.get("match_url") or ""),
-                    "match_id": _parse_int(item.get("match_id")),
-                }
-            )
+        fixtures_for_round = list(normalized_fixtures_by_round.get(int(target_round), []))
 
     fixtures_for_round.sort(
         key=lambda item: (
@@ -2902,6 +2906,7 @@ def _build_seriea_live_snapshot(
         played = _parse_int(row.get("MP") or row.get("Partite") or row.get("G")) or 0
         gf = _parse_int(row.get("GF") or row.get("Gf")) or 0
         ga = _parse_int(row.get("GA") or row.get("Gs")) or 0
+        last5 = re.sub(r"\s+", " ", str(row.get("Last5") or row.get("last5") or "").strip())
         base_rows.append(
             {
                 "team": team_name,
@@ -2910,6 +2915,7 @@ def _build_seriea_live_snapshot(
                 "played_base": int(played),
                 "gf_base": int(gf),
                 "ga_base": int(ga),
+                "last5": last5,
                 "points_live": int(points),
                 "played_live": int(played),
                 "gf_live": int(gf),
@@ -2922,7 +2928,24 @@ def _build_seriea_live_snapshot(
     for row in base_rows:
         by_team_key[normalize_name(row.get("team"))] = row
 
-    for fixture in fixtures_for_round:
+    rounds_to_apply: List[int] = [
+        int(round_value)
+        for round_value in available_rounds
+        if target_round is None or int(round_value) <= int(target_round)
+    ]
+    fixtures_to_apply: List[Dict[str, object]] = []
+    for round_value in rounds_to_apply:
+        fixtures_to_apply.extend(normalized_fixtures_by_round.get(int(round_value), []))
+    fixtures_to_apply.sort(
+        key=lambda item: (
+            int(_parse_int(item.get("round")) or 0),
+            str(item.get("kickoff_iso") or ""),
+            normalize_name(str(item.get("home_team") or "")),
+            normalize_name(str(item.get("away_team") or "")),
+        )
+    )
+
+    for fixture in fixtures_to_apply:
         state = str(fixture.get("state") or "scheduled")
         if state == "scheduled":
             continue
@@ -2938,6 +2961,14 @@ def _build_seriea_live_snapshot(
         home_row = by_team_key.get(home_key)
         away_row = by_team_key.get(away_key)
         if home_row is None or away_row is None:
+            continue
+
+        fixture_round = _parse_int(fixture.get("round")) or 0
+        if (
+            fixture_round > 0
+            and int(home_row.get("played_live") or 0) >= int(fixture_round)
+            and int(away_row.get("played_live") or 0) >= int(fixture_round)
+        ):
             continue
 
         home_row["played_live"] = int(home_row.get("played_live") or 0) + 1
@@ -2996,6 +3027,8 @@ def _build_seriea_live_snapshot(
                 "gd_live": int(row.get("gf_live") or 0) - int(row.get("ga_live") or 0),
                 "pts_avg": avg_live,
                 "live_matches": int(row.get("live_matches") or 0),
+                "last5": str(row.get("last5") or ""),
+                "Last5": str(row.get("last5") or ""),
             }
         )
 
