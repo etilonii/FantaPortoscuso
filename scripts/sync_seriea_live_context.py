@@ -492,7 +492,21 @@ def run(round_value: Optional[int], season_slug: Optional[str]) -> Dict[str, obj
     selected_round = _extract_selected_round(html_text)
     effective_round = target_round or selected_round
 
-    standings_rows = _extract_standings_rows(html_text)
+    standings_html = html_text
+    standings_round: Optional[int] = None
+    # Keep standings base to previous matchday when syncing an explicit target round:
+    # round 26 live uses standings at round 25 as baseline.
+    if target_round is not None and int(target_round) > 1:
+        standings_round = int(target_round) - 1
+        standings_url = f"{CALENDAR_BASE_URL}/{int(standings_round)}"
+        try:
+            standings_html = _http_get(standings_url)
+        except Exception:
+            # Fallback to target-round page if previous round page is not available.
+            standings_html = html_text
+            standings_round = None
+
+    standings_rows = _extract_standings_rows(standings_html)
     fixture_rows = _extract_fixture_rows(html_text, effective_round)
     if not standings_rows:
         raise RuntimeError("Impossibile estrarre classifica Serie A dalla pagina.")
@@ -516,6 +530,7 @@ def run(round_value: Optional[int], season_slug: Optional[str]) -> Dict[str, obj
         "url": url,
         "season": resolved_season,
         "round": int(effective_round) if effective_round else None,
+        "standings_round": int(standings_round) if standings_round else None,
         "standings_rows": len(standings_rows),
         "fixtures_rows": len(fixture_rows),
         "context_path": str(SERIEA_CONTEXT_OUT),
@@ -536,6 +551,7 @@ def main() -> None:
     print(
         "[ok] seriea sync"
         f" round={result.get('round')}"
+        f" standings_round={result.get('standings_round') or '-'}"
         f" standings={result.get('standings_rows')}"
         f" fixtures={result.get('fixtures_rows')}"
     )

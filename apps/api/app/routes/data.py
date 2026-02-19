@@ -8935,12 +8935,26 @@ def admin_leghe_sync_complete(
         )
 
     local_now = _leghe_sync_local_now()
-    resolved_round = (
-        _parse_int(formations_matchday)
-        or _parse_int(LEGHE_FORMATIONS_MATCHDAY)
-        or _leghe_sync_reference_round_for_local_dt(local_now)
-        or _latest_round_with_live_votes(db)
-    )
+    requested_round = _parse_int(formations_matchday)
+    env_round = _parse_int(LEGHE_FORMATIONS_MATCHDAY)
+    status_round = _load_status_matchday()
+    inferred_round = _infer_matchday_from_fixtures()
+    window_round = _leghe_sync_round_for_local_dt(local_now)
+    reference_round = _leghe_sync_reference_round_for_local_dt(local_now)
+    live_votes_round = _latest_round_with_live_votes(db)
+
+    candidates = [
+        requested_round,
+        env_round,
+        status_round,
+        inferred_round,
+        window_round,
+        reference_round,
+        live_votes_round,
+    ]
+    valid_rounds = [int(value) for value in candidates if _parse_int(value) is not None and int(value or 0) > 0]
+    resolved_round = max(valid_rounds) if valid_rounds else None
+
     live_import_result = _run_live_import_for_round_safe(
         db,
         round_value=resolved_round,
