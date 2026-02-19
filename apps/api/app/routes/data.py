@@ -175,6 +175,7 @@ _REGULATION_CACHE: Dict[str, object] = {}
 _SERIEA_CONTEXT_CACHE: Dict[str, object] = {}
 _FORMAZIONI_REMOTE_REFRESH_CACHE: Dict[str, float] = {}
 _CLASSIFICA_MATCHDAY_TOTALS_CACHE: Dict[str, object] = {}
+_AUTO_VOTI_IMPORT_ATTEMPTED_ROUNDS: Set[int] = set()
 
 LIVE_EVENT_FIELDS: Tuple[str, ...] = (
     "goal",
@@ -2292,7 +2293,15 @@ def _load_standings_rows() -> List[Dict[str, object]]:
                     played = int(float(played_raw.replace(",", "."))) if played_raw else 0
                 except ValueError:
                     played = 0
-                out.append({"pos": pos, "team": team, "played": played, "points": points})
+                out.append(
+                    {
+                        "pos": pos,
+                        "team": team,
+                        "played": played,
+                        "points": points,
+                        "played_backfilled": False,
+                    }
+                )
             out.sort(key=lambda x: x["pos"])
             return _backfill_standings_played_if_missing(out)
 
@@ -2360,7 +2369,15 @@ def _load_standings_rows() -> List[Dict[str, object]]:
                 played = int(float(played_val))
             except (TypeError, ValueError):
                 played = 0
-            out.append({"pos": pos, "team": team, "played": played, "points": points})
+            out.append(
+                {
+                    "pos": pos,
+                    "team": team,
+                    "played": played,
+                    "points": points,
+                    "played_backfilled": False,
+                }
+            )
 
         out.sort(key=lambda x: x["pos"])
         return _backfill_standings_played_if_missing(out)
@@ -2374,6 +2391,8 @@ def _backfill_standings_played_if_missing(rows: List[Dict[str, object]]) -> List
 
     has_played = any((_parse_int(row.get("played")) or 0) > 0 for row in rows)
     if has_played:
+        for row in rows:
+            row["played_backfilled"] = bool(row.get("played_backfilled", False))
         return rows
 
     fallback_played = _load_status_matchday()
@@ -2385,6 +2404,7 @@ def _backfill_standings_played_if_missing(rows: List[Dict[str, object]]) -> List
 
     for row in rows:
         row["played"] = int(fallback_played)
+        row["played_backfilled"] = True
     return rows
 
 
@@ -2569,17 +2589,58 @@ def _build_live_standings_rows(
     has_six_flags = bool(live_context.get("six_team_keys"))
     can_apply_live_totals = bool(has_live_votes_for_round or has_six_flags)
 
+    if (
+        not can_apply_live_totals
+        and hasattr(db, "query")
+        and target_round_int is not None
+        and int(target_round_int) > 0
+        and _is_round_completed_from_fixtures(target_round_int)
+        and int(target_round_int) not in _AUTO_VOTI_IMPORT_ATTEMPTED_ROUNDS
+    ):
+        _AUTO_VOTI_IMPORT_ATTEMPTED_ROUNDS.add(int(target_round_int))
+        try:
+            _import_live_votes_internal(
+                db,
+                round_value=int(target_round_int),
+                season=_normalize_season_slug(None),
+            )
+            live_context = _load_live_round_context(db, target_round_int)
+            _attach_live_scores_to_formations(formazioni_items, live_context)
+            votes_payload = live_context.get("votes_by_team_player")
+            has_live_votes_for_round = isinstance(votes_payload, dict) and len(votes_payload) > 0
+            has_six_flags = bool(live_context.get("six_team_keys"))
+            can_apply_live_totals = bool(has_live_votes_for_round or has_six_flags)
+        except Exception:
+            logger.debug(
+                "Automatic live votes import failed for round %s",
+                target_round_int,
+                exc_info=True,
+            )
+
     live_total_by_team: Dict[str, float] = {}
     for item in formazioni_items:
-        if not can_apply_live_totals:
-            continue
         team_name = str(item.get("team") or "").strip()
         if not team_name:
             continue
-        live_total = item.get("totale_live")
-        numeric_live = float(live_total) if isinstance(live_total, (int, float)) else _parse_float(live_total)
-        if numeric_live is None:
-            continue
+        if can_apply_live_totals:
+            live_total = item.get("totale_live")
+            numeric_live = (
+                float(live_total) if isinstance(live_total, (int, float)) else _parse_float(live_total)
+            )
+            if numeric_live is None:
+                continue
+        else:
+            numeric_live = _parse_float(item.get("totale_precalc"))
+            if numeric_live is None:
+                total_source = str(item.get("totale_source") or "").strip().lower()
+                if total_source not in {"precalc", "appkey_precalc", "xlsx_precalc"}:
+                    continue
+                live_total = item.get("totale_live")
+                numeric_live = (
+                    float(live_total) if isinstance(live_total, (int, float)) else _parse_float(live_total)
+                )
+                if numeric_live is None:
+                    continue
         live_total_by_team[normalize_name(team_name)] = float(numeric_live)
 
     # When classifica provides official team totals for the same round,
@@ -2606,15 +2667,26 @@ def _build_live_standings_rows(
         base_pos = pos_value if pos_value is not None else (idx + 1)
         base_points = float(row.get("points") or 0.0)
         base_played = _parse_int(row.get("played")) or 0
+        base_played_backfilled = bool(row.get("played_backfilled"))
         if base_played <= 0 and fallback_base_played > 0:
             base_played = int(fallback_base_played)
+            base_played_backfilled = True
         live_total = live_total_by_team.get(team_key)
+        if (
+            live_total is not None
+            and target_round_int is not None
+            and base_played_backfilled
+            and int(base_played) >= int(target_round_int)
+            and int(target_round_int) > 0
+        ):
+            base_played = int(target_round_int) - 1
         # Avoid double counting when official standings already include the
         # same round currently available in live totals.
         if (
             live_total is not None
             and target_round_int is not None
             and int(base_played) >= int(target_round_int)
+            and not base_played_backfilled
         ):
             live_total = None
 
@@ -2628,6 +2700,7 @@ def _build_live_standings_rows(
                 "pos": int(base_pos),
                 "team": team_name,
                 "played_base": int(base_played),
+                "played_backfilled": bool(base_played_backfilled),
                 "played_live": int(played_live),
                 "played": int(played_live),
                 "points_base": round(base_points, 2),
@@ -5962,9 +6035,30 @@ def _attach_live_scores_to_formations(
                     if player_name:
                         players_set.add(player_name)
 
+        appkey_scores_raw = item.get("appkey_scores")
+        appkey_scores = appkey_scores_raw if isinstance(appkey_scores_raw, dict) else {}
         player_scores: Dict[str, Dict[str, object]] = {}
         for player_name in sorted(players_set, key=lambda value: normalize_name(value)):
-            player_scores[player_name] = _resolve_live_player_score(player_name, context)
+            resolved = _resolve_live_player_score(player_name, context)
+            fallback = appkey_scores.get(normalize_name(player_name))
+            if isinstance(fallback, dict):
+                resolved_source = str(resolved.get("source") or "").strip().lower() if isinstance(resolved, dict) else ""
+                fallback_vote = _safe_number(fallback.get("vote"))
+                fallback_fantavote = _safe_number(fallback.get("fantavote"))
+                should_use_fallback = (
+                    resolved_source in {"default", "six_politico", ""}
+                    or _safe_number(resolved.get("fantavote")) is None
+                )
+                if should_use_fallback and (fallback_vote is not None or fallback_fantavote is not None):
+                    resolved = {
+                        **resolved,
+                        "vote": fallback_vote,
+                        "fantavote": fallback_fantavote,
+                        "vote_label": _format_live_number(fallback_vote),
+                        "fantavote_label": _format_live_number(fallback_fantavote),
+                        "source": "appkey",
+                    }
+            player_scores[player_name] = resolved
 
         effective_lineup = _apply_live_substitutions(item, player_scores, regulation, role_map)
         effective_item = {
@@ -6013,6 +6107,12 @@ def _attach_live_scores_to_formations(
 
         live_total = round(base_total + mod_difesa + mod_capitano, 2) if base_count else None
         base_total_value = round(base_total, 2) if base_count else None
+        total_source = "computed" if base_count else ""
+        if live_total is None:
+            total_precalc = _safe_number(item.get("totale_precalc"))
+            if total_precalc is not None:
+                live_total = round(float(total_precalc), 2)
+                total_source = "precalc"
 
         effective_module = str(effective_lineup.get("module") or "").strip()
         if effective_module:
@@ -6034,6 +6134,7 @@ def _attach_live_scores_to_formations(
         item["mod_difesa"] = round(mod_difesa, 2)
         item["mod_capitano"] = round(mod_capitano, 2)
         item["totale_live"] = live_total
+        item["totale_source"] = total_source
         item["totale_live_label"] = _format_live_number(live_total)
         item["live_components"] = {
             "base": base_total_value,
@@ -7457,6 +7558,29 @@ def _parse_appkey_lineup(
     }
 
 
+def _parse_appkey_player_scores(players: List[Dict[str, object]]) -> Dict[str, Dict[str, object]]:
+    out: Dict[str, Dict[str, object]] = {}
+    for player in players:
+        if not isinstance(player, dict):
+            continue
+        player_name = _canonicalize_name(str(player.get("n") or player.get("name") or "").strip())
+        if not player_name:
+            continue
+        player_key = normalize_name(player_name)
+        vote = _parse_float(player.get("vt") or player.get("vote"))
+        fantavote = _parse_float(player.get("fv") or player.get("fantavote"))
+        if vote is not None and abs(float(vote)) >= 50:
+            vote = None
+        if fantavote is not None and abs(float(fantavote)) >= 50:
+            fantavote = None
+        out[player_key] = {
+            "vote": round(float(vote), 2) if vote is not None else None,
+            "fantavote": round(float(fantavote), 2) if fantavote is not None else None,
+            "source": "appkey",
+        }
+    return out
+
+
 def _parse_formazioni_payload_to_items(
     payload: Dict[str, object],
     standings_index: Dict[str, Dict[str, object]],
@@ -7505,7 +7629,9 @@ def _parse_formazioni_payload_to_items(
             resolved_team, resolved_pos = _resolve_team_name_with_standings(team_name, standings_index)
             players = squad.get("pl") if isinstance(squad.get("pl"), list) else []
             lineup = _parse_appkey_lineup(players, squad.get("m"), role_map)
+            appkey_scores = _parse_appkey_player_scores(players)
             captain, vice_captain = _extract_appkey_captains(squad.get("cap"), players)
+            total_precalc = _parse_float(squad.get("t"))
 
             item = {
                 "pos": resolved_pos if resolved_pos is not None else (standing_pos if standing_pos is not None else 9999),
@@ -7513,11 +7639,13 @@ def _parse_formazioni_payload_to_items(
                 "team": resolved_team or team_name,
                 "modulo": _format_module(squad.get("m")),
                 "forza_titolari": _parse_float(squad.get("t")),
+                "totale_precalc": total_precalc,
                 "portiere": lineup.get("portiere") or "",
                 "difensori": lineup.get("difensori") or [],
                 "centrocampisti": lineup.get("centrocampisti") or [],
                 "attaccanti": lineup.get("attaccanti") or [],
                 "panchina_details": lineup.get("panchina_details") or [],
+                "appkey_scores": appkey_scores,
                 "capitano": captain,
                 "vice_capitano": vice_captain,
                 "round": round_value,
