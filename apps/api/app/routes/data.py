@@ -175,6 +175,7 @@ _PLAYER_FORCE_CACHE: Dict[str, object] = {}
 _REGULATION_CACHE: Dict[str, object] = {}
 _SERIEA_CONTEXT_CACHE: Dict[str, object] = {}
 _FORMAZIONI_REMOTE_REFRESH_CACHE: Dict[str, float] = {}
+_CLASSIFICA_MATCHDAY_TOTALS_CACHE: Dict[str, object] = {}
 
 LIVE_EVENT_FIELDS: Tuple[str, ...] = (
     "goal",
@@ -2388,6 +2389,68 @@ def _backfill_standings_played_if_missing(rows: List[Dict[str, object]]) -> List
     return rows
 
 
+def _parse_classifica_matchday_totals_from_html(html_text: str) -> Tuple[Optional[int], Dict[str, float]]:
+    round_value: Optional[int] = None
+    if html_text:
+        round_match = re.search(
+            r"ultima\s+giornata\s+calcolata\s*(\d+)",
+            html_text,
+            flags=re.IGNORECASE,
+        )
+        if round_match is not None:
+            round_value = _parse_int(round_match.group(1))
+
+    totals: Dict[str, float] = {}
+    if not html_text:
+        return round_value, totals
+
+    pattern = re.compile(
+        r"<h5[^>]*class=['\"][^'\"]*team-name[^'\"]*['\"][^>]*>\s*(.*?)\s*</h5>"
+        r".*?<div[^>]*class=['\"][^'\"]*team-fpt[^'\"]*['\"][^>]*>\s*([^<]+)\s*</div>",
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    for team_raw, total_raw in pattern.findall(html_text):
+        team_name = _canonicalize_name(_strip_html_tags(team_raw))
+        if not team_name:
+            continue
+        total_value = _parse_float(str(total_raw or "").replace(" ", ""))
+        if total_value is None:
+            continue
+        totals[normalize_name(team_name)] = round(float(total_value), 2)
+
+    return round_value, totals
+
+
+def _load_classifica_matchday_totals() -> Tuple[Optional[int], Dict[str, float]]:
+    if not LEGHE_ALIAS:
+        return None, {}
+
+    now_ts = float(datetime.utcnow().timestamp())
+    cached_ts = float(_CLASSIFICA_MATCHDAY_TOTALS_CACHE.get("ts", 0.0) or 0.0)
+    cached_round = _parse_int(_CLASSIFICA_MATCHDAY_TOTALS_CACHE.get("round"))
+    cached_totals_raw = _CLASSIFICA_MATCHDAY_TOTALS_CACHE.get("totals")
+    cached_totals = cached_totals_raw if isinstance(cached_totals_raw, dict) else {}
+
+    if now_ts - cached_ts < 300 and cached_totals:
+        return cached_round, {str(k): float(v) for k, v in cached_totals.items()}
+
+    url = f"{LEGHE_BASE_URL}/{LEGHE_ALIAS}/classifica"
+    try:
+        html_text = _fetch_text_url(url, timeout_seconds=20.0)
+        parsed_round, parsed_totals = _parse_classifica_matchday_totals_from_html(html_text)
+        if parsed_totals:
+            _CLASSIFICA_MATCHDAY_TOTALS_CACHE["ts"] = now_ts
+            _CLASSIFICA_MATCHDAY_TOTALS_CACHE["round"] = int(parsed_round) if parsed_round is not None else None
+            _CLASSIFICA_MATCHDAY_TOTALS_CACHE["totals"] = {
+                str(key): float(value) for key, value in parsed_totals.items()
+            }
+            return parsed_round, parsed_totals
+    except Exception:
+        logger.debug("Unable to load classifica matchday totals", exc_info=True)
+
+    return cached_round, {str(k): float(v) for k, v in cached_totals.items()}
+
+
 def _build_live_standings_rows(
     db: Session,
     *,
@@ -2519,6 +2582,17 @@ def _build_live_standings_rows(
         if numeric_live is None:
             continue
         live_total_by_team[normalize_name(team_name)] = float(numeric_live)
+
+    # When classifica provides official team totals for the same round,
+    # prefer them to keep live standings aligned with Leghe final values.
+    if target_round_int is not None and live_total_by_team:
+        classifica_round, classifica_totals = _load_classifica_matchday_totals()
+        if classifica_round is not None and int(classifica_round) == int(target_round_int):
+            for team_key in list(live_total_by_team.keys()):
+                official_total = classifica_totals.get(team_key)
+                if official_total is None:
+                    continue
+                live_total_by_team[team_key] = float(official_total)
 
     enriched_rows: List[Dict[str, object]] = []
     covered_keys: Set[str] = set()
