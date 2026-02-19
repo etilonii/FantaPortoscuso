@@ -2,33 +2,33 @@ Team,Giocatore,Ruolo,Squadra,Tier,Weight,ScoreAuto,PrezzoAttuale,ForzaGiocatore,
 SPARROW,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 SPARROW,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 SPARROW,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-SPARROW,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-SPARROW,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+SPARROW,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+SPARROW,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 SPARROW,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 SPARROW,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
 SPARROW,Esposito F.P.,A,Inter,semitop,0.762,0.763,18.0,76.28,tier
 SPARROW,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
 SPARROW,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
-SPARROW,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.629,17.0,64.67,tier
+SPARROW,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.630,17.0,64.75,tier
 SPARROW,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
 SPARROW,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 SPARROW,Valeri,D,Parma,starter,0.613,0.518,10.0,54.17,tier
 SPARROW,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 SPARROW,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
+SPARROW,Tourè I.,C,Pisa,starter,0.533,0.375,10.0,41.45,tier
 SPARROW,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-SPARROW,Tourè I.,C,Pisa,starter,0.532,0.374,10.0,41.35,tier
-SPARROW,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
-SPARROW,Iannoni,C,Sassuolo,scommessa,0.293,0.341,5.0,32.90,tier
-SPARROW,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
+SPARROW,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
+SPARROW,Iannoni,C,Sassuolo,scommessa,0.293,0.342,5.0,32.98,tier
+SPARROW,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
 SPARROW,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
 SPARROW,Gueye,A,Udinese,low,0.176,0.145,2.0,15.28,tier
 Concali Craboni FC,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 Concali Craboni FC,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Concali Craboni FC,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Concali Craboni FC,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Concali Craboni FC,Provedel,P,Lazio,top,0.833,0.769,17.0,78.50,tier
 Concali Craboni FC,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
-Concali Craboni FC,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
-Concali Craboni FC,Zambo Anguissa,C,Napoli,top,0.679,0.765,19.0,74.35,tier
+Concali Craboni FC,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
+Concali Craboni FC,Zambo Anguissa,C,Napoli,top,0.679,0.764,19.0,74.28,tier
 Concali Craboni FC,Barella,C,Inter,semitop,0.749,0.667,17.0,68.75,tier
 Concali Craboni FC,Akanji,D,Inter,semitop,0.735,0.664,11.0,68.17,tier
 Concali Craboni FC,Bonazzoli,A,Cremonese,semitop,0.718,0.631,20.0,65.27,tier
@@ -39,19 +39,19 @@ Concali Craboni FC,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 Concali Craboni FC,Esposito Se.,A,Cagliari,starter,0.674,0.563,16.0,59.08,tier
 Concali Craboni FC,Moreo,A,Pisa,starter,0.646,0.531,15.0,55.97,tier
 Concali Craboni FC,Mina,D,Cagliari,starter,0.539,0.505,8.0,51.35,tier
-Concali Craboni FC,Tourè I.,C,Pisa,starter,0.532,0.374,10.0,41.35,tier
+Concali Craboni FC,Tourè I.,C,Pisa,starter,0.533,0.375,10.0,41.45,tier
 Concali Craboni FC,Nelsson,D,Verona,scommessa,0.512,0.330,4.0,37.55,tier
-Concali Craboni FC,Akinsanmiro,C,Pisa,scommessa,0.401,0.334,7.0,35.08,tier
-Concali Craboni FC,Vranckx,C,Sassuolo,low,0.305,0.228,3.0,24.73,tier
+Concali Craboni FC,Akinsanmiro,C,Pisa,scommessa,0.400,0.334,7.0,35.05,tier
+Concali Craboni FC,Vranckx,C,Sassuolo,low,0.305,0.229,3.0,24.80,tier
 Concali Craboni FC,Furlanetto,P,Lazio,scommessa,0.297,0.218,1.0,23.78,tier
 Concali Craboni FC,Motta,P,Laz,scommessa,0.297,0.218,1.0,23.78,tier
 Pi-Ciaccio,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Pi-Ciaccio,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-Pi-Ciaccio,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-Pi-Ciaccio,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Pi-Ciaccio,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+Pi-Ciaccio,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Pi-Ciaccio,Bremer,D,Juventus,top,0.765,0.795,13.0,78.75,tier
 Pi-Ciaccio,Rabiot,C,Milan,top,0.759,0.772,23.0,76.88,tier
-Pi-Ciaccio,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+Pi-Ciaccio,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 Pi-Ciaccio,Atta,C,Udinese,semitop,0.735,0.710,16.0,71.62,tier
 Pi-Ciaccio,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
 Pi-Ciaccio,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
@@ -64,10 +64,10 @@ Pi-Ciaccio,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 Pi-Ciaccio,Gutierrez,D,Napoli,scommessa,0.470,0.490,3.0,48.50,tier
 Pi-Ciaccio,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
 Pi-Ciaccio,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-Pi-Ciaccio,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
-Pi-Ciaccio,Akinsanmiro,C,Pisa,scommessa,0.401,0.334,7.0,35.08,tier
-Pi-Ciaccio,Bondo,C,Cremonese,scommessa,0.459,0.296,7.0,33.67,tier
-Pi-Ciaccio,Ondrejka,C,Parma,scommessa,0.311,0.246,5.0,26.22,tier
+Pi-Ciaccio,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
+Pi-Ciaccio,Akinsanmiro,C,Pisa,scommessa,0.400,0.334,7.0,35.05,tier
+Pi-Ciaccio,Bondo,C,Cremonese,scommessa,0.459,0.297,7.0,33.75,tier
+Pi-Ciaccio,Ondrejka,C,Parma,scommessa,0.312,0.246,5.0,26.25,tier
 F.C Pennic Hellas,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 F.C Pennic Hellas,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 F.C Pennic Hellas,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
@@ -75,26 +75,26 @@ F.C Pennic Hellas,Esposito F.P.,A,Inter,semitop,0.762,0.763,18.0,76.28,tier
 F.C Pennic Hellas,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
 F.C Pennic Hellas,Atta,C,Udinese,semitop,0.735,0.710,16.0,71.62,tier
 F.C Pennic Hellas,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
-F.C Pennic Hellas,Vlasic,C,Torino,semitop,0.754,0.666,18.0,68.80,tier
+F.C Pennic Hellas,Vlasic,C,Torino,semitop,0.753,0.665,18.0,68.70,tier
 F.C Pennic Hellas,Giovane,A,Napoli,starter,0.714,0.612,17.0,63.75,tier
 F.C Pennic Hellas,Valle,D,Como,semitop,0.663,0.614,8.0,62.62,tier
 F.C Pennic Hellas,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 F.C Pennic Hellas,Caprile,P,Cagliari,semitop,0.695,0.585,12.0,61.25,tier
-F.C Pennic Hellas,Ederson D.S.,C,Atalanta,starter,0.667,0.569,10.0,59.35,tier
+F.C Pennic Hellas,Ederson D.S.,C,Atalanta,starter,0.667,0.568,10.0,59.27,tier
 F.C Pennic Hellas,Basic,C,Lazio,starter,0.611,0.583,14.0,59.00,tier
 F.C Pennic Hellas,Muharemovic,D,Sassuolo,starter,0.617,0.508,7.0,53.52,tier
 F.C Pennic Hellas,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
 F.C Pennic Hellas,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 F.C Pennic Hellas,Zaccagni,C,Lazio,starter,0.575,0.482,14.0,50.52,tier
 F.C Pennic Hellas,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-F.C Pennic Hellas,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
+F.C Pennic Hellas,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
 F.C Pennic Hellas,Ndaba,D,Lecce,low,0.269,0.278,3.0,27.58,tier
-F.C Pennic Hellas,Venturino,C,Roma,low,0.204,0.236,1.0,22.80,tier
+F.C Pennic Hellas,Venturino,C,Roma,low,0.204,0.235,1.0,22.72,tier
 F.C Pennic Hellas,Sherri,P,Cagliari,low,0.278,0.191,1.0,21.27,tier
 EquipoA,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 EquipoA,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
 EquipoA,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-EquipoA,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+EquipoA,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 EquipoA,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
 EquipoA,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
 EquipoA,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
@@ -109,39 +109,39 @@ EquipoA,Zaccagni,C,Lazio,starter,0.575,0.482,14.0,50.52,tier
 EquipoA,Rodriguez Je.,A,Como,starter,0.573,0.463,12.0,49.05,tier
 EquipoA,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
 EquipoA,Meret,P,Napoli,scommessa,0.396,0.420,8.0,41.40,tier
-EquipoA,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+EquipoA,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 EquipoA,Ndour,C,Fiorentina,scommessa,0.427,0.329,6.0,35.35,tier
-EquipoA,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+EquipoA,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 EquipoA,Zemura,D,Udinese,scommessa,0.340,0.301,2.0,31.08,tier
-EquipoA,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
-ISGOPPAISI2,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+EquipoA,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
+ISGOPPAISI2,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 ISGOPPAISI2,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
-ISGOPPAISI2,Calhanoglu,C,Inter,top,0.786,0.816,28.0,80.85,tier
-ISGOPPAISI2,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+ISGOPPAISI2,Calhanoglu,C,Inter,top,0.786,0.815,28.0,80.77,tier
+ISGOPPAISI2,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 ISGOPPAISI2,Bonny,A,Inter,top,0.738,0.807,14.0,78.98,tier
 ISGOPPAISI2,Kalulu,D,Juventus,top,0.820,0.749,12.0,76.67,tier
 ISGOPPAISI2,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
 ISGOPPAISI2,Soulè,A,Roma,semitop,0.803,0.734,26.0,75.12,tier
 ISGOPPAISI2,Scamacca,A,Atalanta,semitop,0.699,0.716,22.0,71.17,tier
 ISGOPPAISI2,Vojvoda,D,Como,semitop,0.718,0.656,12.0,67.15,tier
-ISGOPPAISI2,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.629,17.0,64.67,tier
+ISGOPPAISI2,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.630,17.0,64.75,tier
 ISGOPPAISI2,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
 ISGOPPAISI2,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 ISGOPPAISI2,Rrahmani,D,Napoli,semitop,0.604,0.579,13.0,58.52,tier
 ISGOPPAISI2,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 ISGOPPAISI2,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 ISGOPPAISI2,Lucumì,D,Bologna,starter,0.510,0.436,7.0,45.45,tier
-ISGOPPAISI2,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
-ISGOPPAISI2,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+ISGOPPAISI2,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
+ISGOPPAISI2,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 ISGOPPAISI2,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
-ISGOPPAISI2,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+ISGOPPAISI2,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 ISGOPPAISI2,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
-ISGOPPAISI2,Boloca,C,Sassuolo,low,0.177,0.214,2.0,20.47,tier
+ISGOPPAISI2,Boloca,C,Sassuolo,low,0.178,0.214,2.0,20.50,tier
 scarsenal,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-scarsenal,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+scarsenal,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 scarsenal,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 scarsenal,Pavlovic,D,Milan,top,0.767,0.733,15.0,74.15,tier
-scarsenal,Saelemaekers,C,Milan,top,0.781,0.719,19.0,73.45,tier
+scarsenal,Saelemaekers,C,Milan,top,0.781,0.718,19.0,73.38,tier
 scarsenal,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 scarsenal,Atta,C,Udinese,semitop,0.735,0.710,16.0,71.62,tier
 scarsenal,Scamacca,A,Atalanta,semitop,0.699,0.716,22.0,71.17,tier
@@ -155,17 +155,17 @@ scarsenal,N'Dicka,D,Roma,starter,0.581,0.489,7.0,51.20,tier
 scarsenal,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 scarsenal,Rodriguez Je.,A,Como,starter,0.573,0.463,12.0,49.05,tier
 scarsenal,Kristensen T.,D,Udinese,starter,0.488,0.444,7.0,45.50,tier
-scarsenal,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+scarsenal,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 scarsenal,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
-scarsenal,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.365,3.0,37.02,tier
+scarsenal,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.366,3.0,37.10,tier
 scarsenal,Ciocci,P,Cagliari,low,0.278,0.191,1.0,21.27,tier
 scarsenal,Sherri,P,Cagliari,low,0.278,0.191,1.0,21.27,tier
 Tana delle Tigri,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Tana delle Tigri,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 Tana delle Tigri,Carnesecchi,P,Atalanta,top,0.891,0.849,17.0,85.95,tier
-Tana delle Tigri,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Tana delle Tigri,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Tana delle Tigri,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Tana delle Tigri,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Tana delle Tigri,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Tana delle Tigri,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 Tana delle Tigri,Atta,C,Udinese,semitop,0.735,0.710,16.0,71.62,tier
 Tana delle Tigri,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
@@ -176,40 +176,40 @@ Tana delle Tigri,Angori,D,Pisa,starter,0.601,0.493,9.0,52.00,tier
 Tana delle Tigri,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 Tana delle Tigri,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 Tana delle Tigri,Barbieri,D,Cremonese,starter,0.536,0.465,9.0,48.27,tier
-Tana delle Tigri,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
-Tana delle Tigri,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+Tana delle Tigri,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
+Tana delle Tigri,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 Tana delle Tigri,Diouf,C,Inter,scommessa,0.284,0.313,2.0,30.58,tier
-Tana delle Tigri,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
+Tana delle Tigri,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
 Tana delle Tigri,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 Tana delle Tigri,Sportiello,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
 Tana delle Tigri,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 TomMat-iga,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 TomMat-iga,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-TomMat-iga,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+TomMat-iga,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 TomMat-iga,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-TomMat-iga,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+TomMat-iga,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 TomMat-iga,Thuram,A,Inter,top,0.783,0.792,29.0,78.98,tier
 TomMat-iga,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 TomMat-iga,Scamacca,A,Atalanta,semitop,0.699,0.716,22.0,71.17,tier
 TomMat-iga,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
 TomMat-iga,Ramon,D,Como,semitop,0.721,0.644,12.0,66.33,tier
 TomMat-iga,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
-TomMat-iga,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+TomMat-iga,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 TomMat-iga,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 TomMat-iga,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-TomMat-iga,El Shaarawy,C,Roma,scommessa,0.470,0.479,8.0,47.67,tier
-TomMat-iga,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+TomMat-iga,El Shaarawy,C,Roma,scommessa,0.471,0.479,8.0,47.70,tier
+TomMat-iga,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 TomMat-iga,Folorunsho,C,Cagliari,starter,0.480,0.412,8.0,42.90,tier
 TomMat-iga,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
 TomMat-iga,Veiga D.,D,Lecce,scommessa,0.491,0.332,5.0,37.18,tier
-TomMat-iga,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+TomMat-iga,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 TomMat-iga,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
 TomMat-iga,Albarracin,A,Cag,low,0.600,0.202,1.0,30.15,tier
 TomMat-iga,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 Fc Cortomuso,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-Fc Cortomuso,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Fc Cortomuso,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Fc Cortomuso,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Fc Cortomuso,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Fc Cortomuso,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Fc Cortomuso,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 Fc Cortomuso,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
 Fc Cortomuso,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
@@ -224,25 +224,25 @@ Fc Cortomuso,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 Fc Cortomuso,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 Fc Cortomuso,Meret,P,Napoli,scommessa,0.396,0.420,8.0,41.40,tier
 Fc Cortomuso,Ahanor,D,Atalanta,scommessa,0.434,0.354,5.0,37.40,tier
-Fc Cortomuso,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
-Fc Cortomuso,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
+Fc Cortomuso,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
+Fc Cortomuso,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
 Fc Cortomuso,Sava,P,Udinese,scommessa,0.266,0.235,1.0,24.27,tier
-Fc Cortomuso,Venturino,C,Roma,low,0.204,0.236,1.0,22.80,tier
+Fc Cortomuso,Venturino,C,Roma,low,0.204,0.235,1.0,22.72,tier
 Fc Cortomuso,Kulenovic,A,Tor,scommessa,0.139,0.177,5.0,16.75,tier
 AC DENTI,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-AC DENTI,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+AC DENTI,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 AC DENTI,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
 AC DENTI,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-AC DENTI,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+AC DENTI,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 AC DENTI,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 AC DENTI,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 AC DENTI,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
 AC DENTI,Sommer,P,Inter,semitop,0.742,0.657,14.0,67.83,tier
 AC DENTI,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
-AC DENTI,Politano,C,Napoli,starter,0.629,0.533,11.0,55.70,tier
+AC DENTI,Politano,C,Napoli,starter,0.630,0.533,11.0,55.73,tier
 AC DENTI,Terracciano F.,D,Cremonese,starter,0.643,0.520,11.0,55.08,tier
 AC DENTI,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
-AC DENTI,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+AC DENTI,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 AC DENTI,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 AC DENTI,Doig,D,Sassuolo,starter,0.548,0.395,6.0,43.33,tier
 AC DENTI,Karlstrom,C,Udinese,starter,0.560,0.389,10.0,43.18,tier
@@ -252,54 +252,8 @@ AC DENTI,Aebischer,C,Pisa,scommessa,0.497,0.309,5.0,35.60,tier
 AC DENTI,Meister,A,Pisa,scommessa,0.454,0.315,8.0,34.98,tier
 AC DENTI,Albarracin,A,Cag,low,0.600,0.202,1.0,30.15,tier
 AC DENTI,Scuffet,P,Pisa,scommessa,0.308,0.293,4.0,29.68,tier
-LEONE,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
-LEONE,Bremer,D,Juventus,top,0.765,0.795,13.0,78.75,tier
-LEONE,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
-LEONE,Pavlovic,D,Milan,top,0.767,0.733,15.0,74.15,tier
-LEONE,Saelemaekers,C,Milan,top,0.781,0.719,19.0,73.45,tier
-LEONE,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
-LEONE,Davis K.,A,Udinese,semitop,0.771,0.705,24.0,72.15,tier
-LEONE,Atta,C,Udinese,semitop,0.735,0.710,16.0,71.62,tier
-LEONE,Bisseck,D,Inter,top,0.677,0.714,10.0,70.47,tier
-LEONE,Kempf,D,Como,top,0.701,0.701,14.0,70.10,tier
-LEONE,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
-LEONE,Kilicsoy,A,Cagliari,starter,0.580,0.628,12.0,61.60,tier
-LEONE,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
-LEONE,Simeone,A,Torino,starter,0.648,0.591,19.0,60.52,tier
-LEONE,Ederson D.S.,C,Atalanta,starter,0.667,0.569,10.0,59.35,tier
-LEONE,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
-LEONE,Tramoni M.,C,Pisa,starter,0.549,0.445,9.0,47.10,tier
-LEONE,Meret,P,Napoli,scommessa,0.396,0.420,8.0,41.40,tier
-LEONE,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
-LEONE,Piccoli,A,Fiorentina,scommessa,0.479,0.366,9.0,39.42,tier
-LEONE,Aebischer,C,Pisa,scommessa,0.497,0.309,5.0,35.60,tier
-LEONE,Contini,P,Napoli,scommessa,0.299,0.221,1.0,24.05,tier
-LEONE,Stanciu *,C,Genoa,low,0.000,0.000,1.0,1.50,fallback_price
-i fratelli merda,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-i fratelli merda,Carnesecchi,P,Atalanta,top,0.891,0.849,17.0,85.95,tier
-i fratelli merda,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
-i fratelli merda,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
-i fratelli merda,Loftus-Cheek,C,Milan,semitop,0.743,0.717,13.0,72.35,tier
-i fratelli merda,Barella,C,Inter,semitop,0.749,0.667,17.0,68.75,tier
-i fratelli merda,Bernabè,C,Parma,semitop,0.740,0.638,16.0,66.35,tier
-i fratelli merda,Da Cunha,C,Como,semitop,0.703,0.626,11.0,64.53,tier
-i fratelli merda,Belghali,D,Verona,semitop,0.614,0.599,11.0,60.27,tier
-i fratelli merda,Thuram K.,C,Juventus,starter,0.669,0.580,13.0,60.22,tier
-i fratelli merda,Esposito Se.,A,Cagliari,starter,0.674,0.563,16.0,59.08,tier
-i fratelli merda,De Winter,D,Milan,semitop,0.575,0.565,4.0,56.75,tier
-i fratelli merda,Colombo,A,Genoa,starter,0.657,0.531,14.0,56.25,tier
-i fratelli merda,Dumfries,D,Inter,semitop,0.537,0.568,10.0,56.02,tier
-i fratelli merda,Zappa,D,Cagliari,starter,0.605,0.532,7.0,55.02,tier
-i fratelli merda,Idrissi R.,D,Cagliari,starter,0.542,0.509,8.0,51.73,tier
-i fratelli merda,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-i fratelli merda,Solomon,A,Fiorentina,scommessa,0.600,0.447,7.0,48.52,tier
-i fratelli merda,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-i fratelli merda,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
-i fratelli merda,Casale,D,Bologna,scommessa,0.307,0.290,2.0,29.42,tier
-i fratelli merda,Iling Junior,C,Pis,scommessa,0.214,0.281,5.0,26.43,tier
-i fratelli merda,Sportiello,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
-Mapoitta,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-Mapoitta,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Mapoitta,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+Mapoitta,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Mapoitta,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 Mapoitta,Thuram,A,Inter,top,0.783,0.792,29.0,78.98,tier
 Mapoitta,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
@@ -311,23 +265,69 @@ Mapoitta,Malinovskyi,C,Genoa,semitop,0.724,0.640,12.0,66.10,tier
 Mapoitta,Zappacosta,D,Atalanta,semitop,0.717,0.631,8.0,65.25,tier
 Mapoitta,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
 Mapoitta,Valeri,D,Parma,starter,0.613,0.518,10.0,54.17,tier
-Mapoitta,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+Mapoitta,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 Mapoitta,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 Mapoitta,Semper,P,Pisa,starter,0.587,0.488,9.0,51.28,tier
 Mapoitta,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-Mapoitta,Moro N.,C,Bologna,starter,0.502,0.414,8.0,43.60,tier
+Mapoitta,Moro N.,C,Bologna,starter,0.526,0.448,8.0,46.75,tier
 Mapoitta,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
 Mapoitta,Ekhator,A,Genoa,scommessa,0.426,0.338,10.0,36.00,tier
 Mapoitta,Boga,A,Juv,scommessa,0.272,0.345,6.0,32.67,tier
-Mapoitta,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+Mapoitta,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 Mapoitta,Marchwinski,C,Lecce,low,0.281,0.196,1.0,21.73,tier
+LEONE,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
+LEONE,Bremer,D,Juventus,top,0.765,0.795,13.0,78.75,tier
+LEONE,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
+LEONE,Pavlovic,D,Milan,top,0.767,0.733,15.0,74.15,tier
+LEONE,Saelemaekers,C,Milan,top,0.781,0.718,19.0,73.38,tier
+LEONE,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
+LEONE,Davis K.,A,Udinese,semitop,0.770,0.705,24.0,72.12,tier
+LEONE,Atta,C,Udinese,semitop,0.735,0.710,16.0,71.62,tier
+LEONE,Bisseck,D,Inter,top,0.677,0.714,10.0,70.47,tier
+LEONE,Kempf,D,Como,top,0.701,0.701,14.0,70.10,tier
+LEONE,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
+LEONE,Kilicsoy,A,Cagliari,starter,0.580,0.628,12.0,61.60,tier
+LEONE,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
+LEONE,Simeone,A,Torino,starter,0.647,0.591,19.0,60.50,tier
+LEONE,Ederson D.S.,C,Atalanta,starter,0.667,0.568,10.0,59.27,tier
+LEONE,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
+LEONE,Tramoni M.,C,Pisa,starter,0.549,0.445,9.0,47.10,tier
+LEONE,Meret,P,Napoli,scommessa,0.396,0.420,8.0,41.40,tier
+LEONE,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
+LEONE,Piccoli,A,Fiorentina,scommessa,0.479,0.366,9.0,39.42,tier
+LEONE,Aebischer,C,Pisa,scommessa,0.497,0.309,5.0,35.60,tier
+LEONE,Contini,P,Napoli,scommessa,0.299,0.221,1.0,24.05,tier
+LEONE,Stanciu *,C,Genoa,low,0.000,0.000,1.0,1.50,fallback_price
+i fratelli merda,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
+i fratelli merda,Carnesecchi,P,Atalanta,top,0.891,0.849,17.0,85.95,tier
+i fratelli merda,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
+i fratelli merda,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
+i fratelli merda,Loftus-Cheek,C,Milan,semitop,0.744,0.717,13.0,72.37,tier
+i fratelli merda,Barella,C,Inter,semitop,0.749,0.667,17.0,68.75,tier
+i fratelli merda,Bernabè,C,Parma,semitop,0.740,0.639,16.0,66.42,tier
+i fratelli merda,Da Cunha,C,Como,semitop,0.703,0.626,11.0,64.53,tier
+i fratelli merda,Belghali,D,Verona,semitop,0.614,0.599,11.0,60.27,tier
+i fratelli merda,Thuram K.,C,Juventus,starter,0.669,0.579,13.0,60.15,tier
+i fratelli merda,Esposito Se.,A,Cagliari,starter,0.674,0.563,16.0,59.08,tier
+i fratelli merda,De Winter,D,Milan,semitop,0.575,0.565,4.0,56.75,tier
+i fratelli merda,Colombo,A,Genoa,starter,0.657,0.531,14.0,56.25,tier
+i fratelli merda,Dumfries,D,Inter,semitop,0.537,0.568,10.0,56.02,tier
+i fratelli merda,Zappa,D,Cagliari,starter,0.605,0.532,7.0,55.02,tier
+i fratelli merda,Idrissi R.,D,Cagliari,starter,0.542,0.509,8.0,51.73,tier
+i fratelli merda,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
+i fratelli merda,Solomon,A,Fiorentina,scommessa,0.600,0.447,7.0,48.52,tier
+i fratelli merda,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
+i fratelli merda,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
+i fratelli merda,Casale,D,Bologna,scommessa,0.307,0.290,2.0,29.42,tier
+i fratelli merda,Iling Junior,C,Pis,scommessa,0.214,0.282,5.0,26.50,tier
+i fratelli merda,Sportiello,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
 coach 71,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
 coach 71,Zielinski,C,Inter,top,0.800,0.819,19.0,81.42,tier
-coach 71,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+coach 71,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 coach 71,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 coach 71,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
 coach 71,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
-coach 71,Nkunku,A,Milan,semitop,0.725,0.700,17.0,70.62,tier
+coach 71,Nkunku,A,Milan,semitop,0.725,0.699,17.0,70.55,tier
 coach 71,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
 coach 71,Malinovskyi,C,Genoa,semitop,0.724,0.640,12.0,66.10,tier
 coach 71,Giovane,A,Napoli,starter,0.714,0.612,17.0,63.75,tier
@@ -339,20 +339,20 @@ coach 71,Miranda J.,D,Bologna,starter,0.594,0.485,11.0,51.23,tier
 coach 71,N'Dicka,D,Roma,starter,0.581,0.489,7.0,51.20,tier
 coach 71,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 coach 71,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-coach 71,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
+coach 71,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
 coach 71,Caracciolo A.,D,Pisa,scommessa,0.507,0.346,6.0,38.62,tier
 coach 71,Zaragoza,C,Rom,scommessa,0.257,0.325,7.0,30.80,tier
-coach 71,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
-coach 71,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+coach 71,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
+coach 71,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 Sarzanello Team,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Sarzanello Team,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
 Sarzanello Team,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
-Sarzanello Team,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Sarzanello Team,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Sarzanello Team,Esposito F.P.,A,Inter,semitop,0.762,0.763,18.0,76.28,tier
 Sarzanello Team,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
 Sarzanello Team,Atta,C,Udinese,semitop,0.735,0.710,16.0,71.62,tier
 Sarzanello Team,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
-Sarzanello Team,Pasalic,C,Atalanta,starter,0.677,0.617,13.0,63.20,tier
+Sarzanello Team,Pasalic,C,Atalanta,semitop,0.677,0.617,13.0,63.20,tier
 Sarzanello Team,Scalvini,D,Atalanta,semitop,0.604,0.640,12.0,63.10,tier
 Sarzanello Team,Sucic P.,C,Inter,starter,0.644,0.603,11.0,61.32,tier
 Sarzanello Team,Ekkelenkamp,C,Udinese,starter,0.657,0.585,12.0,60.30,tier
@@ -362,14 +362,14 @@ Sarzanello Team,Miranda J.,D,Bologna,starter,0.594,0.485,11.0,51.23,tier
 Sarzanello Team,Barbieri,D,Cremonese,starter,0.536,0.465,9.0,48.27,tier
 Sarzanello Team,Casadei,C,Torino,starter,0.573,0.447,7.0,47.85,tier
 Sarzanello Team,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-Sarzanello Team,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
+Sarzanello Team,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
 Sarzanello Team,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
 Sarzanello Team,Sergi Roberto,C,Como,scommessa,0.285,0.275,3.0,27.75,tier
 Sarzanello Team,Torriani,P,Milan,scommessa,0.317,0.246,1.0,26.38,tier
 Sarzanello Team,Zapata D.,A,Torino,scommessa,0.328,0.228,7.0,25.30,tier
 LosPollosHermanos,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 LosPollosHermanos,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-LosPollosHermanos,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+LosPollosHermanos,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 LosPollosHermanos,Zielinski,C,Inter,top,0.800,0.819,19.0,81.42,tier
 LosPollosHermanos,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 LosPollosHermanos,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
@@ -382,21 +382,21 @@ LosPollosHermanos,Dumfries,D,Inter,semitop,0.537,0.568,10.0,56.02,tier
 LosPollosHermanos,Delprato,D,Parma,starter,0.652,0.525,9.0,55.68,tier
 LosPollosHermanos,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 LosPollosHermanos,Lazaro,D,Torino,starter,0.598,0.449,7.0,48.62,tier
-LosPollosHermanos,El Shaarawy,C,Roma,scommessa,0.470,0.479,8.0,47.67,tier
-LosPollosHermanos,Bernardeschi,C,Bologna,starter,0.478,0.431,5.0,44.27,tier
+LosPollosHermanos,El Shaarawy,C,Roma,scommessa,0.471,0.479,8.0,47.70,tier
+LosPollosHermanos,Bernardeschi,C,Bologna,starter,0.475,0.427,5.0,43.90,tier
 LosPollosHermanos,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
 LosPollosHermanos,Smolcic I.,D,Como,scommessa,0.456,0.377,3.0,39.67,tier
 LosPollosHermanos,Meister,A,Pisa,scommessa,0.454,0.315,8.0,34.98,tier
 LosPollosHermanos,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
 LosPollosHermanos,Boga,A,Juv,scommessa,0.272,0.345,6.0,32.67,tier
 LosPollosHermanos,Torriani,P,Milan,scommessa,0.317,0.246,1.0,26.38,tier
-SerSi-FC,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+SerSi-FC,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 SerSi-FC,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-SerSi-FC,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+SerSi-FC,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 SerSi-FC,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 SerSi-FC,Rabiot,C,Milan,top,0.759,0.772,23.0,76.88,tier
 SerSi-FC,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
-SerSi-FC,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+SerSi-FC,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 SerSi-FC,Atta,C,Udinese,semitop,0.735,0.710,16.0,71.62,tier
 SerSi-FC,Scamacca,A,Atalanta,semitop,0.699,0.716,22.0,71.17,tier
 SerSi-FC,Sommer,P,Inter,semitop,0.742,0.657,14.0,67.83,tier
@@ -407,18 +407,18 @@ SerSi-FC,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
 SerSi-FC,Ostigard,D,Genoa,semitop,0.635,0.586,15.0,59.82,tier
 SerSi-FC,Tomori,D,Milan,starter,0.630,0.543,7.0,56.47,tier
 SerSi-FC,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
-SerSi-FC,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
-SerSi-FC,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+SerSi-FC,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
+SerSi-FC,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 SerSi-FC,Di Gennaro,P,Inter,scommessa,0.315,0.243,1.0,26.10,tier
 SerSi-FC,Stojilkovic,A,Pis,scommessa,0.550,0.142,4.0,24.40,tier
 SerSi-FC,Gueye,A,Udinese,low,0.176,0.145,2.0,15.28,tier
 SerSi-FC,Esteves T. *,D,Pisa,low,0.000,0.000,1.0,1.50,fallback_price
 Plu-Team,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Plu-Team,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Plu-Team,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Plu-Team,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Plu-Team,Bonny,A,Inter,top,0.738,0.807,14.0,78.98,tier
 Plu-Team,Esposito F.P.,A,Inter,semitop,0.762,0.763,18.0,76.28,tier
-Plu-Team,Saelemaekers,C,Milan,top,0.781,0.719,19.0,73.45,tier
+Plu-Team,Saelemaekers,C,Milan,top,0.781,0.718,19.0,73.38,tier
 Plu-Team,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
 Plu-Team,Di Gregorio,P,Juventus,semitop,0.743,0.667,16.0,68.60,tier
 Plu-Team,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
@@ -426,22 +426,22 @@ Plu-Team,Bartesaghi,D,Milan,semitop,0.710,0.670,13.0,68.00,tier
 Plu-Team,Da Cunha,C,Como,semitop,0.703,0.626,11.0,64.53,tier
 Plu-Team,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
 Plu-Team,Bernasconi,D,Atalanta,semitop,0.594,0.592,7.0,59.25,tier
-Plu-Team,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+Plu-Team,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 Plu-Team,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 Plu-Team,Adzic,C,Juventus,scommessa,0.378,0.462,3.0,44.10,tier
 Plu-Team,Frese,D,Verona,starter,0.499,0.392,6.0,41.88,tier
-Plu-Team,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
-Plu-Team,Niasse,C,Verona,scommessa,0.424,0.350,4.0,36.85,tier
+Plu-Team,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
+Plu-Team,Niasse,C,Verona,scommessa,0.423,0.350,4.0,36.82,tier
 Plu-Team,Scuffet,P,Pisa,scommessa,0.308,0.293,4.0,29.68,tier
 Plu-Team,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 Plu-Team,Elphege,A,Par,low,0.450,0.200,1.0,26.25,tier
 Plu-Team,Moro L.,A,Sassuolo,low,0.167,0.152,1.0,15.57,tier
 FC Buttarighe,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-FC Buttarighe,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+FC Buttarighe,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 FC Buttarighe,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 FC Buttarighe,Zielinski,C,Inter,top,0.800,0.819,19.0,81.42,tier
-FC Buttarighe,Modric,C,Milan,top,0.831,0.788,19.0,79.88,tier
-FC Buttarighe,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+FC Buttarighe,Modric,C,Milan,top,0.830,0.788,19.0,79.85,tier
+FC Buttarighe,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 FC Buttarighe,Kalulu,D,Juventus,top,0.820,0.749,12.0,76.67,tier
 FC Buttarighe,Esposito F.P.,A,Inter,semitop,0.762,0.763,18.0,76.28,tier
 FC Buttarighe,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
@@ -452,17 +452,17 @@ FC Buttarighe,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
 FC Buttarighe,Mina,D,Cagliari,starter,0.539,0.505,8.0,51.35,tier
 FC Buttarighe,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 FC Buttarighe,Rodriguez Je.,A,Como,starter,0.573,0.463,12.0,49.05,tier
-FC Buttarighe,El Shaarawy,C,Roma,scommessa,0.470,0.479,8.0,47.67,tier
+FC Buttarighe,El Shaarawy,C,Roma,scommessa,0.471,0.479,8.0,47.70,tier
 FC Buttarighe,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
 FC Buttarighe,Boga,A,Juv,scommessa,0.272,0.345,6.0,32.67,tier
 FC Buttarighe,Van Der Brempt,D,Como,scommessa,0.307,0.324,3.0,31.97,tier
-FC Buttarighe,Lezzerini,P,Fiorentina,low,0.261,0.168,1.0,19.12,tier
-FC Buttarighe,Hojholt,C,Pisa,low,0.192,0.171,2.0,17.62,tier
+FC Buttarighe,Lezzerini,P,Fiorentina,low,0.261,0.167,1.0,19.05,tier
+FC Buttarighe,Hojholt,C,Pisa,low,0.192,0.172,2.0,17.70,tier
 FC Buttarighe,Coppola F.,D,Pisa,low,0.131,0.135,2.0,13.40,tier
 I COMPARI,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-I COMPARI,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+I COMPARI,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 I COMPARI,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-I COMPARI,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+I COMPARI,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 I COMPARI,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 I COMPARI,Soulè,A,Roma,semitop,0.803,0.734,26.0,75.12,tier
 I COMPARI,Baturina,C,Como,top,0.690,0.768,14.0,74.85,tier
@@ -476,10 +476,10 @@ I COMPARI,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 I COMPARI,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 I COMPARI,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 I COMPARI,Adzic,C,Juventus,scommessa,0.378,0.462,3.0,44.10,tier
-I COMPARI,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+I COMPARI,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 I COMPARI,Zaragoza,C,Rom,scommessa,0.257,0.325,7.0,30.80,tier
 I COMPARI,Scuffet,P,Pisa,scommessa,0.308,0.293,4.0,29.68,tier
-I COMPARI,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+I COMPARI,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 I COMPARI,Ciocci,P,Cagliari,low,0.278,0.191,1.0,21.27,tier
 I COMPARI,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 XLiverpuh,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
@@ -487,7 +487,7 @@ XLiverpuh,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
 XLiverpuh,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
 XLiverpuh,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 XLiverpuh,Zielinski,C,Inter,top,0.800,0.819,19.0,81.42,tier
-XLiverpuh,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+XLiverpuh,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 XLiverpuh,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 XLiverpuh,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
 XLiverpuh,Atta,C,Udinese,semitop,0.735,0.710,16.0,71.62,tier
@@ -497,17 +497,17 @@ XLiverpuh,Valle,D,Como,semitop,0.663,0.614,8.0,62.62,tier
 XLiverpuh,Kilicsoy,A,Cagliari,starter,0.580,0.628,12.0,61.60,tier
 XLiverpuh,Terracciano F.,D,Cremonese,starter,0.643,0.520,11.0,55.08,tier
 XLiverpuh,Gutierrez,D,Napoli,scommessa,0.470,0.490,3.0,48.50,tier
-XLiverpuh,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+XLiverpuh,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 XLiverpuh,Pezzella Giu.,D,Cremonese,scommessa,0.455,0.336,4.0,36.58,tier
 XLiverpuh,Dia,A,Lazio,scommessa,0.407,0.297,5.0,32.45,tier
-XLiverpuh,Lykogiannis,D,Bologna,scommessa,0.311,0.295,2.0,29.90,tier
+XLiverpuh,Lykogiannis,D,Bologna,scommessa,0.311,0.296,2.0,29.97,tier
 XLiverpuh,Zelezny,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
 XLiverpuh,Marchwinski,C,Lecce,low,0.281,0.196,1.0,21.73,tier
 XLiverpuh,Zarraga,C,Udinese,low,0.199,0.199,2.0,19.90,tier
 XLiverpuh,Vasquez D. *,P,Roma,low,0.000,0.000,1.0,1.50,fallback_price
 pacho team,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 pacho team,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
-pacho team,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+pacho team,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 pacho team,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 pacho team,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 pacho team,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
@@ -521,18 +521,18 @@ pacho team,Caprile,P,Cagliari,semitop,0.695,0.585,12.0,61.25,tier
 pacho team,Valeri,D,Parma,starter,0.613,0.518,10.0,54.17,tier
 pacho team,Mina,D,Cagliari,starter,0.539,0.505,8.0,51.35,tier
 pacho team,Marcandalli,D,Genoa,starter,0.503,0.418,6.0,43.93,tier
-pacho team,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+pacho team,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 pacho team,Estupinan,D,Milan,scommessa,0.422,0.394,3.0,40.10,tier
-pacho team,Strefezza,C,Par,scommessa,0.228,0.286,10.0,27.15,tier
+pacho team,Strefezza,C,Par,scommessa,0.229,0.286,10.0,27.18,tier
 pacho team,Contini,P,Napoli,scommessa,0.299,0.221,1.0,24.05,tier
-pacho team,Venturino,C,Roma,low,0.204,0.236,1.0,22.80,tier
+pacho team,Venturino,C,Roma,low,0.204,0.235,1.0,22.72,tier
 pacho team,Marchwinski,C,Lecce,low,0.281,0.196,1.0,21.73,tier
 pacho team,Arena A.,A,Roma,low,0.149,0.192,1.0,18.13,tier
 Boiali,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Boiali,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-Boiali,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-Boiali,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
-Boiali,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+Boiali,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+Boiali,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
+Boiali,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 Boiali,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 Boiali,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
 Boiali,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
@@ -546,14 +546,14 @@ Boiali,Tramoni M.,C,Pisa,starter,0.549,0.445,9.0,47.10,tier
 Boiali,Ghilardi,D,Roma,scommessa,0.424,0.447,4.0,44.12,tier
 Boiali,Frese,D,Verona,starter,0.499,0.392,6.0,41.88,tier
 Boiali,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-Boiali,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+Boiali,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 Boiali,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
-Boiali,Ordonez C.,C,Parma,scommessa,0.355,0.337,2.0,34.15,tier
+Boiali,Ordonez C.,C,Parma,scommessa,0.354,0.336,2.0,34.05,tier
 Boiali,Torriani,P,Milan,scommessa,0.317,0.246,1.0,26.38,tier
 Boiali,Okereke,A,Cremonese,low,0.162,0.192,1.0,18.45,tier
 Malmö FF,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-Malmö FF,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-Malmö FF,Modric,C,Milan,top,0.831,0.788,19.0,79.88,tier
+Malmö FF,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+Malmö FF,Modric,C,Milan,top,0.830,0.788,19.0,79.85,tier
 Malmö FF,Bonny,A,Inter,top,0.738,0.807,14.0,78.98,tier
 Malmö FF,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
 Malmö FF,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
@@ -566,9 +566,9 @@ Malmö FF,Terracciano F.,D,Cremonese,starter,0.643,0.520,11.0,55.08,tier
 Malmö FF,Buongiorno,D,Napoli,starter,0.607,0.518,10.0,54.02,tier
 Malmö FF,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 Malmö FF,Gila,D,Lazio,starter,0.609,0.465,8.0,50.10,tier
-Malmö FF,Coulibaly L.,C,Lecce,starter,0.573,0.472,13.0,49.72,tier
+Malmö FF,Coulibaly L.,C,Lecce,starter,0.573,0.471,13.0,49.65,tier
 Malmö FF,Comuzzo,D,Fiorentina,starter,0.504,0.420,7.0,44.10,tier
-Malmö FF,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
+Malmö FF,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
 Malmö FF,Piccoli,A,Fiorentina,scommessa,0.479,0.366,9.0,39.42,tier
 Malmö FF,El Aynaoui,C,Roma,scommessa,0.400,0.381,5.0,38.58,tier
 Malmö FF,Zaragoza,C,Rom,scommessa,0.257,0.325,7.0,30.80,tier
@@ -580,12 +580,12 @@ KARABE 1975,Baturina,C,Como,top,0.690,0.768,14.0,74.85,tier
 KARABE 1975,Pavlovic,D,Milan,top,0.767,0.733,15.0,74.15,tier
 KARABE 1975,Scamacca,A,Atalanta,semitop,0.699,0.716,22.0,71.17,tier
 KARABE 1975,Zappacosta,D,Atalanta,semitop,0.717,0.631,8.0,65.25,tier
-KARABE 1975,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.629,17.0,64.67,tier
+KARABE 1975,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.630,17.0,64.75,tier
 KARABE 1975,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
-KARABE 1975,Ederson D.S.,C,Atalanta,starter,0.667,0.569,10.0,59.35,tier
+KARABE 1975,Ederson D.S.,C,Atalanta,starter,0.667,0.568,10.0,59.27,tier
 KARABE 1975,Esposito Se.,A,Cagliari,starter,0.674,0.563,16.0,59.08,tier
 KARABE 1975,Colombo,A,Genoa,starter,0.657,0.531,14.0,56.25,tier
-KARABE 1975,Thorstvedt,C,Sassuolo,starter,0.607,0.534,12.0,55.23,tier
+KARABE 1975,Thorstvedt,C,Sassuolo,starter,0.606,0.534,12.0,55.20,tier
 KARABE 1975,Valeri,D,Parma,starter,0.613,0.518,10.0,54.17,tier
 KARABE 1975,Skorupski,P,Bologna,starter,0.571,0.520,10.0,53.28,tier
 KARABE 1975,Idrissi R.,D,Cagliari,starter,0.542,0.509,8.0,51.73,tier
@@ -595,14 +595,14 @@ KARABE 1975,Ravaglia F.,P,Bologna,starter,0.549,0.466,12.0,48.68,tier
 KARABE 1975,Karlstrom,C,Udinese,starter,0.560,0.389,10.0,43.18,tier
 KARABE 1975,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
 KARABE 1975,Ndour,C,Fiorentina,scommessa,0.427,0.329,6.0,35.35,tier
-KARABE 1975,Gineitis,C,Torino,scommessa,0.387,0.300,4.0,32.17,tier
+KARABE 1975,Gineitis,C,Torino,scommessa,0.387,0.299,4.0,32.10,tier
 KARABE 1975,Pessina Mas.,P,Bologna,scommessa,0.235,0.304,1.0,28.67,tier
 BinuSpuntu,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-BinuSpuntu,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-BinuSpuntu,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+BinuSpuntu,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+BinuSpuntu,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 BinuSpuntu,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 BinuSpuntu,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
-BinuSpuntu,Saelemaekers,C,Milan,top,0.781,0.719,19.0,73.45,tier
+BinuSpuntu,Saelemaekers,C,Milan,top,0.781,0.718,19.0,73.38,tier
 BinuSpuntu,Atta,C,Udinese,semitop,0.735,0.710,16.0,71.62,tier
 BinuSpuntu,Sommer,P,Inter,semitop,0.742,0.657,14.0,67.83,tier
 BinuSpuntu,Da Cunha,C,Como,semitop,0.703,0.626,11.0,64.53,tier
@@ -614,63 +614,63 @@ BinuSpuntu,Valeri,D,Parma,starter,0.613,0.518,10.0,54.17,tier
 BinuSpuntu,Solomon,A,Fiorentina,scommessa,0.600,0.447,7.0,48.52,tier
 BinuSpuntu,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
 BinuSpuntu,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
-BinuSpuntu,Akinsanmiro,C,Pisa,scommessa,0.401,0.334,7.0,35.08,tier
+BinuSpuntu,Akinsanmiro,C,Pisa,scommessa,0.400,0.334,7.0,35.05,tier
 BinuSpuntu,Pongracic,D,Fiorentina,scommessa,0.472,0.297,5.0,34.08,tier
 BinuSpuntu,Van Der Brempt,D,Como,scommessa,0.307,0.324,3.0,31.97,tier
 BinuSpuntu,Albarracin,A,Cag,low,0.600,0.202,1.0,30.15,tier
 BinuSpuntu,Rugani,D,Juventus,low,0.223,0.247,2.0,24.10,tier
-BinuSpuntu,Hojholt,C,Pisa,low,0.192,0.171,2.0,17.62,tier
+BinuSpuntu,Hojholt,C,Pisa,low,0.192,0.172,2.0,17.70,tier
 Nastro Azzurro,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-Nastro Azzurro,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Nastro Azzurro,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Nastro Azzurro,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
 Nastro Azzurro,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Nastro Azzurro,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Nastro Azzurro,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Nastro Azzurro,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 Nastro Azzurro,Baturina,C,Como,top,0.690,0.768,14.0,74.85,tier
 Nastro Azzurro,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 Nastro Azzurro,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
 Nastro Azzurro,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 Nastro Azzurro,Gabbia,D,Milan,starter,0.621,0.497,8.0,52.80,tier
-Nastro Azzurro,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
 Nastro Azzurro,Angori,D,Pisa,starter,0.601,0.493,9.0,52.00,tier
+Nastro Azzurro,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 Nastro Azzurro,Obert,D,Cagliari,starter,0.561,0.438,5.0,46.88,tier
-Nastro Azzurro,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
-Nastro Azzurro,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+Nastro Azzurro,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
+Nastro Azzurro,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 Nastro Azzurro,Valenti,D,Parma,starter,0.483,0.385,7.0,40.95,tier
-Nastro Azzurro,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+Nastro Azzurro,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 Nastro Azzurro,Veiga D.,D,Lecce,scommessa,0.491,0.332,5.0,37.18,tier
 Nastro Azzurro,Pezzella Giu.,D,Cremonese,scommessa,0.455,0.336,4.0,36.58,tier
 Nastro Azzurro,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
 Nastro Azzurro,Furlanetto,P,Lazio,scommessa,0.297,0.218,1.0,23.78,tier
 Nastro Azzurro,Frigan,A,Parma,low,0.284,0.200,1.0,22.10,tier
 DonBosko46,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-DonBosko46,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+DonBosko46,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 DonBosko46,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 DonBosko46,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
-DonBosko46,Saelemaekers,C,Milan,top,0.781,0.719,19.0,73.45,tier
+DonBosko46,Saelemaekers,C,Milan,top,0.781,0.718,19.0,73.38,tier
 DonBosko46,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
 DonBosko46,Sommer,P,Inter,semitop,0.742,0.657,14.0,67.83,tier
 DonBosko46,Vojvoda,D,Como,semitop,0.718,0.656,12.0,67.15,tier
-DonBosko46,De Ketelaere,A,Atalanta,semitop,0.715,0.635,17.0,65.50,tier
+DonBosko46,De Ketelaere,A,Atalanta,semitop,0.714,0.634,17.0,65.40,tier
 DonBosko46,Berisha M.,C,Lecce,scommessa,0.602,0.642,13.0,63.20,tier
 DonBosko46,Mancini,D,Roma,semitop,0.694,0.583,10.0,61.07,tier
 DonBosko46,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
 DonBosko46,Vlahovic,A,Juventus,starter,0.546,0.552,15.0,55.05,tier
 DonBosko46,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 DonBosko46,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-DonBosko46,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+DonBosko46,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 DonBosko46,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
-DonBosko46,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
-DonBosko46,Iannoni,C,Sassuolo,scommessa,0.293,0.341,5.0,32.90,tier
-DonBosko46,Lykogiannis,D,Bologna,scommessa,0.311,0.295,2.0,29.90,tier
+DonBosko46,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
+DonBosko46,Iannoni,C,Sassuolo,scommessa,0.293,0.342,5.0,32.98,tier
+DonBosko46,Lykogiannis,D,Bologna,scommessa,0.311,0.296,2.0,29.97,tier
 DonBosko46,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 DonBosko46,Morata,A,Como,scommessa,0.318,0.226,4.0,24.90,tier
 DonBosko46,Oyegoke,D,Verona,low,0.176,0.213,1.0,20.38,tier
 Ipa Bali,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Ipa Bali,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-Ipa Bali,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Ipa Bali,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Ipa Bali,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Ipa Bali,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Ipa Bali,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Ipa Bali,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 Ipa Bali,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
 Ipa Bali,Ramon,D,Como,semitop,0.721,0.644,12.0,66.33,tier
@@ -680,23 +680,23 @@ Ipa Bali,Ostigard,D,Genoa,semitop,0.635,0.586,15.0,59.82,tier
 Ipa Bali,Luperto,D,Cagliari,semitop,0.642,0.565,9.0,58.42,tier
 Ipa Bali,Gallo,D,Lecce,starter,0.591,0.440,8.0,47.77,tier
 Ipa Bali,Bianchetti,D,Cremonese,starter,0.515,0.419,6.0,44.30,tier
-Ipa Bali,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+Ipa Bali,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 Ipa Bali,Doig,D,Sassuolo,starter,0.548,0.395,6.0,43.33,tier
 Ipa Bali,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-Ipa Bali,Frattesi,C,Inter,scommessa,0.360,0.370,4.0,36.75,tier
-Ipa Bali,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+Ipa Bali,Frattesi,C,Inter,scommessa,0.360,0.371,4.0,36.82,tier
+Ipa Bali,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 Ipa Bali,Meister,A,Pisa,scommessa,0.454,0.315,8.0,34.98,tier
 Ipa Bali,Zaragoza,C,Rom,scommessa,0.257,0.325,7.0,30.80,tier
 Ipa Bali,Sava,P,Udinese,scommessa,0.266,0.235,1.0,24.27,tier
 Ipa Bali,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 Pro secco,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Pro secco,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-Pro secco,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Pro secco,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Pro secco,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Pro secco,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Pro secco,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Pro secco,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
-Pro secco,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
-Pro secco,Vlasic,C,Torino,semitop,0.754,0.666,18.0,68.80,tier
+Pro secco,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
+Pro secco,Vlasic,C,Torino,semitop,0.753,0.665,18.0,68.70,tier
 Pro secco,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
 Pro secco,Vojvoda,D,Como,semitop,0.718,0.656,12.0,67.15,tier
 Pro secco,Terracciano F.,D,Cremonese,starter,0.643,0.520,11.0,55.08,tier
@@ -705,30 +705,30 @@ Pro secco,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 Pro secco,Hien,D,Atalanta,starter,0.576,0.468,7.0,49.50,tier
 Pro secco,Doig,D,Sassuolo,starter,0.548,0.395,6.0,43.33,tier
 Pro secco,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-Pro secco,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
-Pro secco,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.365,3.0,37.02,tier
+Pro secco,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
+Pro secco,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.366,3.0,37.10,tier
 Pro secco,Ehizibue,D,Udinese,scommessa,0.378,0.307,3.0,32.48,tier
-Pro secco,Sala A.,C,Lecce,low,0.250,0.282,1.0,27.40,tier
+Pro secco,Sala A.,C,Lecce,low,0.250,0.283,1.0,27.47,tier
 Pro secco,Sportiello,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
 Pro secco,Aboukhlal,A,Torino,low,0.261,0.184,3.0,20.33,tier
 Pro secco,Moro L.,A,Sassuolo,low,0.167,0.152,1.0,15.57,tier
 SMOG,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-SMOG,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+SMOG,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 SMOG,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 SMOG,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
 SMOG,Kempf,D,Como,top,0.701,0.701,14.0,70.10,tier
 SMOG,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
-SMOG,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.629,17.0,64.67,tier
+SMOG,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.630,17.0,64.75,tier
 SMOG,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
 SMOG,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
 SMOG,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 SMOG,Kilicsoy,A,Cagliari,starter,0.580,0.628,12.0,61.60,tier
-SMOG,Odgaard,C,Bologna,starter,0.630,0.610,18.0,61.50,tier
+SMOG,Odgaard,C,Bologna,starter,0.631,0.610,18.0,61.53,tier
 SMOG,Esposito Se.,A,Cagliari,starter,0.674,0.563,16.0,59.08,tier
 SMOG,Delprato,D,Parma,starter,0.652,0.525,9.0,55.68,tier
 SMOG,Terracciano F.,D,Cremonese,starter,0.643,0.520,11.0,55.08,tier
+SMOG,Tourè I.,C,Pisa,starter,0.533,0.375,10.0,41.45,tier
 SMOG,Meret,P,Napoli,scommessa,0.396,0.420,8.0,41.40,tier
-SMOG,Tourè I.,C,Pisa,starter,0.532,0.374,10.0,41.35,tier
 SMOG,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
 SMOG,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
 SMOG,Ehizibue,D,Udinese,scommessa,0.378,0.307,3.0,32.48,tier
@@ -737,27 +737,27 @@ SMOG,Marchwinski,C,Lecce,low,0.281,0.196,1.0,21.73,tier
 SMOG,Stengs,C,Pisa,low,0.275,0.187,1.0,20.90,tier
 Scarzooka,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Scarzooka,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Scarzooka,Calhanoglu,C,Inter,top,0.786,0.816,28.0,80.85,tier
-Scarzooka,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+Scarzooka,Calhanoglu,C,Inter,top,0.786,0.815,28.0,80.77,tier
+Scarzooka,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 Scarzooka,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 Scarzooka,Zalewski,C,Atalanta,semitop,0.730,0.690,15.0,70.00,tier
 Scarzooka,Di Gregorio,P,Juventus,semitop,0.743,0.667,16.0,68.60,tier
 Scarzooka,Akanji,D,Inter,semitop,0.735,0.664,11.0,68.17,tier
 Scarzooka,Vojvoda,D,Como,semitop,0.718,0.656,12.0,67.15,tier
-Scarzooka,Isaksen,C,Lazio,semitop,0.667,0.661,14.0,66.25,tier
+Scarzooka,Isaksen,C,Lazio,semitop,0.668,0.661,14.0,66.28,tier
 Scarzooka,Da Cunha,C,Como,semitop,0.703,0.626,11.0,64.53,tier
 Scarzooka,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
 Scarzooka,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
 Scarzooka,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 Scarzooka,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 Scarzooka,Lazaro,D,Torino,starter,0.598,0.449,7.0,48.62,tier
-Scarzooka,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
+Scarzooka,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
 Scarzooka,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
 Scarzooka,Njie,A,Torino,scommessa,0.277,0.319,6.0,30.85,tier
 Scarzooka,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 Scarzooka,Pinsoglio,P,Juventus,scommessa,0.301,0.223,1.0,24.25,tier
-Scarzooka,Liteta,C,Cagliari,low,0.178,0.216,1.0,20.65,tier
-Scarzooka,Hojholt,C,Pisa,low,0.192,0.171,2.0,17.62,tier
+Scarzooka,Liteta,C,Cagliari,low,0.179,0.216,1.0,20.67,tier
+Scarzooka,Hojholt,C,Pisa,low,0.192,0.172,2.0,17.70,tier
 SAGATU,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 SAGATU,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 SAGATU,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
@@ -770,82 +770,82 @@ SAGATU,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 SAGATU,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
 SAGATU,Pinamonti,A,Sassuolo,starter,0.688,0.574,14.0,60.25,tier
 SAGATU,Terracciano F.,D,Cremonese,starter,0.643,0.520,11.0,55.08,tier
-SAGATU,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+SAGATU,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 SAGATU,Okoye,P,Udinese,starter,0.583,0.483,10.0,50.80,tier
 SAGATU,Bianchetti,D,Cremonese,starter,0.515,0.419,6.0,44.30,tier
 SAGATU,Doig,D,Sassuolo,starter,0.548,0.395,6.0,43.33,tier
 SAGATU,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
-SAGATU,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+SAGATU,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 SAGATU,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
-SAGATU,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+SAGATU,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 SAGATU,Nelsson,D,Verona,scommessa,0.512,0.330,4.0,37.55,tier
-SAGATU,Lovric,C,Udinese,scommessa,0.259,0.280,3.0,27.48,tier
-SAGATU,Hojholt,C,Pisa,low,0.192,0.171,2.0,17.62,tier
+SAGATU,Lovric,C,Udinese,scommessa,0.259,0.281,3.0,27.55,tier
+SAGATU,Hojholt,C,Pisa,low,0.192,0.172,2.0,17.70,tier
 Riccardigno,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
 Riccardigno,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Riccardigno,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
-Riccardigno,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+Riccardigno,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
+Riccardigno,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 Riccardigno,Kempf,D,Como,top,0.701,0.701,14.0,70.10,tier
 Riccardigno,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
-Riccardigno,Isaksen,C,Lazio,semitop,0.667,0.661,14.0,66.25,tier
+Riccardigno,Isaksen,C,Lazio,semitop,0.668,0.661,14.0,66.28,tier
 Riccardigno,Bonazzoli,A,Cremonese,semitop,0.718,0.631,20.0,65.27,tier
 Riccardigno,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 Riccardigno,Kilicsoy,A,Cagliari,starter,0.580,0.628,12.0,61.60,tier
-Riccardigno,Politano,C,Napoli,starter,0.629,0.533,11.0,55.70,tier
+Riccardigno,Politano,C,Napoli,starter,0.630,0.533,11.0,55.73,tier
 Riccardigno,Valeri,D,Parma,starter,0.613,0.518,10.0,54.17,tier
-Riccardigno,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+Riccardigno,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 Riccardigno,Okoye,P,Udinese,starter,0.583,0.483,10.0,50.80,tier
 Riccardigno,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-Riccardigno,Brescianini,C,Fiorentina,scommessa,0.461,0.484,7.0,47.83,tier
+Riccardigno,Brescianini,C,Fiorentina,scommessa,0.461,0.485,7.0,47.90,tier
 Riccardigno,Doig,D,Sassuolo,starter,0.548,0.395,6.0,43.33,tier
 Riccardigno,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
 Riccardigno,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
 Riccardigno,Tavares N.,D,Lazio,scommessa,0.374,0.345,6.0,35.22,tier
 Riccardigno,Zaragoza,C,Rom,scommessa,0.257,0.325,7.0,30.80,tier
-Riccardigno,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+Riccardigno,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 Riccardigno,Aboukhlal,A,Torino,low,0.261,0.184,3.0,20.33,tier
 ProPro Proibito,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-ProPro Proibito,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-ProPro Proibito,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+ProPro Proibito,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+ProPro Proibito,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 ProPro Proibito,Zalewski,C,Atalanta,semitop,0.730,0.690,15.0,70.00,tier
 ProPro Proibito,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
 ProPro Proibito,Sommer,P,Inter,semitop,0.742,0.657,14.0,67.83,tier
 ProPro Proibito,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 ProPro Proibito,Kilicsoy,A,Cagliari,starter,0.580,0.628,12.0,61.60,tier
-ProPro Proibito,Thuram K.,C,Juventus,starter,0.669,0.580,13.0,60.22,tier
+ProPro Proibito,Thuram K.,C,Juventus,starter,0.669,0.579,13.0,60.15,tier
 ProPro Proibito,Rrahmani,D,Napoli,semitop,0.604,0.579,13.0,58.52,tier
 ProPro Proibito,Luperto,D,Cagliari,semitop,0.642,0.565,9.0,58.42,tier
 ProPro Proibito,Valeri,D,Parma,starter,0.613,0.518,10.0,54.17,tier
 ProPro Proibito,Vardy,A,Cremonese,starter,0.619,0.510,20.0,53.73,tier
 ProPro Proibito,Cristante,C,Roma,starter,0.611,0.467,12.0,50.30,tier
 ProPro Proibito,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-ProPro Proibito,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+ProPro Proibito,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 ProPro Proibito,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
 ProPro Proibito,Bradaric,D,Verona,starter,0.508,0.388,6.0,41.80,tier
 ProPro Proibito,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
 ProPro Proibito,Pezzella Giu.,D,Cremonese,scommessa,0.455,0.336,4.0,36.58,tier
 ProPro Proibito,Meister,A,Pisa,scommessa,0.454,0.315,8.0,34.98,tier
 ProPro Proibito,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
-ProPro Proibito,Hojholt,C,Pisa,low,0.192,0.171,2.0,17.62,tier
+ProPro Proibito,Hojholt,C,Pisa,low,0.192,0.172,2.0,17.70,tier
 FC Spiaze,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 FC Spiaze,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 FC Spiaze,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-FC Spiaze,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+FC Spiaze,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 FC Spiaze,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 FC Spiaze,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
 FC Spiaze,Di Gregorio,P,Juventus,semitop,0.743,0.667,16.0,68.60,tier
-FC Spiaze,De Ketelaere,A,Atalanta,semitop,0.715,0.635,17.0,65.50,tier
-FC Spiaze,Ricci S.,C,Milan,semitop,0.664,0.623,13.0,63.32,tier
-FC Spiaze,Leris,C,Pisa,starter,0.636,0.549,12.0,57.08,tier
+FC Spiaze,De Ketelaere,A,Atalanta,semitop,0.714,0.634,17.0,65.40,tier
+FC Spiaze,Ricci S.,C,Milan,semitop,0.664,0.624,13.0,63.40,tier
+FC Spiaze,Leris,C,Pisa,starter,0.636,0.550,12.0,57.15,tier
 FC Spiaze,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
-FC Spiaze,Bernede,C,Verona,starter,0.629,0.492,9.0,52.62,tier
+FC Spiaze,Bernede,C,Verona,starter,0.628,0.492,9.0,52.60,tier
 FC Spiaze,Beukema,D,Napoli,starter,0.520,0.511,7.0,51.32,tier
 FC Spiaze,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 FC Spiaze,Rodriguez Je.,A,Como,starter,0.573,0.463,12.0,49.05,tier
-FC Spiaze,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+FC Spiaze,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 FC Spiaze,Pellegrini Lu.,D,Lazio,scommessa,0.491,0.381,5.0,40.85,tier
 FC Spiaze,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
-FC Spiaze,Iannoni,C,Sassuolo,scommessa,0.293,0.341,5.0,32.90,tier
+FC Spiaze,Iannoni,C,Sassuolo,scommessa,0.293,0.342,5.0,32.98,tier
 FC Spiaze,Diouf,C,Inter,scommessa,0.284,0.313,2.0,30.58,tier
 FC Spiaze,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 FC Spiaze,Siegrist,P,Genoa,low,0.265,0.174,1.0,19.68,tier
@@ -854,9 +854,9 @@ Antibro,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Antibro,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 Antibro,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
 Antibro,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Antibro,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Antibro,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Antibro,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
-Antibro,Vlasic,C,Torino,semitop,0.754,0.666,18.0,68.80,tier
+Antibro,Vlasic,C,Torino,semitop,0.753,0.665,18.0,68.70,tier
 Antibro,Malinovskyi,C,Genoa,semitop,0.724,0.640,12.0,66.10,tier
 Antibro,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
 Antibro,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
@@ -864,13 +864,13 @@ Antibro,Esposito Se.,A,Cagliari,starter,0.674,0.563,16.0,59.08,tier
 Antibro,Pedro,A,Lazio,scommessa,0.528,0.517,7.0,51.98,tier
 Antibro,Vasquez,D,Genoa,starter,0.623,0.477,10.0,51.35,tier
 Antibro,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
-Antibro,Keita M.,C,Parma,starter,0.563,0.424,8.0,45.88,tier
+Antibro,Keita M.,C,Parma,starter,0.562,0.423,8.0,45.77,tier
 Antibro,Aebischer,C,Pisa,scommessa,0.497,0.309,5.0,35.60,tier
 Antibro,Tavares N.,D,Lazio,scommessa,0.374,0.345,6.0,35.22,tier
 Antibro,Meister,A,Pisa,scommessa,0.454,0.315,8.0,34.98,tier
 Antibro,Vitik,D,Bologna,scommessa,0.384,0.329,4.0,34.27,tier
-Antibro,Estevez,C,Parma,scommessa,0.340,0.254,5.0,27.55,tier
-Antibro,Sala A.,C,Lecce,low,0.250,0.282,1.0,27.40,tier
+Antibro,Estevez,C,Parma,scommessa,0.340,0.255,5.0,27.62,tier
+Antibro,Sala A.,C,Lecce,low,0.250,0.283,1.0,27.47,tier
 Antibro,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
 Antibro,Nava,P,Cremonese,low,0.277,0.190,1.0,21.18,tier
 real donk,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
@@ -878,18 +878,18 @@ real donk,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 real donk,Esposito F.P.,A,Inter,semitop,0.762,0.763,18.0,76.28,tier
 real donk,Krstovic,A,Atalanta,semitop,0.762,0.718,20.0,72.90,tier
 real donk,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
-real donk,Nkunku,A,Milan,semitop,0.725,0.700,17.0,70.62,tier
+real donk,Nkunku,A,Milan,semitop,0.725,0.699,17.0,70.55,tier
 real donk,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
 real donk,Vojvoda,D,Como,semitop,0.718,0.656,12.0,67.15,tier
 real donk,Pellegrino M.,A,Parma,semitop,0.740,0.639,21.0,66.42,tier
-real donk,Pasalic,C,Atalanta,starter,0.677,0.617,13.0,63.20,tier
+real donk,Pasalic,C,Atalanta,semitop,0.677,0.617,13.0,63.20,tier
 real donk,Kilicsoy,A,Cagliari,starter,0.580,0.628,12.0,61.60,tier
-real donk,Thuram K.,C,Juventus,starter,0.669,0.580,13.0,60.22,tier
+real donk,Thuram K.,C,Juventus,starter,0.669,0.579,13.0,60.15,tier
 real donk,Ostigard,D,Genoa,semitop,0.635,0.586,15.0,59.82,tier
 real donk,Gatti,D,Juventus,scommessa,0.479,0.495,5.0,49.10,tier
 real donk,Lucumì,D,Bologna,starter,0.510,0.436,7.0,45.45,tier
 real donk,Bertola,D,Udinese,starter,0.522,0.414,6.0,44.10,tier
-real donk,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+real donk,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 real donk,Pezzella Giu.,D,Cremonese,scommessa,0.455,0.336,4.0,36.58,tier
 real donk,Aebischer,C,Pisa,scommessa,0.497,0.309,5.0,35.60,tier
 real donk,Diouf,C,Inter,scommessa,0.284,0.313,2.0,30.58,tier
@@ -899,8 +899,8 @@ real donk,Marchwinski,C,Lecce,low,0.281,0.196,1.0,21.73,tier
 A.C.TUA CUCS,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 A.C.TUA CUCS,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
 A.C.TUA CUCS,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-A.C.TUA CUCS,Calhanoglu,C,Inter,top,0.786,0.816,28.0,80.85,tier
-A.C.TUA CUCS,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+A.C.TUA CUCS,Calhanoglu,C,Inter,top,0.786,0.815,28.0,80.77,tier
+A.C.TUA CUCS,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 A.C.TUA CUCS,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 A.C.TUA CUCS,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 A.C.TUA CUCS,Kempf,D,Como,top,0.701,0.701,14.0,70.10,tier
@@ -911,8 +911,8 @@ A.C.TUA CUCS,Valeri,D,Parma,starter,0.613,0.518,10.0,54.17,tier
 A.C.TUA CUCS,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 A.C.TUA CUCS,Barbieri,D,Cremonese,starter,0.536,0.465,9.0,48.27,tier
 A.C.TUA CUCS,Marcandalli,D,Genoa,starter,0.503,0.418,6.0,43.93,tier
-A.C.TUA CUCS,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
-A.C.TUA CUCS,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
+A.C.TUA CUCS,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
+A.C.TUA CUCS,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
 A.C.TUA CUCS,Scuffet,P,Pisa,scommessa,0.308,0.293,4.0,29.68,tier
 A.C.TUA CUCS,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 A.C.TUA CUCS,Elphege,A,Par,low,0.450,0.200,1.0,26.25,tier
@@ -928,7 +928,7 @@ FC Galli,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 FC Galli,Kalulu,D,Juventus,top,0.820,0.749,12.0,76.67,tier
 FC Galli,Akanji,D,Inter,semitop,0.735,0.664,11.0,68.17,tier
 FC Galli,Malinovskyi,C,Genoa,semitop,0.724,0.640,12.0,66.10,tier
-FC Galli,Pasalic,C,Atalanta,starter,0.677,0.617,13.0,63.20,tier
+FC Galli,Pasalic,C,Atalanta,semitop,0.677,0.617,13.0,63.20,tier
 FC Galli,Basic,C,Lazio,starter,0.611,0.583,14.0,59.00,tier
 FC Galli,Pedro,A,Lazio,scommessa,0.528,0.517,7.0,51.98,tier
 FC Galli,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
@@ -938,16 +938,16 @@ FC Galli,Folorunsho,C,Cagliari,starter,0.480,0.412,8.0,42.90,tier
 FC Galli,Lazzari,D,Lazio,scommessa,0.406,0.357,4.0,36.92,tier
 FC Galli,Juan Jesus,D,Napoli,scommessa,0.444,0.342,4.0,36.75,tier
 FC Galli,Scuffet,P,Pisa,scommessa,0.308,0.293,4.0,29.68,tier
-FC Galli,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+FC Galli,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 FC Galli,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
 FC Galli,Zarraga,C,Udinese,low,0.199,0.199,2.0,19.90,tier
 FC Galli,Moro L.,A,Sassuolo,low,0.167,0.152,1.0,15.57,tier
 Temptation Haaland,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Temptation Haaland,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 Temptation Haaland,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-Temptation Haaland,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Temptation Haaland,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Temptation Haaland,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Temptation Haaland,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Temptation Haaland,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Temptation Haaland,Baturina,C,Como,top,0.690,0.768,14.0,74.85,tier
 Temptation Haaland,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 Temptation Haaland,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
@@ -956,23 +956,23 @@ Temptation Haaland,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 Temptation Haaland,Lazaro,D,Torino,starter,0.598,0.449,7.0,48.62,tier
 Temptation Haaland,Barbieri,D,Cremonese,starter,0.536,0.465,9.0,48.27,tier
 Temptation Haaland,Walukiewicz,D,Sassuolo,starter,0.577,0.420,6.0,45.92,tier
-Temptation Haaland,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+Temptation Haaland,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 Temptation Haaland,Frese,D,Verona,starter,0.499,0.392,6.0,41.88,tier
 Temptation Haaland,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-Temptation Haaland,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+Temptation Haaland,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 Temptation Haaland,Ndour,C,Fiorentina,scommessa,0.427,0.329,6.0,35.35,tier
-Temptation Haaland,Sala A.,C,Lecce,low,0.250,0.282,1.0,27.40,tier
+Temptation Haaland,Sala A.,C,Lecce,low,0.250,0.283,1.0,27.47,tier
 Temptation Haaland,Turati,P,Sassuolo,low,0.149,0.192,1.0,18.13,tier
 Temptation Haaland,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 Temptation Haaland,Moro L.,A,Sassuolo,low,0.167,0.152,1.0,15.57,tier
 Collocolo Team,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-Collocolo Team,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Collocolo Team,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Collocolo Team,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 Collocolo Team,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 Collocolo Team,Baturina,C,Como,top,0.690,0.768,14.0,74.85,tier
 Collocolo Team,Sommer,P,Inter,semitop,0.742,0.657,14.0,67.83,tier
 Collocolo Team,Pellegrino M.,A,Parma,semitop,0.740,0.639,21.0,66.42,tier
-Collocolo Team,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.629,17.0,64.67,tier
+Collocolo Team,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.630,17.0,64.75,tier
 Collocolo Team,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
 Collocolo Team,Belghali,D,Verona,semitop,0.614,0.599,11.0,60.27,tier
 Collocolo Team,Basic,C,Lazio,starter,0.611,0.583,14.0,59.00,tier
@@ -991,7 +991,7 @@ Collocolo Team,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 LE 4 M,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 LE 4 M,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 LE 4 M,Zielinski,C,Inter,top,0.800,0.819,19.0,81.42,tier
-LE 4 M,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+LE 4 M,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 LE 4 M,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 LE 4 M,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 LE 4 M,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
@@ -1002,7 +1002,7 @@ LE 4 M,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
 LE 4 M,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
 LE 4 M,Dumfries,D,Inter,semitop,0.537,0.568,10.0,56.02,tier
 LE 4 M,Delprato,D,Parma,starter,0.652,0.525,9.0,55.68,tier
-LE 4 M,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+LE 4 M,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 LE 4 M,Ndour,C,Fiorentina,scommessa,0.427,0.329,6.0,35.35,tier
 LE 4 M,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
 LE 4 M,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
@@ -1013,11 +1013,11 @@ LE 4 M,Okereke,A,Cremonese,low,0.162,0.192,1.0,18.45,tier
 LE 4 M,Dossena,D,Cagliari,low,0.134,0.170,1.0,16.10,tier
 CISCO TEAM,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 CISCO TEAM,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-CISCO TEAM,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+CISCO TEAM,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 CISCO TEAM,Bremer,D,Juventus,top,0.765,0.795,13.0,78.75,tier
 CISCO TEAM,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
 CISCO TEAM,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
-CISCO TEAM,Ferguson E.,A,Roma,starter,0.611,0.627,16.0,62.30,tier
+CISCO TEAM,Ferguson E.,A,Roma,starter,0.611,0.626,16.0,62.22,tier
 CISCO TEAM,Pellegrini Lo.,C,Roma,starter,0.635,0.612,14.0,61.78,tier
 CISCO TEAM,Mazzitelli,C,Cagliari,starter,0.565,0.626,10.0,61.08,tier
 CISCO TEAM,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
@@ -1029,39 +1029,16 @@ CISCO TEAM,Doig,D,Sassuolo,starter,0.548,0.395,6.0,43.33,tier
 CISCO TEAM,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
 CISCO TEAM,Meret,P,Napoli,scommessa,0.396,0.420,8.0,41.40,tier
 CISCO TEAM,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
-CISCO TEAM,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+CISCO TEAM,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 CISCO TEAM,Aebischer,C,Pisa,scommessa,0.497,0.309,5.0,35.60,tier
-CISCO TEAM,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+CISCO TEAM,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 CISCO TEAM,Marchwinski,C,Lecce,low,0.281,0.196,1.0,21.73,tier
-CISCO TEAM,Trepy,A,Cagliari,low,0.156,0.185,1.0,17.77,tier
-SPOSTATI,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-SPOSTATI,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-SPOSTATI,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
-SPOSTATI,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
-SPOSTATI,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
-SPOSTATI,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
-SPOSTATI,Isaksen,C,Lazio,semitop,0.667,0.661,14.0,66.25,tier
-SPOSTATI,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
-SPOSTATI,Valle,D,Como,semitop,0.663,0.614,8.0,62.62,tier
-SPOSTATI,Mazzitelli,C,Cagliari,starter,0.565,0.626,10.0,61.08,tier
-SPOSTATI,De Gea,P,Fiorentina,semitop,0.658,0.525,11.0,55.83,tier
-SPOSTATI,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
-SPOSTATI,Mina,D,Cagliari,starter,0.539,0.505,8.0,51.35,tier
-SPOSTATI,Tramoni M.,C,Pisa,starter,0.549,0.445,9.0,47.10,tier
-SPOSTATI,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
-SPOSTATI,Estupinan,D,Milan,scommessa,0.422,0.394,3.0,40.10,tier
-SPOSTATI,Kuhn,A,Como,starter,0.418,0.381,4.0,39.02,tier
-SPOSTATI,Ferguson,C,Bologna,scommessa,0.455,0.366,5.0,38.82,tier
-SPOSTATI,Pezzella Giu.,D,Cremonese,scommessa,0.455,0.336,4.0,36.58,tier
-SPOSTATI,Meister,A,Pisa,scommessa,0.454,0.315,8.0,34.98,tier
-SPOSTATI,Vranckx,C,Sassuolo,low,0.305,0.228,3.0,24.73,tier
-SPOSTATI,Christensen O.,P,Fiorentina,low,0.261,0.168,1.0,19.12,tier
-SPOSTATI,Lezzerini,P,Fiorentina,low,0.261,0.168,1.0,19.12,tier
+CISCO TEAM,Trepy,A,Cagliari,low,0.156,0.184,1.0,17.70,tier
 BARAKALLAHOUFIK,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-BARAKALLAHOUFIK,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+BARAKALLAHOUFIK,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 BARAKALLAHOUFIK,Provedel,P,Lazio,top,0.833,0.769,17.0,78.50,tier
 BARAKALLAHOUFIK,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
-BARAKALLAHOUFIK,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+BARAKALLAHOUFIK,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 BARAKALLAHOUFIK,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
 BARAKALLAHOUFIK,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 BARAKALLAHOUFIK,Scamacca,A,Atalanta,semitop,0.699,0.716,22.0,71.17,tier
@@ -1069,21 +1046,44 @@ BARAKALLAHOUFIK,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
 BARAKALLAHOUFIK,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
 BARAKALLAHOUFIK,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
 BARAKALLAHOUFIK,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
-BARAKALLAHOUFIK,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+BARAKALLAHOUFIK,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 BARAKALLAHOUFIK,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
-BARAKALLAHOUFIK,Rowe,C,Bologna,starter,0.510,0.443,7.0,45.98,tier
+BARAKALLAHOUFIK,Rowe,C,Bologna,starter,0.528,0.468,7.0,48.30,tier
 BARAKALLAHOUFIK,Doig,D,Sassuolo,starter,0.548,0.395,6.0,43.33,tier
-BARAKALLAHOUFIK,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.365,3.0,37.02,tier
-BARAKALLAHOUFIK,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
-BARAKALLAHOUFIK,Lykogiannis,D,Bologna,scommessa,0.311,0.295,2.0,29.90,tier
-BARAKALLAHOUFIK,Strefezza,C,Par,scommessa,0.228,0.286,10.0,27.15,tier
+BARAKALLAHOUFIK,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.366,3.0,37.10,tier
+BARAKALLAHOUFIK,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
+BARAKALLAHOUFIK,Lykogiannis,D,Bologna,scommessa,0.311,0.296,2.0,29.97,tier
+BARAKALLAHOUFIK,Strefezza,C,Par,scommessa,0.229,0.286,10.0,27.18,tier
 BARAKALLAHOUFIK,Motta,P,Laz,scommessa,0.297,0.218,1.0,23.78,tier
 BARAKALLAHOUFIK,Cremaschi,C,Parma,low,0.292,0.212,1.0,23.20,tier
 BARAKALLAHOUFIK,Diao,A,Como,low,0.230,0.220,4.0,22.25,tier
+SPOSTATI,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
+SPOSTATI,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
+SPOSTATI,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
+SPOSTATI,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
+SPOSTATI,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
+SPOSTATI,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
+SPOSTATI,Isaksen,C,Lazio,semitop,0.668,0.661,14.0,66.28,tier
+SPOSTATI,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
+SPOSTATI,Valle,D,Como,semitop,0.663,0.614,8.0,62.62,tier
+SPOSTATI,Mazzitelli,C,Cagliari,starter,0.565,0.626,10.0,61.08,tier
+SPOSTATI,De Gea,P,Fiorentina,semitop,0.658,0.525,11.0,55.83,tier
+SPOSTATI,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
+SPOSTATI,Mina,D,Cagliari,starter,0.539,0.505,8.0,51.35,tier
+SPOSTATI,Tramoni M.,C,Pisa,starter,0.549,0.445,9.0,47.10,tier
+SPOSTATI,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
+SPOSTATI,Estupinan,D,Milan,scommessa,0.422,0.394,3.0,40.10,tier
+SPOSTATI,Kuhn,A,Como,starter,0.418,0.381,4.0,39.02,tier
+SPOSTATI,Ferguson,C,Bologna,scommessa,0.455,0.366,5.0,38.82,tier
+SPOSTATI,Pezzella Giu.,D,Cremonese,scommessa,0.455,0.336,4.0,36.58,tier
+SPOSTATI,Meister,A,Pisa,scommessa,0.454,0.315,8.0,34.98,tier
+SPOSTATI,Vranckx,C,Sassuolo,low,0.305,0.229,3.0,24.80,tier
+SPOSTATI,Christensen O.,P,Fiorentina,low,0.261,0.167,1.0,19.05,tier
+SPOSTATI,Lezzerini,P,Fiorentina,low,0.261,0.167,1.0,19.05,tier
 MARCIO TEAM,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-MARCIO TEAM,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+MARCIO TEAM,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 MARCIO TEAM,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-MARCIO TEAM,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+MARCIO TEAM,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 MARCIO TEAM,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
 MARCIO TEAM,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 MARCIO TEAM,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
@@ -1092,13 +1092,13 @@ MARCIO TEAM,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
 MARCIO TEAM,Hermoso,D,Roma,starter,0.587,0.545,10.0,55.55,tier
 MARCIO TEAM,Muharemovic,D,Sassuolo,starter,0.617,0.508,7.0,53.52,tier
 MARCIO TEAM,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
-MARCIO TEAM,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+MARCIO TEAM,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 MARCIO TEAM,Solomon,A,Fiorentina,scommessa,0.600,0.447,7.0,48.52,tier
-MARCIO TEAM,El Shaarawy,C,Roma,scommessa,0.470,0.479,8.0,47.67,tier
+MARCIO TEAM,El Shaarawy,C,Roma,scommessa,0.471,0.479,8.0,47.70,tier
 MARCIO TEAM,Obert,D,Cagliari,starter,0.561,0.438,5.0,46.88,tier
 MARCIO TEAM,Ndour,C,Fiorentina,scommessa,0.427,0.329,6.0,35.35,tier
-MARCIO TEAM,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
-MARCIO TEAM,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
+MARCIO TEAM,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
+MARCIO TEAM,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
 MARCIO TEAM,Casale,D,Bologna,scommessa,0.307,0.290,2.0,29.42,tier
 MARCIO TEAM,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 MARCIO TEAM,Nicolas,P,Pisa,low,0.145,0.182,1.0,17.28,tier
@@ -1106,7 +1106,7 @@ MARCIO TEAM,Moro L.,A,Sassuolo,low,0.167,0.152,1.0,15.57,tier
 FC Plasmon,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 FC Plasmon,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 FC Plasmon,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-FC Plasmon,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+FC Plasmon,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 FC Plasmon,Provedel,P,Lazio,top,0.833,0.769,17.0,78.50,tier
 FC Plasmon,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 FC Plasmon,Malinovskyi,C,Genoa,semitop,0.724,0.640,12.0,66.10,tier
@@ -1117,20 +1117,20 @@ FC Plasmon,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
 FC Plasmon,Miranda J.,D,Bologna,starter,0.594,0.485,11.0,51.23,tier
 FC Plasmon,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 FC Plasmon,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-FC Plasmon,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+FC Plasmon,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 FC Plasmon,Ndour,C,Fiorentina,scommessa,0.427,0.329,6.0,35.35,tier
-FC Plasmon,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+FC Plasmon,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 FC Plasmon,Angelino,D,Roma,scommessa,0.347,0.330,7.0,33.42,tier
 FC Plasmon,Albarracin,A,Cag,low,0.600,0.202,1.0,30.15,tier
 FC Plasmon,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
-FC Plasmon,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+FC Plasmon,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 FC Plasmon,Motta,P,Laz,scommessa,0.297,0.218,1.0,23.78,tier
-FC Plasmon,Venturino,C,Roma,low,0.204,0.236,1.0,22.80,tier
+FC Plasmon,Venturino,C,Roma,low,0.204,0.235,1.0,22.72,tier
 Lunarossa,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-Lunarossa,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Lunarossa,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Lunarossa,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
 Lunarossa,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Lunarossa,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Lunarossa,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Lunarossa,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 Lunarossa,Baturina,C,Como,top,0.690,0.768,14.0,74.85,tier
 Lunarossa,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
@@ -1141,16 +1141,16 @@ Lunarossa,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 Lunarossa,Lazaro,D,Torino,starter,0.598,0.449,7.0,48.62,tier
 Lunarossa,Elmas,C,Napoli,starter,0.541,0.427,6.0,45.55,tier
 Lunarossa,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
-Lunarossa,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+Lunarossa,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 Lunarossa,Tavares N.,D,Lazio,scommessa,0.374,0.345,6.0,35.22,tier
-Lunarossa,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
-Lunarossa,Strefezza,C,Par,scommessa,0.228,0.286,10.0,27.15,tier
+Lunarossa,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
+Lunarossa,Strefezza,C,Par,scommessa,0.229,0.286,10.0,27.18,tier
 Lunarossa,Milik,A,Juventus,low,0.307,0.233,1.0,25.15,tier
 Lunarossa,Sportiello,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
 Lunarossa,Aboukhlal,A,Torino,low,0.261,0.184,3.0,20.33,tier
 Lunarossa,Dossena,D,Cagliari,low,0.134,0.170,1.0,16.10,tier
-CLAN,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-CLAN,Modric,C,Milan,top,0.831,0.788,19.0,79.88,tier
+CLAN,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+CLAN,Modric,C,Milan,top,0.830,0.788,19.0,79.85,tier
 CLAN,Thuram,A,Inter,top,0.783,0.792,29.0,78.98,tier
 CLAN,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 CLAN,Baturina,C,Como,top,0.690,0.768,14.0,74.85,tier
@@ -1162,11 +1162,11 @@ CLAN,Malinovskyi,C,Genoa,semitop,0.724,0.640,12.0,66.10,tier
 CLAN,Lazaro,D,Torino,starter,0.598,0.449,7.0,48.62,tier
 CLAN,Solomon,A,Fiorentina,scommessa,0.600,0.447,7.0,48.52,tier
 CLAN,Gutierrez,D,Napoli,scommessa,0.470,0.490,3.0,48.50,tier
-CLAN,Bernardeschi,C,Bologna,starter,0.478,0.431,5.0,44.27,tier
 CLAN,Comuzzo,D,Fiorentina,starter,0.504,0.420,7.0,44.10,tier
+CLAN,Bernardeschi,C,Bologna,starter,0.475,0.427,5.0,43.90,tier
 CLAN,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
-CLAN,Baldanzi,C,Genoa,scommessa,0.390,0.383,6.0,38.48,tier
-CLAN,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.365,3.0,37.02,tier
+CLAN,Baldanzi,C,Genoa,scommessa,0.390,0.382,6.0,38.40,tier
+CLAN,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.366,3.0,37.10,tier
 CLAN,Tavares N.,D,Lazio,scommessa,0.374,0.345,6.0,35.22,tier
 CLAN,Silvestri,P,Cremonese,scommessa,0.280,0.320,1.0,31.00,tier
 CLAN,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
@@ -1190,15 +1190,38 @@ Giubbentus,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
 Giubbentus,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
 Giubbentus,Smolcic I.,D,Como,scommessa,0.456,0.377,3.0,39.67,tier
 Giubbentus,Stulic,A,Lecce,scommessa,0.509,0.342,8.0,38.38,tier
-Giubbentus,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+Giubbentus,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 Giubbentus,Veiga D.,D,Lecce,scommessa,0.491,0.332,5.0,37.18,tier
 Giubbentus,Aebischer,C,Pisa,scommessa,0.497,0.309,5.0,35.60,tier
-Giubbentus,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+Giubbentus,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 Giubbentus,Bozhinov,D,Pisa,low,0.550,0.161,2.0,25.82,tier
+Imperatori del culo,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
+Imperatori del culo,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
+Imperatori del culo,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
+Imperatori del culo,Bastoni,D,Inter,top,0.806,0.762,17.0,77.30,tier
+Imperatori del culo,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
+Imperatori del culo,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
+Imperatori del culo,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.630,17.0,64.75,tier
+Imperatori del culo,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
+Imperatori del culo,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
+Imperatori del culo,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
+Imperatori del culo,Ostigard,D,Genoa,semitop,0.635,0.586,15.0,59.82,tier
+Imperatori del culo,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
+Imperatori del culo,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
+Imperatori del culo,Ravaglia F.,P,Bologna,starter,0.549,0.466,12.0,48.68,tier
+Imperatori del culo,Tramoni M.,C,Pisa,starter,0.549,0.445,9.0,47.10,tier
+Imperatori del culo,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
+Imperatori del culo,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
+Imperatori del culo,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
+Imperatori del culo,Vitik,D,Bologna,scommessa,0.384,0.329,4.0,34.27,tier
+Imperatori del culo,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
+Imperatori del culo,Morata,A,Como,scommessa,0.318,0.226,4.0,24.90,tier
+Imperatori del culo,Marchwinski,C,Lecce,low,0.281,0.196,1.0,21.73,tier
+Imperatori del culo,Dossena,D,Cagliari,low,0.134,0.170,1.0,16.10,tier
 DEEDPULLY,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 DEEDPULLY,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
 DEEDPULLY,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-DEEDPULLY,Loftus-Cheek,C,Milan,semitop,0.743,0.717,13.0,72.35,tier
+DEEDPULLY,Loftus-Cheek,C,Milan,semitop,0.744,0.717,13.0,72.37,tier
 DEEDPULLY,Zalewski,C,Atalanta,semitop,0.730,0.690,15.0,70.00,tier
 DEEDPULLY,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
 DEEDPULLY,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
@@ -1210,45 +1233,22 @@ DEEDPULLY,Raspadori,A,Atalanta,starter,0.920,0.473,15.0,58.48,tier
 DEEDPULLY,De Winter,D,Milan,semitop,0.575,0.565,4.0,56.75,tier
 DEEDPULLY,Muharemovic,D,Sassuolo,starter,0.617,0.508,7.0,53.52,tier
 DEEDPULLY,Mina,D,Cagliari,starter,0.539,0.505,8.0,51.35,tier
-DEEDPULLY,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+DEEDPULLY,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 DEEDPULLY,Tavares N.,D,Lazio,scommessa,0.374,0.345,6.0,35.22,tier
 DEEDPULLY,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
-DEEDPULLY,Iannoni,C,Sassuolo,scommessa,0.293,0.341,5.0,32.90,tier
-DEEDPULLY,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
+DEEDPULLY,Iannoni,C,Sassuolo,scommessa,0.293,0.342,5.0,32.98,tier
+DEEDPULLY,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
 DEEDPULLY,Biraghi,D,Torino,scommessa,0.310,0.288,3.0,29.35,tier
 DEEDPULLY,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
 DEEDPULLY,Vasquez D. *,P,Roma,low,0.000,0.000,1.0,1.50,fallback_price
-Imperatori del culo,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-Imperatori del culo,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-Imperatori del culo,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Imperatori del culo,Bastoni,D,Inter,top,0.806,0.762,17.0,77.30,tier
-Imperatori del culo,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
-Imperatori del culo,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
-Imperatori del culo,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.629,17.0,64.67,tier
-Imperatori del culo,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
-Imperatori del culo,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
-Imperatori del culo,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
-Imperatori del culo,Ostigard,D,Genoa,semitop,0.635,0.586,15.0,59.82,tier
-Imperatori del culo,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
-Imperatori del culo,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-Imperatori del culo,Ravaglia F.,P,Bologna,starter,0.549,0.466,12.0,48.68,tier
-Imperatori del culo,Tramoni M.,C,Pisa,starter,0.549,0.445,9.0,47.10,tier
-Imperatori del culo,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
-Imperatori del culo,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-Imperatori del culo,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
-Imperatori del culo,Vitik,D,Bologna,scommessa,0.384,0.329,4.0,34.27,tier
-Imperatori del culo,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
-Imperatori del culo,Morata,A,Como,scommessa,0.318,0.226,4.0,24.90,tier
-Imperatori del culo,Marchwinski,C,Lecce,low,0.281,0.196,1.0,21.73,tier
-Imperatori del culo,Dossena,D,Cagliari,low,0.134,0.170,1.0,16.10,tier
 BOBONE32,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-BOBONE32,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+BOBONE32,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 BOBONE32,Zielinski,C,Inter,top,0.800,0.819,19.0,81.42,tier
-BOBONE32,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+BOBONE32,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 BOBONE32,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
-BOBONE32,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+BOBONE32,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 BOBONE32,Pavlovic,D,Milan,top,0.767,0.733,15.0,74.15,tier
-BOBONE32,Saelemaekers,C,Milan,top,0.781,0.719,19.0,73.45,tier
+BOBONE32,Saelemaekers,C,Milan,top,0.781,0.718,19.0,73.38,tier
 BOBONE32,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
 BOBONE32,Ramon,D,Como,semitop,0.721,0.644,12.0,66.33,tier
 BOBONE32,De Gea,P,Fiorentina,semitop,0.658,0.525,11.0,55.83,tier
@@ -1257,18 +1257,18 @@ BOBONE32,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 BOBONE32,Gallo,D,Lecce,starter,0.591,0.440,8.0,47.77,tier
 BOBONE32,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
 BOBONE32,Aebischer,C,Pisa,scommessa,0.497,0.309,5.0,35.60,tier
-BOBONE32,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
-BOBONE32,Lovric,C,Udinese,scommessa,0.259,0.280,3.0,27.48,tier
-BOBONE32,Ondrejka,C,Parma,scommessa,0.311,0.246,5.0,26.22,tier
+BOBONE32,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
+BOBONE32,Lovric,C,Udinese,scommessa,0.259,0.281,3.0,27.55,tier
+BOBONE32,Ondrejka,C,Parma,scommessa,0.312,0.246,5.0,26.25,tier
 BOBONE32,Zapata D.,A,Torino,scommessa,0.328,0.228,7.0,25.30,tier
 BOBONE32,Ndiaye,D,Parma,low,0.220,0.195,1.0,20.12,tier
-BOBONE32,Christensen O.,P,Fiorentina,low,0.261,0.168,1.0,19.12,tier
-BOBONE32,Lezzerini,P,Fiorentina,low,0.261,0.168,1.0,19.12,tier
+BOBONE32,Christensen O.,P,Fiorentina,low,0.261,0.167,1.0,19.05,tier
+BOBONE32,Lezzerini,P,Fiorentina,low,0.261,0.167,1.0,19.05,tier
 Real Mellandro,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Real Mellandro,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
 Real Mellandro,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
 Real Mellandro,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Real Mellandro,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Real Mellandro,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Real Mellandro,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 Real Mellandro,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
 Real Mellandro,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
@@ -1282,82 +1282,82 @@ Real Mellandro,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
 Real Mellandro,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
 Real Mellandro,Smolcic I.,D,Como,scommessa,0.456,0.377,3.0,39.67,tier
 Real Mellandro,Aebischer,C,Pisa,scommessa,0.497,0.309,5.0,35.60,tier
-Real Mellandro,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+Real Mellandro,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 Real Mellandro,Meister,A,Pisa,scommessa,0.454,0.315,8.0,34.98,tier
-Real Mellandro,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
-Real Mellandro,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+Real Mellandro,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
+Real Mellandro,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 Real Mellandro,Rugani,D,Juventus,low,0.223,0.247,2.0,24.10,tier
 Sisal Palace,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
 Sisal Palace,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 Sisal Palace,Thuram,A,Inter,top,0.783,0.792,29.0,78.98,tier
 Sisal Palace,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 Sisal Palace,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
-Sisal Palace,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+Sisal Palace,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 Sisal Palace,Scamacca,A,Atalanta,semitop,0.699,0.716,22.0,71.17,tier
 Sisal Palace,Barella,C,Inter,semitop,0.749,0.667,17.0,68.75,tier
 Sisal Palace,Akanji,D,Inter,semitop,0.735,0.664,11.0,68.17,tier
 Sisal Palace,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
-Sisal Palace,Thuram K.,C,Juventus,starter,0.669,0.580,13.0,60.22,tier
+Sisal Palace,Thuram K.,C,Juventus,starter,0.669,0.579,13.0,60.15,tier
 Sisal Palace,Tomori,D,Milan,starter,0.630,0.543,7.0,56.47,tier
 Sisal Palace,Kristensen T.,D,Udinese,starter,0.488,0.444,7.0,45.50,tier
-Sisal Palace,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+Sisal Palace,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 Sisal Palace,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
 Sisal Palace,Estupinan,D,Milan,scommessa,0.422,0.394,3.0,40.10,tier
-Sisal Palace,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
+Sisal Palace,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
 Sisal Palace,Dallinga,A,Bologna,scommessa,0.449,0.358,8.0,38.07,tier
 Sisal Palace,Olivera,D,Napoli,scommessa,0.382,0.336,3.0,34.75,tier
-Sisal Palace,Iannoni,C,Sassuolo,scommessa,0.293,0.341,5.0,32.90,tier
-Sisal Palace,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+Sisal Palace,Iannoni,C,Sassuolo,scommessa,0.293,0.342,5.0,32.98,tier
+Sisal Palace,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 Sisal Palace,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
 Sisal Palace,Vasquez D. *,P,Roma,low,0.000,0.000,1.0,1.50,fallback_price
-i bro,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-i bro,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
-i bro,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-i bro,Thuram,A,Inter,top,0.783,0.792,29.0,78.98,tier
-i bro,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
-i bro,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
-i bro,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
-i bro,Bernasconi,D,Atalanta,semitop,0.594,0.592,7.0,59.25,tier
-i bro,Esposito Se.,A,Cagliari,starter,0.674,0.563,16.0,59.08,tier
-i bro,Miretti,C,Juventus,scommessa,0.521,0.564,9.0,55.32,tier
-i bro,Mkhitaryan,C,Inter,starter,0.591,0.529,7.0,54.45,tier
-i bro,Mina,D,Cagliari,starter,0.539,0.505,8.0,51.35,tier
-i bro,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
-i bro,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-i bro,Lazaro,D,Torino,starter,0.598,0.449,7.0,48.62,tier
-i bro,Folorunsho,C,Cagliari,starter,0.480,0.412,8.0,42.90,tier
-i bro,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
-i bro,Sarr A.,A,Verona,scommessa,0.481,0.295,5.0,34.15,tier
-i bro,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
-i bro,Zemura,D,Udinese,scommessa,0.340,0.301,2.0,31.08,tier
-i bro,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
-i bro,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
-i bro,Vasquez D. *,P,Roma,low,0.000,0.000,1.0,1.50,fallback_price
-puerto rosso blu,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+puerto rosso blu,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 puerto rosso blu,Thuram,A,Inter,top,0.783,0.792,29.0,78.98,tier
 puerto rosso blu,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
-puerto rosso blu,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
-puerto rosso blu,Saelemaekers,C,Milan,top,0.781,0.719,19.0,73.45,tier
+puerto rosso blu,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
+puerto rosso blu,Saelemaekers,C,Milan,top,0.781,0.718,19.0,73.38,tier
 puerto rosso blu,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
 puerto rosso blu,Scamacca,A,Atalanta,semitop,0.699,0.716,22.0,71.17,tier
 puerto rosso blu,Vojvoda,D,Como,semitop,0.718,0.656,12.0,67.15,tier
 puerto rosso blu,Malinovskyi,C,Genoa,semitop,0.724,0.640,12.0,66.10,tier
-puerto rosso blu,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.629,17.0,64.67,tier
+puerto rosso blu,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.630,17.0,64.75,tier
 puerto rosso blu,Esposito Se.,A,Cagliari,starter,0.674,0.563,16.0,59.08,tier
 puerto rosso blu,Skorupski,P,Bologna,starter,0.571,0.520,10.0,53.28,tier
 puerto rosso blu,Ravaglia F.,P,Bologna,starter,0.549,0.466,12.0,48.68,tier
 puerto rosso blu,Gutierrez,D,Napoli,scommessa,0.470,0.490,3.0,48.50,tier
 puerto rosso blu,Walukiewicz,D,Sassuolo,starter,0.577,0.420,6.0,45.92,tier
-puerto rosso blu,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+puerto rosso blu,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 puerto rosso blu,Folorunsho,C,Cagliari,starter,0.480,0.412,8.0,42.90,tier
-puerto rosso blu,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.365,3.0,37.02,tier
+puerto rosso blu,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.366,3.0,37.10,tier
 puerto rosso blu,Zemura,D,Udinese,scommessa,0.340,0.301,2.0,31.08,tier
 puerto rosso blu,Pessina Mas.,P,Bologna,scommessa,0.235,0.304,1.0,28.67,tier
 puerto rosso blu,Troilo,D,Parma,low,0.254,0.210,2.0,22.10,tier
-puerto rosso blu,Hojholt,C,Pisa,low,0.192,0.171,2.0,17.62,tier
+puerto rosso blu,Hojholt,C,Pisa,low,0.192,0.172,2.0,17.70,tier
 puerto rosso blu,Gueye,A,Udinese,low,0.176,0.145,2.0,15.28,tier
+i bro,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+i bro,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
+i bro,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
+i bro,Thuram,A,Inter,top,0.783,0.792,29.0,78.98,tier
+i bro,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
+i bro,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
+i bro,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
+i bro,Bernasconi,D,Atalanta,semitop,0.594,0.592,7.0,59.25,tier
+i bro,Esposito Se.,A,Cagliari,starter,0.674,0.563,16.0,59.08,tier
+i bro,Miretti,C,Juventus,scommessa,0.521,0.564,9.0,55.32,tier
+i bro,Mkhitaryan,C,Inter,starter,0.592,0.529,7.0,54.48,tier
+i bro,Mina,D,Cagliari,starter,0.539,0.505,8.0,51.35,tier
+i bro,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
+i bro,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
+i bro,Lazaro,D,Torino,starter,0.598,0.449,7.0,48.62,tier
+i bro,Folorunsho,C,Cagliari,starter,0.480,0.412,8.0,42.90,tier
+i bro,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
+i bro,Sarr A.,A,Verona,scommessa,0.481,0.295,5.0,34.15,tier
+i bro,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
+i bro,Zemura,D,Udinese,scommessa,0.340,0.301,2.0,31.08,tier
+i bro,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
+i bro,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
+i bro,Vasquez D. *,P,Roma,low,0.000,0.000,1.0,1.50,fallback_price
 Leonte FC,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-Leonte FC,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Leonte FC,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Leonte FC,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 Leonte FC,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 Leonte FC,Bremer,D,Juventus,top,0.765,0.795,13.0,78.75,tier
@@ -1369,23 +1369,23 @@ Leonte FC,Basic,C,Lazio,starter,0.611,0.583,14.0,59.00,tier
 Leonte FC,Cancellieri,A,Lazio,starter,0.588,0.490,14.0,51.45,tier
 Leonte FC,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 Leonte FC,Djimsiti,D,Atalanta,starter,0.580,0.441,5.0,47.58,tier
-Leonte FC,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+Leonte FC,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 Leonte FC,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
 Leonte FC,Stulic,A,Lecce,scommessa,0.509,0.342,8.0,38.38,tier
 Leonte FC,Ndour,C,Fiorentina,scommessa,0.427,0.329,6.0,35.35,tier
 Leonte FC,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
-Leonte FC,Estevez,C,Parma,scommessa,0.340,0.254,5.0,27.55,tier
+Leonte FC,Estevez,C,Parma,scommessa,0.340,0.255,5.0,27.62,tier
 Leonte FC,Coulibaly W.,D,Sassuolo,low,0.271,0.249,1.0,25.45,tier
-Leonte FC,Vranckx,C,Sassuolo,low,0.305,0.228,3.0,24.73,tier
+Leonte FC,Vranckx,C,Sassuolo,low,0.305,0.229,3.0,24.80,tier
 Leonte FC,Nava,P,Cremonese,low,0.277,0.190,1.0,21.18,tier
-Leonte FC,Hojholt,C,Pisa,low,0.192,0.171,2.0,17.62,tier
-kalashnikov,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Leonte FC,Hojholt,C,Pisa,low,0.192,0.172,2.0,17.70,tier
+kalashnikov,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 kalashnikov,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-kalashnikov,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+kalashnikov,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 kalashnikov,Pavlovic,D,Milan,top,0.767,0.733,15.0,74.15,tier
 kalashnikov,Scamacca,A,Atalanta,semitop,0.699,0.716,22.0,71.17,tier
 kalashnikov,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
-kalashnikov,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.629,17.0,64.67,tier
+kalashnikov,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.630,17.0,64.75,tier
 kalashnikov,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
 kalashnikov,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
 kalashnikov,Rrahmani,D,Napoli,semitop,0.604,0.579,13.0,58.52,tier
@@ -1399,13 +1399,13 @@ kalashnikov,Adzic,C,Juventus,scommessa,0.378,0.462,3.0,44.10,tier
 kalashnikov,Juan Jesus,D,Napoli,scommessa,0.444,0.342,4.0,36.75,tier
 kalashnikov,Meister,A,Pisa,scommessa,0.454,0.315,8.0,34.98,tier
 kalashnikov,Pessina Mas.,P,Bologna,scommessa,0.235,0.304,1.0,28.67,tier
-kalashnikov,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+kalashnikov,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 kalashnikov,Romagna,D,Sassuolo,low,0.192,0.219,1.0,21.22,tier
 kalashnikov,Zarraga,C,Udinese,low,0.199,0.199,2.0,19.90,tier
 Piovra73,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Piovra73,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-Piovra73,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-Piovra73,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Piovra73,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+Piovra73,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Piovra73,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
 Piovra73,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
 Piovra73,Giovane,A,Napoli,starter,0.714,0.612,17.0,63.75,tier
@@ -1414,8 +1414,8 @@ Piovra73,Mazzitelli,C,Cagliari,starter,0.565,0.626,10.0,61.08,tier
 Piovra73,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
 Piovra73,Terracciano F.,D,Cremonese,starter,0.643,0.520,11.0,55.08,tier
 Piovra73,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-Piovra73,Sorensen O.,C,Parma,starter,0.542,0.411,7.0,44.38,tier
-Piovra73,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+Piovra73,Sorensen O.,C,Parma,starter,0.542,0.410,7.0,44.30,tier
+Piovra73,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 Piovra73,Marcandalli,D,Genoa,starter,0.503,0.418,6.0,43.93,tier
 Piovra73,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
 Piovra73,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
@@ -1424,10 +1424,10 @@ Piovra73,Tavares N.,D,Lazio,scommessa,0.374,0.345,6.0,35.22,tier
 Piovra73,Diouf,C,Inter,scommessa,0.284,0.313,2.0,30.58,tier
 Piovra73,Morata,A,Como,scommessa,0.318,0.226,4.0,24.90,tier
 Piovra73,Sportiello,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
-Piovra73,Liteta,C,Cagliari,low,0.178,0.216,1.0,20.65,tier
+Piovra73,Liteta,C,Cagliari,low,0.179,0.216,1.0,20.67,tier
 Due Amici al Var,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-Due Amici al Var,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-Due Amici al Var,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Due Amici al Var,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+Due Amici al Var,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Due Amici al Var,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
 Due Amici al Var,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 Due Amici al Var,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
@@ -1439,18 +1439,18 @@ Due Amici al Var,Tomori,D,Milan,starter,0.630,0.543,7.0,56.47,tier
 Due Amici al Var,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 Due Amici al Var,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 Due Amici al Var,Lazaro,D,Torino,starter,0.598,0.449,7.0,48.62,tier
-Due Amici al Var,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+Due Amici al Var,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 Due Amici al Var,Lazzari,D,Lazio,scommessa,0.406,0.357,4.0,36.92,tier
-Due Amici al Var,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+Due Amici al Var,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 Due Amici al Var,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
-Due Amici al Var,Gineitis,C,Torino,scommessa,0.387,0.300,4.0,32.17,tier
+Due Amici al Var,Gineitis,C,Torino,scommessa,0.387,0.299,4.0,32.10,tier
 Due Amici al Var,Diouf,C,Inter,scommessa,0.284,0.313,2.0,30.58,tier
 Due Amici al Var,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 Due Amici al Var,Sava,P,Udinese,scommessa,0.266,0.235,1.0,24.27,tier
 Due Amici al Var,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 PEAKY BLINDERS,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 PEAKY BLINDERS,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-PEAKY BLINDERS,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+PEAKY BLINDERS,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 PEAKY BLINDERS,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 PEAKY BLINDERS,Rabiot,C,Milan,top,0.759,0.772,23.0,76.88,tier
 PEAKY BLINDERS,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
@@ -1462,11 +1462,11 @@ PEAKY BLINDERS,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
 PEAKY BLINDERS,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 PEAKY BLINDERS,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 PEAKY BLINDERS,Barbieri,D,Cremonese,starter,0.536,0.465,9.0,48.27,tier
-PEAKY BLINDERS,Sorensen O.,C,Parma,starter,0.542,0.411,7.0,44.38,tier
+PEAKY BLINDERS,Sorensen O.,C,Parma,starter,0.542,0.410,7.0,44.30,tier
 PEAKY BLINDERS,Frese,D,Verona,starter,0.499,0.392,6.0,41.88,tier
-PEAKY BLINDERS,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
-PEAKY BLINDERS,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
-PEAKY BLINDERS,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+PEAKY BLINDERS,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
+PEAKY BLINDERS,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
+PEAKY BLINDERS,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 PEAKY BLINDERS,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 PEAKY BLINDERS,Turati,P,Sassuolo,low,0.149,0.192,1.0,18.13,tier
 PEAKY BLINDERS,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
@@ -1474,7 +1474,7 @@ PEAKY BLINDERS,Moro L.,A,Sassuolo,low,0.167,0.152,1.0,15.57,tier
 Peaky Tunas,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Peaky Tunas,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
 Peaky Tunas,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Peaky Tunas,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Peaky Tunas,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Peaky Tunas,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 Peaky Tunas,Bastoni,D,Inter,top,0.806,0.762,17.0,77.30,tier
 Peaky Tunas,Barella,C,Inter,semitop,0.749,0.667,17.0,68.75,tier
@@ -1488,15 +1488,15 @@ Peaky Tunas,Obert,D,Cagliari,starter,0.561,0.438,5.0,46.88,tier
 Peaky Tunas,Piotrowski,C,Udinese,starter,0.505,0.391,8.0,41.95,tier
 Peaky Tunas,Meister,A,Pisa,scommessa,0.454,0.315,8.0,34.98,tier
 Peaky Tunas,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
-Peaky Tunas,Tameze,C,Torino,scommessa,0.373,0.248,5.0,27.93,tier
-Peaky Tunas,Lovric,C,Udinese,scommessa,0.259,0.280,3.0,27.48,tier
+Peaky Tunas,Tameze,C,Torino,scommessa,0.374,0.249,5.0,28.02,tier
+Peaky Tunas,Lovric,C,Udinese,scommessa,0.259,0.281,3.0,27.55,tier
 Peaky Tunas,Sava,P,Udinese,scommessa,0.266,0.235,1.0,24.27,tier
 Peaky Tunas,Hysaj,D,Lazio,low,0.187,0.228,1.0,21.77,tier
 Peaky Tunas,Zarraga,C,Udinese,low,0.199,0.199,2.0,19.90,tier
 Peaky Tunas,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 Longobarda,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-Longobarda,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
-Longobarda,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Longobarda,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
+Longobarda,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Longobarda,Soulè,A,Roma,semitop,0.803,0.734,26.0,75.12,tier
 Longobarda,Konè M.,C,Roma,semitop,0.756,0.701,17.0,71.47,tier
 Longobarda,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
@@ -1507,30 +1507,30 @@ Longobarda,Dybala,A,Roma,starter,0.581,0.537,13.0,54.80,tier
 Longobarda,Vasquez,D,Genoa,starter,0.623,0.477,10.0,51.35,tier
 Longobarda,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 Longobarda,Solomon,A,Fiorentina,scommessa,0.600,0.447,7.0,48.52,tier
-Longobarda,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+Longobarda,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 Longobarda,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-Longobarda,Baldanzi,C,Genoa,scommessa,0.390,0.383,6.0,38.48,tier
+Longobarda,Baldanzi,C,Genoa,scommessa,0.390,0.382,6.0,38.40,tier
 Longobarda,Nelsson,D,Verona,scommessa,0.512,0.330,4.0,37.55,tier
 Longobarda,Pezzella Giu.,D,Cremonese,scommessa,0.455,0.336,4.0,36.58,tier
-Longobarda,Bondo,C,Cremonese,scommessa,0.459,0.296,7.0,33.67,tier
+Longobarda,Bondo,C,Cremonese,scommessa,0.459,0.297,7.0,33.75,tier
 Longobarda,Zemura,D,Udinese,scommessa,0.340,0.301,2.0,31.08,tier
 Longobarda,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 Longobarda,Marin M.,C,Pisa,scommessa,0.359,0.228,5.0,26.08,tier
-Longobarda,Miller L.,C,Udinese,scommessa,0.291,0.249,3.0,25.95,tier
+Longobarda,Miller L.,C,Udinese,scommessa,0.292,0.250,3.0,26.05,tier
 Non troppo cattivi,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Non troppo cattivi,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
-Non troppo cattivi,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Non troppo cattivi,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Non troppo cattivi,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
 Non troppo cattivi,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Non troppo cattivi,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Non troppo cattivi,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Non troppo cattivi,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 Non troppo cattivi,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
 Non troppo cattivi,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
 Non troppo cattivi,Muharemovic,D,Sassuolo,starter,0.617,0.508,7.0,53.52,tier
 Non troppo cattivi,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
 Non troppo cattivi,Bianchetti,D,Cremonese,starter,0.515,0.419,6.0,44.30,tier
-Non troppo cattivi,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
-Non troppo cattivi,Niasse,C,Verona,scommessa,0.424,0.350,4.0,36.85,tier
+Non troppo cattivi,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
+Non troppo cattivi,Niasse,C,Verona,scommessa,0.423,0.350,4.0,36.82,tier
 Non troppo cattivi,Ndour,C,Fiorentina,scommessa,0.427,0.329,6.0,35.35,tier
 Non troppo cattivi,Sarr A.,A,Verona,scommessa,0.481,0.295,5.0,34.15,tier
 Non troppo cattivi,Valentini N.,D,Verona,scommessa,0.353,0.316,3.0,32.52,tier
@@ -1542,7 +1542,7 @@ Non troppo cattivi,Morata,A,Como,scommessa,0.318,0.226,4.0,24.90,tier
 Non troppo cattivi,Moro L.,A,Sassuolo,low,0.167,0.152,1.0,15.57,tier
 SPERA EBBASTA,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 SPERA EBBASTA,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-SPERA EBBASTA,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+SPERA EBBASTA,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 SPERA EBBASTA,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 SPERA EBBASTA,Rabiot,C,Milan,top,0.759,0.772,23.0,76.88,tier
 SPERA EBBASTA,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
@@ -1555,17 +1555,17 @@ SPERA EBBASTA,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
 SPERA EBBASTA,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 SPERA EBBASTA,Obert,D,Cagliari,starter,0.561,0.438,5.0,46.88,tier
 SPERA EBBASTA,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
-SPERA EBBASTA,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
-SPERA EBBASTA,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.365,3.0,37.02,tier
+SPERA EBBASTA,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
+SPERA EBBASTA,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.366,3.0,37.10,tier
 SPERA EBBASTA,Silvestri,P,Cremonese,scommessa,0.280,0.320,1.0,31.00,tier
-SPERA EBBASTA,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
+SPERA EBBASTA,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
 SPERA EBBASTA,Marianucci,D,Napoli,scommessa,0.257,0.278,2.0,27.28,tier
-SPERA EBBASTA,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
-SPERA EBBASTA,Trepy,A,Cagliari,low,0.156,0.185,1.0,17.77,tier
+SPERA EBBASTA,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
+SPERA EBBASTA,Trepy,A,Cagliari,low,0.156,0.184,1.0,17.70,tier
 SPERA EBBASTA,Gueye,A,Udinese,low,0.176,0.145,2.0,15.28,tier
 SILVEDO,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 SILVEDO,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-SILVEDO,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+SILVEDO,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 SILVEDO,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
 SILVEDO,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
 SILVEDO,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
@@ -1586,24 +1586,24 @@ SILVEDO,Grassi,C,Cremonese,scommessa,0.416,0.271,5.0,30.73,tier
 SILVEDO,Biraghi,D,Torino,scommessa,0.310,0.288,3.0,29.35,tier
 SILVEDO,Zapata D.,A,Torino,scommessa,0.328,0.228,7.0,25.30,tier
 SILVEDO,Lukaku,A,Napoli,starter,0.306,0.230,15.0,24.90,tier
-Kung-Fu Pandev,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Kung-Fu Pandev,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Kung-Fu Pandev,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 Kung-Fu Pandev,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 Kung-Fu Pandev,Soulè,A,Roma,semitop,0.803,0.734,26.0,75.12,tier
 Kung-Fu Pandev,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
-Kung-Fu Pandev,Vlasic,C,Torino,semitop,0.754,0.666,18.0,68.80,tier
+Kung-Fu Pandev,Vlasic,C,Torino,semitop,0.753,0.665,18.0,68.70,tier
 Kung-Fu Pandev,Sommer,P,Inter,semitop,0.742,0.657,14.0,67.83,tier
-Kung-Fu Pandev,Conceicao,C,Juventus,semitop,0.642,0.622,15.0,62.70,tier
+Kung-Fu Pandev,Conceicao,C,Juventus,semitop,0.643,0.623,15.0,62.80,tier
 Kung-Fu Pandev,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
 Kung-Fu Pandev,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
-Kung-Fu Pandev,Politano,C,Napoli,starter,0.629,0.533,11.0,55.70,tier
+Kung-Fu Pandev,Politano,C,Napoli,starter,0.630,0.533,11.0,55.73,tier
 Kung-Fu Pandev,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
 Kung-Fu Pandev,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 Kung-Fu Pandev,Doig,D,Sassuolo,starter,0.548,0.395,6.0,43.33,tier
 Kung-Fu Pandev,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
 Kung-Fu Pandev,Veiga D.,D,Lecce,scommessa,0.491,0.332,5.0,37.18,tier
 Kung-Fu Pandev,Pezzella Giu.,D,Cremonese,scommessa,0.455,0.336,4.0,36.58,tier
-Kung-Fu Pandev,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+Kung-Fu Pandev,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 Kung-Fu Pandev,Zaragoza,C,Rom,scommessa,0.257,0.325,7.0,30.80,tier
 Kung-Fu Pandev,Bowie,A,Ver,scommessa,0.620,0.198,6.0,30.35,tier
 Kung-Fu Pandev,Di Gennaro,P,Inter,scommessa,0.315,0.243,1.0,26.10,tier
@@ -1613,10 +1613,10 @@ mezzebirre,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
 mezzebirre,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 mezzebirre,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 mezzebirre,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
-mezzebirre,Davis K.,A,Udinese,semitop,0.771,0.705,24.0,72.15,tier
+mezzebirre,Davis K.,A,Udinese,semitop,0.770,0.705,24.0,72.12,tier
 mezzebirre,Neres,C,Napoli,semitop,0.700,0.712,17.0,70.90,tier
 mezzebirre,Kempf,D,Como,top,0.701,0.701,14.0,70.10,tier
-mezzebirre,Odgaard,C,Bologna,starter,0.630,0.610,18.0,61.50,tier
+mezzebirre,Odgaard,C,Bologna,starter,0.631,0.610,18.0,61.53,tier
 mezzebirre,Caprile,P,Cagliari,semitop,0.695,0.585,12.0,61.25,tier
 mezzebirre,Holm,D,Bologna,semitop,0.567,0.616,13.0,60.38,tier
 mezzebirre,Hermoso,D,Roma,starter,0.587,0.545,10.0,55.55,tier
@@ -1633,7 +1633,7 @@ mezzebirre,Cremaschi,C,Parma,low,0.292,0.212,1.0,23.20,tier
 mezzebirre,Ciocci,P,Cagliari,low,0.278,0.191,1.0,21.27,tier
 mezzebirre,Zarraga,C,Udinese,low,0.199,0.199,2.0,19.90,tier
 OnlyFans,Carnesecchi,P,Atalanta,top,0.891,0.849,17.0,85.95,tier
-OnlyFans,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+OnlyFans,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 OnlyFans,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
 OnlyFans,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 OnlyFans,Thuram,A,Inter,top,0.783,0.792,29.0,78.98,tier
@@ -1641,15 +1641,15 @@ OnlyFans,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
 OnlyFans,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
 OnlyFans,Zaniolo,C,Udinese,semitop,0.715,0.682,20.0,69.03,tier
 OnlyFans,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
-OnlyFans,Thuram K.,C,Juventus,starter,0.669,0.580,13.0,60.22,tier
+OnlyFans,Thuram K.,C,Juventus,starter,0.669,0.579,13.0,60.15,tier
 OnlyFans,Terracciano F.,D,Cremonese,starter,0.643,0.520,11.0,55.08,tier
-OnlyFans,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+OnlyFans,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 OnlyFans,Mina,D,Cagliari,starter,0.539,0.505,8.0,51.35,tier
 OnlyFans,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
-OnlyFans,Tourè I.,C,Pisa,starter,0.532,0.374,10.0,41.35,tier
-OnlyFans,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
+OnlyFans,Tourè I.,C,Pisa,starter,0.533,0.375,10.0,41.45,tier
+OnlyFans,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
 OnlyFans,Diouf,C,Inter,scommessa,0.284,0.313,2.0,30.58,tier
-OnlyFans,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
+OnlyFans,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
 OnlyFans,Lukaku,A,Napoli,starter,0.306,0.230,15.0,24.90,tier
 OnlyFans,Rossi F.,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
 OnlyFans,Sportiello,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
@@ -1657,7 +1657,7 @@ OnlyFans,Ebosse,D,Verona,low,0.167,0.184,2.0,17.98,tier
 OnlyFans,Kouamè *,A,Fiorentina,low,0.000,0.000,1.0,1.50,fallback_price
 Hellas merdona,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 Hellas merdona,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Hellas merdona,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Hellas merdona,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Hellas merdona,Leao,A,Milan,top,0.802,0.788,30.0,79.15,tier
 Hellas merdona,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 Hellas merdona,Malinovskyi,C,Genoa,semitop,0.724,0.640,12.0,66.10,tier
@@ -1671,23 +1671,23 @@ Hellas merdona,Marusic,D,Lazio,starter,0.608,0.480,7.0,51.20,tier
 Hellas merdona,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 Hellas merdona,Lazaro,D,Torino,starter,0.598,0.449,7.0,48.62,tier
 Hellas merdona,Elmas,C,Napoli,starter,0.541,0.427,6.0,45.55,tier
-Hellas merdona,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
-Hellas merdona,Bondo,C,Cremonese,scommessa,0.459,0.296,7.0,33.67,tier
-Hellas merdona,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
-Hellas merdona,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
-Hellas merdona,Christensen O.,P,Fiorentina,low,0.261,0.168,1.0,19.12,tier
-Hellas merdona,Lezzerini,P,Fiorentina,low,0.261,0.168,1.0,19.12,tier
+Hellas merdona,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
+Hellas merdona,Bondo,C,Cremonese,scommessa,0.459,0.297,7.0,33.75,tier
+Hellas merdona,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
+Hellas merdona,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
+Hellas merdona,Christensen O.,P,Fiorentina,low,0.261,0.167,1.0,19.05,tier
+Hellas merdona,Lezzerini,P,Fiorentina,low,0.261,0.167,1.0,19.05,tier
 Hellas merdona,Gueye,A,Udinese,low,0.176,0.145,2.0,15.28,tier
 ROCKY 3,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
-ROCKY 3,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+ROCKY 3,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 ROCKY 3,Rabiot,C,Milan,top,0.759,0.772,23.0,76.88,tier
 ROCKY 3,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
-ROCKY 3,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+ROCKY 3,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 ROCKY 3,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
 ROCKY 3,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
 ROCKY 3,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
 ROCKY 3,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
-ROCKY 3,Ederson D.S.,C,Atalanta,starter,0.667,0.569,10.0,59.35,tier
+ROCKY 3,Ederson D.S.,C,Atalanta,starter,0.667,0.568,10.0,59.27,tier
 ROCKY 3,Tomori,D,Milan,starter,0.630,0.543,7.0,56.47,tier
 ROCKY 3,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
 ROCKY 3,Solomon,A,Fiorentina,scommessa,0.600,0.447,7.0,48.52,tier
@@ -1695,29 +1695,29 @@ ROCKY 3,Frendrup,C,Genoa,starter,0.567,0.406,9.0,44.62,tier
 ROCKY 3,Meret,P,Napoli,scommessa,0.396,0.420,8.0,41.40,tier
 ROCKY 3,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
 ROCKY 3,Koopmeiners,C,Juventus,scommessa,0.437,0.289,5.0,32.60,tier
-ROCKY 3,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
+ROCKY 3,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
 ROCKY 3,Rovella,C,Lazio,scommessa,0.295,0.294,4.0,29.42,tier
 ROCKY 3,Contini,P,Napoli,scommessa,0.299,0.221,1.0,24.05,tier
 ROCKY 3,Marchwinski,C,Lecce,low,0.281,0.196,1.0,21.73,tier
 ROCKY 3,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 ROCKY 3,Coppola F.,D,Pisa,low,0.131,0.135,2.0,13.40,tier
-HeineKean,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+HeineKean,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 HeineKean,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
 HeineKean,Thuram,A,Inter,top,0.783,0.792,29.0,78.98,tier
 HeineKean,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
-HeineKean,Loftus-Cheek,C,Milan,semitop,0.743,0.717,13.0,72.35,tier
+HeineKean,Loftus-Cheek,C,Milan,semitop,0.744,0.717,13.0,72.37,tier
 HeineKean,Ramon,D,Como,semitop,0.721,0.644,12.0,66.33,tier
-HeineKean,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.629,17.0,64.67,tier
-HeineKean,Conceicao,C,Juventus,semitop,0.642,0.622,15.0,62.70,tier
+HeineKean,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.630,17.0,64.75,tier
+HeineKean,Conceicao,C,Juventus,semitop,0.643,0.623,15.0,62.80,tier
 HeineKean,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 HeineKean,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
-HeineKean,Fagioli,C,Fiorentina,starter,0.628,0.530,8.0,55.45,tier
+HeineKean,Fagioli,C,Fiorentina,starter,0.603,0.495,8.0,52.20,tier
 HeineKean,Angori,D,Pisa,starter,0.601,0.493,9.0,52.00,tier
 HeineKean,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 HeineKean,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 HeineKean,Obert,D,Cagliari,starter,0.561,0.438,5.0,46.88,tier
-HeineKean,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
-HeineKean,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+HeineKean,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
+HeineKean,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 HeineKean,Floriani Mussolini,D,Cremonese,scommessa,0.404,0.328,4.0,34.70,tier
 HeineKean,Cheddira,A,Lecce,scommessa,0.308,0.262,6.0,27.35,tier
 HeineKean,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
@@ -1729,53 +1729,53 @@ I Cigni,Baturina,C,Como,top,0.690,0.768,14.0,74.85,tier
 I Cigni,Malen,A,Roma,semitop,0.920,0.652,15.0,71.90,tier
 I Cigni,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
 I Cigni,Sommer,P,Inter,semitop,0.742,0.657,14.0,67.83,tier
-I Cigni,Isaksen,C,Lazio,semitop,0.667,0.661,14.0,66.25,tier
+I Cigni,Isaksen,C,Lazio,semitop,0.668,0.661,14.0,66.28,tier
 I Cigni,Valle,D,Como,semitop,0.663,0.614,8.0,62.62,tier
-I Cigni,Politano,C,Napoli,starter,0.629,0.533,11.0,55.70,tier
+I Cigni,Politano,C,Napoli,starter,0.630,0.533,11.0,55.73,tier
 I Cigni,Hermoso,D,Roma,starter,0.587,0.545,10.0,55.55,tier
 I Cigni,Valeri,D,Parma,starter,0.613,0.518,10.0,54.17,tier
 I Cigni,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
 I Cigni,Dodò,D,Fiorentina,starter,0.621,0.474,6.0,51.08,tier
+I Cigni,Rowe,C,Bologna,starter,0.528,0.468,7.0,48.30,tier
 I Cigni,Tramoni M.,C,Pisa,starter,0.549,0.445,9.0,47.10,tier
-I Cigni,Rowe,C,Bologna,starter,0.510,0.443,7.0,45.98,tier
-I Cigni,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+I Cigni,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 I Cigni,Doig,D,Sassuolo,starter,0.548,0.395,6.0,43.33,tier
 I Cigni,Martinez Jo.,P,Inter,scommessa,0.352,0.457,1.0,43.07,tier
 I Cigni,Folorunsho,C,Cagliari,starter,0.480,0.412,8.0,42.90,tier
 I Cigni,Ndour,C,Fiorentina,scommessa,0.427,0.329,6.0,35.35,tier
-I Cigni,Lykogiannis,D,Bologna,scommessa,0.311,0.295,2.0,29.90,tier
+I Cigni,Lykogiannis,D,Bologna,scommessa,0.311,0.296,2.0,29.97,tier
 I Cigni,Zapata D.,A,Torino,scommessa,0.328,0.228,7.0,25.30,tier
 I Cigni,Sportiello,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
 I Cigni,Almqvist,A,Parma,low,0.246,0.217,3.0,22.43,tier
-Lions,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Lions,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Lions,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-Lions,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Lions,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Lions,Thuram,A,Inter,top,0.783,0.792,29.0,78.98,tier
-Lions,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
-Lions,Loftus-Cheek,C,Milan,semitop,0.743,0.717,13.0,72.35,tier
+Lions,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
+Lions,Loftus-Cheek,C,Milan,semitop,0.744,0.717,13.0,72.37,tier
 Lions,Di Gregorio,P,Juventus,semitop,0.743,0.667,16.0,68.60,tier
-Lions,Pasalic,C,Atalanta,starter,0.677,0.617,13.0,63.20,tier
+Lions,Pasalic,C,Atalanta,semitop,0.677,0.617,13.0,63.20,tier
 Lions,Cambiaso,D,Juventus,semitop,0.679,0.585,10.0,60.85,tier
-Lions,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+Lions,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 Lions,Cancellieri,A,Lazio,starter,0.588,0.490,14.0,51.45,tier
 Lions,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 Lions,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 Lions,Kristensen T.,D,Udinese,starter,0.488,0.444,7.0,45.50,tier
 Lions,Provstgaard,D,Lazio,scommessa,0.421,0.425,3.0,42.40,tier
-Lions,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+Lions,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 Lions,Ndour,C,Fiorentina,scommessa,0.427,0.329,6.0,35.35,tier
 Lions,Van Der Brempt,D,Como,scommessa,0.307,0.324,3.0,31.97,tier
 Lions,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
 Lions,Sportiello,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
 Lions,Okereke,A,Cremonese,low,0.162,0.192,1.0,18.45,tier
-Lions,Hojholt,C,Pisa,low,0.192,0.171,2.0,17.62,tier
+Lions,Hojholt,C,Pisa,low,0.192,0.172,2.0,17.70,tier
 Lions,Moro L.,A,Sassuolo,low,0.167,0.152,1.0,15.57,tier
 BANDITI,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 BANDITI,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
-BANDITI,Calhanoglu,C,Inter,top,0.786,0.816,28.0,80.85,tier
-BANDITI,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+BANDITI,Calhanoglu,C,Inter,top,0.786,0.815,28.0,80.77,tier
+BANDITI,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 BANDITI,Rabiot,C,Milan,top,0.759,0.772,23.0,76.88,tier
-BANDITI,Douvikas,A,Como,semitop,0.804,0.751,21.0,76.43,tier
+BANDITI,Douvikas,A,Como,semitop,0.803,0.750,21.0,76.33,tier
 BANDITI,Soulè,A,Roma,semitop,0.803,0.734,26.0,75.12,tier
 BANDITI,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
 BANDITI,De Gea,P,Fiorentina,semitop,0.658,0.525,11.0,55.83,tier
@@ -1784,17 +1784,17 @@ BANDITI,Muharemovic,D,Sassuolo,starter,0.617,0.508,7.0,53.52,tier
 BANDITI,Norton-Cuffy,D,Genoa,starter,0.618,0.500,7.0,52.95,tier
 BANDITI,Frese,D,Verona,starter,0.499,0.392,6.0,41.88,tier
 BANDITI,Canestrelli,D,Pisa,scommessa,0.540,0.361,5.0,40.58,tier
-BANDITI,Prati,C,Cagliari,scommessa,0.486,0.342,6.0,37.80,tier
+BANDITI,Prati,C,Cagliari,scommessa,0.487,0.342,6.0,37.82,tier
 BANDITI,Aebischer,C,Pisa,scommessa,0.497,0.309,5.0,35.60,tier
 BANDITI,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
-BANDITI,Bondo,C,Cremonese,scommessa,0.459,0.296,7.0,33.67,tier
+BANDITI,Bondo,C,Cremonese,scommessa,0.459,0.297,7.0,33.75,tier
 BANDITI,Balentien,A,Milan,low,0.311,0.238,1.0,25.62,tier
-BANDITI,Christensen O.,P,Fiorentina,low,0.261,0.168,1.0,19.12,tier
-BANDITI,Lezzerini,P,Fiorentina,low,0.261,0.168,1.0,19.12,tier
-BANDITI,Hojholt,C,Pisa,low,0.192,0.171,2.0,17.62,tier
+BANDITI,Christensen O.,P,Fiorentina,low,0.261,0.167,1.0,19.05,tier
+BANDITI,Lezzerini,P,Fiorentina,low,0.261,0.167,1.0,19.05,tier
+BANDITI,Hojholt,C,Pisa,low,0.192,0.172,2.0,17.70,tier
 BANDITI,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 lagg,Maignan,P,Milan,top,0.877,0.844,20.0,85.22,tier
-lagg,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+lagg,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 lagg,McKennie,C,Juventus,top,0.800,0.762,14.0,77.15,tier
 lagg,Wesley,D,Roma,top,0.781,0.711,16.0,72.85,tier
 lagg,Scamacca,A,Atalanta,semitop,0.699,0.716,22.0,71.17,tier
@@ -1807,38 +1807,38 @@ lagg,Miranda J.,D,Bologna,starter,0.594,0.485,11.0,51.23,tier
 lagg,Zaccagni,C,Lazio,starter,0.575,0.482,14.0,50.52,tier
 lagg,Heggem,D,Bologna,starter,0.558,0.417,9.0,45.23,tier
 lagg,Terracciano,P,Milan,scommessa,0.340,0.439,1.0,41.42,tier
-lagg,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.365,3.0,37.02,tier
-lagg,Maldini,C,Atalanta,scommessa,0.360,0.351,3.0,35.32,tier
+lagg,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.366,3.0,37.10,tier
+lagg,Maldini,C,Atalanta,scommessa,0.360,0.350,3.0,35.25,tier
 lagg,Olivera,D,Napoli,scommessa,0.382,0.336,3.0,34.75,tier
 lagg,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
-lagg,Sala A.,C,Lecce,low,0.250,0.282,1.0,27.40,tier
+lagg,Sala A.,C,Lecce,low,0.250,0.283,1.0,27.47,tier
 lagg,Nkounkou,D,Torino,scommessa,0.267,0.275,2.0,27.30,tier
 lagg,Torriani,P,Milan,scommessa,0.317,0.246,1.0,26.38,tier
 lagg,Zapata D.,A,Torino,scommessa,0.328,0.228,7.0,25.30,tier
 lagg,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
-Sciabolata Classica,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+Sciabolata Classica,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 Sciabolata Classica,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
 Sciabolata Classica,Zielinski,C,Inter,top,0.800,0.819,19.0,81.42,tier
-Sciabolata Classica,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Sciabolata Classica,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Sciabolata Classica,Hojlund,A,Napoli,top,0.799,0.776,25.0,78.18,tier
 Sciabolata Classica,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
-Sciabolata Classica,Vlasic,C,Torino,semitop,0.754,0.666,18.0,68.80,tier
+Sciabolata Classica,Vlasic,C,Torino,semitop,0.753,0.665,18.0,68.70,tier
 Sciabolata Classica,Martin,D,Genoa,semitop,0.680,0.618,14.0,63.35,tier
 Sciabolata Classica,Kean,A,Fiorentina,starter,0.697,0.603,18.0,62.65,tier
 Sciabolata Classica,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 Sciabolata Classica,Angori,D,Pisa,starter,0.601,0.493,9.0,52.00,tier
 Sciabolata Classica,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
-Sciabolata Classica,Vergara,C,Napoli,scommessa,0.388,0.457,2.0,43.97,tier
+Sciabolata Classica,Vergara,C,Napoli,scommessa,0.388,0.458,2.0,44.05,tier
 Sciabolata Classica,Veiga D.,D,Lecce,scommessa,0.491,0.332,5.0,37.18,tier
 Sciabolata Classica,Tavares N.,D,Lazio,scommessa,0.374,0.345,6.0,35.22,tier
 Sciabolata Classica,Zè Pedro,D,Cagliari,scommessa,0.354,0.304,2.0,31.65,tier
 Sciabolata Classica,Perin,P,Juventus,scommessa,0.255,0.304,3.0,29.17,tier
-Sciabolata Classica,Sala A.,C,Lecce,low,0.250,0.282,1.0,27.40,tier
+Sciabolata Classica,Sala A.,C,Lecce,low,0.250,0.283,1.0,27.47,tier
 Sciabolata Classica,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
 Sciabolata Classica,Zapata D.,A,Torino,scommessa,0.328,0.228,7.0,25.30,tier
 Sciabolata Classica,Rugani,D,Juventus,low,0.223,0.247,2.0,24.10,tier
 Sciabolata Classica,Stengs,C,Pisa,low,0.275,0.187,1.0,20.90,tier
-Sciabolata Classica,Hojholt,C,Pisa,low,0.192,0.171,2.0,17.62,tier
+Sciabolata Classica,Hojholt,C,Pisa,low,0.192,0.172,2.0,17.70,tier
 CuginiDiCampagna,Martinez L.,A,Inter,top,0.940,0.917,34.0,92.28,tier
 CuginiDiCampagna,Carnesecchi,P,Atalanta,top,0.891,0.849,17.0,85.95,tier
 CuginiDiCampagna,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
@@ -1852,40 +1852,40 @@ CuginiDiCampagna,Pinamonti,A,Sassuolo,starter,0.688,0.574,14.0,60.25,tier
 CuginiDiCampagna,Muharemovic,D,Sassuolo,starter,0.617,0.508,7.0,53.52,tier
 CuginiDiCampagna,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
 CuginiDiCampagna,Frese,D,Verona,starter,0.499,0.392,6.0,41.88,tier
-CuginiDiCampagna,Adopo,C,Cagliari,scommessa,0.529,0.353,6.0,39.70,tier
-CuginiDiCampagna,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.365,3.0,37.02,tier
+CuginiDiCampagna,Adopo,C,Cagliari,starter,0.529,0.353,6.0,39.70,tier
+CuginiDiCampagna,Nicolussi Caviglia,C,Fiorentina,scommessa,0.386,0.366,3.0,37.10,tier
 CuginiDiCampagna,Pongracic,D,Fiorentina,scommessa,0.472,0.297,5.0,34.08,tier
 CuginiDiCampagna,Joao Mario,D,Juventus,scommessa,0.329,0.341,2.0,33.80,tier
-CuginiDiCampagna,Strefezza,C,Par,scommessa,0.228,0.286,10.0,27.15,tier
+CuginiDiCampagna,Strefezza,C,Par,scommessa,0.229,0.286,10.0,27.18,tier
 CuginiDiCampagna,Rossi F.,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
 CuginiDiCampagna,Sportiello,P,Atalanta,scommessa,0.300,0.223,1.0,24.23,tier
 CuginiDiCampagna,Collocolo,C,Cremonese,low,0.215,0.231,2.0,22.70,tier
 CuginiDiCampagna,Marchwinski,C,Lecce,low,0.281,0.196,1.0,21.73,tier
-CuginiDiCampagna,Trepy,A,Cagliari,low,0.156,0.185,1.0,17.77,tier
+CuginiDiCampagna,Trepy,A,Cagliari,low,0.156,0.184,1.0,17.70,tier
 Evergreen,Dimarco,D,Inter,top,0.924,0.911,29.0,91.42,tier
 Evergreen,Zielinski,C,Inter,top,0.800,0.819,19.0,81.42,tier
 Evergreen,Palestra,D,Cagliari,top,0.811,0.753,15.0,76.75,tier
 Evergreen,Zalewski,C,Atalanta,semitop,0.730,0.690,15.0,70.00,tier
-Evergreen,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.629,17.0,64.67,tier
+Evergreen,Gudmundsson A.,C,Fiorentina,semitop,0.700,0.630,17.0,64.75,tier
 Evergreen,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
 Evergreen,Sucic P.,C,Inter,starter,0.644,0.603,11.0,61.32,tier
 Evergreen,Ostigard,D,Genoa,semitop,0.635,0.586,15.0,59.82,tier
 Evergreen,Kossounou,D,Atalanta,scommessa,0.553,0.569,8.0,56.50,tier
 Evergreen,De Gea,P,Fiorentina,semitop,0.658,0.525,11.0,55.83,tier
-Evergreen,Politano,C,Napoli,starter,0.629,0.533,11.0,55.70,tier
+Evergreen,Politano,C,Napoli,starter,0.630,0.533,11.0,55.73,tier
 Evergreen,Hermoso,D,Roma,starter,0.587,0.545,10.0,55.55,tier
 Evergreen,Buongiorno,D,Napoli,starter,0.607,0.518,10.0,54.02,tier
 Evergreen,Harroui,C,Verona,scommessa,0.380,0.385,2.0,38.38,tier
 Evergreen,Pezzella Giu.,D,Cremonese,scommessa,0.455,0.336,4.0,36.58,tier
 Evergreen,Ekhator,A,Genoa,scommessa,0.426,0.338,10.0,36.00,tier
-Evergreen,Iannoni,C,Sassuolo,scommessa,0.293,0.341,5.0,32.90,tier
-Evergreen,Ilkhan,C,Torino,scommessa,0.316,0.296,2.0,30.10,tier
+Evergreen,Iannoni,C,Sassuolo,scommessa,0.293,0.342,5.0,32.98,tier
+Evergreen,Ilkhan,C,Torino,scommessa,0.315,0.295,2.0,30.00,tier
 Evergreen,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
 Evergreen,Zapata D.,A,Torino,scommessa,0.328,0.228,7.0,25.30,tier
 Evergreen,Lukaku,A,Napoli,starter,0.306,0.230,15.0,24.90,tier
-Evergreen,Lezzerini,P,Fiorentina,low,0.261,0.168,1.0,19.12,tier
+Evergreen,Lezzerini,P,Fiorentina,low,0.261,0.167,1.0,19.05,tier
 Evergreen,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
-buttiglia25,McTominay,C,Napoli,top,0.865,0.829,25.0,83.80,tier
+buttiglia25,McTominay,C,Napoli,top,0.866,0.829,25.0,83.83,tier
 buttiglia25,Yildiz,A,Juventus,top,0.863,0.818,30.0,82.92,tier
 buttiglia25,Svilar,P,Roma,top,0.868,0.816,19.0,82.90,tier
 buttiglia25,Pulisic,C,Milan,top,0.783,0.839,31.0,82.50,tier
@@ -1897,18 +1897,18 @@ buttiglia25,Idrissi R.,D,Cagliari,starter,0.542,0.509,8.0,51.73,tier
 buttiglia25,Bellanova,D,Atalanta,starter,0.533,0.507,6.0,51.35,tier
 buttiglia25,Zaccagni,C,Lazio,starter,0.575,0.482,14.0,50.52,tier
 buttiglia25,Tiago Gabriel,D,Lecce,starter,0.602,0.461,9.0,49.62,tier
-buttiglia25,Zerbin,C,Cremonese,starter,0.498,0.385,6.0,41.33,tier
+buttiglia25,Zerbin,C,Cremonese,starter,0.498,0.384,6.0,41.25,tier
 buttiglia25,Harroui,C,Verona,scommessa,0.380,0.385,2.0,38.38,tier
 buttiglia25,Juan Jesus,D,Napoli,scommessa,0.444,0.342,4.0,36.75,tier
 buttiglia25,Pezzella Giu.,D,Cremonese,scommessa,0.455,0.336,4.0,36.58,tier
 buttiglia25,Ramadani,C,Lecce,scommessa,0.459,0.264,5.0,31.28,tier
 buttiglia25,Albarracin,A,Cag,low,0.600,0.202,1.0,30.15,tier
-buttiglia25,Tameze,C,Torino,scommessa,0.373,0.248,5.0,27.93,tier
-buttiglia25,Akpa Akpro,C,Verona,low,0.296,0.253,2.0,26.38,tier
+buttiglia25,Tameze,C,Torino,scommessa,0.374,0.249,5.0,28.02,tier
+buttiglia25,Akpa Akpro,C,Verona,low,0.297,0.253,2.0,26.40,tier
 buttiglia25,Gollini,P,Roma,scommessa,0.311,0.238,1.0,25.62,tier
 buttiglia25,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 buttiglia25,Vasquez D. *,P,Roma,low,0.000,0.000,1.0,1.50,fallback_price
-Fc nipiri,Paz N.,C,Como,top,0.839,0.783,30.0,79.70,tier
+Fc nipiri,Paz N.,C,Como,top,0.838,0.783,30.0,79.68,tier
 Fc nipiri,Bonny,A,Inter,top,0.738,0.807,14.0,78.98,tier
 Fc nipiri,Milinkovic-Savic V.,P,Napoli,semitop,0.780,0.749,19.0,75.67,tier
 Fc nipiri,Berardi,A,Sassuolo,semitop,0.679,0.705,21.0,69.85,tier
@@ -1918,15 +1918,15 @@ Fc nipiri,Solet,D,Udinese,semitop,0.753,0.657,11.0,68.10,tier
 Fc nipiri,Orsolini,C,Bologna,semitop,0.739,0.661,24.0,68.05,tier
 Fc nipiri,Scalvini,D,Atalanta,semitop,0.604,0.640,12.0,63.10,tier
 Fc nipiri,David,A,Juventus,starter,0.677,0.607,13.0,62.45,tier
-Fc nipiri,Thuram K.,C,Juventus,starter,0.669,0.580,13.0,60.22,tier
-Fc nipiri,Gosens,D,Fiorentina,starter,0.548,0.512,10.0,52.10,tier
+Fc nipiri,Thuram K.,C,Juventus,starter,0.669,0.579,13.0,60.15,tier
+Fc nipiri,Gosens,D,Fiorentina,starter,0.547,0.511,10.0,52.00,tier
 Fc nipiri,Doig,D,Sassuolo,starter,0.548,0.395,6.0,43.33,tier
 Fc nipiri,Karlstrom,C,Udinese,starter,0.560,0.389,10.0,43.18,tier
 Fc nipiri,Meret,P,Napoli,scommessa,0.396,0.420,8.0,41.40,tier
-Fc nipiri,Musah,C,Atalanta,scommessa,0.381,0.342,5.0,35.17,tier
-Fc nipiri,Gineitis,C,Torino,scommessa,0.387,0.300,4.0,32.17,tier
+Fc nipiri,Musah,C,Atalanta,scommessa,0.382,0.343,5.0,35.27,tier
+Fc nipiri,Gineitis,C,Torino,scommessa,0.387,0.299,4.0,32.10,tier
 Fc nipiri,Satalino,P,Sassuolo,low,0.278,0.192,1.0,21.35,tier
-Fc nipiri,Liteta,C,Cagliari,low,0.178,0.216,1.0,20.65,tier
+Fc nipiri,Liteta,C,Cagliari,low,0.179,0.216,1.0,20.67,tier
 Fc nipiri,Zarraga,C,Udinese,low,0.199,0.199,2.0,19.90,tier
 Fc nipiri,Pavoletti,A,Cagliari,low,0.171,0.172,1.0,17.18,tier
 Fc nipiri,Buffon L. *,A,Pisa,low,0.000,0.000,1.0,1.50,fallback_price
