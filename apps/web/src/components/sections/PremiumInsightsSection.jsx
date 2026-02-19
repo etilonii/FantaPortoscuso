@@ -106,7 +106,6 @@ export default function PremiumInsightsSection({
     : [];
   const serieaTable = Array.isArray(insights?.seriea_current_table) ? insights.seriea_current_table : [];
   const serieaPredictions = Array.isArray(insights?.seriea_predictions) ? insights.seriea_predictions : [];
-  const serieaFinalTable = Array.isArray(insights?.seriea_final_table) ? insights.seriea_final_table : [];
 
   const rounds = useMemo(() => {
     const values = new Set();
@@ -426,113 +425,6 @@ export default function PremiumInsightsSection({
                     <td>{formatPercent(row?.draw_prob)}</td>
                     <td>{formatPercent(row?.away_win_prob)}</td>
                     <td>{`${formatNumber(row?.home_xg, 2)} - ${formatNumber(row?.away_xg, 2)}`}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (mode === "predictions-campionato-fixtures") {
-    return (
-      <section className="dashboard">
-        <div className="dashboard-header left row">
-          <div>
-            <p className="eyebrow">Premium</p>
-            <h2>Predictions Campionato + Fixtures</h2>
-            <p className="muted">Proiezione classifica finale Serie A e match previsti per giornata.</p>
-          </div>
-        </div>
-
-        <div className="panel">
-          <div className="panel-header spaced">
-            <h3>Classifica finale proiettata</h3>
-            {typeof onReload === "function" ? (
-              <button className="ghost" type="button" onClick={onReload} disabled={Boolean(loading)}>
-                {loading ? "Aggiorno..." : "Aggiorna"}
-              </button>
-            ) : null}
-          </div>
-          {error ? <p className="error">{error}</p> : null}
-          <div className="report-table-wrap">
-            <table className="report-table">
-              <thead>
-                <tr>
-                  <th>Pos</th>
-                  <th>Squadra</th>
-                  <th>Pt</th>
-                  <th>GF</th>
-                  <th>GA</th>
-                  <th>Diff</th>
-                </tr>
-              </thead>
-              <tbody>
-                {serieaFinalTable.map((row, index) => (
-                  <tr key={`${row?.squad || row?.team || index}`}>
-                    <td>{row?.rank || index + 1}</td>
-                    <td>{row?.squad || row?.team || "-"}</td>
-                    <td>{formatNumber(row?.projected_pts, 2)}</td>
-                    <td>{formatNumber(row?.projected_gf, 2)}</td>
-                    <td>{formatNumber(row?.projected_ga, 2)}</td>
-                    <td>{formatNumber(row?.projected_gd, 2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="panel">
-          <div className="panel-header spaced">
-            <h3>Predizioni match</h3>
-            <label className="field inline-field">
-              <span>Giornata</span>
-              <select
-                className="select"
-                value={selectedRound}
-                onChange={(event) => setSelectedRound(event.target.value)}
-              >
-                {rounds.map((round) => (
-                  <option key={round} value={String(round)}>
-                    {round}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <div className="report-table-wrap">
-            <table className="report-table">
-              <thead>
-                <tr>
-                  <th>Match</th>
-                  <th>Pred</th>
-                  <th>Marcatori probabili</th>
-                  <th>Assist probabili</th>
-                  <th>CS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {roundPredictions.map((row, index) => (
-                  <tr key={`${row?.home_team}-${row?.away_team}-${index}`}>
-                    <td>{`${row?.home_team || "-"} - ${row?.away_team || "-"}`}</td>
-                    <td>{row?.pred_score || "-"}</td>
-                    <td>
-                      {String(row?.home_scorers || "").trim() || "-"}
-                      {" | "}
-                      {String(row?.away_scorers || "").trim() || "-"}
-                    </td>
-                    <td>
-                      {String(row?.home_assists || "").trim() || "-"}
-                      {" | "}
-                      {String(row?.away_assists || "").trim() || "-"}
-                    </td>
-                    <td>
-                      H {formatPercent(row?.home_clean_sheet_prob)} / A{" "}
-                      {formatPercent(row?.away_clean_sheet_prob)}
-                    </td>
                   </tr>
                 ))}
               </tbody>

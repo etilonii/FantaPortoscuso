@@ -155,7 +155,6 @@ const API_BASE =
 const INSIGHTS_MENU_KEYS = new Set([
   "classifica-potenza",
   "classifica-fixtures-seriea",
-  "predictions",
 ]);
 
 /* ===========================
@@ -197,7 +196,6 @@ export default function App() {
     team_strength_starting: [],
     seriea_current_table: [],
     seriea_predictions: [],
-    seriea_final_table: [],
     generated_at: "",
   });
   const [premiumInsightsLoading, setPremiumInsightsLoading] = useState(false);
@@ -2079,9 +2077,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         seriea_predictions: Array.isArray(payload?.seriea_predictions)
           ? payload.seriea_predictions
           : [],
-        seriea_final_table: Array.isArray(payload?.seriea_final_table)
-          ? payload.seriea_final_table
-          : [],
         generated_at: String(payload?.generated_at || ""),
       });
       return true;
@@ -2465,12 +2460,6 @@ useEffect(() => {
               >
                 Classifica + Fixtures Serie A
               </button>
-              <button
-                className={menuItemClass("predictions")}
-                onClick={() => openMenuFeature("predictions")}
-              >
-                Predictions
-              </button>
             </nav>
           </aside>
           {isAdmin && (
@@ -2540,8 +2529,6 @@ useEffect(() => {
                   ? "Classifica Potenza"
                   : activeMenu === "classifica-fixtures-seriea"
                   ? "Classifica + Fixtures Serie A"
-                  : activeMenu === "predictions"
-                  ? "Predictions"
                   : activeMenu === "player"
                   ? "Scheda giocatore"
                   : "Gestione"}
@@ -2837,18 +2824,6 @@ useEffect(() => {
             {activeMenu === "classifica-fixtures-seriea" && (
               <PremiumInsightsSection
                 mode="classifica-fixtures-seriea"
-                insights={premiumInsights}
-                loading={premiumInsightsLoading}
-                error={premiumInsightsError}
-                onReload={() => loadPremiumInsights(true)}
-                leagueStandings={marketStandings}
-                openPlayer={openPlayer}
-              />
-            )}
-
-            {activeMenu === "predictions" && (
-              <PremiumInsightsSection
-                mode="predictions-campionato-fixtures"
                 insights={premiumInsights}
                 loading={premiumInsightsLoading}
                 error={premiumInsightsError}
