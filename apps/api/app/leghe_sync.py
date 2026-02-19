@@ -785,6 +785,24 @@ def _extract_fantacalcio_stats_rows_from_html(source: str) -> list[dict[str, obj
     return rows
 
 
+def _stats_rows_freshness_signature(rows: list[dict[str, object]]) -> tuple[int, int, int, int]:
+    if not rows:
+        return (-1, -1, -1, -1)
+
+    max_pg = 0
+    total_pg = 0
+    total_gol = 0
+    for row in rows:
+        pg_value = int(_parse_int_number(row.get("pg"), default=0))
+        gol_value = int(_parse_int_number(row.get("gol"), default=0))
+        if pg_value > max_pg:
+            max_pg = pg_value
+        total_pg += max(0, pg_value)
+        total_gol += max(0, gol_value)
+
+    return (max_pg, total_pg, total_gol, len(rows))
+
+
 def download_fantacalcio_stats_csv_bundle(
     *,
     season_slug: str | None = None,
@@ -811,6 +829,7 @@ def download_fantacalcio_stats_csv_bundle(
     auth_attempted = bool((username or "").strip() and (password or "").strip())
     auth_ok = False
     stat_rows: list[dict[str, object]] = []
+    auth_rows: list[dict[str, object]] = []
     xlsx_path = resolved_out_dir / f"statistiche_{stamp}.xlsx"
 
     if auth_attempted:
@@ -832,15 +851,16 @@ def download_fantacalcio_stats_csv_bundle(
             )
             if bool(downloaded_xlsx.get("ok")):
                 try:
-                    stat_rows = _extract_fantacalcio_stats_rows_from_xlsx(xlsx_path)
-                    if stat_rows:
+                    auth_rows = _extract_fantacalcio_stats_rows_from_xlsx(xlsx_path)
+                    if auth_rows:
                         source_kind = "xlsx_authenticated"
                 except Exception as exc:
                     warnings.append(f"stats xlsx parse failed: {exc}")
             else:
                 warnings.append(str(downloaded_xlsx.get("warning") or "stats xlsx download failed"))
 
-    if not stat_rows:
+    html_rows: list[dict[str, object]] = []
+    try:
         opener = build_opener()
         body, _ = _http_read_bytes(
             opener,
@@ -852,7 +872,26 @@ def download_fantacalcio_stats_csv_bundle(
             timeout_seconds=45,
         )
         source = body.decode("utf-8", errors="replace")
-        stat_rows = _extract_fantacalcio_stats_rows_from_html(source)
+        html_rows = _extract_fantacalcio_stats_rows_from_html(source)
+    except Exception as exc:
+        warnings.append(f"stats html fetch failed: {exc}")
+
+    if auth_rows and html_rows:
+        auth_sig = _stats_rows_freshness_signature(auth_rows)
+        html_sig = _stats_rows_freshness_signature(html_rows)
+        if html_sig > auth_sig:
+            stat_rows = html_rows
+            source_kind = "html_public"
+            warnings.append("stats html selected over authenticated xlsx (fresher data)")
+        else:
+            stat_rows = auth_rows
+            source_kind = "xlsx_authenticated"
+    elif auth_rows:
+        stat_rows = auth_rows
+        source_kind = "xlsx_authenticated"
+    else:
+        stat_rows = html_rows
+        source_kind = "html_public"
 
     if not stat_rows:
         result: dict[str, object] = {

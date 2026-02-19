@@ -252,6 +252,90 @@ def test_run_leghe_sync_fetches_global_stats_when_enabled(monkeypatch):
     assert captured_stats_kwargs.get("password") == "pass"
 
 
+def test_download_stats_prefers_html_when_fresher(monkeypatch, tmp_path):
+    monkeypatch.setattr(ls, "_build_cookie_opener", lambda: (object(), []))
+    monkeypatch.setattr(ls, "_fantacalcio_login", lambda *args, **kwargs: {"ok": True})
+    monkeypatch.setattr(
+        ls,
+        "_download_fantacalcio_excel_authenticated",
+        lambda *args, **kwargs: {"ok": True},
+    )
+    monkeypatch.setattr(
+        ls,
+        "_extract_fantacalcio_stats_rows_from_xlsx",
+        lambda path: [
+            {
+                "Giocatore": "Leao",
+                "Posizione": "A",
+                "Squadra": "MIL",
+                "pg": 17,
+                "gol": 7,
+                "ass": 2,
+                "amm": 1,
+                "esp": 0,
+                "autogol": 0,
+                "gs": 0,
+                "rp": 0,
+                "rigori_segnati": 2,
+                "rigori_sbagliati": 0,
+                "mv": 6.09,
+                "mfv": 7.41,
+            }
+        ],
+    )
+    monkeypatch.setattr(ls, "_http_read_bytes", lambda *args, **kwargs: (b"<html></html>", {}))
+    monkeypatch.setattr(
+        ls,
+        "_extract_fantacalcio_stats_rows_from_html",
+        lambda html: [
+            {
+                "Giocatore": "Leao",
+                "Posizione": "A",
+                "Squadra": "MIL",
+                "pg": 18,
+                "gol": 8,
+                "ass": 2,
+                "amm": 1,
+                "esp": 0,
+                "autogol": 0,
+                "gs": 0,
+                "rp": 0,
+                "rigori_segnati": 2,
+                "rigori_sbagliati": 0,
+                "mv": 6.12,
+                "mfv": 7.53,
+            }
+        ],
+    )
+
+    captured = {}
+
+    def _fake_write_bundle(*, stat_rows, out_dir, stamp):
+        captured["rows"] = list(stat_rows)
+        return []
+
+    monkeypatch.setattr(ls, "_write_stats_bundle_files", _fake_write_bundle)
+    monkeypatch.setattr(
+        ls,
+        "download_kickest_cleansheet_csv",
+        lambda **kwargs: {"ok": False, "warning": "kickest unavailable"},
+    )
+
+    result = ls.download_fantacalcio_stats_csv_bundle(
+        season_slug="2025-26",
+        date_stamp="2026-02-19",
+        out_dir=tmp_path,
+        username="user",
+        password="pass",
+    )
+
+    assert result["ok"] is True
+    assert result["source"] == "html_public"
+    assert any("selected over authenticated xlsx" in str(item) for item in (result.get("warnings") or []))
+    assert captured["rows"][0]["pg"] == 18
+    assert captured["rows"][0]["gol"] == 8
+
+
 def test_run_leghe_sync_fetches_quotazioni_with_auth_credentials(monkeypatch):
     monkeypatch.setattr(ls, "_build_leghe_opener", lambda: (object(), []))
     monkeypatch.setattr(ls, "fetch_leghe_context", lambda opener, *, alias: _fake_context())
