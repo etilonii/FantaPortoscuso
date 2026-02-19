@@ -66,7 +66,7 @@ def _normalize_payload(raw: dict, fallback: dict) -> dict:
     if isinstance(raw_steps, dict):
         allowed = {"pending", "running", "ok", "error"}
         steps = {}
-        for key in ("rose", "stats", "strength"):
+        for key in ("rose", "stats", "strength", "quotazioni"):
             value = str(raw_steps.get(key, "")).strip().lower()
             if value in allowed:
                 steps[key] = value
@@ -97,6 +97,7 @@ def _build_data_files_status(fallback: dict) -> dict:
             "rose": file_status["rose"],
             "stats": file_status["stats"],
             "strength": file_status["strength"],
+            "quotazioni": file_status["quotazioni"],
         },
     }
 

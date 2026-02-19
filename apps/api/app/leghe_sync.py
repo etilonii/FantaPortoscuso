@@ -1888,33 +1888,63 @@ def run_leghe_sync_and_pipeline(
 
         root = _repo_root()
 
-        if run_pipeline:
-            def _write_running_status(message: str) -> None:
-                _write_status(
-                    {
-                        "last_update": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
-                        "result": "running",
-                        "message": message,
-                        "season": _season_for(datetime.now(tz=timezone.utc)),
-                        "update_id": update_id,
-                        "matchday": int(effective_formations_matchday) if effective_formations_matchday else None,
-                        "steps": steps,
-                    }
-                )
+        def _write_running_status(message: str) -> None:
+            _write_status(
+                {
+                    "last_update": datetime.now(tz=timezone.utc).isoformat().replace("+00:00", "Z"),
+                    "result": "running",
+                    "message": message,
+                    "season": _season_for(datetime.now(tz=timezone.utc)),
+                    "update_id": update_id,
+                    "matchday": int(effective_formations_matchday) if effective_formations_matchday else None,
+                    "steps": steps,
+                }
+            )
 
-            def _run_pipeline_step(
-                argv: list[str],
-                *,
-                label: str,
-                fatal: bool = True,
-            ) -> None:
-                run_item = _run_subprocess(argv, cwd=root)
-                pipeline_runs.append(run_item)
-                if int(run_item.get("returncode") or 0) == 0:
-                    return
-                if fatal:
-                    raise LegheSyncError(f"{label} failed (rc={run_item.get('returncode')})")
-                pipeline_warnings.append(f"{label} failed (rc={run_item.get('returncode')})")
+        def _run_pipeline_step(
+            argv: list[str],
+            *,
+            label: str,
+            fatal: bool = True,
+        ) -> bool:
+            run_item = _run_subprocess(argv, cwd=root)
+            pipeline_runs.append(run_item)
+            if int(run_item.get("returncode") or 0) == 0:
+                return True
+            if fatal:
+                raise LegheSyncError(f"{label} failed (rc={run_item.get('returncode')})")
+            pipeline_warnings.append(f"{label} failed (rc={run_item.get('returncode')})")
+            return False
+
+        if fetch_quotazioni:
+            try:
+                quotazioni_result = download_fantacalcio_quotazioni_csv(
+                    season_slug=quotazioni_season_slug,
+                    date_stamp=stamp,
+                    username=username,
+                    password=password,
+                )
+                downloaded["quotazioni"] = dict(quotazioni_result)
+                if not bool(quotazioni_result.get("ok")):
+                    pipeline_warnings.append("fetch_quotazioni non ha prodotto righe utilizzabili")
+            except Exception as exc:
+                pipeline_warnings.append(f"fetch_quotazioni failed: {exc}")
+
+        if fetch_global_stats:
+            try:
+                global_stats_result = download_fantacalcio_stats_csv_bundle(
+                    season_slug=stats_season_slug,
+                    date_stamp=stamp,
+                    username=username,
+                    password=password,
+                )
+                downloaded["global_stats"] = dict(global_stats_result)
+                if not bool(global_stats_result.get("ok")):
+                    pipeline_warnings.append("fetch_global_stats non ha prodotto righe utilizzabili")
+            except Exception as exc:
+                pipeline_warnings.append(f"fetch_global_stats failed: {exc}")
+
+        if run_pipeline:
 
             # 1) classifica + rose/quotazioni (+ market)
             steps["rose"] = "running"
@@ -1931,21 +1961,6 @@ def run_leghe_sync_and_pipeline(
                 label="pipeline_v2 classifica",
                 fatal=True,
             )
-            if fetch_quotazioni:
-                try:
-                    quotazioni_result = download_fantacalcio_quotazioni_csv(
-                        season_slug=quotazioni_season_slug,
-                        date_stamp=stamp,
-                        username=username,
-                        password=password,
-                    )
-                    downloaded["quotazioni"] = dict(quotazioni_result)
-                    if not bool(quotazioni_result.get("ok")):
-                        pipeline_warnings.append(
-                            "fetch_quotazioni non ha prodotto righe utilizzabili"
-                        )
-                except Exception as exc:
-                    pipeline_warnings.append(f"fetch_quotazioni failed: {exc}")
             _run_pipeline_step(
                 [
                     sys.executable,
@@ -1964,21 +1979,6 @@ def run_leghe_sync_and_pipeline(
             # 2) statistiche (stats/*.csv + statistiche_giocatori.csv + eventuali update DB csv)
             steps["stats"] = "running"
             _write_running_status("Aggiornamento in corso: Statistiche...")
-            if fetch_global_stats:
-                try:
-                    global_stats_result = download_fantacalcio_stats_csv_bundle(
-                        season_slug=stats_season_slug,
-                        date_stamp=stamp,
-                        username=username,
-                        password=password,
-                    )
-                    downloaded["global_stats"] = dict(global_stats_result)
-                    if not bool(global_stats_result.get("ok")):
-                        pipeline_warnings.append(
-                            "fetch_global_stats non ha prodotto righe utilizzabili"
-                        )
-                except Exception as exc:
-                    pipeline_warnings.append(f"fetch_global_stats failed: {exc}")
             _run_pipeline_step(
                 [
                     sys.executable,
@@ -2032,6 +2032,45 @@ def run_leghe_sync_and_pipeline(
                 fatal=False,
             )
             steps["strength"] = "ok"
+        else:
+            if fetch_quotazioni:
+                steps["rose"] = "running"
+                _write_running_status("Aggiornamento in corso: Applicazione Quotazioni...")
+                quot_ok = bool((downloaded.get("quotazioni") or {}).get("ok"))
+                if quot_ok:
+                    applied = _run_pipeline_step(
+                        [
+                            sys.executable,
+                            str(root / "scripts" / "update_data.py"),
+                            "--auto",
+                            "--date",
+                            stamp,
+                            "--keep",
+                            "5",
+                        ],
+                        label="update_data",
+                        fatal=False,
+                    )
+                    steps["rose"] = "ok" if applied else "error"
+                else:
+                    steps["rose"] = "error"
+
+            if fetch_global_stats:
+                steps["stats"] = "running"
+                _write_running_status("Aggiornamento in corso: Applicazione Statistiche...")
+                stats_ok = bool((downloaded.get("global_stats") or {}).get("ok"))
+                if stats_ok:
+                    cleaned = _run_pipeline_step(
+                        [
+                            sys.executable,
+                            str(root / "scripts" / "clean_stats_batch.py"),
+                        ],
+                        label="clean_stats_batch",
+                        fatal=False,
+                    )
+                    steps["stats"] = "ok" if cleaned else "error"
+                else:
+                    steps["stats"] = "error"
 
         steps.setdefault("stats", "pending")
         _write_status(

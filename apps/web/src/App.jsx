@@ -612,7 +612,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
             data?.steps && typeof data.steps === "object" ? data.steps : {};
           const allowed = new Set(["pending", "running", "ok", "error"]);
           const normalizedSteps = {};
-          ["rose", "stats", "strength"].forEach((key) => {
+          ["rose", "stats", "strength", "quotazioni"].forEach((key) => {
             const value = String(rawSteps[key] || "").trim().toLowerCase();
             if (allowed.has(value)) {
               normalizedSteps[key] = value;

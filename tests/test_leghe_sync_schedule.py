@@ -56,7 +56,7 @@ def test_run_auto_leghe_sync_skips_outside_scheduled_windows():
         result = d.run_auto_leghe_sync(
             db,
             run_pipeline=False,
-            now_utc=datetime(2026, 2, 24, 12, 0, tzinfo=timezone.utc),
+            now_utc=datetime(2026, 2, 24, 10, 0, tzinfo=timezone.utc),
         )
     finally:
         d.LEGHE_ALIAS = original_alias
@@ -118,6 +118,43 @@ def test_run_auto_leghe_sync_runs_daily_rose_outside_windows(monkeypatch):
     assert third.get("skipped") is not True
     assert third["mode"] == "daily_rose_sync"
     assert calls[1]["download_rose"] is True
+
+
+def test_run_auto_leghe_sync_retries_daily_rose_when_first_run_fails(monkeypatch):
+    db = _build_db_session()
+    monkeypatch.setattr(d, "LEGHE_ALIAS", "fantaportoscuso")
+    monkeypatch.setattr(d, "LEGHE_USERNAME", "user")
+    monkeypatch.setattr(d, "LEGHE_PASSWORD", "pass")
+
+    calls = []
+
+    def _flaky_sync(**kwargs):
+        calls.append(kwargs)
+        if len(calls) == 1:
+            raise d.LegheSyncError("boom")
+        return {"ok": True, "downloaded": {"rose": {"ok": True}}, "date": kwargs.get("date_stamp")}
+
+    monkeypatch.setattr(d, "run_leghe_sync_and_pipeline", _flaky_sync)
+
+    try:
+        first = d.run_auto_leghe_sync(
+            db,
+            run_pipeline=True,
+            now_utc=datetime(2026, 2, 24, 1, 10, tzinfo=timezone.utc),
+        )
+        second = d.run_auto_leghe_sync(
+            db,
+            run_pipeline=True,
+            now_utc=datetime(2026, 2, 24, 9, 10, tzinfo=timezone.utc),
+        )
+    finally:
+        db.close()
+
+    assert first.get("ok") is False
+    assert first.get("mode") == "daily_rose_sync"
+    assert second.get("ok") is True
+    assert second.get("mode") == "daily_rose_sync"
+    assert len(calls) == 2
 
 
 def test_run_auto_leghe_sync_runs_once_per_slot_and_forces_matchday(monkeypatch):

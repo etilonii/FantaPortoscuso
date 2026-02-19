@@ -8209,6 +8209,36 @@ def _claim_scheduled_job_slot(
         return False
 
 
+def _release_scheduled_job_slot(
+    db: Session,
+    *,
+    job_name: str,
+    slot_ts: int,
+) -> bool:
+    target_ts = max(0, int(slot_ts))
+    fallback_ts = max(0, target_ts - 1)
+    try:
+        updated = (
+            db.query(ScheduledJobState)
+            .filter(
+                ScheduledJobState.job_name == job_name,
+                ScheduledJobState.last_run_ts == target_ts,
+            )
+            .update(
+                {
+                    ScheduledJobState.last_run_ts: fallback_ts,
+                    ScheduledJobState.updated_at: datetime.utcnow(),
+                },
+                synchronize_session=False,
+            )
+        )
+        db.commit()
+        return bool(updated == 1)
+    except Exception:
+        db.rollback()
+        return False
+
+
 def run_auto_live_import(
     db: Session,
     *,
@@ -8277,6 +8307,11 @@ def _run_daily_live_noon_import_if_due(
             configured_round=reference_round,
         )
     except HTTPException as exc:
+        _release_scheduled_job_slot(
+            db,
+            job_name=LEGHE_DAILY_LIVE_JOB_NAME,
+            slot_ts=noon_utc_ts,
+        )
         detail = exc.detail if hasattr(exc, "detail") else str(exc)
         return {
             "ok": False,
@@ -8287,6 +8322,11 @@ def _run_daily_live_noon_import_if_due(
             "scheduled_round": int(reference_round) if reference_round is not None else None,
         }
     except Exception as exc:
+        _release_scheduled_job_slot(
+            db,
+            job_name=LEGHE_DAILY_LIVE_JOB_NAME,
+            slot_ts=noon_utc_ts,
+        )
         return {
             "ok": False,
             "error": str(exc),
@@ -8295,6 +8335,13 @@ def _run_daily_live_noon_import_if_due(
             "timezone": str(LEGHE_SYNC_TZ),
             "scheduled_round": int(reference_round) if reference_round is not None else None,
         }
+
+    if isinstance(result, dict) and result.get("ok") is False:
+        _release_scheduled_job_slot(
+            db,
+            job_name=LEGHE_DAILY_LIVE_JOB_NAME,
+            slot_ts=noon_utc_ts,
+        )
 
     if isinstance(result, dict):
         result["mode"] = "daily_live_noon_import"
@@ -8373,6 +8420,12 @@ def run_auto_leghe_sync(
                 fetch_global_stats=True,
                 run_pipeline=bool(run_pipeline),
             )
+            if isinstance(result, dict) and result.get("ok") is False:
+                _release_scheduled_job_slot(
+                    db,
+                    job_name=LEGHE_DAILY_ROSE_JOB_NAME,
+                    slot_ts=day_start_utc_ts,
+                )
             if isinstance(result, dict):
                 result["mode"] = "daily_rose_sync"
                 result["daily_slot_local"] = day_start_local.isoformat()
@@ -8380,6 +8433,25 @@ def run_auto_leghe_sync(
                 result["daily_live_noon"] = daily_live_noon_result
             return result
         except LegheSyncError as exc:
+            _release_scheduled_job_slot(
+                db,
+                job_name=LEGHE_DAILY_ROSE_JOB_NAME,
+                slot_ts=day_start_utc_ts,
+            )
+            return {
+                "ok": False,
+                "error": str(exc),
+                "mode": "daily_rose_sync",
+                "daily_slot_local": day_start_local.isoformat(),
+                "timezone": str(LEGHE_SYNC_TZ),
+                "daily_live_noon": daily_live_noon_result,
+            }
+        except Exception as exc:
+            _release_scheduled_job_slot(
+                db,
+                job_name=LEGHE_DAILY_ROSE_JOB_NAME,
+                slot_ts=day_start_utc_ts,
+            )
             return {
                 "ok": False,
                 "error": str(exc),

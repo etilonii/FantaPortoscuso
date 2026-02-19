@@ -28,6 +28,7 @@ export default function HomeSection({
     rose: "Rose/Quotazioni",
     stats: "Statistiche",
     strength: "Forza squadra",
+    quotazioni: "Quotazioni",
   };
 
   const formatStepStatus = (value) => {
@@ -404,7 +405,7 @@ export default function HomeSection({
         <p className="data-status-message compact">{dataStatus?.message || "-"}</p>
         {hasSteps ? (
           <div className="data-status-steps-inline">
-            {["rose", "stats", "strength"].map((key) => {
+            {["rose", "stats", "strength", "quotazioni"].map((key) => {
               const value = dataStatus?.steps?.[key];
               if (!value) return null;
               return (

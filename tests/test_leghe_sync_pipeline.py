@@ -300,6 +300,57 @@ def test_run_leghe_sync_fetches_quotazioni_with_auth_credentials(monkeypatch):
     assert captured_quot_kwargs.get("password") == "pass"
 
 
+def test_run_leghe_sync_applies_fetched_data_even_without_full_pipeline(monkeypatch):
+    monkeypatch.setattr(ls, "_build_leghe_opener", lambda: (object(), []))
+    monkeypatch.setattr(ls, "fetch_leghe_context", lambda opener, *, alias: _fake_context())
+    monkeypatch.setattr(ls, "leghe_login", lambda *args, **kwargs: {"ok": True})
+    monkeypatch.setattr(ls, "_write_status", lambda payload: None)
+
+    def _ok_run(argv, *, cwd):
+        return {
+            "argv": list(argv),
+            "returncode": 0,
+            "stdout": "",
+            "stderr": "",
+            "started_at": "",
+            "ended_at": "",
+            "duration_seconds": 0.0,
+        }
+
+    monkeypatch.setattr(ls, "_run_subprocess", _ok_run)
+    monkeypatch.setattr(ls, "download_fantacalcio_quotazioni_csv", lambda **kwargs: {"ok": True, "rows": 10})
+    monkeypatch.setattr(
+        ls,
+        "download_fantacalcio_stats_csv_bundle",
+        lambda **kwargs: {"ok": True, "rows": 20, "files": []},
+    )
+
+    result = ls.run_leghe_sync_and_pipeline(
+        alias="fantaportoscuso",
+        username="user",
+        password="pass",
+        date_stamp="2026-02-20",
+        formations_matchday=26,
+        download_rose=False,
+        download_classifica=False,
+        download_formazioni=False,
+        download_formazioni_xlsx=False,
+        fetch_quotazioni=True,
+        fetch_global_stats=True,
+        run_pipeline=False,
+    )
+
+    assert result["ok"] is True
+    assert "quotazioni" in (result.get("downloaded") or {})
+    assert "global_stats" in (result.get("downloaded") or {})
+    scripts = [
+        Path(str(run.get("argv", ["", ""])[1])).name
+        for run in result.get("pipeline", [])
+        if isinstance(run, dict)
+    ]
+    assert scripts == ["update_data.py", "clean_stats_batch.py"]
+
+
 def test_download_fantacalcio_stats_prefers_authenticated_xlsx(monkeypatch, tmp_path):
     monkeypatch.setattr(ls, "_build_cookie_opener", lambda: (object(), []))
     monkeypatch.setattr(ls, "_fantacalcio_login", lambda *args, **kwargs: {"ok": True})
