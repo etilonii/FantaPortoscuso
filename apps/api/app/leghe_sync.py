@@ -2032,18 +2032,6 @@ def run_leghe_sync_and_pipeline(
                 label="build_team_strength_ranking",
                 fatal=True,
             )
-            _run_pipeline_step(
-                [
-                    sys.executable,
-                    str(root / "scripts" / "build_season_predictions.py"),
-                    "--start-round",
-                    "25",
-                    "--end-round",
-                    "38",
-                ],
-                label="build_season_predictions",
-                fatal=False,
-            )
             steps["strength"] = "ok"
         else:
             if fetch_quotazioni:

@@ -199,7 +199,6 @@ export default function App() {
     seriea_rounds: [],
     seriea_fixtures: [],
     seriea_live_table: [],
-    seriea_predictions: [],
     generated_at: "",
   });
   const [premiumInsightsLoading, setPremiumInsightsLoading] = useState(false);
@@ -292,6 +291,7 @@ export default function App() {
   const [liveLoading, setLiveLoading] = useState(false);
   const [liveSavingKey, setLiveSavingKey] = useState("");
   const [liveImporting, setLiveImporting] = useState(false);
+  const [liveFullSyncing, setLiveFullSyncing] = useState(false);
   const [roleFilter, setRoleFilter] = useState("all");
   const [squadraFilter, setSquadraFilter] = useState("all");
   const [rosterQuery, setRosterQuery] = useState("");
@@ -934,10 +934,79 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       }
       await loadLivePayload(roundNumber);
       await loadFormazioni(formationRound || roundNumber, formationOrder);
+      await loadMarketStandings();
+      await loadPremiumInsights(true);
     } catch (err) {
       setLiveError(err?.message || "Errore import voti live");
     } finally {
       setLiveImporting(false);
+    }
+  };
+
+  const runFullSyncTotal = async (roundValue = null) => {
+    if (!loggedIn || !isAdmin) return;
+    try {
+      setLiveFullSyncing(true);
+      setLiveError("");
+
+      const roundNumber = Number(
+        roundValue || livePayload?.round || formationRound || dataStatus?.matchday || 0
+      );
+      const params = new URLSearchParams({
+        run_pipeline: "true",
+        fetch_quotazioni: "true",
+        fetch_global_stats: "true",
+      });
+      if (Number.isFinite(roundNumber) && roundNumber > 0) {
+        params.set("formations_matchday", String(roundNumber));
+      }
+
+      const res = await fetchWithAuth(
+        `${API_BASE}/data/admin/leghe/sync-complete?${params.toString()}`,
+        {
+          method: "POST",
+          headers: buildAuthHeaders({ legacyAdminKey: true }),
+        }
+      );
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok || payload?.ok === false) {
+        const detail =
+          payload?.detail?.error ||
+          payload?.detail ||
+          payload?.error ||
+          "Errore sync completa totale";
+        throw new Error(String(detail));
+      }
+
+      const syncedRound = Number(payload?.round);
+      const effectiveRound =
+        Number.isFinite(syncedRound) && syncedRound > 0
+          ? syncedRound
+          : Number.isFinite(roundNumber) && roundNumber > 0
+          ? roundNumber
+          : null;
+      const liveImportOk = payload?.live_import?.ok !== false;
+      const warningText = Array.isArray(payload?.warnings) ? payload.warnings.join(" | ") : "";
+      setAdminNotice(
+        liveImportOk
+          ? `Sync completa totale completata${warningText ? ` (warning: ${warningText})` : ""}.`
+          : `Sync completa totale completata con warning live import. ${warningText}`.trim()
+      );
+
+      await loadDataStatus();
+      await loadLivePayload(effectiveRound);
+      await loadFormazioni(formationRound || effectiveRound, formationOrder);
+      await loadMarketStandings();
+      await loadPremiumInsights(true);
+      await loadListone();
+      await loadTopQuotesAllRoles();
+      await loadStatList(statsTab);
+      await loadPlusvalenze();
+      await loadAllPlusvalenze();
+    } catch (err) {
+      setLiveError(err?.message || "Errore sync completa totale");
+    } finally {
+      setLiveFullSyncing(false);
     }
   };
 
@@ -2090,9 +2159,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         seriea_rounds: Array.isArray(payload?.seriea_rounds) ? payload.seriea_rounds : [],
         seriea_fixtures: Array.isArray(payload?.seriea_fixtures) ? payload.seriea_fixtures : [],
         seriea_live_table: Array.isArray(payload?.seriea_live_table) ? payload.seriea_live_table : [],
-        seriea_predictions: Array.isArray(payload?.seriea_predictions)
-          ? payload.seriea_predictions
-          : [],
         generated_at: String(payload?.generated_at || ""),
       });
       return true;
@@ -2268,7 +2334,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   useEffect(() => {
     if (!loggedIn) return;
     if (!INSIGHTS_MENU_KEYS.has(String(activeMenu || "").trim())) return;
-    loadPremiumInsights(false);
+    const forceRefresh = String(activeMenu || "").trim() === "classifica-fixtures-seriea";
+    loadPremiumInsights(forceRefresh);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn, activeMenu, isAdmin]);
 
@@ -2730,8 +2797,10 @@ useEffect(() => {
                 liveError={liveError}
                 liveSavingKey={liveSavingKey}
                 liveImporting={liveImporting}
+                liveFullSyncing={liveFullSyncing}
                 onReload={() => loadLivePayload(livePayload?.round || null)}
                 onImportVotes={() => importLiveVotes(livePayload?.round || null)}
+                onFullSync={() => runFullSyncTotal(livePayload?.round || null)}
                 onRoundChange={onLiveRoundChange}
                 onToggleSixPolitico={saveLiveMatchSix}
                 onSavePlayer={saveLivePlayerVote}

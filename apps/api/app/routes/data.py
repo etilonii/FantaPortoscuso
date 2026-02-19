@@ -68,7 +68,6 @@ PLAYER_STRENGTH_REPORT_PATH = DATA_DIR / "reports" / "team_strength_players.csv"
 PLAYER_TIERS_PATH = DATA_DIR / "player_tiers.csv"
 TEAM_STRENGTH_RANKING_PATH = DATA_DIR / "reports" / "team_strength_ranking.csv"
 TEAM_STARTING_STRENGTH_RANKING_PATH = DATA_DIR / "reports" / "team_starting_strength_ranking.csv"
-SERIEA_PREDICTIONS_REPORT_PATH = DATA_DIR / "reports" / "seriea_predictions_round25_38.csv"
 SERIEA_FINAL_TABLE_REPORT_PATH = DATA_DIR / "reports" / "seriea_final_table_projection_round25_38.csv"
 REAL_FORMATIONS_FILE_CANDIDATES = [
     DATA_DIR / "reports" / "formazioni_giornata.csv",
@@ -3053,16 +3052,6 @@ def premium_insights(
         preferred_round=_leghe_sync_reference_round_now(),
     )
 
-    seriea_predictions = _read_csv(SERIEA_PREDICTIONS_REPORT_PATH)
-    seriea_predictions = sorted(
-        seriea_predictions,
-        key=lambda row: (
-            _parse_int(row.get("round")) or 999,
-            str(row.get("home_team") or ""),
-            str(row.get("away_team") or ""),
-        ),
-    )
-
     seriea_final_table_rows = _read_csv(SERIEA_FINAL_TABLE_REPORT_PATH)
     seriea_final_table = _sort_rows_numeric(
         seriea_final_table_rows,
@@ -3080,7 +3069,6 @@ def premium_insights(
         "seriea_rounds": seriea_snapshot.get("rounds", []),
         "seriea_fixtures": seriea_snapshot.get("fixtures", []),
         "seriea_live_table": seriea_snapshot.get("table", []),
-        "seriea_predictions": seriea_predictions,
         "seriea_final_table": seriea_final_table,
         "generated_at": datetime.utcnow().isoformat() + "Z",
     }
@@ -8572,6 +8560,41 @@ def run_auto_live_import(
     )
 
 
+def _run_live_import_for_round_safe(
+    db: Session,
+    *,
+    round_value: Optional[int],
+    season: Optional[str] = None,
+) -> Dict[str, object]:
+    resolved_round = _parse_int(round_value)
+    try:
+        result = _import_live_votes_internal(
+            db,
+            round_value=resolved_round,
+            season=season,
+        )
+        if isinstance(result, dict):
+            result.setdefault("ok", True)
+            return result
+        return {
+            "ok": True,
+            "round": int(resolved_round) if resolved_round is not None else None,
+        }
+    except HTTPException as exc:
+        detail = exc.detail if hasattr(exc, "detail") else str(exc)
+        return {
+            "ok": False,
+            "round": int(resolved_round) if resolved_round is not None else None,
+            "error": str(detail),
+        }
+    except Exception as exc:
+        return {
+            "ok": False,
+            "round": int(resolved_round) if resolved_round is not None else None,
+            "error": str(exc),
+        }
+
+
 def _run_daily_live_noon_import_if_due(
     db: Session,
     *,
@@ -8796,6 +8819,10 @@ def run_auto_leghe_sync(
         }
 
     try:
+        live_import_result = _run_live_import_for_round_safe(
+            db,
+            round_value=int(scheduled_matchday),
+        )
         result = run_leghe_sync_and_pipeline(
             alias=LEGHE_ALIAS,
             username=LEGHE_USERNAME,
@@ -8812,6 +8839,12 @@ def run_auto_leghe_sync(
             result["scheduled_matchday"] = int(scheduled_matchday)
             result["slot_start_local"] = slot_start_local.isoformat()
             result["timezone"] = str(LEGHE_SYNC_TZ)
+            result["live_import"] = live_import_result
+            warnings = list(result.get("warnings") or [])
+            if isinstance(live_import_result, dict) and live_import_result.get("ok") is False:
+                error_msg = str(live_import_result.get("error") or "unknown")
+                warnings.append(f"live_import failed: {error_msg}")
+            result["warnings"] = warnings
         return result
     except LegheSyncError as exc:
         return {
@@ -8880,6 +8913,73 @@ def admin_leghe_sync(
     )
     if result.get("ok") is False:
         raise HTTPException(status_code=502, detail=str(result.get("error") or "Leghe sync failed"))
+    return result
+
+
+@router.post("/admin/leghe/sync-complete")
+def admin_leghe_sync_complete(
+    run_pipeline: bool = Query(default=True),
+    fetch_quotazioni: bool = Query(default=True),
+    fetch_global_stats: bool = Query(default=True),
+    formations_matchday: Optional[int] = Query(default=None, ge=1, le=99),
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+
+    if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
+        raise HTTPException(
+            status_code=400,
+            detail="Missing env vars: LEGHE_ALIAS, LEGHE_USERNAME, LEGHE_PASSWORD",
+        )
+
+    local_now = _leghe_sync_local_now()
+    resolved_round = (
+        _parse_int(formations_matchday)
+        or _parse_int(LEGHE_FORMATIONS_MATCHDAY)
+        or _leghe_sync_reference_round_for_local_dt(local_now)
+        or _latest_round_with_live_votes(db)
+    )
+    live_import_result = _run_live_import_for_round_safe(
+        db,
+        round_value=resolved_round,
+    )
+
+    try:
+        result = run_leghe_sync_and_pipeline(
+            alias=LEGHE_ALIAS,
+            username=LEGHE_USERNAME,
+            password=LEGHE_PASSWORD,
+            date_stamp=local_now.date().isoformat(),
+            competition_id=LEGHE_COMPETITION_ID,
+            competition_name=LEGHE_COMPETITION_NAME,
+            formations_matchday=resolved_round,
+            fetch_quotazioni=bool(fetch_quotazioni),
+            fetch_global_stats=bool(fetch_global_stats),
+            run_pipeline=bool(run_pipeline),
+        )
+    except LegheSyncError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "ok": False,
+                "mode": "sync_complete_total",
+                "error": str(exc),
+                "round": int(resolved_round) if resolved_round is not None else None,
+                "live_import": live_import_result,
+            },
+        ) from exc
+
+    if isinstance(result, dict):
+        result["mode"] = "sync_complete_total"
+        result["round"] = int(resolved_round) if resolved_round is not None else None
+        result["live_import"] = live_import_result
+        warnings = list(result.get("warnings") or [])
+        if isinstance(live_import_result, dict) and live_import_result.get("ok") is False:
+            error_msg = str(live_import_result.get("error") or "unknown")
+            warnings.append(f"live_import failed: {error_msg}")
+        result["warnings"] = warnings
     return result
 
 

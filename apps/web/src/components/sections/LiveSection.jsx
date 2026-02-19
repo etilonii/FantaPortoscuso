@@ -75,8 +75,10 @@ export default function LiveSection({
   liveError,
   liveSavingKey,
   liveImporting,
+  liveFullSyncing,
   onReload,
   onImportVotes,
+  onFullSync,
   onRoundChange,
   onToggleSixPolitico,
   onSavePlayer,
@@ -265,9 +267,17 @@ export default function LiveSection({
             type="button"
             className="ghost"
             onClick={onImportVotes}
-            disabled={liveLoading || liveImporting || !activeRound}
+            disabled={liveLoading || liveImporting || liveFullSyncing || !activeRound}
           >
             {liveImporting ? "Import in corso..." : "Importa voti auto"}
+          </button>
+          <button
+            type="button"
+            className="primary"
+            onClick={onFullSync}
+            disabled={liveLoading || liveImporting || liveFullSyncing}
+          >
+            {liveFullSyncing ? "Sync totale in corso..." : "Sync completa totale"}
           </button>
         </div>
 

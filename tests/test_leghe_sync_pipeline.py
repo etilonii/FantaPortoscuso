@@ -65,7 +65,6 @@ def test_run_leghe_sync_and_pipeline_runs_extended_steps(monkeypatch):
         "sync_seriea_live_context.py",
         "build_player_tiers.py",
         "build_team_strength_ranking.py",
-        "build_season_predictions.py",
     ]
 
     assert status_writes
@@ -85,7 +84,7 @@ def test_run_leghe_sync_and_pipeline_keeps_running_on_optional_step_failures(mon
 
     def _run_with_optional_fail(argv, *, cwd):
         script_name = Path(str(argv[1])).name if len(argv) > 1 else ""
-        rc = 1 if script_name in {"update_fixtures.py", "build_season_predictions.py"} else 0
+        rc = 1 if script_name == "update_fixtures.py" else 0
         return {
             "argv": list(argv),
             "returncode": rc,
@@ -114,7 +113,6 @@ def test_run_leghe_sync_and_pipeline_keeps_running_on_optional_step_failures(mon
     assert result["ok"] is True
     warnings = result.get("warnings") or []
     assert any("update_fixtures failed" in item for item in warnings)
-    assert any("build_season_predictions failed" in item for item in warnings)
 
 
 def test_extract_fantacalcio_quotazioni_rows_from_html_parses_rows():

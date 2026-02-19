@@ -377,7 +377,7 @@ export default function PremiumInsightsSection({
             <p className="eyebrow">Premium</p>
             <h2>Classifica + Fixtures Serie A</h2>
             <p className="muted">
-              Classifica reale Serie A + fixtures reali live
+              Classifica Serie A + fixtures Serie A live
               {selectedRoundLabel ? ` (Giornata ${selectedRoundLabel})` : ""}.
             </p>
           </div>
@@ -385,7 +385,7 @@ export default function PremiumInsightsSection({
 
         <div className="panel">
           <div className="panel-header spaced">
-            <h3>Classifica live reale</h3>
+            <h3>Classifica live Serie A</h3>
             {typeof onReload === "function" ? (
               <button className="ghost" type="button" onClick={onReload} disabled={Boolean(loading)}>
                 {loading ? "Aggiorno..." : "Aggiorna"}
@@ -466,7 +466,7 @@ export default function PremiumInsightsSection({
 
         <div className="panel">
           <div className="panel-header spaced">
-            <h3>Fixtures reali</h3>
+            <h3>Fixtures Serie A</h3>
             {rounds.length > 1 ? (
               <label className="field inline-field">
                 <span>Giornata</span>
@@ -498,7 +498,7 @@ export default function PremiumInsightsSection({
                 {fixtureRows.length === 0 ? (
                   <tr>
                     <td colSpan={4} className="muted">
-                      Nessuna fixture reale disponibile.
+                      Nessuna fixture Serie A disponibile.
                     </td>
                   </tr>
                 ) : (
