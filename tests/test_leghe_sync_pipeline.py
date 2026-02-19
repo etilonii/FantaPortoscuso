@@ -62,6 +62,7 @@ def test_run_leghe_sync_and_pipeline_runs_extended_steps(monkeypatch):
         "update_data.py",
         "clean_stats_batch.py",
         "update_fixtures.py",
+        "sync_seriea_live_context.py",
         "build_player_tiers.py",
         "build_team_strength_ranking.py",
         "build_season_predictions.py",

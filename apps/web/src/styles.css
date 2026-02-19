@@ -808,6 +808,12 @@ body.admin-menu-open .admin-menu-overlay {
   color: #ffb7b7;
 }
 
+.status-badge.pending {
+  background: rgba(120, 150, 205, 0.2);
+  border-color: rgba(120, 150, 205, 0.55);
+  color: #c8dbff;
+}
+
 
 .role-switch {
   display: flex;
@@ -3729,6 +3735,12 @@ body.theme-light .status-badge.error {
   background: rgba(200, 70, 70, 0.14);
   border-color: rgba(200, 70, 70, 0.45);
   color: #7c2424;
+}
+
+body.theme-light .status-badge.pending {
+  background: rgba(98, 130, 190, 0.16);
+  border-color: rgba(98, 130, 190, 0.45);
+  color: #2a3f73;
 }
 
 body.theme-light input,

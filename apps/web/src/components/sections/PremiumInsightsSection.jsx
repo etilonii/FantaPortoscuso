@@ -12,12 +12,6 @@ const formatNumber = (value, digits = 2) => {
   return parsed.toFixed(digits).replace(".", ",");
 };
 
-const formatPercent = (value) => {
-  const parsed = toNumber(value);
-  if (parsed === null) return "-";
-  return `${(parsed * 100).toFixed(1).replace(".", ",")}%`;
-};
-
 const formatSignedNumber = (value, digits = 2) => {
   const parsed = toNumber(value);
   if (parsed === null) return "-";
@@ -105,16 +99,26 @@ export default function PremiumInsightsSection({
     ? insights.team_strength_starting
     : [];
   const serieaTable = Array.isArray(insights?.seriea_current_table) ? insights.seriea_current_table : [];
-  const serieaPredictions = Array.isArray(insights?.seriea_predictions) ? insights.seriea_predictions : [];
+  const serieaLiveTable = Array.isArray(insights?.seriea_live_table) ? insights.seriea_live_table : [];
+  const serieaFixtures = Array.isArray(insights?.seriea_fixtures) ? insights.seriea_fixtures : [];
+  const serieaRoundValue = Number(insights?.seriea_round);
+  const serieaRounds = Array.isArray(insights?.seriea_rounds) ? insights.seriea_rounds : [];
 
   const rounds = useMemo(() => {
     const values = new Set();
-    serieaPredictions.forEach((row) => {
+    serieaRounds.forEach((row) => {
+      const round = Number(
+        typeof row === "object" && row !== null ? row.round : row
+      );
+      if (Number.isFinite(round)) values.add(round);
+    });
+    serieaFixtures.forEach((row) => {
       const round = Number(row?.round);
       if (Number.isFinite(round)) values.add(round);
     });
+    if (Number.isFinite(serieaRoundValue)) values.add(serieaRoundValue);
     return Array.from(values).sort((a, b) => a - b);
-  }, [serieaPredictions]);
+  }, [serieaRounds, serieaFixtures, serieaRoundValue]);
 
   const [selectedRound, setSelectedRound] = useState("");
   const [powerSortBy, setPowerSortBy] = useState("forza_tot");
@@ -126,15 +130,19 @@ export default function PremiumInsightsSection({
     }
     const current = Number(selectedRound);
     if (!Number.isFinite(current) || !rounds.includes(current)) {
-      setSelectedRound(String(rounds[0]));
+      const preferred = Number.isFinite(serieaRoundValue) && rounds.includes(serieaRoundValue)
+        ? serieaRoundValue
+        : rounds[0];
+      setSelectedRound(String(preferred));
     }
-  }, [rounds, selectedRound]);
+  }, [rounds, selectedRound, serieaRoundValue]);
 
   const currentRound = Number(selectedRound);
-  const roundPredictions = useMemo(() => {
-    if (!Number.isFinite(currentRound)) return [];
-    return serieaPredictions.filter((row) => Number(row?.round) === currentRound);
-  }, [serieaPredictions, currentRound]);
+  const activeSerieaFixtures = useMemo(() => {
+    if (!Number.isFinite(currentRound)) return serieaFixtures;
+    const filtered = serieaFixtures.filter((row) => Number(row?.round) === currentRound);
+    return filtered.length > 0 ? filtered : serieaFixtures;
+  }, [serieaFixtures, currentRound]);
 
   if (mode === "tier-list") {
     const rows = playerTiers.slice(0, 220);
@@ -334,19 +342,50 @@ export default function PremiumInsightsSection({
   }
 
   if (mode === "classifica-fixtures-seriea") {
+    const liveRows = Array.isArray(serieaLiveTable) ? serieaLiveTable : [];
+    const liveValues = liveRows
+      .map((row) => resolveLiveDelta(row))
+      .filter((value) => Number.isFinite(value));
+    const liveAverage =
+      liveValues.length > 0
+        ? liveValues.reduce((sum, value) => sum + Number(value), 0) / liveValues.length
+        : null;
+    const selectedRoundLabel =
+      Number.isFinite(currentRound) && currentRound > 0
+        ? currentRound
+        : Number.isFinite(serieaRoundValue) && serieaRoundValue > 0
+        ? serieaRoundValue
+        : null;
+    const fixtureRows = activeSerieaFixtures;
+    const fixtureStateLabel = (stateValue) => {
+      const value = String(stateValue || "").trim().toLowerCase();
+      if (value === "live") return "Live";
+      if (value === "finished") return "Finale";
+      return "Programmata";
+    };
+    const fixtureStateClass = (stateValue) => {
+      const value = String(stateValue || "").trim().toLowerCase();
+      if (value === "live") return "running";
+      if (value === "finished") return "ok";
+      return "pending";
+    };
+
     return (
       <section className="dashboard">
         <div className="dashboard-header left row">
           <div>
             <p className="eyebrow">Premium</p>
             <h2>Classifica + Fixtures Serie A</h2>
-            <p className="muted">Classifica corrente Serie A e fixtures previste per giornata.</p>
+            <p className="muted">
+              Classifica reale Serie A + fixtures reali live
+              {selectedRoundLabel ? ` (Giornata ${selectedRoundLabel})` : ""}.
+            </p>
           </div>
         </div>
 
         <div className="panel">
           <div className="panel-header spaced">
-            <h3>Classifica corrente</h3>
+            <h3>Classifica live reale</h3>
             {typeof onReload === "function" ? (
               <button className="ghost" type="button" onClick={onReload} disabled={Boolean(loading)}>
                 {loading ? "Aggiorno..." : "Aggiorna"}
@@ -360,8 +399,9 @@ export default function PremiumInsightsSection({
                 <tr>
                   <th>Pos</th>
                   <th>Squadra</th>
-                  <th>Ultimi 5</th>
                   <th>Pt</th>
+                  <th>Live Î”</th>
+                  <th>Pos Î”</th>
                   <th>PG</th>
                   <th>GF</th>
                   <th>GA</th>
@@ -369,18 +409,56 @@ export default function PremiumInsightsSection({
                 </tr>
               </thead>
               <tbody>
-                {serieaTable.map((row, index) => (
-                  <tr key={`${row?.Squad || row?.Team || index}`}>
-                    <td>{index + 1}</td>
-                    <td>{row?.Squad || row?.Team || "-"}</td>
-                    <td>{String(row?.Last5 ?? row?.["Last5"] ?? row?.["Last 5"] ?? "").trim() || "-"}</td>
-                    <td>{row?.Pts || "-"}</td>
-                    <td>{row?.MP || "-"}</td>
-                    <td>{row?.GF || "-"}</td>
-                    <td>{row?.GA || "-"}</td>
-                    <td>{row?.GD || "-"}</td>
-                  </tr>
-                ))}
+                {(liveRows.length > 0 ? liveRows : serieaTable).map((row, index) => {
+                  const liveDelta = resolveLiveDelta(row);
+                  const liveTrend = buildLiveTrendMeta(liveDelta, liveAverage);
+                  const posDelta = resolvePositionDelta(row);
+                  const posTrend = buildPositionTrendMeta(posDelta);
+                  const posValue = toNumber(row?.live_pos ?? row?.Pos ?? row?.pos);
+                  const teamName = row?.team || row?.Squad || row?.Team || "-";
+                  const pointsValue = toNumber(row?.points_live ?? row?.Pts ?? row?.points);
+                  const playedValue = toNumber(row?.played_live ?? row?.MP ?? row?.played);
+                  const gfValue = toNumber(row?.gf_live ?? row?.GF);
+                  const gaValue = toNumber(row?.ga_live ?? row?.GA);
+                  const gdValue =
+                    toNumber(row?.gd_live) ??
+                    (Number.isFinite(gfValue) && Number.isFinite(gaValue) ? gfValue - gaValue : toNumber(row?.GD));
+
+                  return (
+                    <tr key={`${teamName}-${index}`}>
+                      <td>{Number.isFinite(posValue) ? Math.trunc(posValue) : index + 1}</td>
+                      <td>{teamName}</td>
+                      <td>{Number.isFinite(pointsValue) ? formatNumber(pointsValue, 0) : "-"}</td>
+                      <td>
+                        <span
+                          className={`live-trend-pill ${liveTrend.tierClass}`}
+                          title={
+                            Number.isFinite(liveDelta)
+                              ? `Scarto live ${formatSignedNumber(liveDelta, 2)}`
+                              : "Nessuna variazione live"
+                          }
+                        >
+                          <span className="live-trend-arrow">{liveTrend.arrow}</span>
+                          <span className="live-trend-value">
+                            {Number.isFinite(liveDelta) ? formatSignedNumber(liveDelta, 2) : "-"}
+                          </span>
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`position-trend-pill ${posTrend.tierClass}`}>
+                          <span className="position-trend-arrow">{posTrend.arrow}</span>
+                          <span className="position-trend-value">
+                            {posTrend.value > 0 ? `+${posTrend.value}` : String(posTrend.value)}
+                          </span>
+                        </span>
+                      </td>
+                      <td>{Number.isFinite(playedValue) ? Math.trunc(playedValue) : "-"}</td>
+                      <td>{Number.isFinite(gfValue) ? Math.trunc(gfValue) : "-"}</td>
+                      <td>{Number.isFinite(gaValue) ? Math.trunc(gaValue) : "-"}</td>
+                      <td>{Number.isFinite(gdValue) ? Math.trunc(gdValue) : "-"}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -388,45 +466,65 @@ export default function PremiumInsightsSection({
 
         <div className="panel">
           <div className="panel-header spaced">
-            <h3>Fixtures previste</h3>
-            <label className="field inline-field">
-              <span>Giornata</span>
-              <select
-                className="select"
-                value={selectedRound}
-                onChange={(event) => setSelectedRound(event.target.value)}
-              >
-                {rounds.map((round) => (
-                  <option key={round} value={String(round)}>
-                    {round}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <h3>Fixtures reali</h3>
+            {rounds.length > 1 ? (
+              <label className="field inline-field">
+                <span>Giornata</span>
+                <select
+                  className="select"
+                  value={selectedRound}
+                  onChange={(event) => setSelectedRound(event.target.value)}
+                >
+                  {rounds.map((round) => (
+                    <option key={round} value={String(round)}>
+                      {round}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
           </div>
           <div className="report-table-wrap">
             <table className="report-table">
               <thead>
                 <tr>
                   <th>Match</th>
-                  <th>Pred</th>
-                  <th>1</th>
-                  <th>X</th>
-                  <th>2</th>
-                  <th>xG</th>
+                  <th>Ris</th>
+                  <th>Stato</th>
+                  <th>Data/Ora</th>
                 </tr>
               </thead>
               <tbody>
-                {roundPredictions.map((row, index) => (
-                  <tr key={`${row?.home_team}-${row?.away_team}-${index}`}>
-                    <td>{`${row?.home_team || "-"} - ${row?.away_team || "-"}`}</td>
-                    <td>{row?.pred_score || "-"}</td>
-                    <td>{formatPercent(row?.home_win_prob)}</td>
-                    <td>{formatPercent(row?.draw_prob)}</td>
-                    <td>{formatPercent(row?.away_win_prob)}</td>
-                    <td>{`${formatNumber(row?.home_xg, 2)} - ${formatNumber(row?.away_xg, 2)}`}</td>
+                {fixtureRows.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="muted">
+                      Nessuna fixture reale disponibile.
+                    </td>
                   </tr>
-                ))}
+                ) : (
+                  fixtureRows.map((row, index) => {
+                    const state = String(row?.state || "").toLowerCase();
+                    const hs = toNumber(row?.home_score);
+                    const as = toNumber(row?.away_score);
+                    const hasScore = Number.isFinite(hs) && Number.isFinite(as);
+                    const showScore = hasScore && !(state === "scheduled" && hs === 0 && as === 0);
+                    const scoreLabel = showScore ? `${Math.trunc(hs)} - ${Math.trunc(as)}` : "-";
+                    const kickoff = String(row?.kickoff_iso || "").trim();
+
+                    return (
+                      <tr key={`${row?.home_team}-${row?.away_team}-${index}`}>
+                        <td>{`${row?.home_team || "-"} - ${row?.away_team || "-"}`}</td>
+                        <td>{scoreLabel}</td>
+                        <td>
+                          <span className={`status-badge compact ${fixtureStateClass(state)}`}>
+                            {fixtureStateLabel(state)}
+                          </span>
+                        </td>
+                        <td>{kickoff || "-"}</td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>

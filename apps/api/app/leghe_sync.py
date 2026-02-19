@@ -2000,6 +2000,19 @@ def run_leghe_sync_and_pipeline(
                 label="update_fixtures",
                 fatal=False,
             )
+            sync_seriea_cmd = [
+                sys.executable,
+                str(root / "scripts" / "sync_seriea_live_context.py"),
+                "--season",
+                _season_slug_for(now),
+            ]
+            if effective_formations_matchday is not None:
+                sync_seriea_cmd.extend(["--round", str(int(effective_formations_matchday))])
+            _run_pipeline_step(
+                sync_seriea_cmd,
+                label="sync_seriea_live_context",
+                fatal=False,
+            )
             _run_pipeline_step(
                 [
                     sys.executable,

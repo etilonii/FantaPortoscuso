@@ -195,6 +195,10 @@ export default function App() {
     team_strength_total: [],
     team_strength_starting: [],
     seriea_current_table: [],
+    seriea_round: null,
+    seriea_rounds: [],
+    seriea_fixtures: [],
+    seriea_live_table: [],
     seriea_predictions: [],
     generated_at: "",
   });
@@ -2074,6 +2078,18 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         seriea_current_table: Array.isArray(payload?.seriea_current_table)
           ? payload.seriea_current_table
           : [],
+        seriea_round: (() => {
+          const raw =
+            payload?.seriea_round === null ||
+            payload?.seriea_round === undefined ||
+            payload?.seriea_round === ""
+              ? null
+              : Number(payload.seriea_round);
+          return Number.isFinite(raw) ? raw : null;
+        })(),
+        seriea_rounds: Array.isArray(payload?.seriea_rounds) ? payload.seriea_rounds : [],
+        seriea_fixtures: Array.isArray(payload?.seriea_fixtures) ? payload.seriea_fixtures : [],
+        seriea_live_table: Array.isArray(payload?.seriea_live_table) ? payload.seriea_live_table : [],
         seriea_predictions: Array.isArray(payload?.seriea_predictions)
           ? payload.seriea_predictions
           : [],

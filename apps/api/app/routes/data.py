@@ -2709,6 +2709,305 @@ def _sort_rows_numeric(
     return sorted(rows, key=_score, reverse=reverse)
 
 
+def _parse_seriea_current_table_rows(rows: List[Dict[str, str]]) -> List[Dict[str, object]]:
+    out: List[Dict[str, object]] = []
+    for idx, row in enumerate(rows, start=1):
+        team_name = str(row.get("Squad") or row.get("Team") or row.get("Squadra") or "").strip()
+        if not team_name:
+            continue
+
+        pos = _parse_int(row.get("Pos") or row.get("pos"))
+        points = _parse_int(row.get("Pts") or row.get("Punti") or row.get("Pt")) or 0
+        played = _parse_int(row.get("MP") or row.get("Partite") or row.get("G")) or 0
+        gf = _parse_int(row.get("GF") or row.get("Gf")) or 0
+        ga = _parse_int(row.get("GA") or row.get("Gs")) or 0
+        gd = _parse_int(row.get("GD") or row.get("Dr"))
+        if gd is None:
+            gd = int(gf) - int(ga)
+
+        ppm = _parse_float(row.get("Pts/MP") or row.get("PPM"))
+        if ppm is None:
+            ppm = round(float(points) / float(played), 2) if played > 0 else 0.0
+
+        last5_raw = str(row.get("Last5") or row.get("Forma") or "").strip()
+        last5 = re.sub(r"\s+", " ", last5_raw)
+
+        out.append(
+            {
+                "Pos": int(pos) if pos is not None else int(idx),
+                "Squad": team_name,
+                "MP": int(played),
+                "GF": int(gf),
+                "GA": int(ga),
+                "GD": int(gd),
+                "Pts": int(points),
+                "Pts/MP": float(ppm),
+                "Last5": last5,
+            }
+        )
+
+    out.sort(
+        key=lambda item: (
+            int(item.get("Pos") or 999),
+            normalize_name(str(item.get("Squad") or "")),
+        )
+    )
+    return out
+
+
+def _load_seriea_fixtures_for_insights(club_index: Dict[str, str]) -> List[Dict[str, object]]:
+    rows = _read_csv_fallback(FIXTURES_PATH, SEED_DB_DIR / "fixtures.csv")
+    fixtures: List[Dict[str, object]] = []
+
+    for row in rows:
+        home_away = str(row.get("home_away") or "").strip().upper()
+        if home_away != "H":
+            continue
+        round_value = _parse_int(row.get("round"))
+        if round_value is None or round_value <= 0:
+            continue
+
+        home_team = _display_team_name(str(row.get("team") or ""), club_index)
+        away_team = _display_team_name(str(row.get("opponent") or ""), club_index)
+        if not home_team or not away_team:
+            continue
+
+        home_score = _parse_int(row.get("home_score"))
+        away_score = _parse_int(row.get("away_score"))
+        if home_score is None:
+            home_score = _parse_int(row.get("team_score"))
+        if away_score is None:
+            away_score = _parse_int(row.get("opponent_score"))
+
+        match_status = _parse_int(row.get("match_status"))
+        kickoff_iso = str(row.get("kickoff_iso") or "").strip()
+        match_url = str(row.get("match_url") or "").strip()
+        match_id = _parse_int(row.get("match_id"))
+        if match_id is None and match_url:
+            tail_match = re.search(r"/(\d+)(?:/[^/]*)?$", match_url)
+            if tail_match is not None:
+                match_id = _parse_int(tail_match.group(1))
+
+        fixtures.append(
+            {
+                "round": int(round_value),
+                "home_team": home_team,
+                "away_team": away_team,
+                "home_score": home_score,
+                "away_score": away_score,
+                "match_status": int(match_status) if match_status is not None else 0,
+                "kickoff_iso": kickoff_iso,
+                "match_url": match_url,
+                "match_id": int(match_id) if match_id is not None else None,
+            }
+        )
+
+    fixtures.sort(
+        key=lambda item: (
+            int(item.get("round") or 0),
+            str(item.get("kickoff_iso") or ""),
+            normalize_name(str(item.get("home_team") or "")),
+            normalize_name(str(item.get("away_team") or "")),
+        )
+    )
+    return fixtures
+
+
+def _seriea_fixture_state(match_status: Optional[int]) -> str:
+    status = int(match_status or 0)
+    if status <= 0:
+        return "scheduled"
+    if status == 1:
+        return "live"
+    return "finished"
+
+
+def _build_seriea_live_snapshot(
+    table_rows: List[Dict[str, object]],
+    fixture_rows: List[Dict[str, object]],
+    *,
+    preferred_round: Optional[int] = None,
+) -> Dict[str, object]:
+    available_rounds = sorted(
+        {
+            int(round_value)
+            for round_value in (_parse_int(item.get("round")) for item in fixture_rows)
+            if round_value is not None and round_value > 0
+        }
+    )
+    enriched_rounds = sorted(
+        {
+            int(_parse_int(item.get("round")) or 0)
+            for item in fixture_rows
+            if (_parse_int(item.get("round")) or 0) > 0
+            and (
+                str(item.get("kickoff_iso") or "").strip()
+                or str(item.get("match_url") or "").strip()
+                or _parse_int(item.get("match_id")) is not None
+                or _parse_int(item.get("match_status")) is not None
+            )
+        }
+    )
+
+    target_round = _parse_int(preferred_round)
+    if target_round is not None and target_round in enriched_rounds:
+        pass
+    elif enriched_rounds:
+        if target_round is not None:
+            future = [round_value for round_value in enriched_rounds if round_value >= int(target_round)]
+            target_round = future[0] if future else enriched_rounds[-1]
+        else:
+            target_round = enriched_rounds[-1]
+    elif target_round is None or target_round not in available_rounds:
+        target_round = available_rounds[-1] if available_rounds else None
+
+    fixtures_for_round: List[Dict[str, object]] = []
+    if target_round is not None:
+        for item in fixture_rows:
+            if _parse_int(item.get("round")) != target_round:
+                continue
+            match_status = _parse_int(item.get("match_status")) or 0
+            fixture_state = _seriea_fixture_state(match_status)
+            home_score = _parse_int(item.get("home_score"))
+            away_score = _parse_int(item.get("away_score"))
+            fixtures_for_round.append(
+                {
+                    "round": int(target_round),
+                    "home_team": str(item.get("home_team") or ""),
+                    "away_team": str(item.get("away_team") or ""),
+                    "home_score": home_score,
+                    "away_score": away_score,
+                    "match_status": int(match_status),
+                    "state": fixture_state,
+                    "kickoff_iso": str(item.get("kickoff_iso") or ""),
+                    "match_url": str(item.get("match_url") or ""),
+                    "match_id": _parse_int(item.get("match_id")),
+                }
+            )
+
+    fixtures_for_round.sort(
+        key=lambda item: (
+            str(item.get("kickoff_iso") or ""),
+            normalize_name(str(item.get("home_team") or "")),
+            normalize_name(str(item.get("away_team") or "")),
+        )
+    )
+
+    base_rows: List[Dict[str, object]] = []
+    for idx, row in enumerate(table_rows, start=1):
+        team_name = str(row.get("Squad") or row.get("Team") or row.get("Squadra") or "").strip()
+        if not team_name:
+            continue
+        base_pos = _parse_int(row.get("Pos")) or idx
+        points = _parse_int(row.get("Pts") or row.get("Punti")) or 0
+        played = _parse_int(row.get("MP") or row.get("Partite") or row.get("G")) or 0
+        gf = _parse_int(row.get("GF") or row.get("Gf")) or 0
+        ga = _parse_int(row.get("GA") or row.get("Gs")) or 0
+        base_rows.append(
+            {
+                "team": team_name,
+                "base_pos": int(base_pos),
+                "points_base": int(points),
+                "played_base": int(played),
+                "gf_base": int(gf),
+                "ga_base": int(ga),
+                "points_live": int(points),
+                "played_live": int(played),
+                "gf_live": int(gf),
+                "ga_live": int(ga),
+                "live_matches": 0,
+            }
+        )
+
+    by_team_key: Dict[str, Dict[str, object]] = {}
+    for row in base_rows:
+        by_team_key[normalize_name(row.get("team"))] = row
+
+    for fixture in fixtures_for_round:
+        state = str(fixture.get("state") or "scheduled")
+        if state == "scheduled":
+            continue
+        home_score = _parse_int(fixture.get("home_score"))
+        away_score = _parse_int(fixture.get("away_score"))
+        if home_score is None or away_score is None:
+            continue
+
+        home_key = normalize_name(str(fixture.get("home_team") or ""))
+        away_key = normalize_name(str(fixture.get("away_team") or ""))
+        if not home_key or not away_key:
+            continue
+        home_row = by_team_key.get(home_key)
+        away_row = by_team_key.get(away_key)
+        if home_row is None or away_row is None:
+            continue
+
+        home_row["played_live"] = int(home_row.get("played_live") or 0) + 1
+        away_row["played_live"] = int(away_row.get("played_live") or 0) + 1
+        home_row["gf_live"] = int(home_row.get("gf_live") or 0) + int(home_score)
+        home_row["ga_live"] = int(home_row.get("ga_live") or 0) + int(away_score)
+        away_row["gf_live"] = int(away_row.get("gf_live") or 0) + int(away_score)
+        away_row["ga_live"] = int(away_row.get("ga_live") or 0) + int(home_score)
+        home_row["live_matches"] = int(home_row.get("live_matches") or 0) + 1
+        away_row["live_matches"] = int(away_row.get("live_matches") or 0) + 1
+
+        if home_score > away_score:
+            home_row["points_live"] = int(home_row.get("points_live") or 0) + 3
+        elif away_score > home_score:
+            away_row["points_live"] = int(away_row.get("points_live") or 0) + 3
+        else:
+            home_row["points_live"] = int(home_row.get("points_live") or 0) + 1
+            away_row["points_live"] = int(away_row.get("points_live") or 0) + 1
+
+    live_rows = list(by_team_key.values())
+    live_rows.sort(
+        key=lambda item: (
+            -int(item.get("points_live") or 0),
+            -(int(item.get("gf_live") or 0) - int(item.get("ga_live") or 0)),
+            -int(item.get("gf_live") or 0),
+            normalize_name(str(item.get("team") or "")),
+        )
+    )
+
+    payload_rows: List[Dict[str, object]] = []
+    for idx, row in enumerate(live_rows, start=1):
+        points_base = int(row.get("points_base") or 0)
+        points_live = int(row.get("points_live") or 0)
+        played_live = int(row.get("played_live") or 0)
+        avg_live = round(float(points_live) / float(played_live), 2) if played_live > 0 else 0.0
+        base_pos = int(row.get("base_pos") or idx)
+        live_pos = int(idx)
+        payload_rows.append(
+            {
+                "team": str(row.get("team") or ""),
+                "base_pos": base_pos,
+                "live_pos": live_pos,
+                "pos": live_pos,
+                "position_delta": int(base_pos - live_pos),
+                "points_base": points_base,
+                "points_live": points_live,
+                "points": points_live,
+                "live_delta": int(points_live - points_base),
+                "played_base": int(row.get("played_base") or 0),
+                "played_live": played_live,
+                "played": played_live,
+                "gf_base": int(row.get("gf_base") or 0),
+                "ga_base": int(row.get("ga_base") or 0),
+                "gf_live": int(row.get("gf_live") or 0),
+                "ga_live": int(row.get("ga_live") or 0),
+                "gd_live": int(row.get("gf_live") or 0) - int(row.get("ga_live") or 0),
+                "pts_avg": avg_live,
+                "live_matches": int(row.get("live_matches") or 0),
+            }
+        )
+
+    return {
+        "round": int(target_round) if target_round is not None else None,
+        "rounds": available_rounds,
+        "fixtures": fixtures_for_round,
+        "table": payload_rows,
+    }
+
+
 @router.get("/insights/premium")
 def premium_insights(
     db: Session = Depends(get_db),
@@ -2741,15 +3040,18 @@ def premium_insights(
         default_value=9999.0,
     )
 
-    seriea_current_table: List[Dict[str, str]] = []
+    seriea_current_table: List[Dict[str, object]] = []
     seriea_context_path = _resolve_seriea_context_path()
     if seriea_context_path is not None:
-        seriea_current_table = _sort_rows_numeric(
-            _read_csv(seriea_context_path),
-            "Pts",
-            reverse=True,
-            default_value=-1.0,
-        )
+        seriea_current_table = _parse_seriea_current_table_rows(_read_csv(seriea_context_path))
+
+    club_index = _load_club_name_index()
+    seriea_fixtures_all = _load_seriea_fixtures_for_insights(club_index)
+    seriea_snapshot = _build_seriea_live_snapshot(
+        seriea_current_table,
+        seriea_fixtures_all,
+        preferred_round=_leghe_sync_reference_round_now(),
+    )
 
     seriea_predictions = _read_csv(SERIEA_PREDICTIONS_REPORT_PATH)
     seriea_predictions = sorted(
@@ -2774,6 +3076,10 @@ def premium_insights(
         "team_strength_total": team_strength_total,
         "team_strength_starting": team_strength_starting,
         "seriea_current_table": seriea_current_table,
+        "seriea_round": seriea_snapshot.get("round"),
+        "seriea_rounds": seriea_snapshot.get("rounds", []),
+        "seriea_fixtures": seriea_snapshot.get("fixtures", []),
+        "seriea_live_table": seriea_snapshot.get("table", []),
         "seriea_predictions": seriea_predictions,
         "seriea_final_table": seriea_final_table,
         "generated_at": datetime.utcnow().isoformat() + "Z",
