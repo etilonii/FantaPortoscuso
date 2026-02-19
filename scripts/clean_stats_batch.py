@@ -734,19 +734,27 @@ def main() -> None:
     updated = False
     keep = state.get("keep", 5)
     backup_done = False
+    backup_failed = False
+    clean_failures: list[str] = []
 
     def ensure_backup() -> None:
-        nonlocal backup_done
-        if backup_done:
+        nonlocal backup_done, backup_failed
+        if backup_done or backup_failed:
             return
-        run_backup_fail_fast(
-            DATABASE_URL,
-            BACKUP_DIR,
-            BACKUP_KEEP_LAST,
-            prefix="stats",
-            base_dir=ROOT,
-        )
-        backup_done = True
+        try:
+            run_backup_fail_fast(
+                DATABASE_URL,
+                BACKUP_DIR,
+                BACKUP_KEEP_LAST,
+                prefix="stats",
+                base_dir=ROOT,
+            )
+            backup_done = True
+        except Exception as exc:
+            # Do not stop the whole stats pipeline if backup is not available
+            # (for example unsupported DATABASE_URL in cloud env).
+            backup_failed = True
+            print(f"Warning: backup skipped ({exc})")
 
     for template_name, out_name, stat in STATS:
         prefix = template_name.replace("_template.csv", "")
@@ -779,10 +787,15 @@ def main() -> None:
         report_path = DATA_DIR / "reports" / f"{out_path.stem}_missing_report.txt"
         ensure_backup()
         if stat in ("GolVittoria", "GolPareggio"):
-            clean_simple_stat(in_path, out_path, stat, report_path)
+            try:
+                clean_simple_stat(in_path, out_path, stat, report_path)
+            except Exception as exc:
+                clean_failures.append(f"{template_name}: {exc}")
+                print(f"Warning: clean failed ({template_name}): {exc}")
+                continue
         else:
             cmd = [
-                "python",
+                sys.executable,
                 str(ROOT / "scripts" / "clean_stats.py"),
                 "--in",
                 str(in_path),
@@ -794,7 +807,12 @@ def main() -> None:
                 "--report",
                 str(report_path),
             ]
-            subprocess.run(cmd, check=True)
+            try:
+                subprocess.run(cmd, check=True)
+            except Exception as exc:
+                clean_failures.append(f"{template_name}: {exc}")
+                print(f"Warning: clean failed ({template_name}): {exc}")
+                continue
         last[template_name] = sig
         updated = True
 
@@ -803,22 +821,48 @@ def main() -> None:
         r8_sig = signature_for(R8_DISORDINATI_PATH)
         if last.get(r8_sig_key) != r8_sig or args.force:
             ensure_backup()
-            missing_r8 = update_r8_disordinati_template()
-            last[r8_sig_key] = r8_sig
-            updated = True
-            if missing_r8:
-                print(f"R8 disordinati: {len(set(missing_r8))} nomi non risolti.")
+            try:
+                missing_r8 = update_r8_disordinati_template()
+                last[r8_sig_key] = r8_sig
+                updated = True
+                if missing_r8:
+                    print(f"R8 disordinati: {len(set(missing_r8))} nomi non risolti.")
+            except Exception as exc:
+                clean_failures.append(f"{r8_sig_key}: {exc}")
+                print(f"Warning: update R8 disordinati failed: {exc}")
 
     if updated:
         ensure_backup()
         state["last_signature"] = last
-        save_state(state)
-        update_statistiche_giocatori()
-        update_rigoristi_from_template()
-        print("Stats cleaned.")
+        try:
+            save_state(state)
+        except Exception as exc:
+            clean_failures.append(f"save_state: {exc}")
+            print(f"Warning: save state failed: {exc}")
+        try:
+            update_statistiche_giocatori()
+        except Exception as exc:
+            clean_failures.append(f"update_statistiche_giocatori: {exc}")
+            print(f"Warning: update statistiche_giocatori failed: {exc}")
+        try:
+            update_rigoristi_from_template()
+        except Exception as exc:
+            clean_failures.append(f"update_rigoristi_from_template: {exc}")
+            print(f"Warning: update rigoristi failed: {exc}")
+        if clean_failures:
+            print(f"Stats cleaned with warnings ({len(clean_failures)}).")
+        else:
+            print("Stats cleaned.")
     else:
-        update_rigoristi_from_template()
-        print("Nessun aggiornamento statistiche.")
+        try:
+            update_rigoristi_from_template()
+        except Exception as exc:
+            clean_failures.append(f"update_rigoristi_from_template: {exc}")
+            print(f"Warning: update rigoristi failed: {exc}")
+        if clean_failures:
+            print(f"Nessun aggiornamento statistiche (warnings: {len(clean_failures)}).")
+        else:
+            print("Nessun aggiornamento statistiche.")
 
 
 if __name__ == "__main__":
