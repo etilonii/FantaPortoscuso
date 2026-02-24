@@ -1841,6 +1841,19 @@ def run_leghe_sync_and_pipeline(
     pipeline_warnings: list[str] = []
     effective_formations_matchday: int | None = formations_matchday
 
+    def _status_matchday() -> int | None:
+        candidates: list[int] = []
+        for value in (
+            formations_matchday,
+            effective_formations_matchday,
+            context.current_turn if context else None,
+            context.suggested_formations_matchday if context else None,
+            context.last_calculated_matchday if context else None,
+        ):
+            if isinstance(value, int) and value > 0:
+                candidates.append(int(value))
+        return max(candidates) if candidates else None
+
     try:
         context = fetch_leghe_context(opener, alias=alias)
         if competition_id is None:
@@ -1935,7 +1948,7 @@ def run_leghe_sync_and_pipeline(
                     "message": message,
                     "season": _season_for(datetime.now(tz=timezone.utc)),
                     "update_id": update_id,
-                    "matchday": int(effective_formations_matchday) if effective_formations_matchday else None,
+                    "matchday": _status_matchday(),
                     "steps": steps,
                 }
             )
@@ -2120,7 +2133,7 @@ def run_leghe_sync_and_pipeline(
                 "message": "Aggiornamento completato con successo.",
                 "season": _season_for(datetime.now(tz=timezone.utc)),
                 "update_id": update_id,
-                "matchday": int(effective_formations_matchday) if effective_formations_matchday else None,
+                "matchday": _status_matchday(),
                 "steps": steps,
             }
         )
@@ -2157,6 +2170,7 @@ def run_leghe_sync_and_pipeline(
                 "message": f"Errore update: {exc}",
                 "season": _season_for(datetime.now(tz=timezone.utc)),
                 "update_id": update_id,
+                "matchday": _status_matchday(),
                 "steps": steps,
             }
         )
