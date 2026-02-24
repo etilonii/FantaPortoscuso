@@ -433,9 +433,21 @@ body.theme-light {
 
 .app-alert {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
+}
+
+.app-alert-messages {
+  display: grid;
+  gap: 6px;
+}
+
+.app-alert-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .app-alert .error {

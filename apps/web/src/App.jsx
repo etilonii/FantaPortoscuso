@@ -193,6 +193,8 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
+  const [initialDataError, setInitialDataError] = useState("");
+  const [initialDataLoading, setInitialDataLoading] = useState(false);
   const [authBootstrapped, setAuthBootstrapped] = useState(false);
   const [authRestoring, setAuthRestoring] = useState(false);
   const menuHistoryReadyRef = useRef(false);
@@ -520,6 +522,64 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     return fetch(url, { ...options, headers: retryHeaders });
   };
 
+  const waitMs = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const runWithRetry = async (
+    runner,
+    { attempts = 3, baseDelayMs = 350, shouldRetry = () => true } = {}
+  ) => {
+    let lastError = null;
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      try {
+        return await runner();
+      } catch (err) {
+        lastError = err;
+        const retryAllowed = attempt < attempts && shouldRetry(err);
+        if (!retryAllowed) break;
+        const delay = baseDelayMs * 2 ** (attempt - 1);
+        await waitMs(delay);
+      }
+    }
+    throw lastError || new Error("Richiesta fallita");
+  };
+
+  const fetchJsonWithRetry = async (
+    url,
+    options = {},
+    { useAuth = false, retryOn401 = true, attempts = 3, baseDelayMs = 350 } = {}
+  ) => {
+    const retryableStatuses = new Set([408, 429, 500, 502, 503, 504]);
+    return runWithRetry(
+      async () => {
+        const res = useAuth
+          ? await fetchWithAuth(url, options, retryOn401)
+          : await fetch(url, options);
+        const payload = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          const detail =
+            typeof payload?.detail === "string"
+              ? payload.detail
+              : String(payload?.message || "").trim();
+          const err = new Error(detail || `HTTP ${res.status}`);
+          err.status = Number(res.status || 0);
+          err.retryable = retryableStatuses.has(err.status);
+          throw err;
+        }
+        return payload;
+      },
+      {
+        attempts,
+        baseDelayMs,
+        shouldRetry: (err) => {
+          if (err?.retryable === false) return false;
+          const status = Number(err?.status || 0);
+          if (status > 0) return retryableStatuses.has(status);
+          return true;
+        },
+      }
+    );
+  };
+
   const applyAuthSessionPayload = (data) => {
     setIsAdmin(Boolean(data?.is_admin));
   };
@@ -645,20 +705,18 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   =========================== */
   const loadSummary = async () => {
     try {
-      const res = await fetch(`${API_BASE}/data/summary`);
-      if (!res.ok) return;
-      const data = await res.json();
+      const data = await fetchJsonWithRetry(`${API_BASE}/data/summary`);
       setSummary(data);
+      return true;
     } catch {
       console.warn("loadSummary failed");
+      return false;
     }
   };
 
   const loadDataStatus = async () => {
     try {
-      const res = await fetch(`${API_BASE}/meta/data-status`);
-      if (!res.ok) throw new Error("status request failed");
-      const data = await res.json();
+      const data = await fetchJsonWithRetry(`${API_BASE}/meta/data-status`);
       const rawMatchday = data?.matchday;
       let parsedMatchday = null;
       if (
@@ -700,6 +758,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         })(),
       };
       setDataStatus(normalized);
+      return true;
     } catch {
       setDataStatus((prev) => ({
         ...prev,
@@ -708,21 +767,22 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         update_id: "",
         steps: {},
       }));
+      return false;
     }
   };
 
   const loadTeams = async () => {
     try {
-      const res = await fetch(`${API_BASE}/data/teams`);
-      if (!res.ok) return;
-      const data = await res.json();
+      const data = await fetchJsonWithRetry(`${API_BASE}/data/teams`);
       const items = (data.items || [])
         .slice()
         .sort((a, b) => a.localeCompare(b, "it", { sensitivity: "base" }));
       setTeams(items);
       if (items.length && !selectedTeam) setSelectedTeam(items[0]);
+      return true;
     } catch {
       console.warn("loadTeams failed");
+      return false;
     }
   };
 
@@ -742,12 +802,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const loadMarketStandings = async () => {
     try {
-      const res = await fetch(`${API_BASE}/data/standings?live=1`);
-      if (!res.ok) return;
-      const data = await res.json();
+      const data = await fetchJsonWithRetry(`${API_BASE}/data/standings?live=1`);
       setMarketStandings(Array.isArray(data.items) ? data.items : []);
+      return true;
     } catch {
       console.warn("loadMarketStandings failed");
+      return false;
     }
   };
 
@@ -764,11 +824,13 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (normalizedOrder === "classifica" || normalizedOrder === "live_total") {
         params.set("order_by", normalizedOrder);
       }
-      const res = await fetchWithAuth(`${API_BASE}/data/formazioni?${params.toString()}`, {
-        headers: buildAuthHeaders({ legacyAccessKey: true }),
-      });
-      if (!res.ok) return;
-      const data = await res.json();
+      const data = await fetchJsonWithRetry(
+        `${API_BASE}/data/formazioni?${params.toString()}`,
+        {
+          headers: buildAuthHeaders({ legacyAccessKey: true }),
+        },
+        { useAuth: true }
+      );
       setFormations(Array.isArray(data.items) ? data.items : []);
       const apiRound = Number(data?.round);
       const normalizedRound = Number.isFinite(apiRound) ? apiRound : null;
@@ -805,8 +867,10 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       } else {
         setFormationRound("");
       }
+      return true;
     } catch {
       console.warn("loadFormazioni failed");
+      return false;
     }
   };
 
@@ -1086,16 +1150,16 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const loadListone = async () => {
     try {
-      const res = await fetch(
+      const data = await fetchJsonWithRetry(
         `${API_BASE}/data/listone?ruolo=${encodeURIComponent(
           quoteRole
         )}&order=${encodeURIComponent(quoteOrder)}&limit=200`
       );
-      if (!res.ok) return;
-      const data = await res.json();
       setQuoteList(data.items || []);
+      return true;
     } catch {
       console.warn("loadListone failed");
+      return false;
     }
   };
 
@@ -1104,7 +1168,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       const roles = ["P", "D", "C", "A"];
       const responses = await Promise.all(
         roles.map((role) =>
-          fetch(
+          fetchJsonWithRetry(
             `${API_BASE}/data/listone?ruolo=${encodeURIComponent(
               role
             )}&order=price_desc&limit=200`
@@ -1112,17 +1176,17 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         )
       );
       const items = [];
-      for (const res of responses) {
-        if (!res.ok) continue;
-        const data = await res.json();
+      for (const data of responses) {
         items.push(...(data.items || []));
       }
       items.sort(
         (a, b) => Number(b.PrezzoAttuale || 0) - Number(a.PrezzoAttuale || 0)
       );
       setTopQuotesAll(items);
+      return true;
     } catch {
       console.warn("loadTopQuotesAllRoles failed");
+      return false;
     }
   };
 
@@ -1147,31 +1211,31 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const loadPlusvalenze = async () => {
     try {
-      const res = await fetch(
+      const data = await fetchJsonWithRetry(
         `${API_BASE}/data/stats/plusvalenze?limit=5&include_negatives=false&period=${encodeURIComponent(
           plusvalenzePeriod
         )}`
       );
-      if (!res.ok) return;
-      const data = await res.json();
       setPlusvalenze(data.items || []);
+      return true;
     } catch {
       console.warn("loadPlusvalenze failed");
+      return false;
     }
   };
 
   const loadAllPlusvalenze = async () => {
     try {
-      const res = await fetch(
+      const data = await fetchJsonWithRetry(
         `${API_BASE}/data/stats/plusvalenze?limit=200&include_negatives=true&period=${encodeURIComponent(
           plusvalenzePeriod
         )}`
       );
-      if (!res.ok) return;
-      const data = await res.json();
       setAllPlusvalenze(data.items || []);
+      return true;
     } catch {
       console.warn("loadAllPlusvalenze failed");
+      return false;
     }
   };
 
@@ -1209,14 +1273,56 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const loadStatList = async (tab) => {
     try {
-      const res = await fetch(
+      const data = await fetchJsonWithRetry(
         `${API_BASE}/data/stats/${encodeURIComponent(tab)}?limit=300`
       );
-      if (!res.ok) return;
-      const data = await res.json();
       setStatsItems(data.items || []);
+      return true;
     } catch {
       console.warn("loadStatList failed");
+      return false;
+    }
+  };
+
+  const loadInitialData = async ({ silent = false } = {}) => {
+    if (!silent) {
+      setInitialDataLoading(true);
+    }
+    setInitialDataError("");
+    try {
+      const checks = await Promise.allSettled([
+        loadSummary(),
+        loadDataStatus(),
+        loadTeams(),
+        loadMarketStandings(),
+        loadFormazioni(),
+        loadPlusvalenze(),
+        loadAllPlusvalenze(),
+        loadListone(),
+        loadTopQuotesAllRoles(),
+      ]);
+      const failed = checks.filter(
+        (result) => result.status === "rejected" || result.value === false
+      ).length;
+      if (failed > 0) {
+        setInitialDataError(
+          `Alcuni dati non sono stati caricati (${failed}/9). Premi "Riprova".`
+        );
+        return false;
+      }
+      return true;
+    } finally {
+      if (!silent) {
+        setInitialDataLoading(false);
+      }
+    }
+  };
+
+  const retryInitialDataLoad = async () => {
+    await loadInitialData();
+    await loadStatList(statsTab);
+    if (loggedIn && INSIGHTS_MENU_KEYS.has(String(activeMenu || "").trim())) {
+      await loadPremiumInsights(true);
     }
   };
 
@@ -2334,17 +2440,15 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   }, []);
 
   useEffect(() => {
-    loadSummary();
-    loadDataStatus();
-    loadTeams();
-    loadMarketStandings();
-    loadFormazioni();
-    loadPlusvalenze();
-    loadAllPlusvalenze();
-    loadListone();
-    loadTopQuotesAllRoles();
+    loadInitialData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    loadInitialData({ silent: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn]);
 
   useEffect(() => {
     loadStatList(statsTab);
@@ -2784,12 +2888,29 @@ useEffect(() => {
           <div className="admin-menu-overlay" onClick={() => setAdminMenuOpen(false)} />
 
           <main className="content">
-            {error ? (
+            {error || initialDataError ? (
               <div className="panel app-alert">
-                <p className="error">{error}</p>
-                <button type="button" className="ghost" onClick={() => setError("")}>
-                  Chiudi
-                </button>
+                <div className="app-alert-messages">
+                  {error ? <p className="error">{error}</p> : null}
+                  {initialDataError ? <p className="error">{initialDataError}</p> : null}
+                </div>
+                <div className="app-alert-actions">
+                  {initialDataError ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      onClick={retryInitialDataLoad}
+                      disabled={initialDataLoading}
+                    >
+                      {initialDataLoading ? "Riprovo..." : "Riprova dati"}
+                    </button>
+                  ) : null}
+                  {error ? (
+                    <button type="button" className="ghost" onClick={() => setError("")}>
+                      Chiudi
+                    </button>
+                  ) : null}
+                </div>
               </div>
             ) : null}
             {/* ===========================
