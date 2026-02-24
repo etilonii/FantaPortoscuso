@@ -2978,6 +2978,18 @@ def _build_seriea_live_snapshot(
         )
     )
 
+    all_fixtures: List[Dict[str, object]] = []
+    for round_value in sorted(normalized_fixtures_by_round.keys()):
+        round_rows = list(normalized_fixtures_by_round.get(int(round_value), []))
+        round_rows.sort(
+            key=lambda item: (
+                str(item.get("kickoff_iso") or ""),
+                normalize_name(str(item.get("home_team") or "")),
+                normalize_name(str(item.get("away_team") or "")),
+            )
+        )
+        all_fixtures.extend(round_rows)
+
     base_rows: List[Dict[str, object]] = []
     for idx, row in enumerate(table_rows, start=1):
         team_name = str(row.get("Squad") or row.get("Team") or row.get("Squadra") or "").strip()
@@ -3117,7 +3129,9 @@ def _build_seriea_live_snapshot(
     return {
         "round": int(target_round) if target_round is not None else None,
         "rounds": available_rounds,
-        "fixtures": fixtures_for_round,
+        # Return all rounds so frontend can switch day without stale fallback.
+        "fixtures": all_fixtures,
+        "fixtures_current_round": fixtures_for_round,
         "table": payload_rows,
     }
 

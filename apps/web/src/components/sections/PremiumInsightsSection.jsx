@@ -166,8 +166,7 @@ export default function PremiumInsightsSection({
   const currentRound = Number(selectedRound);
   const activeSerieaFixtures = useMemo(() => {
     if (!Number.isFinite(currentRound)) return serieaFixtures;
-    const filtered = serieaFixtures.filter((row) => Number(row?.round) === currentRound);
-    return filtered.length > 0 ? filtered : serieaFixtures;
+    return serieaFixtures.filter((row) => Number(row?.round) === currentRound);
   }, [serieaFixtures, currentRound]);
 
   if (mode === "tier-list") {
