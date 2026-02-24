@@ -546,7 +546,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const fetchJsonWithRetry = async (
     url,
     options = {},
-    { useAuth = false, retryOn401 = true, attempts = 3, baseDelayMs = 350 } = {}
+    { useAuth = false, retryOn401 = true, attempts = 5, baseDelayMs = 600 } = {}
   ) => {
     const retryableStatuses = new Set([408, 429, 500, 502, 503, 504]);
     return runWithRetry(
@@ -1290,27 +1290,49 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
     setInitialDataError("");
     try {
-      const checks = await Promise.allSettled([
-        loadSummary(),
-        loadDataStatus(),
-        loadTeams(),
-        loadMarketStandings(),
-        loadFormazioni(),
-        loadPlusvalenze(),
-        loadAllPlusvalenze(),
-        loadListone(),
-        loadTopQuotesAllRoles(),
-      ]);
-      const failed = checks.filter(
-        (result) => result.status === "rejected" || result.value === false
-      ).length;
-      if (failed > 0) {
-        setInitialDataError(
-          `Alcuni dati non sono stati caricati (${failed}/9). Premi "Riprova".`
-        );
-        return false;
+      const tasks = [
+        { key: "summary", label: "Summary", run: loadSummary },
+        { key: "status", label: "Data status", run: loadDataStatus },
+        { key: "teams", label: "Teams", run: loadTeams },
+        { key: "standings", label: "Standings", run: loadMarketStandings },
+        { key: "formazioni", label: "Formazioni", run: loadFormazioni },
+        { key: "plus_top", label: "Plusvalenze top", run: loadPlusvalenze },
+        { key: "plus_all", label: "Plusvalenze all", run: loadAllPlusvalenze },
+        { key: "listone", label: "Listone", run: loadListone },
+        { key: "quotes_all", label: "Top quotazioni", run: loadTopQuotesAllRoles },
+      ];
+
+      let pending = tasks.slice();
+      let failedLabels = [];
+
+      for (let pass = 1; pass <= 2; pass += 1) {
+        const checks = await Promise.allSettled(pending.map((task) => task.run()));
+        failedLabels = [];
+        const nextPending = [];
+        checks.forEach((result, index) => {
+          if (result.status === "rejected" || result.value === false) {
+            const task = pending[index];
+            failedLabels.push(task.label);
+            nextPending.push(task);
+          }
+        });
+        if (!failedLabels.length) {
+          return true;
+        }
+        if (pass < 2) {
+          await waitMs(2500);
+          pending = nextPending;
+        }
       }
-      return true;
+
+      const preview =
+        failedLabels.length <= 4
+          ? failedLabels.join(", ")
+          : `${failedLabels.slice(0, 4).join(", ")}, ...`;
+      setInitialDataError(
+        `Alcuni dati non sono stati caricati (${failedLabels.length}/9): ${preview}. Premi "Riprova".`
+      );
+      return false;
     } finally {
       if (!silent) {
         setInitialDataLoading(false);
