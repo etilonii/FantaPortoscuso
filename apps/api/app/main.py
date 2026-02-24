@@ -223,6 +223,14 @@ def create_app() -> FastAPI:
             try:
                 result = data.run_auto_leghe_sync(db)
                 if result.get("skipped"):
+                    should_bootstrap = data.leghe_bootstrap_sync_required()
+                    if should_bootstrap:
+                        logger.warning(
+                            "Auto leghe sync skipped (%s) but core data is stale: forcing bootstrap sync",
+                            result.get("reason", "not_due"),
+                        )
+                        result = data.run_bootstrap_leghe_sync(db)
+                if result.get("skipped"):
                     logger.info("Auto leghe sync skipped: %s", result.get("reason", "not_due"))
                     return
                 if result.get("ok") is False:
@@ -230,7 +238,8 @@ def create_app() -> FastAPI:
                     return
                 downloaded = result.get("downloaded") or {}
                 logger.info(
-                    "Auto leghe sync ok: keys=%s date=%s",
+                    "Auto leghe sync ok: mode=%s keys=%s date=%s",
+                    result.get("mode", "scheduled"),
                     ",".join(sorted(downloaded.keys())) if isinstance(downloaded, dict) else "n/a",
                     result.get("date"),
                 )

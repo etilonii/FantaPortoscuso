@@ -95,6 +95,7 @@ CALENDAR_BASE_URL = "https://www.fantacalcio.it/serie-a/calendario"
 LEGHE_BASE_URL = "https://leghe.fantacalcio.it"
 LEGHE_SYNC_TZ = ZoneInfo("Europe/Rome")
 LEGHE_SYNC_SLOT_HOURS = 3
+LEGHE_BOOTSTRAP_MAX_AGE_HOURS = 20
 LEGHE_DAILY_ROSE_JOB_NAME = "auto_leghe_sync_rose_daily"
 LEGHE_DAILY_LIVE_JOB_NAME = "auto_leghe_sync_live_daily"
 SERIEA_LIVE_CONTEXT_JOB_NAME = "auto_seriea_live_context_sync"
@@ -8931,6 +8932,108 @@ def _run_daily_live_noon_import_if_due(
         result["daily_slot_local"] = noon_local.isoformat()
         result["timezone"] = str(LEGHE_SYNC_TZ)
         result["scheduled_round"] = int(reference_round) if reference_round is not None else None
+    return result
+
+
+def leghe_bootstrap_sync_required(
+    *,
+    now_utc: Optional[datetime] = None,
+    max_age_hours: int = LEGHE_BOOTSTRAP_MAX_AGE_HOURS,
+) -> bool:
+    check_paths = [ROSE_PATH, QUOT_PATH, STATS_PATH]
+    now = now_utc if now_utc is not None else datetime.now(tz=timezone.utc)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=timezone.utc)
+    else:
+        now = now.astimezone(timezone.utc)
+    threshold = now - timedelta(hours=max(1, int(max_age_hours)))
+
+    for path in check_paths:
+        try:
+            if not path.exists() or not path.is_file() or path.stat().st_size <= 0:
+                return True
+            mtime_utc = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
+            if mtime_utc < threshold:
+                return True
+        except Exception:
+            return True
+    return False
+
+
+def run_bootstrap_leghe_sync(
+    db: Session,
+    *,
+    run_pipeline: bool = True,
+    now_utc: Optional[datetime] = None,
+) -> Dict[str, object]:
+    local_now = _leghe_sync_local_now(now_utc)
+
+    if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "missing_leghe_env",
+            "required": ["LEGHE_ALIAS", "LEGHE_USERNAME", "LEGHE_PASSWORD"],
+            "mode": "bootstrap_force_sync",
+        }
+
+    requested_round = None
+    env_round = _parse_int(LEGHE_FORMATIONS_MATCHDAY)
+    status_round = _load_status_matchday()
+    inferred_round = _infer_matchday_from_fixtures()
+    window_round = _leghe_sync_round_for_local_dt(local_now)
+    reference_round = _leghe_sync_reference_round_for_local_dt(local_now)
+    live_votes_round = _latest_round_with_live_votes(db)
+
+    candidates = [
+        requested_round,
+        env_round,
+        status_round,
+        inferred_round,
+        window_round,
+        reference_round,
+        live_votes_round,
+    ]
+    valid_rounds = [int(value) for value in candidates if _parse_int(value) is not None and int(value or 0) > 0]
+    resolved_round = max(valid_rounds) if valid_rounds else None
+
+    live_import_result = (
+        _run_live_import_for_round_safe(db, round_value=resolved_round)
+        if resolved_round is not None
+        else {"ok": True, "skipped": True, "reason": "round_unresolved"}
+    )
+
+    try:
+        result = run_leghe_sync_and_pipeline(
+            alias=LEGHE_ALIAS,
+            username=LEGHE_USERNAME,
+            password=LEGHE_PASSWORD,
+            date_stamp=local_now.date().isoformat(),
+            competition_id=LEGHE_COMPETITION_ID,
+            competition_name=LEGHE_COMPETITION_NAME,
+            formations_matchday=resolved_round,
+            fetch_quotazioni=True,
+            fetch_global_stats=True,
+            run_pipeline=bool(run_pipeline),
+        )
+    except LegheSyncError as exc:
+        return {
+            "ok": False,
+            "error": str(exc),
+            "mode": "bootstrap_force_sync",
+            "round": int(resolved_round) if resolved_round is not None else None,
+            "live_import": live_import_result,
+        }
+
+    if isinstance(result, dict):
+        result["mode"] = "bootstrap_force_sync"
+        result["round"] = int(resolved_round) if resolved_round is not None else None
+        result["live_import"] = live_import_result
+        warnings = list(result.get("warnings") or [])
+        if isinstance(live_import_result, dict) and live_import_result.get("ok") is False:
+            error_msg = str(live_import_result.get("error") or "unknown")
+            warnings.append(f"live_import failed: {error_msg}")
+        result["warnings"] = warnings
     return result
 
 
