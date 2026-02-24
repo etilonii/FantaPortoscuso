@@ -7,6 +7,7 @@ import os
 import re
 import subprocess
 import sys
+import threading
 import unicodedata
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
@@ -35,6 +36,7 @@ from apps.api.app.config import (
     LEGHE_COMPETITION_NAME,
     LEGHE_FORMATIONS_MATCHDAY,
 )
+from apps.api.app.db import SessionLocal
 from apps.api.app.deps import get_db
 from apps.api.app.leghe_sync import (
     LegheSyncError,
@@ -181,6 +183,8 @@ _SERIEA_CONTEXT_CACHE: Dict[str, object] = {}
 _FORMAZIONI_REMOTE_REFRESH_CACHE: Dict[str, float] = {}
 _CLASSIFICA_MATCHDAY_TOTALS_CACHE: Dict[str, object] = {}
 _AUTO_VOTI_IMPORT_ATTEMPTED_ROUNDS: Set[int] = set()
+_SYNC_COMPLETE_BACKGROUND_LOCK = threading.Lock()
+_SYNC_COMPLETE_BACKGROUND_RUNNING = False
 
 LIVE_EVENT_FIELDS: Tuple[str, ...] = (
     "goal",
@@ -3157,10 +3161,13 @@ def premium_insights(
 
     club_index = _load_club_name_index()
     seriea_fixtures_all = _load_seriea_fixtures_for_insights(club_index)
+    preferred_seriea_round = _leghe_sync_reference_round_with_lookahead(lookahead_days=1)
+    if preferred_seriea_round is None:
+        preferred_seriea_round = _leghe_sync_reference_round_now()
     seriea_snapshot = _build_seriea_live_snapshot(
         seriea_current_table,
         seriea_fixtures_all,
-        preferred_round=_leghe_sync_reference_round_now(),
+        preferred_round=preferred_seriea_round,
     )
 
     seriea_final_table_rows = _read_csv(SERIEA_FINAL_TABLE_REPORT_PATH)
@@ -8603,6 +8610,18 @@ def _leghe_sync_reference_round_now() -> Optional[int]:
     return _leghe_sync_reference_round_for_local_dt(_leghe_sync_local_now())
 
 
+def _leghe_sync_reference_round_with_lookahead(
+    *,
+    lookahead_days: int = 0,
+    now_utc: Optional[datetime] = None,
+) -> Optional[int]:
+    local_now = _leghe_sync_local_now(now_utc)
+    days = int(lookahead_days or 0)
+    if days != 0:
+        local_now = local_now + timedelta(days=days)
+    return _leghe_sync_reference_round_for_local_dt(local_now)
+
+
 def _leghe_sync_slot_start_local(local_dt: datetime) -> datetime:
     slot_hours = max(1, int(LEGHE_SYNC_SLOT_HOURS))
     slot_hour = (int(local_dt.hour) // slot_hours) * slot_hours
@@ -9273,24 +9292,14 @@ def admin_leghe_sync(
     return result
 
 
-@router.post("/admin/leghe/sync-complete")
-def admin_leghe_sync_complete(
-    run_pipeline: bool = Query(default=True),
-    fetch_quotazioni: bool = Query(default=True),
-    fetch_global_stats: bool = Query(default=True),
-    formations_matchday: Optional[int] = Query(default=None, ge=1, le=99),
-    db: Session = Depends(get_db),
-    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
-    authorization: str | None = Header(default=None, alias="Authorization"),
-):
-    _require_admin_key(x_admin_key, db, authorization)
-
-    if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
-        raise HTTPException(
-            status_code=400,
-            detail="Missing env vars: LEGHE_ALIAS, LEGHE_USERNAME, LEGHE_PASSWORD",
-        )
-
+def _run_sync_complete_total_internal(
+    db: Session,
+    *,
+    run_pipeline: bool,
+    fetch_quotazioni: bool,
+    fetch_global_stats: bool,
+    formations_matchday: Optional[int],
+) -> Dict[str, object]:
     local_now = _leghe_sync_local_now()
     requested_round = _parse_int(formations_matchday)
     env_round = _parse_int(LEGHE_FORMATIONS_MATCHDAY)
@@ -9351,7 +9360,116 @@ def admin_leghe_sync_complete(
             error_msg = str(live_import_result.get("error") or "unknown")
             warnings.append(f"live_import failed: {error_msg}")
         result["warnings"] = warnings
-    return result
+    return result if isinstance(result, dict) else {"ok": True, "mode": "sync_complete_total"}
+
+
+def _sync_complete_background_worker(
+    *,
+    run_pipeline: bool,
+    fetch_quotazioni: bool,
+    fetch_global_stats: bool,
+    formations_matchday: Optional[int],
+) -> None:
+    global _SYNC_COMPLETE_BACKGROUND_RUNNING
+    db = SessionLocal()
+    try:
+        result = _run_sync_complete_total_internal(
+            db,
+            run_pipeline=bool(run_pipeline),
+            fetch_quotazioni=bool(fetch_quotazioni),
+            fetch_global_stats=bool(fetch_global_stats),
+            formations_matchday=formations_matchday,
+        )
+        logger.info(
+            "sync_complete_total background finished: ok=%s round=%s warnings=%s",
+            result.get("ok", True),
+            result.get("round"),
+            len(list(result.get("warnings") or [])),
+        )
+    except Exception:
+        logger.exception("sync_complete_total background failed")
+    finally:
+        try:
+            db.close()
+        except Exception:
+            pass
+        with _SYNC_COMPLETE_BACKGROUND_LOCK:
+            _SYNC_COMPLETE_BACKGROUND_RUNNING = False
+
+
+def _enqueue_sync_complete_background(
+    *,
+    run_pipeline: bool,
+    fetch_quotazioni: bool,
+    fetch_global_stats: bool,
+    formations_matchday: Optional[int],
+) -> Dict[str, object]:
+    global _SYNC_COMPLETE_BACKGROUND_RUNNING
+    with _SYNC_COMPLETE_BACKGROUND_LOCK:
+        if _SYNC_COMPLETE_BACKGROUND_RUNNING:
+            return {
+                "ok": True,
+                "queued": False,
+                "running": True,
+                "mode": "sync_complete_total",
+                "message": "Sync completa totale gia in corso.",
+            }
+        _SYNC_COMPLETE_BACKGROUND_RUNNING = True
+        worker = threading.Thread(
+            target=_sync_complete_background_worker,
+            kwargs={
+                "run_pipeline": bool(run_pipeline),
+                "fetch_quotazioni": bool(fetch_quotazioni),
+                "fetch_global_stats": bool(fetch_global_stats),
+                "formations_matchday": formations_matchday,
+            },
+            name="sync-complete-total-worker",
+            daemon=True,
+        )
+        worker.start()
+    return {
+        "ok": True,
+        "queued": True,
+        "running": True,
+        "mode": "sync_complete_total",
+        "message": "Sync completa totale avviata in background.",
+    }
+
+
+@router.post("/admin/leghe/sync-complete")
+def admin_leghe_sync_complete(
+    run_pipeline: bool = Query(default=True),
+    fetch_quotazioni: bool = Query(default=True),
+    fetch_global_stats: bool = Query(default=True),
+    formations_matchday: Optional[int] = Query(default=None, ge=1, le=99),
+    background: bool = Query(default=True),
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+
+    if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
+        raise HTTPException(
+            status_code=400,
+            detail="Missing env vars: LEGHE_ALIAS, LEGHE_USERNAME, LEGHE_PASSWORD",
+        )
+
+    if bool(background):
+        return _enqueue_sync_complete_background(
+            run_pipeline=bool(run_pipeline),
+            fetch_quotazioni=bool(fetch_quotazioni),
+            fetch_global_stats=bool(fetch_global_stats),
+            formations_matchday=formations_matchday,
+        )
+
+    return _run_sync_complete_total_internal(
+        db,
+        run_pipeline=bool(run_pipeline),
+        fetch_quotazioni=bool(fetch_quotazioni),
+        fetch_global_stats=bool(fetch_global_stats),
+        formations_matchday=formations_matchday,
+    )
 
 
 @router.get("/formazioni")

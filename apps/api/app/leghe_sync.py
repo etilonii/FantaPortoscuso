@@ -2058,8 +2058,9 @@ def run_leghe_sync_and_pipeline(
                 "--season",
                 _season_slug_for(now),
             ]
-            if effective_formations_matchday is not None:
-                sync_seriea_cmd.extend(["--round", str(int(effective_formations_matchday))])
+            seriea_sync_round = _status_matchday()
+            if seriea_sync_round is not None:
+                sync_seriea_cmd.extend(["--round", str(int(seriea_sync_round))])
             _run_pipeline_step(
                 sync_seriea_cmd,
                 label="sync_seriea_live_context",

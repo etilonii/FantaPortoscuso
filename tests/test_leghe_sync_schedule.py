@@ -24,6 +24,21 @@ def test_leghe_sync_round_for_local_dt_uses_configured_windows():
     assert d._leghe_sync_round_for_local_dt(outside) is None
 
 
+def test_leghe_sync_reference_round_with_lookahead_advances_one_day_before_window():
+    probe_utc = datetime(2026, 2, 26, 10, 0, tzinfo=timezone.utc)
+    without_lookahead = d._leghe_sync_reference_round_with_lookahead(
+        lookahead_days=0,
+        now_utc=probe_utc,
+    )
+    with_lookahead = d._leghe_sync_reference_round_with_lookahead(
+        lookahead_days=1,
+        now_utc=probe_utc,
+    )
+
+    assert without_lookahead == 26
+    assert with_lookahead == 27
+
+
 def test_leghe_sync_slot_start_local_floors_to_3h():
     probe = datetime(2026, 2, 20, 10, 59, 59, tzinfo=d.LEGHE_SYNC_TZ)
     slot = d._leghe_sync_slot_start_local(probe)

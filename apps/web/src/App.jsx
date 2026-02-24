@@ -1094,6 +1094,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         run_pipeline: "true",
         fetch_quotazioni: "true",
         fetch_global_stats: "true",
+        background: "true",
       });
       if (Number.isFinite(roundNumber) && roundNumber > 0) {
         params.set("formations_matchday", String(roundNumber));
@@ -1114,6 +1115,48 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           payload?.error ||
           "Errore sync completa totale";
         throw new Error(String(detail));
+      }
+
+      if (payload?.queued || payload?.running) {
+        setAdminNotice(
+          payload?.message || "Sync completa totale avviata in background."
+        );
+        await loadDataStatus();
+
+        void (async () => {
+          const maxChecks = 180;
+          const waitMsStep = 5000;
+          let lastStatus = null;
+          for (let index = 0; index < maxChecks; index += 1) {
+            try {
+              const status = await fetchJsonWithRetry(`${API_BASE}/meta/data-status`);
+              lastStatus = status;
+              const resultValue = String(status?.result || "").toLowerCase();
+              if (resultValue !== "running") break;
+            } catch {}
+            await waitMs(waitMsStep);
+          }
+
+          await loadDataStatus();
+          await loadLivePayload(roundNumber || null);
+          await loadFormazioni(formationRound || roundNumber || null, formationOrder);
+          await loadMarketStandings();
+          await loadPremiumInsights(true);
+          await loadListone();
+          await loadTopQuotesAllRoles();
+          await loadStatList(statsTab);
+          await loadPlusvalenze();
+          await loadAllPlusvalenze();
+
+          const finalResult = String(lastStatus?.result || "").toLowerCase();
+          if (finalResult === "ok") {
+            setAdminNotice("Sync completa totale terminata.");
+          } else if (finalResult === "error") {
+            const msg = String(lastStatus?.message || "").trim();
+            setLiveError(msg || "Sync completa totale terminata con errore.");
+          }
+        })();
+        return;
       }
 
       const syncedRound = Number(payload?.round);
