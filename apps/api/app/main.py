@@ -218,18 +218,37 @@ def create_app() -> FastAPI:
                     await task
 
     if AUTO_LEGHE_SYNC_ENABLED:
-        def _run_auto_leghe_sync_once() -> None:
+        def _run_auto_leghe_sync_once(*, allow_bootstrap_fallback: bool = False) -> None:
             db = SessionLocal()
             try:
                 result = data.run_auto_leghe_sync(db)
-                if result.get("skipped"):
-                    should_bootstrap = data.leghe_bootstrap_sync_required()
-                    if should_bootstrap:
-                        logger.warning(
-                            "Auto leghe sync skipped (%s) but core data is stale: forcing bootstrap sync",
+                if result.get("skipped") and allow_bootstrap_fallback:
+                    logger.warning(
+                        "Auto leghe sync skipped on startup (%s): forcing bootstrap sync",
+                        result.get("reason", "not_due"),
+                    )
+                    result = data.run_bootstrap_leghe_sync(db)
+                    if result.get("skipped"):
+                        logger.info(
+                            "Bootstrap leghe sync skipped: %s",
                             result.get("reason", "not_due"),
                         )
-                        result = data.run_bootstrap_leghe_sync(db)
+                        return
+                    if result.get("ok") is False:
+                        logger.error(
+                            "Bootstrap leghe sync failed: %s",
+                            result.get("error", "unknown"),
+                        )
+                        return
+                    downloaded = result.get("downloaded") or {}
+                    logger.info(
+                        "Bootstrap leghe sync ok: mode=%s keys=%s date=%s",
+                        result.get("mode", "bootstrap"),
+                        ",".join(sorted(downloaded.keys())) if isinstance(downloaded, dict) else "n/a",
+                        result.get("date"),
+                    )
+                    return
+
                 if result.get("skipped"):
                     logger.info("Auto leghe sync skipped: %s", result.get("reason", "not_due"))
                     return
@@ -252,7 +271,7 @@ def create_app() -> FastAPI:
 
         async def _auto_leghe_sync_loop(stop_event: asyncio.Event) -> None:
             if AUTO_LEGHE_SYNC_ON_START and not stop_event.is_set():
-                await asyncio.to_thread(_run_auto_leghe_sync_once)
+                await asyncio.to_thread(_run_auto_leghe_sync_once, allow_bootstrap_fallback=True)
 
             while not stop_event.is_set():
                 wait_seconds = max(1, int(data.leghe_sync_seconds_until_next_slot()))
@@ -260,7 +279,7 @@ def create_app() -> FastAPI:
                     await asyncio.wait_for(stop_event.wait(), timeout=wait_seconds)
                     break
                 except asyncio.TimeoutError:
-                    await asyncio.to_thread(_run_auto_leghe_sync_once)
+                    await asyncio.to_thread(_run_auto_leghe_sync_once, allow_bootstrap_fallback=False)
 
         @app.on_event("startup")
         async def _startup_auto_leghe_sync() -> None:
