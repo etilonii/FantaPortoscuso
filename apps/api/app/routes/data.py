@@ -3,7 +3,10 @@ import csv
 import json
 import logging
 import math
+import os
 import re
+import subprocess
+import sys
 import unicodedata
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
@@ -94,6 +97,7 @@ LEGHE_SYNC_TZ = ZoneInfo("Europe/Rome")
 LEGHE_SYNC_SLOT_HOURS = 3
 LEGHE_DAILY_ROSE_JOB_NAME = "auto_leghe_sync_rose_daily"
 LEGHE_DAILY_LIVE_JOB_NAME = "auto_leghe_sync_live_daily"
+SERIEA_LIVE_CONTEXT_JOB_NAME = "auto_seriea_live_context_sync"
 LEGHE_DAILY_LIVE_HOUR_LOCAL = 12
 LEGHE_SYNC_WINDOWS: Tuple[Tuple[int, date, date], ...] = (
     (26, date(2026, 2, 20), date(2026, 2, 23)),
@@ -8719,6 +8723,95 @@ def run_auto_live_import(
         round_value=configured_round,
         season=season,
     )
+
+
+def run_auto_seriea_live_context_sync(
+    db: Session,
+    *,
+    configured_round: Optional[int] = None,
+    season: Optional[str] = None,
+    min_interval_seconds: Optional[int] = None,
+) -> Dict[str, object]:
+    if min_interval_seconds is not None:
+        claimed = _claim_scheduled_job_run(
+            db,
+            job_name=SERIEA_LIVE_CONTEXT_JOB_NAME,
+            min_interval_seconds=int(min_interval_seconds),
+        )
+        if not claimed:
+            return {
+                "ok": True,
+                "skipped": True,
+                "reason": "not_due_or_claimed_by_other_instance",
+            }
+
+    resolved_round = _parse_int(configured_round)
+    if resolved_round is None or resolved_round <= 0:
+        candidates = [
+            _leghe_sync_reference_round_now(),
+            _load_status_matchday(),
+            _infer_matchday_from_fixtures(),
+            _infer_matchday_from_stats(),
+        ]
+        positive = [int(value) for value in candidates if value is not None and int(value) > 0]
+        resolved_round = max(positive) if positive else None
+
+    season_slug = _normalize_season_slug(season)
+    root_dir = Path(__file__).resolve().parents[4]
+    script_path = root_dir / "scripts" / "sync_seriea_live_context.py"
+    if not script_path.exists():
+        return {
+            "ok": False,
+            "error": f"missing script: {script_path}",
+            "round": int(resolved_round) if resolved_round is not None else None,
+            "season": season_slug,
+        }
+
+    argv = [sys.executable, str(script_path), "--season", season_slug]
+    if resolved_round is not None and int(resolved_round) > 0:
+        argv.extend(["--round", str(int(resolved_round))])
+
+    try:
+        proc = subprocess.run(
+            argv,
+            cwd=str(root_dir),
+            capture_output=True,
+            text=True,
+            check=False,
+            env={**os.environ, "PYTHONUNBUFFERED": "1"},
+        )
+    except Exception as exc:
+        return {
+            "ok": False,
+            "error": str(exc),
+            "round": int(resolved_round) if resolved_round is not None else None,
+            "season": season_slug,
+            "argv": argv,
+        }
+
+    stdout_text = (proc.stdout or "").strip()
+    stderr_text = (proc.stderr or "").strip()
+    if int(proc.returncode or 0) != 0:
+        return {
+            "ok": False,
+            "error": stderr_text or stdout_text or f"sync_seriea_live_context rc={proc.returncode}",
+            "round": int(resolved_round) if resolved_round is not None else None,
+            "season": season_slug,
+            "argv": argv,
+            "returncode": int(proc.returncode or 0),
+            "stdout": stdout_text[-1200:],
+            "stderr": stderr_text[-1200:],
+        }
+
+    _SERIEA_CONTEXT_CACHE.clear()
+    return {
+        "ok": True,
+        "round": int(resolved_round) if resolved_round is not None else None,
+        "season": season_slug,
+        "argv": argv,
+        "returncode": int(proc.returncode or 0),
+        "stdout": stdout_text[-1200:],
+    }
 
 
 def _run_live_import_for_round_safe(

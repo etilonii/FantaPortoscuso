@@ -62,6 +62,17 @@ AUTO_LIVE_IMPORT_ON_START = get_env_bool("AUTO_LIVE_IMPORT_ON_START", True)
 AUTO_LIVE_IMPORT_ROUND = get_env_optional_int("AUTO_LIVE_IMPORT_ROUND")
 AUTO_LIVE_IMPORT_SEASON = get_env("AUTO_LIVE_IMPORT_SEASON", "").strip()
 
+# Lightweight Serie A live context sync (fixtures + standings context for Premium Insights)
+AUTO_SERIEA_LIVE_SYNC_ENABLED = get_env_bool("AUTO_SERIEA_LIVE_SYNC_ENABLED", True)
+AUTO_SERIEA_LIVE_SYNC_INTERVAL_MINUTES = get_env_int(
+    "AUTO_SERIEA_LIVE_SYNC_INTERVAL_MINUTES",
+    5,
+    min_value=1,
+)
+AUTO_SERIEA_LIVE_SYNC_ON_START = get_env_bool("AUTO_SERIEA_LIVE_SYNC_ON_START", True)
+AUTO_SERIEA_LIVE_SYNC_ROUND = get_env_optional_int("AUTO_SERIEA_LIVE_SYNC_ROUND")
+AUTO_SERIEA_LIVE_SYNC_SEASON = get_env("AUTO_SERIEA_LIVE_SYNC_SEASON", "").strip()
+
 # Leghe Fantacalcio sync (download XLSX + run local pipeline)
 AUTO_LEGHE_SYNC_ENABLED = get_env_bool("AUTO_LEGHE_SYNC_ENABLED", False)
 AUTO_LEGHE_SYNC_ON_START = get_env_bool("AUTO_LEGHE_SYNC_ON_START", False)

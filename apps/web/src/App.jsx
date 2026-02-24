@@ -2117,7 +2117,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
   };
 
-  const loadPremiumInsights = async (force = false) => {
+  const loadPremiumInsights = async (force = false, options = {}) => {
+    const silent = Boolean(options?.silent);
     if (!loggedIn) return false;
     if (
       !force &&
@@ -2127,8 +2128,10 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       return true;
     }
     try {
-      setPremiumInsightsLoading(true);
-      setPremiumInsightsError("");
+      if (!silent) {
+        setPremiumInsightsLoading(true);
+        setPremiumInsightsError("");
+      }
       const res = await fetchWithAuth(`${API_BASE}/data/insights/premium`, {
         headers: buildAuthHeaders({ legacyAccessKey: true }),
       });
@@ -2163,10 +2166,14 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       });
       return true;
     } catch (err) {
-      setPremiumInsightsError(err?.message || "Errore caricamento insight premium");
+      if (!silent) {
+        setPremiumInsightsError(err?.message || "Errore caricamento insight premium");
+      }
       return false;
     } finally {
-      setPremiumInsightsLoading(false);
+      if (!silent) {
+        setPremiumInsightsLoading(false);
+      }
     }
   };
 
@@ -2338,6 +2345,16 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     loadPremiumInsights(forceRefresh);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn, activeMenu, isAdmin]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    if (String(activeMenu || "").trim() !== "classifica-fixtures-seriea") return;
+    const timer = setInterval(() => {
+      loadPremiumInsights(true, { silent: true });
+    }, 60000);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn, activeMenu]);
 
   useEffect(() => {
     if (!loggedIn) return;
