@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMarketPlaceholder } from "./hooks/useMarketPlaceholder";
 import ListoneSection from "./components/sections/ListoneSection";
 import HomeSection from "./components/sections/HomeSection";
@@ -147,6 +147,27 @@ const formatCountdown = (secondsValue) => {
 const KEY_STORAGE = "fp_access_key";
 const ACCESS_TOKEN_STORAGE = "fp_access_token";
 const REFRESH_TOKEN_STORAGE = "fp_refresh_token";
+const AUTH_LAST_OK_STORAGE = "fp_auth_last_ok_ts";
+const SESSION_TTL_MINUTES = 30;
+const SESSION_TTL_MS = SESSION_TTL_MINUTES * 60 * 1000;
+const MENU_KEYS = new Set([
+  "home",
+  "quotazioni",
+  "stats",
+  "rose",
+  "classifica-lega",
+  "formazioni",
+  "formazione-consigliata",
+  "live",
+  "plusvalenze",
+  "listone",
+  "top-acquisti",
+  "mercato",
+  "classifica-potenza",
+  "classifica-fixtures-seriea",
+  "player",
+  "admin",
+]);
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
   (import.meta.env.DEV
@@ -172,6 +193,9 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
+  const [authBootstrapped, setAuthBootstrapped] = useState(false);
+  const [authRestoring, setAuthRestoring] = useState(false);
+  const menuHistoryReadyRef = useRef(false);
 
   /* ===== UI ===== */
   const [theme, setTheme] = useState("dark");
@@ -375,6 +399,42 @@ const [manualLoading, setManualLoading] = useState(false);
 const [manualDislikes, setManualDislikes] = useState(new Set());
 const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
+  const touchAuthSessionTs = () => {
+    try {
+      localStorage.setItem(AUTH_LAST_OK_STORAGE, String(Date.now()));
+    } catch {}
+  };
+
+  const clearStoredAuthSession = () => {
+    try {
+      localStorage.removeItem(ACCESS_TOKEN_STORAGE);
+      localStorage.removeItem(REFRESH_TOKEN_STORAGE);
+      localStorage.removeItem(AUTH_LAST_OK_STORAGE);
+    } catch {}
+  };
+
+  const parseMenuFromHash = () => {
+    try {
+      const rawHash = String(window.location.hash || "").replace(/^#/, "");
+      const params = new URLSearchParams(rawHash);
+      const menu = String(params.get("m") || "").trim();
+      if (MENU_KEYS.has(menu)) return menu;
+    } catch {}
+    return null;
+  };
+
+  const updateMenuHistory = (menuKey, replace = false) => {
+    if (!loggedIn || !MENU_KEYS.has(String(menuKey || ""))) return;
+    const menu = String(menuKey || "");
+    const nextHash = `#m=${encodeURIComponent(menu)}`;
+    const nextState = { ...(window.history.state || {}), fpMenu: menu };
+    if (replace) {
+      window.history.replaceState(nextState, "", nextHash);
+      return;
+    }
+    window.history.pushState(nextState, "", nextHash);
+  };
+
   /* ===========================
      THEME
   =========================== */
@@ -402,6 +462,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         localStorage.setItem(REFRESH_TOKEN_STORAGE, safeRefresh);
       } else {
         localStorage.removeItem(REFRESH_TOKEN_STORAGE);
+      }
+      if (!safeAccess && !safeRefresh) {
+        localStorage.removeItem(AUTH_LAST_OK_STORAGE);
       }
     } catch {}
   };
@@ -431,6 +494,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       if (!nextAccess) return { ok: false, accessToken: "", refreshToken: "" };
       const nextRefresh = String(data?.refresh_token || currentRefresh).trim();
       persistTokens(nextAccess, nextRefresh);
+      touchAuthSessionTs();
       return { ok: true, accessToken: nextAccess, refreshToken: nextRefresh };
     } catch {
       return { ok: false, accessToken: "", refreshToken: "" };
@@ -472,6 +536,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       }
       setLoggedIn(true);
       applyAuthSessionPayload(payload || {});
+      setError("");
       return true;
     } catch {
       if (keyValue) {
@@ -505,8 +570,16 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   };
 
   const openMenuFeature = (menuKey, _featureName, closeMobile = true, closeAdmin = false) => {
+    const normalizedMenu = String(menuKey || "").trim();
     setError("");
-    setActiveMenu(menuKey);
+    if (MENU_KEYS.has(normalizedMenu)) {
+      if (activeMenu !== normalizedMenu) {
+        setActiveMenu(normalizedMenu);
+        if (menuHistoryReadyRef.current) {
+          updateMenuHistory(normalizedMenu, false);
+        }
+      }
+    }
     if (closeMobile) setMenuOpen(false);
     if (closeAdmin) setAdminMenuOpen(false);
   };
@@ -550,6 +623,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       applyAuthSessionPayload(data);
       setStatus("success");
       persistTokens(data?.access_token || "", data?.refresh_token || "");
+      touchAuthSessionTs();
       setError("");
 
       if (rememberKey) {
@@ -1270,7 +1344,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const openPlayer = async (name) => {
     if (!name) return;
     setSelectedPlayer(name);
-    setActiveMenu("player");
+    openMenuFeature("player", null, false, false);
 
     try {
       const [profileRes, statsRes] = await Promise.all([
@@ -1311,7 +1385,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
      NAV HELPERS (menu jumps)
   =========================== */
   const jumpToId = (id, menu, after = () => {}) => {
-    if (menu) setActiveMenu(menu);
+    if (menu) openMenuFeature(menu, null, false, false);
     after();
 
     setTimeout(() => {
@@ -1326,13 +1400,13 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const goToTeam = (team) => {
     if (!team) return;
-    setActiveMenu("rose");
+    openMenuFeature("rose", null, false, false);
     setSelectedTeam(team);
   };
 
   const goToSquadra = (squadra, role) => {
     if (!squadra) return;
-    setActiveMenu("listone");
+    openMenuFeature("listone", null, false, false);
     if (role && ["P", "D", "C", "A"].includes(role)) setQuoteRole(role);
     setQuoteTeam(squadra);
     setListoneQuery("");
@@ -2187,22 +2261,68 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         setAccessKey(saved);
         setRememberKey(true);
       }
-      const savedAccessToken = localStorage.getItem(ACCESS_TOKEN_STORAGE) || "";
-      const savedRefreshToken = localStorage.getItem(REFRESH_TOKEN_STORAGE) || "";
+      const savedAccessToken = String(localStorage.getItem(ACCESS_TOKEN_STORAGE) || "").trim();
+      const savedRefreshToken = String(localStorage.getItem(REFRESH_TOKEN_STORAGE) || "").trim();
       if (savedAccessToken || savedRefreshToken) {
-        setAccessToken(savedAccessToken);
-        setRefreshToken(savedRefreshToken);
+        const rawTs = localStorage.getItem(AUTH_LAST_OK_STORAGE);
+        const ts = Number(rawTs || "");
+        const hasTs = Number.isFinite(ts) && ts > 0;
+        const isFresh = hasTs ? Date.now() - ts <= SESSION_TTL_MS : true;
+        if (isFresh) {
+          setAccessToken(savedAccessToken);
+          setRefreshToken(savedRefreshToken);
+          if (!hasTs) {
+            touchAuthSessionTs();
+          }
+        } else {
+          clearStoredAuthSession();
+        }
       }
     } catch {}
+    setAuthBootstrapped(true);
   }, []);
 
   useEffect(() => {
-    if (loggedIn) return;
-    if (!accessKey.trim()) return;
-    if (!accessToken && !refreshToken) return;
-    loadAuthSession();
+    if (!authBootstrapped || loggedIn || (!accessToken && !refreshToken)) {
+      setAuthRestoring(false);
+      return;
+    }
+    let cancelled = false;
+    setAuthRestoring(true);
+    loadAuthSession().finally(() => {
+      if (!cancelled) setAuthRestoring(false);
+    });
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedIn, accessKey, accessToken, refreshToken]);
+  }, [authBootstrapped, loggedIn, accessToken, refreshToken]);
+
+  useEffect(() => {
+    if (!loggedIn) {
+      menuHistoryReadyRef.current = false;
+      return;
+    }
+    const hashMenu = parseMenuFromHash();
+    const initialMenu = hashMenu || "home";
+    setActiveMenu(initialMenu);
+    updateMenuHistory(initialMenu, true);
+    menuHistoryReadyRef.current = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    const onPopState = () => {
+      const stateMenu = String(window.history.state?.fpMenu || "").trim();
+      const hashMenu = parseMenuFromHash();
+      const nextMenu = MENU_KEYS.has(stateMenu) ? stateMenu : hashMenu || "home";
+      setActiveMenu(nextMenu);
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn]);
 
   useEffect(() => {
     try {
@@ -2415,7 +2535,13 @@ useEffect(() => {
   =========================== */
   return (
     <div className="login-page">
-      {!loggedIn ? (
+      {!authBootstrapped || authRestoring ? (
+        <div className="login-shell">
+          <section className="login-card">
+            <h3>Verifica sessione in corso...</h3>
+          </section>
+        </div>
+      ) : !loggedIn ? (
         <div className="login-shell">
           <header className="login-header">
             <p className="eyebrow">FantaPortoscuso</p>
