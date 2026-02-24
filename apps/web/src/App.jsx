@@ -1415,20 +1415,29 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
     setAggregatesLoading(true);
     try {
-      const responses = await Promise.all(
-        teams.map(async (team) => {
-          try {
-            const res = await fetch(
-              `${API_BASE}/data/team/${encodeURIComponent(team)}`
-            );
-            if (!res.ok) return { team, items: [] };
-            const data = await res.json();
-            return { team, items: data.items || [] };
-          } catch {
-            return { team, items: [] };
-          }
-        })
-      );
+      const responses = [];
+      const chunkSize = 8;
+      for (let idx = 0; idx < teams.length; idx += chunkSize) {
+        const chunk = teams.slice(idx, idx + chunkSize);
+        const chunkResponses = await Promise.all(
+          chunk.map(async (team) => {
+            try {
+              const data = await fetchJsonWithRetry(
+                `${API_BASE}/data/team/${encodeURIComponent(team)}`,
+                {},
+                { attempts: 2, baseDelayMs: 250 }
+              );
+              return { team, items: data.items || [] };
+            } catch {
+              return { team, items: [] };
+            }
+          })
+        );
+        responses.push(...chunkResponses);
+        if (idx + chunkSize < teams.length) {
+          await waitMs(120);
+        }
+      }
 
       const byRole = { P: new Map(), D: new Map(), C: new Map(), A: new Map() };
 
@@ -1531,6 +1540,14 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     openMenuFeature("rose", null, false, false);
     setSelectedTeam(team);
   };
+
+  const topAcquistiLoaded = useMemo(
+    () =>
+      ["P", "D", "C", "A"].some((role) =>
+        Array.isArray(topPlayersByRole?.[role]) && topPlayersByRole[role].length > 0
+      ),
+    [topPlayersByRole]
+  );
 
   const goToSquadra = (squadra, role) => {
     if (!squadra) return;
@@ -2513,9 +2530,11 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   useEffect(() => {
     if (!loggedIn || !teams.length) return;
+    if (activeMenu !== "top-acquisti") return;
+    if (topAcquistiLoaded || aggregatesLoading) return;
     loadLeagueAggregates();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedIn, teams]);
+  }, [loggedIn, teams, activeMenu, topAcquistiLoaded, aggregatesLoading]);
 
   useEffect(() => {
     if (!loggedIn) return;
