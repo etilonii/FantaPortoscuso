@@ -36,6 +36,9 @@ data/reports/*.log
 
 # Runtime/generated outputs
 data/status.json
+data/availability_status.json
+data/infortunati_clean.txt
+data/squalificati_clean.txt
 data/backups/
 data/reports/history/
 

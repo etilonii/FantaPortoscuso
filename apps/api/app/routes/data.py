@@ -102,6 +102,13 @@ LEGHE_DAILY_ROSE_JOB_NAME = "auto_leghe_sync_rose_daily"
 LEGHE_DAILY_LIVE_JOB_NAME = "auto_leghe_sync_live_daily"
 SERIEA_LIVE_CONTEXT_JOB_NAME = "auto_seriea_live_context_sync"
 LEGHE_DAILY_LIVE_HOUR_LOCAL = 12
+AVAILABILITY_SYNC_JOB_NAME = "auto_player_availability_sync"
+AVAILABILITY_SYNC_HOURS_LOCAL: Tuple[int, ...] = (3, 15)
+INJURIES_SOURCE_URL = "https://www.fantacalcio.it/infortunati-serie-a"
+SUSPENSIONS_SOURCE_URL = "https://www.fantacalcio.it/squalificati-e-diffidati-campionato-serie-a"
+AVAILABILITY_STATUS_PATH = DATA_DIR / "availability_status.json"
+INJURED_CLEAN_PATH = DATA_DIR / "infortunati_clean.txt"
+SUSPENDED_CLEAN_PATH = DATA_DIR / "squalificati_clean.txt"
 LEGHE_SYNC_WINDOWS: Tuple[Tuple[int, date, date], ...] = (
     (26, date(2026, 2, 20), date(2026, 2, 23)),
     (27, date(2026, 2, 27), date(2026, 3, 2)),
@@ -180,8 +187,10 @@ _LISTONE_NAME_CACHE: Dict[str, object] = {}
 _PLAYER_FORCE_CACHE: Dict[str, object] = {}
 _REGULATION_CACHE: Dict[str, object] = {}
 _SERIEA_CONTEXT_CACHE: Dict[str, object] = {}
+_AVAILABILITY_CACHE: Dict[str, object] = {}
 _FORMAZIONI_REMOTE_REFRESH_CACHE: Dict[str, float] = {}
 _CLASSIFICA_MATCHDAY_TOTALS_CACHE: Dict[str, object] = {}
+_CLASSIFICA_POSITIONS_CACHE: Dict[str, object] = {}
 _AUTO_VOTI_IMPORT_ATTEMPTED_ROUNDS: Set[int] = set()
 _SYNC_COMPLETE_BACKGROUND_LOCK = threading.Lock()
 _SYNC_COMPLETE_BACKGROUND_RUNNING = False
@@ -2449,6 +2458,98 @@ def _parse_classifica_matchday_totals_from_html(html_text: str) -> Tuple[Optiona
     return round_value, totals
 
 
+def _parse_classifica_positions_from_html(html_text: str) -> Dict[str, Dict[str, object]]:
+    positions: Dict[str, Dict[str, object]] = {}
+    if not html_text:
+        return positions
+
+    pattern = re.compile(
+        r"<h5[^>]*class=['\"][^'\"]*team-name[^'\"]*['\"][^>]*>\s*(.*?)\s*</h5>",
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    seen: Set[str] = set()
+    pos_counter = 1
+    for team_raw in pattern.findall(html_text):
+        team_name = _canonicalize_name(_strip_html_tags(team_raw))
+        team_key = normalize_name(team_name)
+        if not team_key or team_key in seen:
+            continue
+        seen.add(team_key)
+        positions[team_key] = {
+            "team": team_name,
+            "pos": int(pos_counter),
+        }
+        pos_counter += 1
+    return positions
+
+
+def _load_classifica_positions() -> Dict[str, Dict[str, object]]:
+    if not LEGHE_ALIAS:
+        return {}
+
+    now_ts = float(datetime.utcnow().timestamp())
+    cached_ts = float(_CLASSIFICA_POSITIONS_CACHE.get("ts", 0.0) or 0.0)
+    cached_positions_raw = _CLASSIFICA_POSITIONS_CACHE.get("positions")
+    cached_positions = cached_positions_raw if isinstance(cached_positions_raw, dict) else {}
+
+    if now_ts - cached_ts < 300 and cached_positions:
+        out: Dict[str, Dict[str, object]] = {}
+        for key, value in cached_positions.items():
+            if not isinstance(value, dict):
+                continue
+            out[str(key)] = {
+                "team": str(value.get("team") or ""),
+                "pos": int(_parse_int(value.get("pos")) or 0),
+            }
+        return out
+
+    url = f"{LEGHE_BASE_URL}/{LEGHE_ALIAS}/classifica"
+    try:
+        html_text = _fetch_text_url(url, timeout_seconds=20.0)
+        parsed_positions = _parse_classifica_positions_from_html(html_text)
+        if parsed_positions:
+            _CLASSIFICA_POSITIONS_CACHE["ts"] = now_ts
+            _CLASSIFICA_POSITIONS_CACHE["positions"] = {
+                str(key): {"team": str(value.get("team") or ""), "pos": int(value.get("pos") or 0)}
+                for key, value in parsed_positions.items()
+                if isinstance(value, dict)
+            }
+            return parsed_positions
+    except Exception:
+        logger.debug("Unable to load classifica positions", exc_info=True)
+
+    out: Dict[str, Dict[str, object]] = {}
+    for key, value in cached_positions.items():
+        if not isinstance(value, dict):
+            continue
+        out[str(key)] = {
+            "team": str(value.get("team") or ""),
+            "pos": int(_parse_int(value.get("pos")) or 0),
+        }
+    return out
+
+
+def _apply_classifica_positions_override(
+    items: List[Dict[str, object]],
+    positions_index: Dict[str, Dict[str, object]],
+) -> None:
+    if not items or not positions_index:
+        return
+    for item in items:
+        team_name = str(item.get("team") or "").strip()
+        team_key = normalize_name(team_name)
+        if not team_key:
+            continue
+        payload = positions_index.get(team_key)
+        if not isinstance(payload, dict):
+            continue
+        pos_value = _parse_int(payload.get("pos"))
+        if pos_value is None or pos_value <= 0:
+            continue
+        item["standing_pos"] = int(pos_value)
+        item["pos"] = int(pos_value)
+
+
 def _load_classifica_matchday_totals() -> Tuple[Optional[int], Dict[str, float]]:
     if not LEGHE_ALIAS:
         return None, {}
@@ -3566,6 +3667,471 @@ def _load_seriea_context_index() -> Dict[str, object]:
     return data
 
 
+def _availability_default_payload() -> Dict[str, object]:
+    return {
+        "fetched_at": "",
+        "sources": {
+            "injuries": INJURIES_SOURCE_URL,
+            "suspensions": SUSPENSIONS_SOURCE_URL,
+        },
+        "injured": [],
+        "suspended": [],
+        "diffidati": [],
+    }
+
+
+def _write_text_if_changed(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        existing = path.read_text(encoding="utf-8")
+        if existing == content:
+            path.touch()
+            return
+    except Exception:
+        pass
+    path.write_text(content, encoding="utf-8")
+
+
+def _team_card_blocks(source_html: str) -> List[str]:
+    source = str(source_html or "")
+    starts = [
+        match.start()
+        for match in re.finditer(
+            r'<div\s+id="team-\d+"\s+class="[^"]*team-card[^"]*"\s*>',
+            source,
+            flags=re.IGNORECASE,
+        )
+    ]
+    if not starts:
+        return []
+    blocks: List[str] = []
+    for idx, start in enumerate(starts):
+        end = starts[idx + 1] if idx + 1 < len(starts) else len(source)
+        blocks.append(source[start:end])
+    return blocks
+
+
+def _extract_rounds_from_suspension_note(note: str) -> List[int]:
+    cleaned = _strip_html_tags(note).lower()
+    if not cleaned:
+        return []
+    if "giornat" not in cleaned:
+        return []
+    rounds = {
+        int(value)
+        for value in re.findall(r"([1-9]\d?)\s*(?:a|ª|°|º)?", cleaned, flags=re.IGNORECASE)
+        if 1 <= int(value) <= 99
+    }
+    return sorted(rounds)
+
+
+def _extract_injured_entries_from_html(
+    source_html: str,
+    club_index: Dict[str, str],
+) -> List[Dict[str, object]]:
+    entries: List[Dict[str, object]] = []
+    seen: Set[Tuple[str, str]] = set()
+
+    for block in _team_card_blocks(source_html):
+        team_match = re.search(
+            r'<span\s+class="team-name">\s*(.*?)\s*</span>',
+            block,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        if team_match is None:
+            continue
+        team_name = _display_team_name(_strip_html_tags(team_match.group(1)), club_index)
+        team_key = normalize_name(team_name)
+        if not team_key:
+            continue
+
+        for item in re.finditer(
+            (
+                r'<li>\s*<strong\s+class="item-name">\s*(.*?)\s*</strong>'
+                r"\s*(?:<div\s+class=\"item-description\">(.*?)</div>)?"
+                r"\s*</li>"
+            ),
+            block,
+            flags=re.IGNORECASE | re.DOTALL,
+        ):
+            player_name = _canonicalize_name(_strip_html_tags(item.group(1)))
+            player_key = normalize_name(player_name)
+            if not player_key:
+                continue
+            marker = (player_key, team_key)
+            if marker in seen:
+                continue
+            seen.add(marker)
+            note = _strip_html_tags(item.group(2) or "")
+            entries.append(
+                {
+                    "name": player_name,
+                    "name_key": player_key,
+                    "team": team_name,
+                    "team_key": team_key,
+                    "note": note,
+                }
+            )
+    entries.sort(key=lambda row: (str(row.get("team_key") or ""), str(row.get("name_key") or "")))
+    return entries
+
+
+def _extract_suspension_entries_from_html(
+    source_html: str,
+    club_index: Dict[str, str],
+) -> Tuple[List[Dict[str, object]], List[Dict[str, object]]]:
+    suspended: List[Dict[str, object]] = []
+    diffidati: List[Dict[str, object]] = []
+    seen_suspended: Set[Tuple[str, str, Tuple[int, ...]]] = set()
+    seen_diffidati: Set[Tuple[str, str]] = set()
+
+    for block in _team_card_blocks(source_html):
+        team_match = re.search(
+            r'<span\s+class="team-name">\s*(.*?)\s*</span>',
+            block,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        if team_match is None:
+            continue
+        team_name = _display_team_name(_strip_html_tags(team_match.group(1)), club_index)
+        team_key = normalize_name(team_name)
+        if not team_key:
+            continue
+
+        suspended_section_match = re.search(
+            (
+                r"<strong\s+class=\"label\s+label-danger\">Squalificati</strong>"
+                r"(.*?)"
+                r"(?:<strong\s+class=\"label\s+label-warn\">Diffidati</strong>|$)"
+            ),
+            block,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        suspended_section = suspended_section_match.group(1) if suspended_section_match else ""
+        for item in re.finditer(
+            (
+                r'<li>\s*<strong\s+class="item-name">\s*(.*?)\s*</strong>'
+                r"\s*(?:<p\s+class=\"item-description\">\s*(.*?)\s*</p>)?"
+                r"\s*</li>"
+            ),
+            suspended_section,
+            flags=re.IGNORECASE | re.DOTALL,
+        ):
+            player_name = _canonicalize_name(_strip_html_tags(item.group(1)))
+            player_key = normalize_name(player_name)
+            if not player_key:
+                continue
+            note = _strip_html_tags(item.group(2) or "")
+            rounds = _extract_rounds_from_suspension_note(note)
+            rounds_tuple = tuple(rounds)
+            marker = (player_key, team_key, rounds_tuple)
+            if marker in seen_suspended:
+                continue
+            seen_suspended.add(marker)
+            suspended.append(
+                {
+                    "name": player_name,
+                    "name_key": player_key,
+                    "team": team_name,
+                    "team_key": team_key,
+                    "rounds": list(rounds),
+                    "indefinite": bool(not rounds),
+                    "note": note,
+                }
+            )
+
+        diffidati_section_match = re.search(
+            r"<strong\s+class=\"label\s+label-warn\">Diffidati</strong>(.*?)$",
+            block,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        diffidati_section = diffidati_section_match.group(1) if diffidati_section_match else ""
+        for item in re.finditer(
+            r'<li>\s*<strong\s+class="item-name">\s*(.*?)\s*</strong>\s*</li>',
+            diffidati_section,
+            flags=re.IGNORECASE | re.DOTALL,
+        ):
+            player_name = _canonicalize_name(_strip_html_tags(item.group(1)))
+            player_key = normalize_name(player_name)
+            if not player_key:
+                continue
+            marker = (player_key, team_key)
+            if marker in seen_diffidati:
+                continue
+            seen_diffidati.add(marker)
+            diffidati.append(
+                {
+                    "name": player_name,
+                    "name_key": player_key,
+                    "team": team_name,
+                    "team_key": team_key,
+                }
+            )
+
+    suspended.sort(key=lambda row: (str(row.get("team_key") or ""), str(row.get("name_key") or "")))
+    diffidati.sort(key=lambda row: (str(row.get("team_key") or ""), str(row.get("name_key") or "")))
+    return suspended, diffidati
+
+
+def _write_name_list_file(path: Path, names: List[str]) -> None:
+    cleaned: List[str] = []
+    seen: Set[str] = set()
+    for value in names:
+        name = _canonicalize_name(str(value or "").strip())
+        key = normalize_name(name)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        cleaned.append(name)
+    cleaned.sort(key=lambda item: normalize_name(item))
+    content = ("\n".join(cleaned) + "\n") if cleaned else ""
+    _write_text_if_changed(path, content)
+
+
+def _sync_player_availability_sources() -> Dict[str, object]:
+    club_index = _load_club_name_index()
+    try:
+        injuries_html = _fetch_text_url(INJURIES_SOURCE_URL, timeout_seconds=25.0)
+        injuries = _extract_injured_entries_from_html(injuries_html, club_index)
+    except Exception as exc:
+        detail = exc.detail if isinstance(exc, HTTPException) and hasattr(exc, "detail") else str(exc)
+        return {
+            "ok": False,
+            "error": f"injuries_fetch_failed: {detail}",
+            "source": INJURIES_SOURCE_URL,
+        }
+
+    try:
+        suspensions_html = _fetch_text_url(SUSPENSIONS_SOURCE_URL, timeout_seconds=25.0)
+        suspended, diffidati = _extract_suspension_entries_from_html(suspensions_html, club_index)
+    except Exception as exc:
+        detail = exc.detail if isinstance(exc, HTTPException) and hasattr(exc, "detail") else str(exc)
+        return {
+            "ok": False,
+            "error": f"suspensions_fetch_failed: {detail}",
+            "source": SUSPENSIONS_SOURCE_URL,
+        }
+
+    snapshot = _availability_default_payload()
+    snapshot["fetched_at"] = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+    snapshot["injured"] = injuries
+    snapshot["suspended"] = suspended
+    snapshot["diffidati"] = diffidati
+
+    serialized = json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n"
+    _write_text_if_changed(AVAILABILITY_STATUS_PATH, serialized)
+    _write_name_list_file(INJURED_CLEAN_PATH, [str(item.get("name") or "") for item in injuries])
+    _write_name_list_file(SUSPENDED_CLEAN_PATH, [str(item.get("name") or "") for item in suspended])
+    _AVAILABILITY_CACHE.clear()
+
+    return {
+        "ok": True,
+        "injured_count": len(injuries),
+        "suspended_count": len(suspended),
+        "diffidati_count": len(diffidati),
+        "path": str(AVAILABILITY_STATUS_PATH),
+        "fetched_at": str(snapshot.get("fetched_at") or ""),
+    }
+
+
+def _load_availability_status() -> Dict[str, object]:
+    defaults = _availability_default_payload()
+    if not AVAILABILITY_STATUS_PATH.exists():
+        return defaults
+
+    try:
+        mtime = AVAILABILITY_STATUS_PATH.stat().st_mtime
+    except Exception:
+        return defaults
+
+    cache_key = str(AVAILABILITY_STATUS_PATH)
+    cached = _AVAILABILITY_CACHE.get(cache_key)
+    if cached and cached.get("mtime") == mtime:
+        return dict(cached.get("data") or defaults)
+
+    try:
+        parsed = json.loads(AVAILABILITY_STATUS_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        parsed = {}
+
+    if not isinstance(parsed, dict):
+        parsed = {}
+    data = _availability_default_payload()
+    data["fetched_at"] = str(parsed.get("fetched_at") or "")
+    data["sources"] = dict(parsed.get("sources") or data["sources"])
+    for key in ("injured", "suspended", "diffidati"):
+        values = parsed.get(key)
+        if isinstance(values, list):
+            data[key] = [dict(item) for item in values if isinstance(item, dict)]
+    _AVAILABILITY_CACHE[cache_key] = {"mtime": mtime, "data": data}
+    return dict(data)
+
+
+def _build_optimizer_unavailability_lookup(
+    round_value: Optional[int],
+) -> Dict[str, object]:
+    target_round = _parse_int(round_value)
+    status = _load_availability_status()
+    by_name_team: Dict[Tuple[str, str], Dict[str, object]] = {}
+    by_name: Dict[str, Dict[str, object]] = {}
+    grouped_by_name: Dict[str, List[Dict[str, object]]] = defaultdict(list)
+    excluded_count = 0
+
+    for item in status.get("injured") or []:
+        if not isinstance(item, dict):
+            continue
+        name_key = normalize_name(str(item.get("name_key") or item.get("name") or ""))
+        team_key = normalize_name(str(item.get("team_key") or item.get("team") or ""))
+        if not name_key:
+            continue
+        entry = {
+            "status": "injured",
+            "name": _canonicalize_name(str(item.get("name") or "")),
+            "team": str(item.get("team") or ""),
+            "team_key": team_key,
+            "note": str(item.get("note") or ""),
+            "rounds": [],
+            "indefinite": True,
+        }
+        by_name_team[(name_key, team_key)] = entry
+        grouped_by_name[name_key].append(entry)
+        excluded_count += 1
+
+    for item in status.get("suspended") or []:
+        if not isinstance(item, dict):
+            continue
+        rounds = [
+            int(value)
+            for value in (item.get("rounds") or [])
+            if _parse_int(value) is not None and int(value) > 0
+        ]
+        indefinite = bool(item.get("indefinite")) or not rounds
+        if target_round is not None and not indefinite and int(target_round) not in rounds:
+            continue
+        name_key = normalize_name(str(item.get("name_key") or item.get("name") or ""))
+        team_key = normalize_name(str(item.get("team_key") or item.get("team") or ""))
+        if not name_key:
+            continue
+        entry = {
+            "status": "suspended",
+            "name": _canonicalize_name(str(item.get("name") or "")),
+            "team": str(item.get("team") or ""),
+            "team_key": team_key,
+            "note": str(item.get("note") or ""),
+            "rounds": rounds,
+            "indefinite": indefinite,
+        }
+        by_name_team[(name_key, team_key)] = entry
+        grouped_by_name[name_key].append(entry)
+        excluded_count += 1
+
+    for name_key, entries in grouped_by_name.items():
+        teams = {str(entry.get("team_key") or "").strip() for entry in entries if str(entry.get("team_key") or "").strip()}
+        if len(entries) == 1 or len(teams) <= 1:
+            by_name[name_key] = entries[0]
+
+    return {
+        "by_name_team": by_name_team,
+        "by_name": by_name,
+        "excluded_count": excluded_count,
+        "fetched_at": str(status.get("fetched_at") or ""),
+    }
+
+
+def _player_unavailability_for_round(
+    *,
+    player_name: str,
+    club_name: str,
+    lookup: Dict[str, object],
+) -> Optional[Dict[str, object]]:
+    name_key = normalize_name(_canonicalize_name(player_name))
+    team_key = normalize_name(club_name)
+    if not name_key:
+        return None
+    by_name_team = lookup.get("by_name_team") if isinstance(lookup, dict) else {}
+    if isinstance(by_name_team, dict):
+        exact = by_name_team.get((name_key, team_key))
+        if isinstance(exact, dict):
+            return exact
+    by_name = lookup.get("by_name") if isinstance(lookup, dict) else {}
+    if isinstance(by_name, dict):
+        fallback = by_name.get(name_key)
+        if isinstance(fallback, dict):
+            return fallback
+    return None
+
+
+def _availability_due_slots_for_local_dt(local_now: datetime) -> List[datetime]:
+    day_start_local = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+    due: List[datetime] = []
+    for hour in sorted({max(0, min(23, int(value))) for value in AVAILABILITY_SYNC_HOURS_LOCAL}):
+        slot_local = day_start_local.replace(hour=hour)
+        if local_now >= slot_local:
+            due.append(slot_local)
+    return due
+
+
+def _run_availability_sync_if_due(
+    db: Session,
+    *,
+    local_now: datetime,
+) -> Dict[str, object]:
+    due_slots = _availability_due_slots_for_local_dt(local_now)
+    if not due_slots:
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "before_first_availability_slot",
+            "timezone": str(LEGHE_SYNC_TZ),
+        }
+
+    attempts: List[Dict[str, object]] = []
+    executed_any = False
+    for slot_local in due_slots:
+        slot_utc_ts = int(slot_local.astimezone(timezone.utc).timestamp())
+        claimed = _claim_scheduled_job_slot(
+            db,
+            job_name=AVAILABILITY_SYNC_JOB_NAME,
+            slot_ts=slot_utc_ts,
+        )
+        if not claimed:
+            attempts.append(
+                {
+                    "ok": True,
+                    "skipped": True,
+                    "slot_local": slot_local.isoformat(),
+                    "reason": "slot_already_processed",
+                }
+            )
+            continue
+
+        executed_any = True
+        result = _sync_player_availability_sources()
+        result["slot_local"] = slot_local.isoformat()
+        if result.get("ok") is False:
+            _release_scheduled_job_slot(
+                db,
+                job_name=AVAILABILITY_SYNC_JOB_NAME,
+                slot_ts=slot_utc_ts,
+            )
+        attempts.append(result)
+
+    if not executed_any:
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "availability_already_synced_for_due_slots",
+            "timezone": str(LEGHE_SYNC_TZ),
+            "slots": [slot.isoformat() for slot in due_slots],
+        }
+
+    latest = attempts[-1] if attempts else {"ok": True}
+    latest = dict(latest)
+    latest["attempts"] = attempts
+    latest["timezone"] = str(LEGHE_SYNC_TZ)
+    return latest
+
+
 def _optimizer_context_defaults() -> Dict[str, object]:
     return {
         "home_bonus": {"P": 0.02, "D": 0.02, "C": 0.03, "A": 0.04},
@@ -4190,8 +4756,10 @@ def _build_contextual_optimizer_payload(
     resolved_captain_mode = _captain_mode(captain_mode)
     force_map = _load_player_force_map()
     qa_map = _load_qa_map()
+    unavailability_lookup = _build_optimizer_unavailability_lookup(target_round)
 
     players_payload: List[Dict[str, object]] = []
+    unavailable_players: List[Dict[str, object]] = []
     for row in team_rows:
         player_name = _canonicalize_name(str(row.get("Giocatore") or ""))
         if not player_name:
@@ -4205,6 +4773,40 @@ def _build_contextual_optimizer_payload(
         opponent_name = str(fixture_ctx.get("opponent") or "").strip()
         opponent_key = normalize_name(opponent_name)
         home_away = str(fixture_ctx.get("home_away") or "").strip().upper()
+
+        unavailable_entry = _player_unavailability_for_round(
+            player_name=player_name,
+            club_name=club_name,
+            lookup=unavailability_lookup,
+        )
+        if unavailable_entry:
+            status_label = str(unavailable_entry.get("status") or "").strip().lower()
+            rounds = [
+                int(value)
+                for value in (unavailable_entry.get("rounds") or [])
+                if _parse_int(value) is not None and int(value) > 0
+            ]
+            unavailable_players.append(
+                {
+                    "name": player_name,
+                    "role": role,
+                    "club": club_name,
+                    "status": status_label or "unavailable",
+                    "reason": (
+                        "Infortunato"
+                        if status_label == "injured"
+                        else (
+                            f"Squalificato (giornate {', '.join(str(value) for value in rounds)})"
+                            if rounds
+                            else "Squalificato"
+                        )
+                    ),
+                    "note": str(unavailable_entry.get("note") or ""),
+                    "rounds": rounds,
+                    "indefinite": bool(unavailable_entry.get("indefinite", False)),
+                }
+            )
+            continue
 
         own_ppm = _parse_float((context_index.get(club_key) or {}).get("ppm"))
         opp_ppm = _parse_float((context_index.get(opponent_key) or {}).get("ppm"))
@@ -4235,7 +4837,43 @@ def _build_contextual_optimizer_payload(
         players_payload.append(payload)
 
     if not players_payload:
-        return None
+        return {
+            "team": team_name,
+            "round": int(target_round),
+            "available_rounds": rounds,
+            "source": "context_optimizer",
+            "context_source_path": (
+                str(context_data.get("path"))
+                if isinstance(context_data, dict) and context_data.get("path")
+                else ""
+            ),
+            "optimizer_context": optimizer_context_cfg,
+            "captain_mode": resolved_captain_mode,
+            "module": "",
+            "lineup": {
+                "portiere": "",
+                "difensori": [],
+                "centrocampisti": [],
+                "attaccanti": [],
+                "portiere_details": [],
+                "difensori_details": [],
+                "centrocampisti_details": [],
+                "attaccanti_details": [],
+                "panchina_details": [],
+            },
+            "captain": "",
+            "vice_captain": "",
+            "captain_explain": {},
+            "vice_captain_explain": {},
+            "totals": {"base_force": 0.0, "adjusted_force": 0.0},
+            "players_ranked": [],
+            "availability": {
+                "fetched_at": str(unavailability_lookup.get("fetched_at") or ""),
+                "excluded_count": int(len(unavailable_players)),
+                "unavailable_players": unavailable_players,
+                "note": "Nessun giocatore disponibile per il round selezionato.",
+            },
+        }
 
     lineup_payload = _build_optimizer_lineup(
         players_payload,
@@ -4282,6 +4920,11 @@ def _build_contextual_optimizer_payload(
         "vice_captain_explain": lineup_payload.get("vice_captain_explain", {}),
         "totals": lineup_payload.get("totals", {"base_force": 0.0, "adjusted_force": 0.0}),
         "players_ranked": selected_players,
+        "availability": {
+            "fetched_at": str(unavailability_lookup.get("fetched_at") or ""),
+            "excluded_count": int(len(unavailable_players)),
+            "unavailable_players": unavailable_players,
+        },
     }
 
 
@@ -9030,6 +9673,7 @@ def run_bootstrap_leghe_sync(
     valid_rounds = [int(value) for value in candidates if _parse_int(value) is not None and int(value or 0) > 0]
     resolved_round = max(valid_rounds) if valid_rounds else None
 
+    availability_sync_result = _sync_player_availability_sources()
     live_import_result = (
         _run_live_import_for_round_safe(db, round_value=resolved_round)
         if resolved_round is not None
@@ -9056,16 +9700,22 @@ def run_bootstrap_leghe_sync(
             "mode": "bootstrap_force_sync",
             "round": int(resolved_round) if resolved_round is not None else None,
             "live_import": live_import_result,
+            "availability_sync": availability_sync_result,
         }
 
     if isinstance(result, dict):
         result["mode"] = "bootstrap_force_sync"
         result["round"] = int(resolved_round) if resolved_round is not None else None
         result["live_import"] = live_import_result
+        result["availability_sync"] = availability_sync_result
         warnings = list(result.get("warnings") or [])
         if isinstance(live_import_result, dict) and live_import_result.get("ok") is False:
             error_msg = str(live_import_result.get("error") or "unknown")
             warnings.append(f"live_import failed: {error_msg}")
+        if isinstance(availability_sync_result, dict) and availability_sync_result.get("ok") is False:
+            warnings.append(
+                f"availability_sync failed: {availability_sync_result.get('error') or 'unknown'}"
+            )
         result["warnings"] = warnings
     return result
 
@@ -9080,6 +9730,10 @@ def run_auto_leghe_sync(
     _ = min_interval_seconds
 
     local_now = _leghe_sync_local_now(now_utc)
+    availability_sync_result = _run_availability_sync_if_due(
+        db,
+        local_now=local_now,
+    )
     scheduled_matchday = _leghe_sync_round_for_local_dt(local_now)
     if scheduled_matchday is None:
         daily_live_noon_result = _run_daily_live_noon_import_if_due(
@@ -9090,6 +9744,8 @@ def run_auto_leghe_sync(
 
         if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
             if not daily_live_noon_skipped:
+                if isinstance(daily_live_noon_result, dict):
+                    daily_live_noon_result["availability_sync"] = availability_sync_result
                 return daily_live_noon_result
             return {
                 "ok": True,
@@ -9100,6 +9756,7 @@ def run_auto_leghe_sync(
                 "missing_leghe_env": True,
                 "required": ["LEGHE_ALIAS", "LEGHE_USERNAME", "LEGHE_PASSWORD"],
                 "daily_live_noon": daily_live_noon_result,
+                "availability_sync": availability_sync_result,
             }
 
         day_start_local = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -9111,6 +9768,8 @@ def run_auto_leghe_sync(
         )
         if not claimed_daily_rose:
             if not daily_live_noon_skipped:
+                if isinstance(daily_live_noon_result, dict):
+                    daily_live_noon_result["availability_sync"] = availability_sync_result
                 return daily_live_noon_result
             return {
                 "ok": True,
@@ -9120,6 +9779,7 @@ def run_auto_leghe_sync(
                 "daily_slot_local": day_start_local.isoformat(),
                 "timezone": str(LEGHE_SYNC_TZ),
                 "daily_live_noon": daily_live_noon_result,
+                "availability_sync": availability_sync_result,
             }
 
         try:
@@ -9150,6 +9810,13 @@ def run_auto_leghe_sync(
                 result["daily_slot_local"] = day_start_local.isoformat()
                 result["timezone"] = str(LEGHE_SYNC_TZ)
                 result["daily_live_noon"] = daily_live_noon_result
+                result["availability_sync"] = availability_sync_result
+                warnings = list(result.get("warnings") or [])
+                if isinstance(availability_sync_result, dict) and availability_sync_result.get("ok") is False:
+                    warnings.append(
+                        f"availability_sync failed: {availability_sync_result.get('error') or 'unknown'}"
+                    )
+                result["warnings"] = warnings
             return result
         except LegheSyncError as exc:
             _release_scheduled_job_slot(
@@ -9164,6 +9831,7 @@ def run_auto_leghe_sync(
                 "daily_slot_local": day_start_local.isoformat(),
                 "timezone": str(LEGHE_SYNC_TZ),
                 "daily_live_noon": daily_live_noon_result,
+                "availability_sync": availability_sync_result,
             }
         except Exception as exc:
             _release_scheduled_job_slot(
@@ -9178,6 +9846,7 @@ def run_auto_leghe_sync(
                 "daily_slot_local": day_start_local.isoformat(),
                 "timezone": str(LEGHE_SYNC_TZ),
                 "daily_live_noon": daily_live_noon_result,
+                "availability_sync": availability_sync_result,
             }
 
     slot_start_local = _leghe_sync_slot_start_local(local_now)
@@ -9195,6 +9864,7 @@ def run_auto_leghe_sync(
             "matchday": int(scheduled_matchday),
             "slot_start_local": slot_start_local.isoformat(),
             "timezone": str(LEGHE_SYNC_TZ),
+            "availability_sync": availability_sync_result,
         }
 
     if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
@@ -9206,6 +9876,7 @@ def run_auto_leghe_sync(
             "matchday": int(scheduled_matchday),
             "slot_start_local": slot_start_local.isoformat(),
             "timezone": str(LEGHE_SYNC_TZ),
+            "availability_sync": availability_sync_result,
         }
 
     try:
@@ -9230,10 +9901,15 @@ def run_auto_leghe_sync(
             result["slot_start_local"] = slot_start_local.isoformat()
             result["timezone"] = str(LEGHE_SYNC_TZ)
             result["live_import"] = live_import_result
+            result["availability_sync"] = availability_sync_result
             warnings = list(result.get("warnings") or [])
             if isinstance(live_import_result, dict) and live_import_result.get("ok") is False:
                 error_msg = str(live_import_result.get("error") or "unknown")
                 warnings.append(f"live_import failed: {error_msg}")
+            if isinstance(availability_sync_result, dict) and availability_sync_result.get("ok") is False:
+                warnings.append(
+                    f"availability_sync failed: {availability_sync_result.get('error') or 'unknown'}"
+                )
             result["warnings"] = warnings
         return result
     except LegheSyncError as exc:
@@ -9243,6 +9919,7 @@ def run_auto_leghe_sync(
             "scheduled_matchday": int(scheduled_matchday),
             "slot_start_local": slot_start_local.isoformat(),
             "timezone": str(LEGHE_SYNC_TZ),
+            "availability_sync": availability_sync_result,
         }
 
 
@@ -9306,6 +9983,19 @@ def admin_leghe_sync(
     return result
 
 
+@router.post("/admin/availability/sync")
+def admin_sync_player_availability(
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+    result = _sync_player_availability_sources()
+    if result.get("ok") is False:
+        raise HTTPException(status_code=502, detail=str(result.get("error") or "Availability sync failed"))
+    return result
+
+
 def _run_sync_complete_total_internal(
     db: Session,
     *,
@@ -9335,6 +10025,7 @@ def _run_sync_complete_total_internal(
     valid_rounds = [int(value) for value in candidates if _parse_int(value) is not None and int(value or 0) > 0]
     resolved_round = max(valid_rounds) if valid_rounds else None
 
+    availability_sync_result = _sync_player_availability_sources()
     live_import_result = _run_live_import_for_round_safe(
         db,
         round_value=resolved_round,
@@ -9362,6 +10053,7 @@ def _run_sync_complete_total_internal(
                 "error": str(exc),
                 "round": int(resolved_round) if resolved_round is not None else None,
                 "live_import": live_import_result,
+                "availability_sync": availability_sync_result,
             },
         ) from exc
 
@@ -9369,10 +10061,15 @@ def _run_sync_complete_total_internal(
         result["mode"] = "sync_complete_total"
         result["round"] = int(resolved_round) if resolved_round is not None else None
         result["live_import"] = live_import_result
+        result["availability_sync"] = availability_sync_result
         warnings = list(result.get("warnings") or [])
         if isinstance(live_import_result, dict) and live_import_result.get("ok") is False:
             error_msg = str(live_import_result.get("error") or "unknown")
             warnings.append(f"live_import failed: {error_msg}")
+        if isinstance(availability_sync_result, dict) and availability_sync_result.get("ok") is False:
+            warnings.append(
+                f"availability_sync failed: {availability_sync_result.get('error') or 'unknown'}"
+            )
         result["warnings"] = warnings
     return result if isinstance(result, dict) else {"ok": True, "mode": "sync_complete_total"}
 
@@ -9576,6 +10273,10 @@ def formazioni(
                 continue
             real_items.append(item)
 
+    classifica_positions = _load_classifica_positions()
+    if classifica_positions:
+        _apply_classifica_positions_override(real_items, classifica_positions)
+
     if real_items:
         live_context = _load_live_round_context(db, target_round)
         _attach_live_scores_to_formations(real_items, live_context)
@@ -9602,6 +10303,8 @@ def formazioni(
     projected_items = _load_projected_formazioni_rows(team_key, standings_index)
     for item in projected_items:
         item["round"] = target_round
+    if classifica_positions:
+        _apply_classifica_positions_override(projected_items, classifica_positions)
     live_context = _load_live_round_context(db, target_round)
     _attach_live_scores_to_formations(projected_items, live_context)
     if selected_order == "live_total":
