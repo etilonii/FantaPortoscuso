@@ -191,6 +191,7 @@ _AVAILABILITY_CACHE: Dict[str, object] = {}
 _FORMAZIONI_REMOTE_REFRESH_CACHE: Dict[str, float] = {}
 _CLASSIFICA_MATCHDAY_TOTALS_CACHE: Dict[str, object] = {}
 _CLASSIFICA_POSITIONS_CACHE: Dict[str, object] = {}
+_ROUND_FIRST_KICKOFF_CACHE: Dict[str, object] = {}
 _AUTO_VOTI_IMPORT_ATTEMPTED_ROUNDS: Set[int] = set()
 _SYNC_COMPLETE_BACKGROUND_LOCK = threading.Lock()
 _SYNC_COMPLETE_BACKGROUND_RUNNING = False
@@ -2995,6 +2996,91 @@ def _load_seriea_fixtures_for_insights(club_index: Dict[str, str]) -> List[Dict[
     return fixtures
 
 
+def _parse_kickoff_local_datetime(value: object) -> Optional[datetime]:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+
+    parsed: Optional[datetime] = None
+    normalized = raw.replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except Exception:
+        parsed = None
+
+    if parsed is None:
+        for fmt in ("%Y-%m-%dT%H:%M", "%Y-%m-%d %H:%M", "%Y-%m-%d"):
+            try:
+                parsed = datetime.strptime(raw, fmt)
+                break
+            except Exception:
+                continue
+
+    if parsed is None:
+        return None
+
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=LEGHE_SYNC_TZ)
+    return parsed.astimezone(LEGHE_SYNC_TZ)
+
+
+def _first_round_kickoff_local(
+    round_value: Optional[int],
+    fixture_rows: List[Dict[str, object]],
+) -> Optional[datetime]:
+    round_num = _parse_int(round_value)
+    if round_num is None or round_num <= 0:
+        return None
+
+    kickoff_candidates: List[datetime] = []
+    for fixture in fixture_rows:
+        if _parse_int(fixture.get("round")) != int(round_num):
+            continue
+        kickoff_local = _parse_kickoff_local_datetime(fixture.get("kickoff_iso"))
+        if kickoff_local is None:
+            continue
+        kickoff_candidates.append(kickoff_local)
+    if kickoff_candidates:
+        return min(kickoff_candidates)
+
+    from_calendar = _fetch_round_first_kickoff_from_calendar(int(round_num), _normalize_season_slug(None))
+    if from_calendar is not None:
+        return from_calendar
+
+    for matchday, start_day, _end_day in LEGHE_SYNC_WINDOWS:
+        if int(matchday) != int(round_num):
+            continue
+        return datetime(
+            start_day.year,
+            start_day.month,
+            start_day.day,
+            0,
+            0,
+            0,
+            tzinfo=LEGHE_SYNC_TZ,
+        )
+    return None
+
+
+def _is_formazioni_real_unlocked_for_round(
+    round_value: Optional[int],
+    fixture_rows: List[Dict[str, object]],
+    *,
+    now_local: Optional[datetime] = None,
+) -> Tuple[bool, Optional[datetime], str]:
+    round_num = _parse_int(round_value)
+    if round_num is None or round_num <= 0:
+        return True, None, "no_round"
+
+    kickoff_local = _first_round_kickoff_local(round_num, fixture_rows)
+    if kickoff_local is None:
+        return True, None, "kickoff_unknown"
+
+    now_ref = now_local if now_local is not None else _leghe_sync_local_now()
+    unlocked = bool(now_ref >= kickoff_local)
+    return unlocked, kickoff_local, "kickoff_guard"
+
+
 def _seriea_fixture_state(match_status: Optional[int]) -> str:
     status = int(match_status or 0)
     if status <= 0:
@@ -5123,6 +5209,71 @@ def _build_default_voti_url(round_value: int, season_slug: str) -> str:
 
 def _build_calendar_round_url(round_value: int, season_slug: str) -> str:
     return f"{CALENDAR_BASE_URL}/{int(round_value)}/{season_slug}"
+
+
+def _fetch_round_first_kickoff_from_calendar(
+    round_value: int,
+    season_slug: Optional[str] = None,
+) -> Optional[datetime]:
+    round_num = _parse_int(round_value)
+    if round_num is None or round_num <= 0:
+        return None
+
+    resolved_season = _normalize_season_slug(season_slug)
+    cache_key = f"{resolved_season}:{int(round_num)}"
+    now_ts = float(datetime.utcnow().timestamp())
+    cached = _ROUND_FIRST_KICKOFF_CACHE.get(cache_key)
+    if isinstance(cached, dict) and (now_ts - float(cached.get("ts", 0.0) or 0.0) < 1800):
+        cached_iso = str(cached.get("kickoff_iso") or "").strip()
+        if cached_iso:
+            parsed_cached = _parse_kickoff_local_datetime(cached_iso)
+            if parsed_cached is not None:
+                return parsed_cached
+
+    url = _build_calendar_round_url(int(round_num), resolved_season)
+    try:
+        html_text = _fetch_text_url(url, timeout_seconds=20.0)
+    except Exception:
+        return None
+
+    kickoff_candidates: List[datetime] = []
+    pattern = re.compile(
+        (
+            r"<meta\s+itemprop=['\"]startDate['\"]\s+content=['\"]([^'\"]+)['\"][^>]*>"
+            r".*?<span[^>]*class=['\"][^'\"]*hour[^'\"]*['\"][^>]*>\s*([^<]+)\s*</span>"
+        ),
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    for date_raw, hour_raw in pattern.findall(html_text):
+        date_match = re.search(r"(\d{4}-\d{2}-\d{2})", str(date_raw or ""))
+        if date_match is None:
+            continue
+        hour_match = re.search(r"(\d{1,2}):(\d{2})", str(hour_raw or ""))
+        hour = int(hour_match.group(1)) if hour_match else 0
+        minute = int(hour_match.group(2)) if hour_match else 0
+        try:
+            kickoff_local = datetime(
+                int(date_match.group(1)[0:4]),
+                int(date_match.group(1)[5:7]),
+                int(date_match.group(1)[8:10]),
+                hour,
+                minute,
+                0,
+                tzinfo=LEGHE_SYNC_TZ,
+            )
+        except Exception:
+            continue
+        kickoff_candidates.append(kickoff_local)
+
+    if not kickoff_candidates:
+        return None
+
+    first_kickoff = min(kickoff_candidates)
+    _ROUND_FIRST_KICKOFF_CACHE[cache_key] = {
+        "ts": now_ts,
+        "kickoff_iso": first_kickoff.isoformat(),
+    }
+    return first_kickoff
 
 
 def _calendar_slugify(value: object) -> str:
@@ -10229,14 +10380,23 @@ def formazioni(
         if target_round is None or int(latest_live_votes_round) > int(target_round):
             target_round = int(latest_live_votes_round)
 
-    real_rows, available_rounds, source_path = _load_real_formazioni_rows(
-        standings_index,
-        preferred_round=target_round,
-    )
-    if target_round is None and available_rounds:
-        target_round = max(available_rounds)
-
     club_index = _load_club_name_index()
+    seriea_fixtures_for_kickoff = _load_seriea_fixtures_for_insights(club_index)
+    real_unlocked, first_kickoff_local, real_unlock_reason = _is_formazioni_real_unlocked_for_round(
+        target_round,
+        seriea_fixtures_for_kickoff,
+    )
+    real_rows: List[Dict[str, object]] = []
+    available_rounds: List[int] = []
+    source_path: Optional[Path] = None
+    if real_unlocked:
+        real_rows, available_rounds, source_path = _load_real_formazioni_rows(
+            standings_index,
+            preferred_round=target_round,
+        )
+        if target_round is None and available_rounds:
+            target_round = max(available_rounds)
+
     fixture_rows_for_rounds = _load_fixture_rows_for_live(db, club_index)
     fixture_rounds = _rounds_from_fixture_rows(fixture_rows_for_rounds)
     schedule_rounds = [int(matchday) for matchday, _start, _end in LEGHE_SYNC_WINDOWS]
@@ -10297,6 +10457,9 @@ def formazioni(
             "scheduled_reference_round": scheduled_reference_round,
             "latest_live_votes_round": latest_live_votes_round,
             "source_path": str(source_path) if source_path else "",
+            "real_unlocked": bool(real_unlocked),
+            "real_unlock_reason": real_unlock_reason,
+            "first_kickoff_local": first_kickoff_local.isoformat() if isinstance(first_kickoff_local, datetime) else "",
             "note": "",
         }
 
@@ -10313,7 +10476,18 @@ def formazioni(
         projected_items.sort(key=_formations_sort_key)
 
     if source_path is None:
-        note = "File formazioni reali non trovato: mostrato XI migliore ordinato per classifica."
+        if not real_unlocked and target_round is not None:
+            kickoff_label = (
+                first_kickoff_local.strftime("%d/%m/%Y %H:%M")
+                if isinstance(first_kickoff_local, datetime)
+                else "orario non disponibile"
+            )
+            note = (
+                f"Formazioni reali disponibili solo dal calcio d'inizio della giornata {target_round} "
+                f"({kickoff_label}): mostrato XI migliore ordinato per classifica."
+            )
+        else:
+            note = "File formazioni reali non trovato: mostrato XI migliore ordinato per classifica."
     elif target_round is not None:
         note = (
             f"Formazioni reali non disponibili per la giornata {target_round}: "
@@ -10335,6 +10509,9 @@ def formazioni(
         "scheduled_reference_round": scheduled_reference_round,
         "latest_live_votes_round": latest_live_votes_round,
         "source_path": str(source_path) if source_path else "",
+        "real_unlocked": bool(real_unlocked),
+        "real_unlock_reason": real_unlock_reason,
+        "first_kickoff_local": first_kickoff_local.isoformat() if isinstance(first_kickoff_local, datetime) else "",
         "note": note,
     }
 
