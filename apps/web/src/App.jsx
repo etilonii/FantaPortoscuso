@@ -2845,19 +2845,19 @@ useEffect(() => {
                 {menuSectionsOpen.generali ? (
                   <div className="menu-group-items">
                     <button
-                      className={menuItemClass("listone")}
+                      className={`${menuItemClass("listone")} menu-subitem`}
                       onClick={() => openMenuFeature("listone")}
                     >
                       Listone
                     </button>
                     <button
-                      className={menuItemClass("stats")}
+                      className={`${menuItemClass("stats")} menu-subitem`}
                       onClick={() => openMenuFeature("stats")}
                     >
                       Statistiche giocatori
                     </button>
                     <button
-                      className={menuItemClass("classifica-fixtures-seriea")}
+                      className={`${menuItemClass("classifica-fixtures-seriea")} menu-subitem`}
                       onClick={() => openMenuFeature("classifica-fixtures-seriea")}
                     >
                       Serie A
@@ -2884,25 +2884,25 @@ useEffect(() => {
                 {menuSectionsOpen.lega ? (
                   <div className="menu-group-items">
                     <button
-                      className={menuItemClass("rose")}
+                      className={`${menuItemClass("rose")} menu-subitem`}
                       onClick={() => openMenuFeature("rose")}
                     >
                       Rose
                     </button>
                     <button
-                      className={menuItemClass("formazioni")}
+                      className={`${menuItemClass("formazioni")} menu-subitem`}
                       onClick={() => openMenuFeature("formazioni")}
                     >
                       Formazioni
                     </button>
                     <button
-                      className={menuItemClass("classifica-lega")}
+                      className={`${menuItemClass("classifica-lega")} menu-subitem`}
                       onClick={() => openMenuFeature("classifica-lega")}
                     >
                       Classifica
                     </button>
                     <button
-                      className={menuItemClass("top-acquisti")}
+                      className={`${menuItemClass("top-acquisti")} menu-subitem`}
                       onClick={() => openMenuFeature("top-acquisti")}
                     >
                       Giocatori piu acquistati
@@ -2929,19 +2929,19 @@ useEffect(() => {
                 {menuSectionsOpen.extra ? (
                   <div className="menu-group-items">
                     <button
-                      className={menuItemClass("formazione-consigliata")}
+                      className={`${menuItemClass("formazione-consigliata")} menu-subitem`}
                       onClick={() => openMenuFeature("formazione-consigliata")}
                     >
                       Formazioni consigliate
                     </button>
                     <button
-                      className={menuItemClass("mercato")}
+                      className={`${menuItemClass("mercato")} menu-subitem`}
                       onClick={() => openMenuFeature("mercato")}
                     >
                       Mercato
                     </button>
                     <button
-                      className={menuItemClass("plusvalenze")}
+                      className={`${menuItemClass("plusvalenze")} menu-subitem`}
                       onClick={() => openMenuFeature("plusvalenze")}
                     >
                       Plusvalenze
