@@ -365,6 +365,7 @@ export default function App() {
   const [formationOrder, setFormationOrder] = useState("classifica");
   const [formationMeta, setFormationMeta] = useState({
     round: null,
+    optimizerRound: null,
     source: "projection",
     availableRounds: [],
     orderBy: "classifica",
@@ -1051,8 +1052,13 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
             .filter((value) => Number.isFinite(value))
             .sort((a, b) => a - b)
         : [];
+      const apiOptimizerRound = Number(data?.optimizer_round);
+      const normalizedOptimizerRound = Number.isFinite(apiOptimizerRound)
+        ? apiOptimizerRound
+        : null;
       setFormationMeta({
         round: normalizedRound,
+        optimizerRound: normalizedOptimizerRound,
         source: String(data?.source || "").toLowerCase() === "real" ? "real" : "projection",
         availableRounds,
         orderBy:
@@ -2921,6 +2927,16 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   useEffect(() => {
     if (!loggedIn) return;
     if (activeMenu !== "formazione-consigliata") return;
+    const optimizerRoundCandidate = Number(formationMeta?.optimizerRound);
+    if (
+      Number.isFinite(optimizerRoundCandidate) &&
+      optimizerRoundCandidate > 0 &&
+      String(formationRound || "") !== String(optimizerRoundCandidate)
+    ) {
+      setFormationRound(String(optimizerRoundCandidate));
+      loadFormazioni(String(optimizerRoundCandidate), formationOrder);
+      return;
+    }
 
     const fallbackTeam =
       String(suggestTeam || "").trim() ||
@@ -2936,9 +2952,23 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setFormationTeam(activeTeamValue);
       return;
     }
-    runFormationOptimizer(activeTeamValue, formationRound || null);
+    const optimizerRoundValue =
+      Number.isFinite(optimizerRoundCandidate) && optimizerRoundCandidate > 0
+        ? optimizerRoundCandidate
+        : formationRound || null;
+    runFormationOptimizer(activeTeamValue, optimizerRoundValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedIn, activeMenu, formationTeam, formationRound, suggestTeam, selectedTeam, teams]);
+  }, [
+    loggedIn,
+    activeMenu,
+    formationTeam,
+    formationRound,
+    formationOrder,
+    suggestTeam,
+    selectedTeam,
+    teams,
+    formationMeta?.optimizerRound,
+  ]);
 
   useEffect(() => {
     if (!loggedIn) return;

@@ -11338,6 +11338,15 @@ def formazioni(
         if parsed_extra is not None and parsed_extra > 0:
             payload_rounds_set.add(int(parsed_extra))
     payload_rounds = sorted(payload_rounds_set)
+    optimizer_round = _parse_int(target_round)
+    if optimizer_round is not None and _is_round_completed_from_fixtures(optimizer_round):
+        next_round_candidates = [
+            int(value)
+            for value in payload_rounds
+            if isinstance(value, int) and int(value) > int(optimizer_round)
+        ]
+        if next_round_candidates:
+            optimizer_round = min(next_round_candidates)
 
     real_items = []
     if real_rows:
@@ -11373,6 +11382,7 @@ def formazioni(
             "inferred_matchday_stats": inferred_matchday_stats,
             "scheduled_reference_round": scheduled_reference_round,
             "latest_live_votes_round": latest_live_votes_round,
+            "optimizer_round": optimizer_round,
             "source_path": str(source_path) if source_path else "",
             "real_unlocked": bool(real_unlocked),
             "real_unlock_reason": real_unlock_reason,
@@ -11425,6 +11435,7 @@ def formazioni(
         "inferred_matchday_stats": inferred_matchday_stats,
         "scheduled_reference_round": scheduled_reference_round,
         "latest_live_votes_round": latest_live_votes_round,
+        "optimizer_round": optimizer_round,
         "source_path": str(source_path) if source_path else "",
         "real_unlocked": bool(real_unlocked),
         "real_unlock_reason": real_unlock_reason,
