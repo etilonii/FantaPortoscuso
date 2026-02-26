@@ -216,6 +216,17 @@ class RefreshToken(Base):
     last_used_at = Column(DateTime, nullable=True)
 
 
+class MaintenanceState(Base):
+    __tablename__ = "maintenance_state"
+
+    id = Column(Integer, primary_key=True, index=True)
+    enabled = Column(Boolean, default=False, nullable=False)
+    message = Column(String(255), nullable=True)
+    retry_after_minutes = Column(Integer, default=10, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_by_key = Column(String(32), nullable=True)
+
+
 def ensure_schema(engine) -> None:
     with engine.connect() as conn:
         result = conn.execute(text("PRAGMA table_info(access_keys)"))

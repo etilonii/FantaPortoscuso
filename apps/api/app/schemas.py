@@ -129,3 +129,9 @@ class KeyUnblockRequest(BaseModel):
 class PingRequest(BaseModel):
     key: str = Field(min_length=8, max_length=32)
     device_id: str = Field(min_length=6, max_length=128)
+
+
+class MaintenanceUpdateRequest(BaseModel):
+    enabled: bool
+    message: str | None = Field(default=None, max_length=255)
+    retry_after_minutes: int = Field(default=10, ge=1, le=120)

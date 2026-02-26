@@ -24,6 +24,7 @@ from ..config import (
 )
 from ..deps import get_db
 from ..models import AccessKey, DeviceSession, KeyReset, RefreshToken, TeamKey
+from ..models import MaintenanceState
 from ..auth_tokens import (
     REFRESH_TOKEN_TTL,
     create_access_token,
@@ -53,6 +54,7 @@ from ..schemas import (
     TeamKeyRequest,
     TeamKeyItem,
     TeamKeyDeleteRequest,
+    MaintenanceUpdateRequest,
 )
 
 
@@ -597,6 +599,39 @@ def admin_status(
     }
 
     return status
+
+
+@router.post("/admin/maintenance")
+def set_maintenance_mode(
+    payload: MaintenanceUpdateRequest,
+    x_admin_key: str | None = Header(default=None),
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+):
+    admin_record = _require_admin_key(x_admin_key, db, authorization)
+    record = db.query(MaintenanceState).order_by(MaintenanceState.id.asc()).first()
+    if record is None:
+        record = MaintenanceState()
+
+    enabled = bool(payload.enabled)
+    message_value = str(payload.message or "").strip()
+    retry_after = max(1, min(120, int(payload.retry_after_minutes or 10)))
+
+    record.enabled = enabled
+    record.message = message_value if enabled else ""
+    record.retry_after_minutes = retry_after
+    record.updated_at = datetime.utcnow()
+    record.updated_by_key = admin_record.key
+    db.add(record)
+    db.commit()
+
+    return {
+        "enabled": bool(record.enabled),
+        "message": str(record.message or ""),
+        "retry_after_minutes": int(record.retry_after_minutes or 10),
+        "updated_at": record.updated_at.isoformat() if record.updated_at else None,
+        "updated_by_key": record.updated_by_key,
+    }
 
 
 @router.post("/admin/import-keys")

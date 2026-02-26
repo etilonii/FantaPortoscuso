@@ -2,7 +2,11 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from ..deps import get_db
+from ..models import MaintenanceState
 
 
 router = APIRouter(prefix="/meta", tags=["meta"])
@@ -33,6 +37,28 @@ CORE_DATA_FILE_CANDIDATES = {
     "strength": (DATA_DIR / "classifica.csv",),
     "quotazioni": (DATA_DIR / "quotazioni.csv",),
 }
+
+
+def _default_maintenance_payload() -> dict:
+    return {
+        "enabled": False,
+        "message": "",
+        "retry_after_minutes": 10,
+        "updated_at": "",
+        "updated_by_key": None,
+    }
+
+
+def _serialize_maintenance(record: MaintenanceState | None) -> dict:
+    if record is None:
+        return _default_maintenance_payload()
+    return {
+        "enabled": bool(record.enabled),
+        "message": str(record.message or ""),
+        "retry_after_minutes": max(1, int(record.retry_after_minutes or 10)),
+        "updated_at": record.updated_at.isoformat() if record.updated_at else "",
+        "updated_by_key": str(record.updated_by_key) if record.updated_by_key else None,
+    }
 
 
 def _first_valid_data_file(paths: tuple[Path, ...]) -> Path | None:
@@ -134,3 +160,9 @@ def data_status():
             pass
 
     return _build_data_files_status(fallback)
+
+
+@router.get("/maintenance")
+def maintenance_status(db: Session = Depends(get_db)):
+    record = db.query(MaintenanceState).order_by(MaintenanceState.id.asc()).first()
+    return _serialize_maintenance(record)

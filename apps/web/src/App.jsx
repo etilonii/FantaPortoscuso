@@ -141,6 +141,40 @@ const formatCountdown = (secondsValue) => {
   return `${m}m ${s}s`;
 };
 
+const normalizeBuildAssetPath = (value) => {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  try {
+    const parsed = new URL(raw, window.location.origin);
+    return `${parsed.pathname}${parsed.search || ""}`;
+  } catch {
+    return raw;
+  }
+};
+
+const extractBuildAssetFromHtml = (html) => {
+  const raw = String(html || "");
+  const moduleScripts = raw.match(
+    /<script[^>]*type=["']module["'][^>]*src=["']([^"']+)["'][^>]*>/gi
+  );
+  if (!moduleScripts || !moduleScripts.length) return "";
+  const preferred =
+    moduleScripts.find((chunk) => /\/assets\/index-/i.test(chunk)) || moduleScripts[0];
+  const match = preferred.match(/src=["']([^"']+)["']/i);
+  return match?.[1] || "";
+};
+
+const readCurrentBundlePathFromDom = () => {
+  if (typeof document === "undefined") return "";
+  const scripts = Array.from(document.querySelectorAll('script[type="module"][src]'));
+  if (!scripts.length) return "";
+  const preferred =
+    scripts.find((node) =>
+      String(node.getAttribute("src") || "").toLowerCase().includes("/assets/index-")
+    ) || scripts[0];
+  return normalizeBuildAssetPath(preferred.getAttribute("src") || "");
+};
+
 /* ===========================
    CONFIG
 =========================== */
@@ -148,6 +182,7 @@ const KEY_STORAGE = "fp_access_key";
 const ACCESS_TOKEN_STORAGE = "fp_access_token";
 const REFRESH_TOKEN_STORAGE = "fp_refresh_token";
 const AUTH_LAST_OK_STORAGE = "fp_auth_last_ok_ts";
+const MAINTENANCE_RELOAD_ATTEMPTS_STORAGE = "fp_maintenance_reload_attempts";
 const SESSION_TTL_MINUTES = 30;
 const SESSION_TTL_MS = SESSION_TTL_MINUTES * 60 * 1000;
 const MENU_KEYS = new Set([
@@ -183,6 +218,7 @@ const API_BASE =
   (import.meta.env.DEV
     ? "http://localhost:8001"
     : "https://fantaportoscuso.up.railway.app");
+const DEPLOY_UPDATE_ALERT_MESSAGE = "L'admin ha effettuato delle modifiche, ricarica la pagina!";
 const INSIGHTS_MENU_KEYS = new Set([
   "classifica-fixtures-seriea",
 ]);
@@ -211,6 +247,7 @@ export default function App() {
   const dataStatusAutoRefreshRef = useRef(false);
   const liveRefreshInFlightRef = useRef(false);
   const topAcquistiRefreshTickRef = useRef(0);
+  const activeBundlePathRef = useRef("");
 
   /* ===== UI ===== */
   const [theme, setTheme] = useState("dark");
@@ -234,6 +271,18 @@ export default function App() {
     update_id: "",
     steps: {},
   });
+  const [maintenanceStatus, setMaintenanceStatus] = useState({
+    enabled: false,
+    message: "",
+    retry_after_minutes: 10,
+    updated_at: "",
+    updated_by_key: null,
+  });
+  const [maintenanceMessageDraft, setMaintenanceMessageDraft] = useState("Manutenzione in corso...");
+  const [maintenanceRetryMinutesDraft, setMaintenanceRetryMinutesDraft] = useState("10");
+  const [maintenanceApplying, setMaintenanceApplying] = useState(false);
+  const [maintenanceReloadAttempts, setMaintenanceReloadAttempts] = useState(0);
+  const [deployUpdateAvailable, setDeployUpdateAvailable] = useState(false);
   const [premiumInsights, setPremiumInsights] = useState({
     player_tiers: [],
     team_strength_total: [],
@@ -815,6 +864,107 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       }));
       return false;
     }
+  };
+
+  const normalizeMaintenancePayload = (payload) => {
+    const enabled = Boolean(payload?.enabled);
+    const message = String(payload?.message || "").trim();
+    const retryRaw = Number(payload?.retry_after_minutes);
+    const retryAfterMinutes = Number.isFinite(retryRaw)
+      ? Math.min(120, Math.max(1, Math.round(retryRaw)))
+      : 10;
+    const updatedAt = String(payload?.updated_at || "").trim();
+    const updatedByKey = payload?.updated_by_key ? String(payload.updated_by_key) : null;
+    return {
+      enabled,
+      message,
+      retry_after_minutes: retryAfterMinutes,
+      updated_at: updatedAt,
+      updated_by_key: updatedByKey,
+    };
+  };
+
+  const loadMaintenanceStatus = async () => {
+    try {
+      const data = await fetchJsonWithRetry(`${API_BASE}/meta/maintenance`, {}, { attempts: 2, baseDelayMs: 250 });
+      const normalized = normalizeMaintenancePayload(data || {});
+      setMaintenanceStatus(normalized);
+      if (!normalized.enabled) {
+        setMaintenanceReloadAttempts(0);
+        try {
+          sessionStorage.removeItem(MAINTENANCE_RELOAD_ATTEMPTS_STORAGE);
+        } catch {}
+      }
+      if (normalized.message) {
+        setMaintenanceMessageDraft(normalized.message);
+      }
+      setMaintenanceRetryMinutesDraft(String(normalized.retry_after_minutes));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const setMaintenanceMode = async (enabled) => {
+    if (!loggedIn || !isAdmin) return;
+    try {
+      setMaintenanceApplying(true);
+      const retryRaw = Number(maintenanceRetryMinutesDraft);
+      const retryAfter = Number.isFinite(retryRaw)
+        ? Math.min(120, Math.max(1, Math.round(retryRaw)))
+        : 10;
+      const messageValue = String(maintenanceMessageDraft || "").trim();
+      const res = await fetchWithAuth(`${API_BASE}/auth/admin/maintenance`, {
+        method: "POST",
+        headers: buildAuthHeaders({
+          legacyAdminKey: true,
+          extraHeaders: { "Content-Type": "application/json" },
+        }),
+        body: JSON.stringify({
+          enabled: Boolean(enabled),
+          message: messageValue || (enabled ? "Manutenzione in corso..." : ""),
+          retry_after_minutes: retryAfter,
+        }),
+      });
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setAdminNotice(payload?.detail || "Errore aggiornamento manutenzione.");
+        return;
+      }
+      const normalized = normalizeMaintenancePayload(payload || {});
+      setMaintenanceStatus(normalized);
+      setMaintenanceMessageDraft(normalized.message || "Manutenzione in corso...");
+      setMaintenanceRetryMinutesDraft(String(normalized.retry_after_minutes));
+      setAdminNotice(
+        normalized.enabled
+          ? "Modalita manutenzione attivata."
+          : "Modalita manutenzione disattivata."
+      );
+      if (!normalized.enabled) {
+        setMaintenanceReloadAttempts(0);
+        try {
+          sessionStorage.removeItem(MAINTENANCE_RELOAD_ATTEMPTS_STORAGE);
+        } catch {}
+      }
+    } catch {
+      setAdminNotice("Errore aggiornamento manutenzione.");
+    } finally {
+      setMaintenanceApplying(false);
+    }
+  };
+
+  const forceReloadPage = () => {
+    if (maintenanceStatus?.enabled) {
+      const nextAttempts = Number(maintenanceReloadAttempts || 0) + 1;
+      setMaintenanceReloadAttempts(nextAttempts);
+      try {
+        sessionStorage.setItem(
+          MAINTENANCE_RELOAD_ATTEMPTS_STORAGE,
+          String(nextAttempts)
+        );
+      } catch {}
+    }
+    window.location.reload();
   };
 
   const loadTeams = async () => {
@@ -2600,6 +2750,74 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   }, [loggedIn]);
 
   useEffect(() => {
+    if (!loggedIn) {
+      setMaintenanceReloadAttempts(0);
+      setDeployUpdateAvailable(false);
+      activeBundlePathRef.current = "";
+      return;
+    }
+    try {
+      const storedAttempts = Number(
+        sessionStorage.getItem(MAINTENANCE_RELOAD_ATTEMPTS_STORAGE) || "0"
+      );
+      setMaintenanceReloadAttempts(
+        Number.isFinite(storedAttempts) && storedAttempts > 0
+          ? Math.floor(storedAttempts)
+          : 0
+      );
+    } catch {
+      setMaintenanceReloadAttempts(0);
+    }
+  }, [loggedIn]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    void loadMaintenanceStatus();
+    const intervalMs =
+      String(dataStatus?.result || "").toLowerCase() === "running" ? 15000 : 30000;
+    const timer = setInterval(() => {
+      void loadMaintenanceStatus();
+    }, intervalMs);
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn, dataStatus?.result]);
+
+  useEffect(() => {
+    if (!loggedIn || maintenanceStatus?.enabled || deployUpdateAvailable) return;
+    const currentBundlePath = readCurrentBundlePathFromDom();
+    if (!currentBundlePath || currentBundlePath.includes("/src/main")) return;
+    activeBundlePathRef.current = currentBundlePath;
+
+    let cancelled = false;
+    const detectDeployUpdate = async () => {
+      if (cancelled || maintenanceStatus?.enabled || deployUpdateAvailable) return;
+      try {
+        const res = await fetch(`${window.location.origin}/?fp_build=${Date.now()}`, {
+          cache: "no-store",
+        });
+        if (!res.ok) return;
+        const html = await res.text();
+        const nextBundlePath = normalizeBuildAssetPath(extractBuildAssetFromHtml(html));
+        if (!nextBundlePath || nextBundlePath.includes("/src/main")) return;
+        if (
+          activeBundlePathRef.current &&
+          nextBundlePath !== activeBundlePathRef.current
+        ) {
+          setDeployUpdateAvailable(true);
+        }
+      } catch {}
+    };
+
+    const timer = setInterval(() => {
+      void detectDeployUpdate();
+    }, 30000);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [loggedIn, maintenanceStatus?.enabled, deployUpdateAvailable]);
+
+  useEffect(() => {
     loadStatList(statsTab);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statsTab]);
@@ -2912,6 +3130,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
      PLAYER SLUG
   =========================== */
   const playerSlug = slugify(selectedPlayer);
+  const maintenanceBlockActive = loggedIn && Boolean(maintenanceStatus?.enabled);
+  const deployBlockActive = loggedIn && !maintenanceBlockActive && deployUpdateAvailable;
+  const maintenanceRetryMinutes = Math.max(
+    1,
+    Number(maintenanceStatus?.retry_after_minutes || 10)
+  );
 
 useEffect(() => {
   setSuggestPayload(null);
@@ -3587,6 +3811,59 @@ useEffect(() => {
 
                 <div className="panel">
                   <div className="panel-header">
+                    <h3>Modalita manutenzione</h3>
+                    <button className="ghost" onClick={loadMaintenanceStatus}>
+                      Aggiorna
+                    </button>
+                  </div>
+                  <div className="admin-actions">
+                    <div className="admin-row admin-row-stacked">
+                      <p className="muted">
+                        Stato: {maintenanceStatus?.enabled ? "ATTIVA" : "DISATTIVA"}
+                        {maintenanceStatus?.updated_at
+                          ? ` · Ultimo update ${formatDataStatusDate(maintenanceStatus.updated_at)}`
+                          : ""}
+                      </p>
+                    </div>
+                    <div className="admin-row">
+                      <input
+                        className="input"
+                        placeholder="Messaggio alert manutenzione"
+                        value={maintenanceMessageDraft}
+                        maxLength={255}
+                        onChange={(e) => setMaintenanceMessageDraft(e.target.value)}
+                      />
+                    </div>
+                    <div className="admin-row">
+                      <input
+                        className="input"
+                        type="number"
+                        min="1"
+                        max="120"
+                        placeholder="Minuti attesa (es. 10)"
+                        value={maintenanceRetryMinutesDraft}
+                        onChange={(e) => setMaintenanceRetryMinutesDraft(e.target.value)}
+                      />
+                      <button
+                        className="ghost"
+                        onClick={() => setMaintenanceMode(true)}
+                        disabled={maintenanceApplying || maintenanceStatus?.enabled}
+                      >
+                        {maintenanceApplying ? "Aggiorno..." : "Attiva manutenzione"}
+                      </button>
+                      <button
+                        className="ghost"
+                        onClick={() => setMaintenanceMode(false)}
+                        disabled={maintenanceApplying || !maintenanceStatus?.enabled}
+                      >
+                        {maintenanceApplying ? "Aggiorno..." : "Disattiva manutenzione"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="panel">
+                  <div className="panel-header">
                     <h3>Stato dati</h3>
                     <button className="ghost" onClick={loadAdminStatus}>
                       Aggiorna
@@ -3805,6 +4082,43 @@ useEffect(() => {
               </section>
             )}
           </main>
+          {maintenanceBlockActive || deployBlockActive ? (
+            <div className="blocking-alert-overlay" role="alertdialog" aria-modal="true">
+              <div className="blocking-alert-card">
+                <p className="eyebrow">Avviso</p>
+                <h3>
+                  {maintenanceBlockActive
+                    ? "Manutenzione in corso..."
+                    : "Nuovo aggiornamento disponibile"}
+                </h3>
+                <p className="muted">
+                  {maintenanceBlockActive
+                    ? maintenanceStatus?.message || "Manutenzione in corso..."
+                    : DEPLOY_UPDATE_ALERT_MESSAGE}
+                </p>
+                {maintenanceBlockActive && maintenanceReloadAttempts >= 2 ? (
+                  <p className="maintenance-retry-warning">
+                    Riprova tra {maintenanceRetryMinutes} minuti
+                  </p>
+                ) : null}
+                <div className="panel-actions">
+                  <button className="primary" type="button" onClick={forceReloadPage}>
+                    Ricarica
+                  </button>
+                  {maintenanceBlockActive && isAdmin ? (
+                    <button
+                      className="ghost"
+                      type="button"
+                      onClick={() => setMaintenanceMode(false)}
+                      disabled={maintenanceApplying}
+                    >
+                      {maintenanceApplying ? "Aggiorno..." : "Disattiva manutenzione"}
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       )}
     </div>

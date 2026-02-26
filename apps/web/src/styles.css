@@ -544,6 +544,44 @@ body.theme-light {
   font-size: 0.9rem;
 }
 
+.blocking-alert-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  background: rgba(5, 9, 18, 0.9);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.blocking-alert-card {
+  width: min(520px, calc(100vw - 32px));
+  border-radius: 18px;
+  border: 1px solid rgba(120, 196, 255, 0.35);
+  background: linear-gradient(150deg, rgba(19, 33, 55, 0.96), rgba(10, 18, 33, 0.96));
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.45);
+  padding: 22px 20px;
+  display: grid;
+  gap: 12px;
+  text-align: center;
+}
+
+.blocking-alert-card h3 {
+  margin: 0;
+}
+
+.blocking-alert-card .primary {
+  justify-self: center;
+  min-width: 180px;
+}
+
+.maintenance-retry-warning {
+  margin: 0;
+  color: #ff5757;
+  font-weight: 700;
+}
+
 .mobile-topbar {
   display: flex;
   align-items: center;
