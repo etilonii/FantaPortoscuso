@@ -373,6 +373,24 @@ body.theme-light {
   gap: 6px;
 }
 
+.sidebar .menu {
+  gap: 12px;
+}
+
+.menu-group {
+  display: grid;
+  gap: 6px;
+}
+
+.menu-group-title {
+  margin: 2px 6px 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
 .menu-item {
   text-align: left;
   padding: 8px 12px;

@@ -299,9 +299,9 @@ export default function PremiumInsightsSection({
         <div className="dashboard-header left row">
           <div>
             <p className="eyebrow">Premium</p>
-            <h2>Classifica + Fixtures Serie A</h2>
+            <h2>Serie A</h2>
             <p className="muted">
-              Classifica Serie A + fixtures Serie A live
+              Classifica e fixtures Serie A live
               {selectedRoundLabel ? ` (Giornata ${selectedRoundLabel})` : ""}.
             </p>
           </div>

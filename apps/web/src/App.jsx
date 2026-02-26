@@ -152,7 +152,6 @@ const SESSION_TTL_MINUTES = 30;
 const SESSION_TTL_MS = SESSION_TTL_MINUTES * 60 * 1000;
 const MENU_KEYS = new Set([
   "home",
-  "quotazioni",
   "stats",
   "rose",
   "classifica-lega",
@@ -2634,7 +2633,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   }, [query, activeTab, loggedIn]);
 
   useEffect(() => {
-    if (loggedIn && (activeMenu === "listone" || activeMenu === "quotazioni")) loadListone();
+    if (loggedIn && activeMenu === "listone") loadListone();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn, activeMenu, quoteRole, quoteOrder]);
 
@@ -2661,13 +2660,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn, activeMenu]);
-
-  useEffect(() => {
-    if (!loggedIn) return;
-    if (activeMenu !== "quotazioni") return;
-    if (activeTab === "quotazioni") return;
-    setActiveTab("quotazioni");
-  }, [loggedIn, activeMenu, activeTab]);
 
   /* ===========================
      MENU OPEN (mobile)
@@ -2788,84 +2780,87 @@ useEffect(() => {
             </div>
 
             <nav className="menu">
-              <button
-                className={menuItemClass("home")}
-                onClick={() => openMenuFeature("home")}
-              >
-                Home
-              </button>
-              <button
-                className={menuItemClass("quotazioni")}
-                onClick={() => openMenuFeature("quotazioni")}
-              >
-                Quotazioni
-              </button>
+              <div className="menu-group">
+                <p className="menu-group-title">Home</p>
+                <button
+                  className={menuItemClass("home")}
+                  onClick={() => openMenuFeature("home")}
+                >
+                  Home
+                </button>
+              </div>
 
-              <button
-                className={menuItemClass("stats")}
-                onClick={() => openMenuFeature("stats")}
-              >
-                Statistiche Giocatori
-              </button>
+              <div className="menu-group">
+                <p className="menu-group-title">Generali</p>
+                <button
+                  className={menuItemClass("listone")}
+                  onClick={() => openMenuFeature("listone")}
+                >
+                  Listone
+                </button>
+                <button
+                  className={menuItemClass("stats")}
+                  onClick={() => openMenuFeature("stats")}
+                >
+                  Statistiche giocatori
+                </button>
+                <button
+                  className={menuItemClass("classifica-fixtures-seriea")}
+                  onClick={() => openMenuFeature("classifica-fixtures-seriea")}
+                >
+                  Serie A
+                </button>
+              </div>
 
-              <button
-                className={menuItemClass("rose")}
-                onClick={() => openMenuFeature("rose")}
-              >
-                Rose
-              </button>
-              <button
-                className={menuItemClass("classifica-lega")}
-                onClick={() => openMenuFeature("classifica-lega")}
-              >
-                Classifica Lega
-              </button>
+              <div className="menu-group">
+                <p className="menu-group-title">Lega</p>
+                <button
+                  className={menuItemClass("rose")}
+                  onClick={() => openMenuFeature("rose")}
+                >
+                  Rose
+                </button>
+                <button
+                  className={menuItemClass("formazioni")}
+                  onClick={() => openMenuFeature("formazioni")}
+                >
+                  Formazioni
+                </button>
+                <button
+                  className={menuItemClass("classifica-lega")}
+                  onClick={() => openMenuFeature("classifica-lega")}
+                >
+                  Classifica
+                </button>
+                <button
+                  className={menuItemClass("top-acquisti")}
+                  onClick={() => openMenuFeature("top-acquisti")}
+                >
+                  Giocatori piu acquistati
+                </button>
+              </div>
 
-              <button
-                className={menuItemClass("formazioni")}
-                onClick={() => openMenuFeature("formazioni")}
-              >
-                Formazioni
-              </button>
-              <button
-                className={menuItemClass("formazione-consigliata")}
-                onClick={() => openMenuFeature("formazione-consigliata")}
-              >
-                Formazione consigliata
-              </button>
-
-              <button
-                className={menuItemClass("plusvalenze")}
-                onClick={() => openMenuFeature("plusvalenze")}
-              >
-                Plusvalenze
-              </button>
-
-              <button
-                className={menuItemClass("listone")}
-                onClick={() => openMenuFeature("listone")}
-              >
-                Listone
-              </button>
-
-              <button
-                className={menuItemClass("top-acquisti")}
-                onClick={() => openMenuFeature("top-acquisti")}
-              >
-                Giocatori più acquistati
-              </button>
-              <button
-                className={menuItemClass("mercato")}
-                onClick={() => openMenuFeature("mercato")}
-              >
-                Mercato
-              </button>
-              <button
-                className={menuItemClass("classifica-fixtures-seriea")}
-                onClick={() => openMenuFeature("classifica-fixtures-seriea")}
-              >
-                Classifica + Fixtures Serie A
-              </button>
+              <div className="menu-group">
+                <p className="menu-group-title">Extra</p>
+                <button
+                  className={menuItemClass("formazione-consigliata")}
+                  onClick={() => openMenuFeature("formazione-consigliata")}
+                >
+                  Formazioni consigliate
+                </button>
+                <button
+                  className={menuItemClass("mercato")}
+                  onClick={() => openMenuFeature("mercato")}
+                >
+                  Mercato
+                </button>
+                <button
+                  className={menuItemClass("plusvalenze")}
+                  onClick={() => openMenuFeature("plusvalenze")}
+                >
+                  Plusvalenze
+                </button>
+              </div>
             </nav>
           </aside>
           {isAdmin && (
@@ -2909,14 +2904,12 @@ useEffect(() => {
               <strong>
                 {activeMenu === "home"
                   ? "Home"
-                  : activeMenu === "quotazioni"
-                  ? "Quotazioni"
                   : activeMenu === "stats"
                   ? "Statistiche"
                   : activeMenu === "rose"
                   ? "Rose"
                   : activeMenu === "classifica-lega"
-                  ? "Classifica Lega"
+                  ? "Classifica"
                   : activeMenu === "formazioni"
                   ? "Formazioni"
                   : activeMenu === "formazione-consigliata"
@@ -2932,7 +2925,7 @@ useEffect(() => {
                   : activeMenu === "mercato"
                   ? "Mercato"
                   : activeMenu === "classifica-fixtures-seriea"
-                  ? "Classifica + Fixtures Serie A"
+                  ? "Serie A"
                   : activeMenu === "player"
                   ? "Scheda giocatore"
                   : "Gestione"}
@@ -3033,23 +3026,6 @@ useEffect(() => {
                 slugify={slugify}
                 openPlayer={openPlayer}
                 tabToColumn={tabToColumn}
-              />
-            )}
-
-            {activeMenu === "quotazioni" && (
-              <ListoneSection
-                quoteRole={quoteRole}
-                setQuoteRole={setQuoteRole}
-                quoteTeam={quoteTeam}
-                setQuoteTeam={setQuoteTeam}
-                quoteOrder={quoteOrder}
-                setQuoteOrder={setQuoteOrder}
-                quoteList={quoteList}
-                listoneQuery={listoneQuery}
-                setListoneQuery={setListoneQuery}
-                formatInt={formatInt}
-                slugify={slugify}
-                openPlayer={openPlayer}
               />
             )}
 

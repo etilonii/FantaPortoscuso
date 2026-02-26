@@ -25,10 +25,10 @@ export default function HomeSection({
   setActiveMenu,
 }) {
   const stepLabels = {
-    rose: "Rose/Quotazioni",
+    rose: "Rose",
     stats: "Statistiche",
     strength: "Forza squadra",
-    quotazioni: "Quotazioni",
+    quotazioni: "Listone",
   };
 
   const formatStepStatus = (value) => {
@@ -98,13 +98,16 @@ export default function HomeSection({
         <div className="panel-header">
           <h3>Ricerca rapida</h3>
           <div className="tabs">
-            {["Rose", "Quotazioni"].map((tab) => (
+            {[
+              { key: "rose", label: "Rose" },
+              { key: "quotazioni", label: "Listone" },
+            ].map((tab) => (
               <button
-                key={tab}
-                className={activeTab === tab.toLowerCase() ? "tab active" : "tab"}
-                onClick={() => setActiveTab(tab.toLowerCase())}
+                key={tab.key}
+                className={activeTab === tab.key ? "tab active" : "tab"}
+                onClick={() => setActiveTab(tab.key)}
               >
-                {tab}
+                {tab.label}
               </button>
             ))}
           </div>
@@ -113,7 +116,7 @@ export default function HomeSection({
         <p className="muted search-hint">
           {activeTab === "rose"
             ? "Cerca quali Team hanno un giocatore"
-            : "Cerca per Quotazione Attuale"}
+            : "Cerca nel Listone per quotazione attuale"}
         </p>
         <div className="search-box">
           <input
@@ -205,7 +208,7 @@ export default function HomeSection({
             </div>
             <div className="top-tabs" role="tablist" aria-label="Top tabs">
               {[
-                { key: "quotazioni", label: "Top Quotazioni" },
+                { key: "quotazioni", label: "Top Listone" },
                 { key: "plusvalenze", label: "Top Plusvalenze" },
                 { key: "statistiche", label: "Top Statistiche" },
               ].map((tab) => (
@@ -353,10 +356,9 @@ export default function HomeSection({
                 className="ghost cta-button"
                 onClick={() => {
                   setActiveMenu("listone");
-                  setActiveTab("quotazioni");
                 }}
               >
-                Vai a Quotazioni
+                Vai a Listone
               </button>
             )}
             {topTab === "plusvalenze" && (
