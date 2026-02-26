@@ -139,9 +139,9 @@ export default function FormazioniSection({
     const probableBucketLabel = (bucket) => {
       const key = String(bucket || "").trim().toLowerCase();
       if (key === "titolare") return "Titolare";
-      if (key === "ballottaggio") return "Ballott.";
+      if (key === "ballottaggio") return "Ballottaggio";
       if (key === "panchina") return "Panchina";
-      return "N/D";
+      return "Non disp.";
     };
     const probableBucketClass = (bucket, recommended) => {
       const key = String(bucket || "").trim().toLowerCase();
@@ -167,11 +167,13 @@ export default function FormazioniSection({
           const factor = Number(entry?.fixture_factor);
           const opponent = String(entry?.fixture_opponent || "").trim();
           const homeAway = String(entry?.fixture_home_away || "").trim().toUpperCase();
+          const venueLabel =
+            homeAway === "H" ? "Casa" : homeAway === "A" ? "Trasferta" : "Match non disp.";
           const probableBucket = String(entry?.probable_bucket || "").trim().toLowerCase();
           const probablePercentage = Number(entry?.probable_percentage);
           const probableRecommended = Boolean(entry?.probable_recommended);
           const probableLabel = probableBucketLabel(probableBucket);
-          const opponentLabel = opponent ? `${homeAway || "?"} vs ${opponent}` : "N/D";
+          const opponentLabel = opponent ? `${venueLabel} vs ${opponent}` : venueLabel;
           return (
             <button
               key={`${name}-${idx}`}
@@ -195,11 +197,13 @@ export default function FormazioniSection({
                 </span>
               </span>
               <span className="formation-pill-metrics">
-                Adj {Number.isFinite(adjusted) ? formatDecimal(adjusted, 2) : "-"} | Base{" "}
-                {Number.isFinite(base) ? formatDecimal(base, 2) : "-"}
+                Indice Fanta {Number.isFinite(adjusted) ? formatDecimal(adjusted, 2) : "-"} |
+                Valore stagione {Number.isFinite(base) ? formatDecimal(base, 2) : "-"}
               </span>
               <span className="formation-pill-metrics">
-                x{Number.isFinite(factor) ? formatDecimal(factor, 3) : "1,000"} | {opponentLabel}
+                Fattore partita {Number.isFinite(factor) ? formatDecimal(factor, 3) : "1,000"} |
+                {" "}
+                {opponentLabel}
               </span>
             </button>
           );
@@ -303,10 +307,10 @@ export default function FormazioniSection({
               <div className="formation-meta">
                 <span className="muted">Modulo {optimizerData.module || "-"}</span>
                 <strong>
-                  Adj {formatDecimal(optimizerData?.totals?.adjusted_force || 0, 2)}
+                  Indice XI {formatDecimal(optimizerData?.totals?.adjusted_force || 0, 2)}
                 </strong>
                 <span className="formation-live-total">
-                  Base {formatDecimal(optimizerData?.totals?.base_force || 0, 2)}
+                  Valore XI {formatDecimal(optimizerData?.totals?.base_force || 0, 2)}
                 </span>
               </div>
             </header>
