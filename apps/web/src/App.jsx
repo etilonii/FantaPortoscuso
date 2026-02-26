@@ -166,6 +166,18 @@ const MENU_KEYS = new Set([
   "player",
   "admin",
 ]);
+const MENU_SECTION_BY_MENU = {
+  listone: "generali",
+  stats: "generali",
+  "classifica-fixtures-seriea": "generali",
+  rose: "lega",
+  formazioni: "lega",
+  "classifica-lega": "lega",
+  "top-acquisti": "lega",
+  "formazione-consigliata": "extra",
+  mercato: "extra",
+  plusvalenze: "extra",
+};
 const API_BASE =
   import.meta.env.VITE_API_BASE ||
   (import.meta.env.DEV
@@ -201,6 +213,11 @@ export default function App() {
   const [activeMenu, setActiveMenu] = useState("home");
   const [menuOpen, setMenuOpenState] = useState(false);
   const [adminMenuOpen, setAdminMenuOpenState] = useState(false);
+  const [menuSectionsOpen, setMenuSectionsOpen] = useState({
+    generali: false,
+    lega: false,
+    extra: false,
+  });
 
   /* ===== DASHBOARD ===== */
   const [summary, setSummary] = useState({ teams: 0, players: 0 });
@@ -626,10 +643,25 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     return classes.join(" ");
   };
 
+  const toggleMenuSection = (sectionKey) => {
+    const key = String(sectionKey || "").trim();
+    if (!key) return;
+    setMenuSectionsOpen((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const openMenuSectionForItem = (menuKey) => {
+    const sectionKey = MENU_SECTION_BY_MENU[String(menuKey || "").trim()];
+    if (!sectionKey) return;
+    setMenuSectionsOpen((prev) =>
+      prev[sectionKey] ? prev : { ...prev, [sectionKey]: true }
+    );
+  };
+
   const openMenuFeature = (menuKey, _featureName, closeMobile = true, closeAdmin = false) => {
     const normalizedMenu = String(menuKey || "").trim();
     setError("");
     if (MENU_KEYS.has(normalizedMenu)) {
+      openMenuSectionForItem(normalizedMenu);
       if (activeMenu !== normalizedMenu) {
         setActiveMenu(normalizedMenu);
         if (menuHistoryReadyRef.current) {
@@ -2781,85 +2813,141 @@ useEffect(() => {
 
             <nav className="menu">
               <div className="menu-group">
-                <p className="menu-group-title">Home</p>
                 <button
-                  className={menuItemClass("home")}
+                  type="button"
+                  className={
+                    activeMenu === "home"
+                      ? "menu-group-toggle menu-group-toggle-direct active"
+                      : "menu-group-toggle menu-group-toggle-direct"
+                  }
                   onClick={() => openMenuFeature("home")}
+                  aria-current={activeMenu === "home" ? "page" : undefined}
                 >
-                  Home
+                  <span className="menu-group-title">Home</span>
                 </button>
               </div>
 
               <div className="menu-group">
-                <p className="menu-group-title">Generali</p>
                 <button
-                  className={menuItemClass("listone")}
-                  onClick={() => openMenuFeature("listone")}
+                  type="button"
+                  className="menu-group-toggle"
+                  onClick={() => toggleMenuSection("generali")}
+                  aria-expanded={menuSectionsOpen.generali}
                 >
-                  Listone
+                  <span className="menu-group-title">Generali</span>
+                  <span
+                    className={menuSectionsOpen.generali ? "menu-group-chevron open" : "menu-group-chevron"}
+                    aria-hidden="true"
+                  >
+                    v
+                  </span>
                 </button>
-                <button
-                  className={menuItemClass("stats")}
-                  onClick={() => openMenuFeature("stats")}
-                >
-                  Statistiche giocatori
-                </button>
-                <button
-                  className={menuItemClass("classifica-fixtures-seriea")}
-                  onClick={() => openMenuFeature("classifica-fixtures-seriea")}
-                >
-                  Serie A
-                </button>
+                {menuSectionsOpen.generali ? (
+                  <div className="menu-group-items">
+                    <button
+                      className={menuItemClass("listone")}
+                      onClick={() => openMenuFeature("listone")}
+                    >
+                      Listone
+                    </button>
+                    <button
+                      className={menuItemClass("stats")}
+                      onClick={() => openMenuFeature("stats")}
+                    >
+                      Statistiche giocatori
+                    </button>
+                    <button
+                      className={menuItemClass("classifica-fixtures-seriea")}
+                      onClick={() => openMenuFeature("classifica-fixtures-seriea")}
+                    >
+                      Serie A
+                    </button>
+                  </div>
+                ) : null}
               </div>
 
               <div className="menu-group">
-                <p className="menu-group-title">Lega</p>
                 <button
-                  className={menuItemClass("rose")}
-                  onClick={() => openMenuFeature("rose")}
+                  type="button"
+                  className="menu-group-toggle"
+                  onClick={() => toggleMenuSection("lega")}
+                  aria-expanded={menuSectionsOpen.lega}
                 >
-                  Rose
+                  <span className="menu-group-title">Lega</span>
+                  <span
+                    className={menuSectionsOpen.lega ? "menu-group-chevron open" : "menu-group-chevron"}
+                    aria-hidden="true"
+                  >
+                    v
+                  </span>
                 </button>
-                <button
-                  className={menuItemClass("formazioni")}
-                  onClick={() => openMenuFeature("formazioni")}
-                >
-                  Formazioni
-                </button>
-                <button
-                  className={menuItemClass("classifica-lega")}
-                  onClick={() => openMenuFeature("classifica-lega")}
-                >
-                  Classifica
-                </button>
-                <button
-                  className={menuItemClass("top-acquisti")}
-                  onClick={() => openMenuFeature("top-acquisti")}
-                >
-                  Giocatori piu acquistati
-                </button>
+                {menuSectionsOpen.lega ? (
+                  <div className="menu-group-items">
+                    <button
+                      className={menuItemClass("rose")}
+                      onClick={() => openMenuFeature("rose")}
+                    >
+                      Rose
+                    </button>
+                    <button
+                      className={menuItemClass("formazioni")}
+                      onClick={() => openMenuFeature("formazioni")}
+                    >
+                      Formazioni
+                    </button>
+                    <button
+                      className={menuItemClass("classifica-lega")}
+                      onClick={() => openMenuFeature("classifica-lega")}
+                    >
+                      Classifica
+                    </button>
+                    <button
+                      className={menuItemClass("top-acquisti")}
+                      onClick={() => openMenuFeature("top-acquisti")}
+                    >
+                      Giocatori piu acquistati
+                    </button>
+                  </div>
+                ) : null}
               </div>
 
               <div className="menu-group">
-                <p className="menu-group-title">Extra</p>
                 <button
-                  className={menuItemClass("formazione-consigliata")}
-                  onClick={() => openMenuFeature("formazione-consigliata")}
+                  type="button"
+                  className="menu-group-toggle"
+                  onClick={() => toggleMenuSection("extra")}
+                  aria-expanded={menuSectionsOpen.extra}
                 >
-                  Formazioni consigliate
+                  <span className="menu-group-title">Extra</span>
+                  <span
+                    className={menuSectionsOpen.extra ? "menu-group-chevron open" : "menu-group-chevron"}
+                    aria-hidden="true"
+                  >
+                    v
+                  </span>
                 </button>
-                <button
-                  className={menuItemClass("mercato")}
-                  onClick={() => openMenuFeature("mercato")}
-                >
-                  Mercato
-                </button>
-                <button
-                  className={menuItemClass("plusvalenze")}
-                  onClick={() => openMenuFeature("plusvalenze")}
-                >
-                  Plusvalenze
-                </button>
+                {menuSectionsOpen.extra ? (
+                  <div className="menu-group-items">
+                    <button
+                      className={menuItemClass("formazione-consigliata")}
+                      onClick={() => openMenuFeature("formazione-consigliata")}
+                    >
+                      Formazioni consigliate
+                    </button>
+                    <button
+                      className={menuItemClass("mercato")}
+                      onClick={() => openMenuFeature("mercato")}
+                    >
+                      Mercato
+                    </button>
+                    <button
+                      className={menuItemClass("plusvalenze")}
+                      onClick={() => openMenuFeature("plusvalenze")}
+                    >
+                      Plusvalenze
+                    </button>
+                  </div>
+                ) : null}
               </div>
             </nav>
           </aside>
