@@ -106,7 +106,10 @@ AVAILABILITY_SYNC_JOB_NAME = "auto_player_availability_sync"
 AVAILABILITY_SYNC_HOURS_LOCAL: Tuple[int, ...] = (3, 15)
 INJURIES_SOURCE_URL = "https://www.fantacalcio.it/infortunati-serie-a"
 SUSPENSIONS_SOURCE_URL = "https://www.fantacalcio.it/squalificati-e-diffidati-campionato-serie-a"
+PROBABLE_FORMATIONS_SOURCE_URL = "https://www.fantacalcio.it/probabili-formazioni-serie-a"
 AVAILABILITY_STATUS_PATH = DATA_DIR / "availability_status.json"
+PROBABLE_FORMATIONS_STATUS_PATH = DATA_DIR / "probabili_formazioni_status.json"
+PROBABLE_FORMATIONS_MAX_AGE_HOURS = 4.0
 INJURED_CLEAN_PATH = DATA_DIR / "infortunati_clean.txt"
 SUSPENDED_CLEAN_PATH = DATA_DIR / "squalificati_clean.txt"
 LEGHE_SYNC_WINDOWS: Tuple[Tuple[int, date, date], ...] = (
@@ -188,6 +191,7 @@ _PLAYER_FORCE_CACHE: Dict[str, object] = {}
 _REGULATION_CACHE: Dict[str, object] = {}
 _SERIEA_CONTEXT_CACHE: Dict[str, object] = {}
 _AVAILABILITY_CACHE: Dict[str, object] = {}
+_PROBABLE_FORMATIONS_CACHE: Dict[str, object] = {}
 _FORMAZIONI_REMOTE_REFRESH_CACHE: Dict[str, float] = {}
 _CLASSIFICA_MATCHDAY_TOTALS_CACHE: Dict[str, object] = {}
 _CLASSIFICA_POSITIONS_CACHE: Dict[str, object] = {}
@@ -3766,6 +3770,489 @@ def _availability_default_payload() -> Dict[str, object]:
     }
 
 
+def _probable_formations_default_payload() -> Dict[str, object]:
+    return {
+        "fetched_at": "",
+        "source_url": PROBABLE_FORMATIONS_SOURCE_URL,
+        "round": None,
+        "entries": [],
+        "last_update_label": "",
+    }
+
+
+def _probable_match_item_blocks(source_html: str) -> List[str]:
+    source = str(source_html or "")
+    starts: List[int] = []
+    for match in re.finditer(r"<li[^>]*\bid=\"match-\d+\"[^>]*>", source, flags=re.IGNORECASE):
+        tag = str(match.group(0) or "").lower()
+        if "match-item" not in tag:
+            continue
+        starts.append(match.start())
+
+    if not starts:
+        return []
+
+    blocks: List[str] = []
+    for idx, start in enumerate(starts):
+        end = starts[idx + 1] if idx + 1 < len(starts) else len(source)
+        blocks.append(source[start:end])
+    return blocks
+
+
+def _extract_probable_round_from_match_block(block_html: str) -> Optional[int]:
+    match = re.search(
+        r"<div\s+class=\"matchweek\">\s*([1-9]\d?)\s*</div>",
+        str(block_html or ""),
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    if not match:
+        return None
+    return _parse_int(match.group(1))
+
+
+def _extract_probable_percentage(player_item_html: str) -> float:
+    source = str(player_item_html or "")
+    patterns = [
+        r"aria-valuenow=\"([0-9]{1,3}(?:[.,][0-9]+)?)\"",
+        r"--value:\s*([0-9]{1,3}(?:[.,][0-9]+)?)",
+        r"([0-9]{1,3}(?:[.,][0-9]+)?)\s*%",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, source, flags=re.IGNORECASE)
+        if not match:
+            continue
+        parsed = _parse_float(match.group(1))
+        if parsed is None:
+            continue
+        return max(0.0, min(100.0, float(parsed)))
+    return 0.0
+
+
+def _probable_bucket_from_player(list_kind: str, status_value: str) -> str:
+    list_token = normalize_name(list_kind)
+    if list_token == "reserves":
+        return "panchina"
+    status_token = normalize_name(status_value)
+    if status_token == "warn":
+        return "ballottaggio"
+    return "titolare"
+
+
+def _probable_weight_from_percent(percent_value: float, bucket: str) -> float:
+    pct = max(0.0, min(100.0, float(percent_value)))
+    pct_weight = pct / 100.0
+    bucket_key = normalize_name(bucket)
+
+    if bucket_key == "panchina":
+        if pct <= 25.0:
+            return 0.0
+        return round(max(0.0, min(1.0, (pct - 25.0) / 75.0)), 4)
+
+    if bucket_key == "ballottaggio":
+        return round(max(0.0, min(1.0, max(0.45, pct_weight * 0.95))), 4)
+
+    return round(max(0.0, min(1.0, max(0.60, pct_weight))), 4)
+
+
+def _probable_multiplier_from_weight(weight_value: float, bucket: str) -> float:
+    weight = max(0.0, min(1.0, float(weight_value)))
+    bucket_key = normalize_name(bucket)
+
+    if bucket_key == "panchina":
+        if weight <= 0:
+            return 0.05
+        return round(0.45 + (0.55 * weight), 3)
+    if bucket_key == "ballottaggio":
+        return round(0.84 + (0.24 * weight), 3)
+    return round(0.92 + (0.18 * weight), 3)
+
+
+def _extract_probable_players_from_list(
+    *,
+    list_html: str,
+    list_kind: str,
+    team_name: str,
+    team_key: str,
+    round_value: int,
+) -> List[Dict[str, object]]:
+    entries: List[Dict[str, object]] = []
+    for item in re.finditer(
+        r"<li\s+class=\"player-item\s+pill\"([^>]*)>(.*?)</li>",
+        str(list_html or ""),
+        flags=re.IGNORECASE | re.DOTALL,
+    ):
+        attrs_raw = str(item.group(1) or "")
+        body_raw = str(item.group(2) or "")
+
+        status_match = re.search(r"data-status=\"([^\"]+)\"", attrs_raw, flags=re.IGNORECASE)
+        status_value = str(status_match.group(1) or "").strip().lower() if status_match else ""
+
+        role_match = re.search(
+            r"<span\s+class=\"role\"[^>]*data-value=\"([a-z])\"",
+            body_raw,
+            flags=re.IGNORECASE,
+        )
+        role_value = _role_from_text(role_match.group(1) if role_match else "")
+
+        name_match = re.search(
+            r"<a[^>]*class=\"[^\"]*player-name[^\"]*\"[^>]*>(.*?)</a>",
+            body_raw,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        if not name_match:
+            continue
+        player_name = _canonicalize_name(_strip_html_tags(name_match.group(1)))
+        player_key = normalize_name(player_name)
+        if not player_key:
+            continue
+
+        percentage = _extract_probable_percentage(body_raw)
+        bucket = _probable_bucket_from_player(list_kind, status_value)
+        weight = _probable_weight_from_percent(percentage, bucket)
+        multiplier = _probable_multiplier_from_weight(weight, bucket)
+        recommended = bool(
+            bucket in {"titolare", "ballottaggio"}
+            or (bucket == "panchina" and percentage > 25.0)
+        )
+
+        entries.append(
+            {
+                "round": int(round_value),
+                "team": team_name,
+                "team_key": team_key,
+                "name": player_name,
+                "name_key": player_key,
+                "role": role_value,
+                "list": list_kind,
+                "status": status_value,
+                "bucket": bucket,
+                "percentage": round(float(percentage), 2),
+                "weight": float(weight),
+                "multiplier": float(multiplier),
+                "recommended": recommended,
+            }
+        )
+    return entries
+
+
+def _extract_probable_formations_entries_from_html(
+    source_html: str,
+    club_index: Dict[str, str],
+) -> Dict[str, object]:
+    entries: List[Dict[str, object]] = []
+    seen: Set[Tuple[int, str, str, str]] = set()
+    rounds_seen: Set[int] = set()
+    match_count = 0
+
+    for match_block in _probable_match_item_blocks(source_html):
+        round_value = _extract_probable_round_from_match_block(match_block)
+        if round_value is None or round_value <= 0:
+            continue
+        rounds_seen.add(int(round_value))
+        match_count += 1
+
+        team_card_starts = [
+            m.start()
+            for m in re.finditer(
+                r"<div\s+class=\"[^\"]*\bteam-card\b[^\"]*\"\s*>",
+                match_block,
+                flags=re.IGNORECASE,
+            )
+        ]
+        for idx, start in enumerate(team_card_starts):
+            end = team_card_starts[idx + 1] if idx + 1 < len(team_card_starts) else len(match_block)
+            team_block = match_block[start:end]
+
+            team_match = re.search(
+                r"<h3\s+class=\"h6\s+team-name\">\s*(.*?)\s*</h3>",
+                team_block,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            if not team_match:
+                continue
+            team_name = _display_team_name(_strip_html_tags(team_match.group(1)), club_index)
+            team_key = normalize_name(team_name)
+            if not team_key:
+                continue
+
+            starters_match = re.search(
+                r"<ul\s+class=\"player-list\s+starters\"[^>]*>(.*?)</ul>",
+                team_block,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            reserves_match = re.search(
+                r"<ul\s+class=\"player-list\s+reserves\"[^>]*>(.*?)</ul>",
+                team_block,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+
+            sections = [
+                ("starters", starters_match.group(1) if starters_match else ""),
+                ("reserves", reserves_match.group(1) if reserves_match else ""),
+            ]
+            for list_kind, list_html in sections:
+                if not list_html:
+                    continue
+                for item in _extract_probable_players_from_list(
+                    list_html=list_html,
+                    list_kind=list_kind,
+                    team_name=team_name,
+                    team_key=team_key,
+                    round_value=int(round_value),
+                ):
+                    marker = (
+                        int(item.get("round") or 0),
+                        str(item.get("team_key") or ""),
+                        str(item.get("name_key") or ""),
+                        str(item.get("list") or ""),
+                    )
+                    if marker in seen:
+                        continue
+                    seen.add(marker)
+                    entries.append(item)
+
+    entries.sort(
+        key=lambda row: (
+            int(row.get("round") or 0),
+            str(row.get("team_key") or ""),
+            str(row.get("name_key") or ""),
+        )
+    )
+
+    label_match = re.search(
+        (
+            r"<div\s+class=\"label\s+label-dark\s+last-update[^\"]*\">"
+            r".*?<span\s+class=\"date\">\s*(.*?)\s*</span>"
+        ),
+        str(source_html or ""),
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    last_update_label = _strip_html_tags(label_match.group(1)) if label_match else ""
+
+    return {
+        "entries": entries,
+        "round": max(rounds_seen) if rounds_seen else None,
+        "match_count": match_count,
+        "last_update_label": last_update_label,
+    }
+
+
+def _sync_probable_formations_source() -> Dict[str, object]:
+    club_index = _load_club_name_index()
+    try:
+        html_text = _fetch_text_url(PROBABLE_FORMATIONS_SOURCE_URL, timeout_seconds=25.0)
+    except Exception as exc:
+        detail = exc.detail if isinstance(exc, HTTPException) and hasattr(exc, "detail") else str(exc)
+        return {
+            "ok": False,
+            "error": f"probable_formations_fetch_failed: {detail}",
+            "source": PROBABLE_FORMATIONS_SOURCE_URL,
+        }
+
+    extracted = _extract_probable_formations_entries_from_html(html_text, club_index)
+    entries = extracted.get("entries") if isinstance(extracted, dict) else []
+    entries = entries if isinstance(entries, list) else []
+    if not entries:
+        return {
+            "ok": False,
+            "error": "probable_formations_parse_failed: empty_entries",
+            "source": PROBABLE_FORMATIONS_SOURCE_URL,
+        }
+
+    snapshot = _probable_formations_default_payload()
+    snapshot["fetched_at"] = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+    snapshot["round"] = _parse_int(extracted.get("round")) if isinstance(extracted, dict) else None
+    snapshot["entries"] = entries
+    snapshot["last_update_label"] = (
+        str(extracted.get("last_update_label") or "") if isinstance(extracted, dict) else ""
+    )
+
+    serialized = json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n"
+    _write_text_if_changed(PROBABLE_FORMATIONS_STATUS_PATH, serialized)
+    _PROBABLE_FORMATIONS_CACHE.clear()
+
+    return {
+        "ok": True,
+        "round": snapshot.get("round"),
+        "entries_count": len(entries),
+        "match_count": int(extracted.get("match_count") or 0) if isinstance(extracted, dict) else 0,
+        "path": str(PROBABLE_FORMATIONS_STATUS_PATH),
+        "fetched_at": str(snapshot.get("fetched_at") or ""),
+        "source": PROBABLE_FORMATIONS_SOURCE_URL,
+    }
+
+
+def _load_probable_formations_status(
+    *,
+    refresh_if_stale: bool = True,
+    max_age_hours: float = PROBABLE_FORMATIONS_MAX_AGE_HOURS,
+) -> Dict[str, object]:
+    defaults = _probable_formations_default_payload()
+    path = PROBABLE_FORMATIONS_STATUS_PATH
+    now_utc = datetime.now(tz=timezone.utc)
+
+    should_refresh = False
+    if not path.exists():
+        should_refresh = True
+    elif refresh_if_stale and max_age_hours > 0:
+        try:
+            age_seconds = max(0.0, now_utc.timestamp() - float(path.stat().st_mtime))
+            if age_seconds >= float(max_age_hours) * 3600.0:
+                should_refresh = True
+        except Exception:
+            should_refresh = True
+
+    if should_refresh and refresh_if_stale:
+        sync_result = _sync_probable_formations_source()
+        if sync_result.get("ok") is False and not path.exists():
+            return defaults
+
+    if not path.exists():
+        return defaults
+
+    try:
+        mtime = path.stat().st_mtime
+    except Exception:
+        return defaults
+
+    cache_key = str(path)
+    cached = _PROBABLE_FORMATIONS_CACHE.get(cache_key)
+    if cached and cached.get("mtime") == mtime:
+        return dict(cached.get("data") or defaults)
+
+    try:
+        parsed = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        parsed = {}
+
+    if not isinstance(parsed, dict):
+        parsed = {}
+
+    data = _probable_formations_default_payload()
+    data["fetched_at"] = str(parsed.get("fetched_at") or "")
+    data["source_url"] = str(parsed.get("source_url") or PROBABLE_FORMATIONS_SOURCE_URL)
+    data["round"] = _parse_int(parsed.get("round"))
+    data["last_update_label"] = str(parsed.get("last_update_label") or "")
+    raw_entries = parsed.get("entries")
+    if isinstance(raw_entries, list):
+        data["entries"] = [dict(item) for item in raw_entries if isinstance(item, dict)]
+
+    _PROBABLE_FORMATIONS_CACHE[cache_key] = {"mtime": mtime, "data": data}
+    return dict(data)
+
+
+def _build_optimizer_probable_lookup(
+    round_value: Optional[int],
+) -> Dict[str, object]:
+    target_round = _parse_int(round_value)
+    status = _load_probable_formations_status(refresh_if_stale=True)
+    raw_entries = status.get("entries") if isinstance(status, dict) else []
+    entries = [dict(item) for item in raw_entries if isinstance(item, dict)] if isinstance(raw_entries, list) else []
+    status_round = _parse_int(status.get("round")) if isinstance(status, dict) else None
+
+    exact_entries: List[Dict[str, object]] = []
+    if target_round is not None:
+        exact_entries = [
+            item
+            for item in entries
+            if _parse_int(item.get("round")) == int(target_round)
+        ]
+    selected = exact_entries
+    if not selected and status_round is not None:
+        selected = [item for item in entries if _parse_int(item.get("round")) == int(status_round)]
+    if not selected:
+        selected = entries
+
+    used_round = target_round if exact_entries else (status_round if status_round is not None else None)
+    if used_round is None and selected:
+        used_round = _parse_int(selected[0].get("round"))
+
+    by_name_team: Dict[Tuple[str, str], Dict[str, object]] = {}
+    by_name: Dict[str, Dict[str, object]] = {}
+    grouped_by_name: Dict[str, List[Dict[str, object]]] = defaultdict(list)
+
+    for item in selected:
+        name_key = normalize_name(str(item.get("name_key") or item.get("name") or ""))
+        team_key = normalize_name(str(item.get("team_key") or item.get("team") or ""))
+        if not name_key:
+            continue
+        percentage = max(0.0, min(100.0, float(_parse_float(item.get("percentage")) or 0.0)))
+        bucket = str(item.get("bucket") or _probable_bucket_from_player(
+            str(item.get("list") or ""),
+            str(item.get("status") or ""),
+        )).strip().lower()
+        weight = _parse_float(item.get("weight"))
+        if weight is None:
+            weight = _probable_weight_from_percent(percentage, bucket)
+        multiplier = _parse_float(item.get("multiplier"))
+        if multiplier is None:
+            multiplier = _probable_multiplier_from_weight(weight, bucket)
+
+        entry = {
+            "round": _parse_int(item.get("round")),
+            "name": _canonicalize_name(str(item.get("name") or "")),
+            "name_key": name_key,
+            "team": str(item.get("team") or ""),
+            "team_key": team_key,
+            "role": _role_from_text(item.get("role")),
+            "list": str(item.get("list") or ""),
+            "status": str(item.get("status") or "").strip().lower(),
+            "bucket": bucket,
+            "percentage": round(float(percentage), 2),
+            "weight": round(float(max(0.0, min(1.0, weight))), 4),
+            "multiplier": round(float(max(0.05, min(1.20, multiplier))), 3),
+            "recommended": bool(item.get("recommended", False)),
+        }
+        by_name_team[(name_key, team_key)] = entry
+        grouped_by_name[name_key].append(entry)
+
+    for name_key, rows in grouped_by_name.items():
+        teams = {
+            str(row.get("team_key") or "").strip()
+            for row in rows
+            if str(row.get("team_key") or "").strip()
+        }
+        if len(rows) == 1 or len(teams) <= 1:
+            by_name[name_key] = rows[0]
+
+    return {
+        "by_name_team": by_name_team,
+        "by_name": by_name,
+        "entry_count": len(by_name_team),
+        "round": used_round,
+        "fetched_at": str(status.get("fetched_at") or "") if isinstance(status, dict) else "",
+        "source_url": str(status.get("source_url") or PROBABLE_FORMATIONS_SOURCE_URL)
+        if isinstance(status, dict)
+        else PROBABLE_FORMATIONS_SOURCE_URL,
+        "last_update_label": str(status.get("last_update_label") or "") if isinstance(status, dict) else "",
+    }
+
+
+def _player_probable_for_round(
+    *,
+    player_name: str,
+    club_name: str,
+    lookup: Dict[str, object],
+) -> Optional[Dict[str, object]]:
+    name_key = normalize_name(_canonicalize_name(player_name))
+    team_key = normalize_name(club_name)
+    if not name_key:
+        return None
+
+    by_name_team = lookup.get("by_name_team") if isinstance(lookup, dict) else {}
+    if isinstance(by_name_team, dict):
+        exact = by_name_team.get((name_key, team_key))
+        if isinstance(exact, dict):
+            return exact
+
+    by_name = lookup.get("by_name") if isinstance(lookup, dict) else {}
+    if isinstance(by_name, dict):
+        fallback = by_name.get(name_key)
+        if isinstance(fallback, dict):
+            return fallback
+    return None
+
+
 def _write_text_if_changed(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     try:
@@ -4427,6 +4914,9 @@ def _optimizer_player_recommendation_reason(player: Dict[str, object]) -> str:
     base = float(player.get("base_force") or 0.0)
     adjusted = float(player.get("adjusted_force") or 0.0)
     factor = float(player.get("fixture_factor") or 1.0)
+    probable_factor = float(player.get("probable_factor") or 1.0)
+    probable_bucket = str(player.get("probable_bucket") or "unknown").strip().lower()
+    probable_percentage = _parse_float(player.get("probable_percentage"))
     home_away = str(player.get("fixture_home_away") or "").strip().upper() or "-"
     opponent = str(player.get("fixture_opponent") or "").strip() or "?"
     own_ppm = _parse_float(player.get("club_ppm"))
@@ -4442,9 +4932,23 @@ def _optimizer_player_recommendation_reason(player: Dict[str, object]) -> str:
     if own_ppm is not None and opp_ppm is not None:
         ppm_note = f" | ppm {own_ppm:.2f} vs {opp_ppm:.2f}"
 
+    probable_note = ""
+    if probable_bucket in {"titolare", "ballottaggio", "panchina"}:
+        pct_label = (
+            f"{int(round(float(probable_percentage)))}%"
+            if probable_percentage is not None
+            else "n/d"
+        )
+        probable_note = (
+            f" | probabili {probable_bucket} {pct_label} "
+            f"(x{probable_factor:.3f})"
+        )
+    elif abs(probable_factor - 1.0) > 0.0001:
+        probable_note = f" | probabili x{probable_factor:.3f}"
+
     return (
         f"{name} ({role}): base {base:.2f}, adjusted {adjusted:.2f}, "
-        f"fattore {factor:.3f} ({fixture_note}), {home_away} vs {opponent}{ppm_note}"
+        f"fattore {factor:.3f} ({fixture_note}), {home_away} vs {opponent}{ppm_note}{probable_note}"
     )
 
 
@@ -4843,6 +5347,7 @@ def _build_contextual_optimizer_payload(
     force_map = _load_player_force_map()
     qa_map = _load_qa_map()
     unavailability_lookup = _build_optimizer_unavailability_lookup(target_round)
+    probable_lookup = _build_optimizer_probable_lookup(target_round)
 
     players_payload: List[Dict[str, object]] = []
     unavailable_players: List[Dict[str, object]] = []
@@ -4894,6 +5399,43 @@ def _build_contextual_optimizer_payload(
             )
             continue
 
+        probable_entry = _player_probable_for_round(
+            player_name=player_name,
+            club_name=club_name,
+            lookup=probable_lookup,
+        )
+        probable_bucket = (
+            str(probable_entry.get("bucket") or "").strip().lower()
+            if isinstance(probable_entry, dict)
+            else ""
+        )
+        probable_percentage = (
+            _parse_float(probable_entry.get("percentage"))
+            if isinstance(probable_entry, dict)
+            else None
+        )
+        probable_weight = (
+            _parse_float(probable_entry.get("weight"))
+            if isinstance(probable_entry, dict)
+            else None
+        )
+        probable_factor_raw = (
+            _parse_float(probable_entry.get("multiplier"))
+            if isinstance(probable_entry, dict)
+            else None
+        )
+        probable_factor = (
+            max(0.05, min(1.20, float(probable_factor_raw)))
+            if probable_factor_raw is not None
+            else 1.0
+        )
+        if probable_weight is None and probable_percentage is not None:
+            probable_weight = _probable_weight_from_percent(probable_percentage, probable_bucket)
+        probable_recommended = bool(
+            probable_bucket in {"titolare", "ballottaggio"}
+            or (probable_bucket == "panchina" and (probable_percentage or 0.0) > 25.0)
+        )
+
         own_ppm = _parse_float((context_index.get(club_key) or {}).get("ppm"))
         opp_ppm = _parse_float((context_index.get(opponent_key) or {}).get("ppm"))
         fixture_factor = _optimizer_fixture_multiplier(
@@ -4905,7 +5447,7 @@ def _build_contextual_optimizer_payload(
             context_cfg=optimizer_context_cfg,
         )
         base_force = _player_force_value(player_name, force_map, qa_map)
-        adjusted_force = round(base_force * fixture_factor, 2)
+        adjusted_force = round(base_force * fixture_factor * probable_factor, 2)
 
         payload = {
             "name": player_name,
@@ -4913,6 +5455,16 @@ def _build_contextual_optimizer_payload(
             "club": club_name,
             "base_force": round(base_force, 2),
             "fixture_factor": round(fixture_factor, 3),
+            "probable_factor": round(probable_factor, 3),
+            "probable_bucket": probable_bucket,
+            "probable_percentage": round(float(probable_percentage), 2)
+            if probable_percentage is not None
+            else None,
+            "probable_weight": round(float(probable_weight), 4)
+            if probable_weight is not None
+            else None,
+            "probable_recommended": probable_recommended,
+            "probable_round": _parse_int(probable_lookup.get("round")),
             "adjusted_force": adjusted_force,
             "fixture_home_away": home_away,
             "fixture_opponent": opponent_name,
@@ -4958,6 +5510,13 @@ def _build_contextual_optimizer_payload(
                 "excluded_count": int(len(unavailable_players)),
                 "unavailable_players": unavailable_players,
                 "note": "Nessun giocatore disponibile per il round selezionato.",
+            },
+            "probable_formations": {
+                "fetched_at": str(probable_lookup.get("fetched_at") or ""),
+                "round": _parse_int(probable_lookup.get("round")),
+                "entry_count": int(probable_lookup.get("entry_count") or 0),
+                "last_update_label": str(probable_lookup.get("last_update_label") or ""),
+                "source_url": str(probable_lookup.get("source_url") or PROBABLE_FORMATIONS_SOURCE_URL),
             },
         }
 
@@ -5010,6 +5569,13 @@ def _build_contextual_optimizer_payload(
             "fetched_at": str(unavailability_lookup.get("fetched_at") or ""),
             "excluded_count": int(len(unavailable_players)),
             "unavailable_players": unavailable_players,
+        },
+        "probable_formations": {
+            "fetched_at": str(probable_lookup.get("fetched_at") or ""),
+            "round": _parse_int(probable_lookup.get("round")),
+            "entry_count": int(probable_lookup.get("entry_count") or 0),
+            "last_update_label": str(probable_lookup.get("last_update_label") or ""),
+            "source_url": str(probable_lookup.get("source_url") or PROBABLE_FORMATIONS_SOURCE_URL),
         },
     }
 

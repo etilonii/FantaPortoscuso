@@ -136,6 +136,26 @@ export default function FormazioniSection({
   const renderOptimizerPills = (players) => {
     const normalized = Array.isArray(players) ? players : [];
     if (!normalized.length) return <span className="muted">-</span>;
+    const probableBucketLabel = (bucket) => {
+      const key = String(bucket || "").trim().toLowerCase();
+      if (key === "titolare") return "Titolare";
+      if (key === "ballottaggio") return "Ballott.";
+      if (key === "panchina") return "Panchina";
+      return "N/D";
+    };
+    const probableBucketClass = (bucket, recommended) => {
+      const key = String(bucket || "").trim().toLowerCase();
+      const base =
+        key === "titolare"
+          ? "titolare"
+          : key === "ballottaggio"
+            ? "ballottaggio"
+            : key === "panchina"
+              ? "panchina"
+              : "unknown";
+      return `${base}${recommended ? "" : " off"}`;
+    };
+
     return (
       <div className="formation-pills">
         {normalized.map((entry, idx) => {
@@ -147,22 +167,39 @@ export default function FormazioniSection({
           const factor = Number(entry?.fixture_factor);
           const opponent = String(entry?.fixture_opponent || "").trim();
           const homeAway = String(entry?.fixture_home_away || "").trim().toUpperCase();
+          const probableBucket = String(entry?.probable_bucket || "").trim().toLowerCase();
+          const probablePercentage = Number(entry?.probable_percentage);
+          const probableRecommended = Boolean(entry?.probable_recommended);
+          const probableLabel = probableBucketLabel(probableBucket);
           const opponentLabel = opponent ? `${homeAway || "?"} vs ${opponent}` : "N/D";
           return (
             <button
               key={`${name}-${idx}`}
               type="button"
-              className="formation-pill"
+              className="formation-pill formation-pill-optimizer"
               onClick={() => openPlayer(name)}
             >
-              {role ? <span className="formation-pill-role">{role}</span> : null}
-              <span className="formation-pill-name">{name}</span>
+              <span className="formation-pill-topline">
+                {role ? <span className="formation-pill-role">{role}</span> : null}
+                <span className="formation-pill-name">{name}</span>
+                <span
+                  className={`formation-pill-probable ${probableBucketClass(
+                    probableBucket,
+                    probableRecommended
+                  )}`}
+                >
+                  {probableLabel}
+                  {Number.isFinite(probablePercentage)
+                    ? ` ${formatDecimal(probablePercentage, 0)}%`
+                    : ""}
+                </span>
+              </span>
               <span className="formation-pill-metrics">
                 Adj {Number.isFinite(adjusted) ? formatDecimal(adjusted, 2) : "-"} | Base{" "}
                 {Number.isFinite(base) ? formatDecimal(base, 2) : "-"}
               </span>
               <span className="formation-pill-metrics">
-                x{Number.isFinite(factor) ? formatDecimal(factor, 3) : "1,000"} • {opponentLabel}
+                x{Number.isFinite(factor) ? formatDecimal(factor, 3) : "1,000"} | {opponentLabel}
               </span>
             </button>
           );
@@ -260,7 +297,7 @@ export default function FormazioniSection({
               <p className="rank-title">
                 <span className="rank-badge rank-1">XI</span>
                 <span>
-                  {optimizerData.team} • Giornata {optimizerData.round}
+                  {optimizerData.team} | Giornata {optimizerData.round}
                 </span>
               </p>
               <div className="formation-meta">
@@ -275,8 +312,19 @@ export default function FormazioniSection({
             </header>
             <p className="muted compact">
               Calcolo su forza giocatore locale + coefficiente partita (casa/trasferta + forza
-              avversario).
+              avversario) + probabili formazioni.
             </p>
+            {optimizerData?.probable_formations ? (
+              <p className="muted compact formation-probable-summary">
+                Probabili: G
+                {Number.isFinite(Number(optimizerData?.probable_formations?.round))
+                  ? Number(optimizerData.probable_formations.round)
+                  : "-"}
+                {optimizerData?.probable_formations?.last_update_label
+                  ? ` | Agg. ${optimizerData.probable_formations.last_update_label}`
+                  : ""}
+              </p>
+            ) : null}
             <div className="formation-lines">
               <div className="formation-line">
                 <span className="formation-label">P</span>
