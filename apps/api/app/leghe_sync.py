@@ -494,10 +494,17 @@ def _extract_kickest_cleansheet_rows_from_html(source: str) -> list[dict[str, ob
     if block_match is None:
         return []
 
+    raw_payload = str(block_match.group(1) or "")
+    raw_rows: object
     try:
-        raw_rows = json.loads(block_match.group(1))
+        raw_rows = json.loads(raw_payload)
     except Exception:
-        return []
+        # Kickest payload is JS-like and may contain trailing commas.
+        sanitized = re.sub(r",\s*([}\]])", r"\1", raw_payload)
+        try:
+            raw_rows = json.loads(sanitized)
+        except Exception:
+            return []
 
     if not isinstance(raw_rows, list):
         return []
