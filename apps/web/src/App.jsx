@@ -2937,36 +2937,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       loadFormazioni(String(optimizerRoundCandidate), formationOrder);
       return;
     }
-
-    const fallbackTeam =
-      String(suggestTeam || "").trim() ||
-      String(selectedTeam || "").trim() ||
-      String(teams?.[0] || "").trim();
-    const activeTeamValue =
-      String(formationTeam || "").trim().toLowerCase() === "all"
-        ? fallbackTeam
-        : String(formationTeam || "").trim();
-
-    if (!activeTeamValue) return;
-    if (String(formationTeam || "").trim().toLowerCase() === "all") {
-      setFormationTeam(activeTeamValue);
-      return;
-    }
-    const optimizerRoundValue =
-      Number.isFinite(optimizerRoundCandidate) && optimizerRoundCandidate > 0
-        ? optimizerRoundCandidate
-        : formationRound || null;
-    runFormationOptimizer(activeTeamValue, optimizerRoundValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     loggedIn,
     activeMenu,
-    formationTeam,
     formationRound,
     formationOrder,
-    suggestTeam,
-    selectedTeam,
-    teams,
     formationMeta?.optimizerRound,
   ]);
 
@@ -3036,17 +3012,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           tasks.push(loadFormazioni(formationRound || null, formationOrder));
         } else if (menu === "formazione-consigliata") {
           tasks.push(loadFormazioni(formationRound || null, formationOrder));
-          const fallbackTeam =
-            String(suggestTeam || "").trim() ||
-            String(selectedTeam || "").trim() ||
-            String(teams?.[0] || "").trim();
-          const optimizerTeam =
-            String(formationTeam || "").trim().toLowerCase() === "all"
-              ? fallbackTeam
-              : String(formationTeam || "").trim();
-          if (optimizerTeam) {
-            tasks.push(runFormationOptimizer(optimizerTeam, formationRound || null));
-          }
         } else if (menu === "live" && isAdmin) {
           tasks.push(loadLivePayload(livePayload?.round || null));
         } else if (menu === "plusvalenze") {
