@@ -8,6 +8,10 @@ __pycache__/
 *.py[cod]
 *.pyc
 .pytest_cache/
+.venv/
+venv/
+.mypy_cache/
+.python-version
 
 # Node
 apps/web/node_modules/
