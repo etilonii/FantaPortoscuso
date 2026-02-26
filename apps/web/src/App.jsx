@@ -248,6 +248,7 @@ export default function App() {
   const liveRefreshInFlightRef = useRef(false);
   const topAcquistiRefreshTickRef = useRef(0);
   const activeBundlePathRef = useRef("");
+  const maintenanceStateRef = useRef({ enabled: false, updated_at: "" });
 
   /* ===== UI ===== */
   const [theme, setTheme] = useState("dark");
@@ -278,10 +279,10 @@ export default function App() {
     updated_at: "",
     updated_by_key: null,
   });
-  const [maintenanceMessageDraft, setMaintenanceMessageDraft] = useState("Manutenzione in corso...");
   const [maintenanceRetryMinutesDraft, setMaintenanceRetryMinutesDraft] = useState("10");
   const [maintenanceApplying, setMaintenanceApplying] = useState(false);
   const [maintenanceReloadAttempts, setMaintenanceReloadAttempts] = useState(0);
+  const [maintenanceAlertInBackground, setMaintenanceAlertInBackground] = useState(false);
   const [deployUpdateAvailable, setDeployUpdateAvailable] = useState(false);
   const [premiumInsights, setPremiumInsights] = useState({
     player_tiers: [],
@@ -895,9 +896,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           sessionStorage.removeItem(MAINTENANCE_RELOAD_ATTEMPTS_STORAGE);
         } catch {}
       }
-      if (normalized.message) {
-        setMaintenanceMessageDraft(normalized.message);
-      }
       setMaintenanceRetryMinutesDraft(String(normalized.retry_after_minutes));
       return true;
     } catch {
@@ -913,7 +911,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       const retryAfter = Number.isFinite(retryRaw)
         ? Math.min(120, Math.max(1, Math.round(retryRaw)))
         : 10;
-      const messageValue = String(maintenanceMessageDraft || "").trim();
       const res = await fetchWithAuth(`${API_BASE}/auth/admin/maintenance`, {
         method: "POST",
         headers: buildAuthHeaders({
@@ -922,7 +919,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         }),
         body: JSON.stringify({
           enabled: Boolean(enabled),
-          message: messageValue || (enabled ? "Manutenzione in corso..." : ""),
+          message: "",
           retry_after_minutes: retryAfter,
         }),
       });
@@ -933,7 +930,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       }
       const normalized = normalizeMaintenancePayload(payload || {});
       setMaintenanceStatus(normalized);
-      setMaintenanceMessageDraft(normalized.message || "Manutenzione in corso...");
       setMaintenanceRetryMinutesDraft(String(normalized.retry_after_minutes));
       setAdminNotice(
         normalized.enabled
@@ -941,6 +937,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           : "Modalita manutenzione disattivata."
       );
       if (!normalized.enabled) {
+        setMaintenanceAlertInBackground(false);
         setMaintenanceReloadAttempts(0);
         try {
           sessionStorage.removeItem(MAINTENANCE_RELOAD_ATTEMPTS_STORAGE);
@@ -2752,6 +2749,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   useEffect(() => {
     if (!loggedIn) {
       setMaintenanceReloadAttempts(0);
+      setMaintenanceAlertInBackground(false);
       setDeployUpdateAvailable(false);
       activeBundlePathRef.current = "";
       return;
@@ -2769,6 +2767,30 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setMaintenanceReloadAttempts(0);
     }
   }, [loggedIn]);
+
+  useEffect(() => {
+    const currentEnabled = Boolean(maintenanceStatus?.enabled);
+    const currentUpdatedAt = String(maintenanceStatus?.updated_at || "");
+    const prev = maintenanceStateRef.current;
+
+    if (!currentEnabled) {
+      if (maintenanceAlertInBackground) {
+        setMaintenanceAlertInBackground(false);
+      }
+    } else if (
+      !prev.enabled ||
+      (Boolean(prev.updated_at) && Boolean(currentUpdatedAt) && prev.updated_at !== currentUpdatedAt)
+    ) {
+      if (maintenanceAlertInBackground) {
+        setMaintenanceAlertInBackground(false);
+      }
+    }
+
+    maintenanceStateRef.current = {
+      enabled: currentEnabled,
+      updated_at: currentUpdatedAt,
+    };
+  }, [maintenanceStatus?.enabled, maintenanceStatus?.updated_at, maintenanceAlertInBackground]);
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -3130,8 +3152,14 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
      PLAYER SLUG
   =========================== */
   const playerSlug = slugify(selectedPlayer);
-  const maintenanceBlockActive = loggedIn && Boolean(maintenanceStatus?.enabled);
-  const deployBlockActive = loggedIn && !maintenanceBlockActive && deployUpdateAvailable;
+  const maintenanceBlockActive =
+    loggedIn &&
+    Boolean(maintenanceStatus?.enabled) &&
+    !(isAdmin && maintenanceAlertInBackground);
+  const deployBlockActive =
+    loggedIn &&
+    !Boolean(maintenanceStatus?.enabled) &&
+    deployUpdateAvailable;
   const maintenanceRetryMinutes = Math.max(
     1,
     Number(maintenanceStatus?.retry_after_minutes || 10)
@@ -3828,15 +3856,6 @@ useEffect(() => {
                     <div className="admin-row">
                       <input
                         className="input"
-                        placeholder="Messaggio alert manutenzione"
-                        value={maintenanceMessageDraft}
-                        maxLength={255}
-                        onChange={(e) => setMaintenanceMessageDraft(e.target.value)}
-                      />
-                    </div>
-                    <div className="admin-row">
-                      <input
-                        className="input"
                         type="number"
                         min="1"
                         max="120"
@@ -4091,11 +4110,9 @@ useEffect(() => {
                     ? "Manutenzione in corso..."
                     : "Nuovo aggiornamento disponibile"}
                 </h3>
-                <p className="muted">
-                  {maintenanceBlockActive
-                    ? maintenanceStatus?.message || "Manutenzione in corso..."
-                    : DEPLOY_UPDATE_ALERT_MESSAGE}
-                </p>
+                {!maintenanceBlockActive ? (
+                  <p className="muted">{DEPLOY_UPDATE_ALERT_MESSAGE}</p>
+                ) : null}
                 {maintenanceBlockActive && maintenanceReloadAttempts >= 2 ? (
                   <p className="maintenance-retry-warning">
                     Riprova tra {maintenanceRetryMinutes} minuti
@@ -4109,10 +4126,9 @@ useEffect(() => {
                     <button
                       className="ghost"
                       type="button"
-                      onClick={() => setMaintenanceMode(false)}
-                      disabled={maintenanceApplying}
+                      onClick={() => setMaintenanceAlertInBackground(true)}
                     >
-                      {maintenanceApplying ? "Aggiorno..." : "Disattiva manutenzione"}
+                      Metti in background
                     </button>
                   ) : null}
                 </div>
