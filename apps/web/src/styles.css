@@ -377,73 +377,6 @@ body.theme-light {
   gap: 6px;
 }
 
-.menu-group {
-  display: grid;
-  gap: 2px;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-}
-
-.menu-group-title {
-  margin: 0;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: var(--text-dim);
-}
-
-.menu-group-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  min-height: 42px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease,
-    transform 0.12s ease;
-}
-
-.menu-group-toggle:hover {
-  border-color: rgba(91, 209, 255, 0.3);
-  background: rgba(91, 209, 255, 0.08);
-}
-
-.menu-group-toggle[aria-expanded="true"] {
-  border-color: rgba(91, 209, 255, 0.36);
-  background: rgba(91, 209, 255, 0.1);
-}
-
-.menu-group-toggle:active {
-  transform: scale(0.99);
-}
-
-.menu-group-toggle-direct {
-  justify-content: flex-start;
-  border-color: rgba(91, 209, 255, 0.24);
-}
-
-.menu-group-toggle-direct.active {
-  border-color: rgba(91, 209, 255, 0.44);
-  background: rgba(91, 209, 255, 0.12);
-  color: #dff5ff;
-}
-
-.menu-group-items {
-  display: grid;
-  gap: 2px;
-  margin: 2px 0 6px 8px;
-  padding-left: 12px;
-  border-left: 1px solid rgba(91, 209, 255, 0.26);
-}
-
 .menu-group-chevron {
   display: inline-flex;
   align-items: center;
@@ -460,9 +393,45 @@ body.theme-light {
   transform: rotate(0deg);
 }
 
+.menu-accordion .menu-item {
+  min-height: 42px;
+}
+
+.menu-macro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.menu-macro.expanded {
+  border-color: rgba(91, 209, 255, 0.36);
+  background: rgba(91, 209, 255, 0.1);
+}
+
+.menu-sublist {
+  display: grid;
+  gap: 2px;
+  margin: 0 0 0 10px;
+  padding: 0 0 0 12px;
+  border-left: 1px solid rgba(91, 209, 255, 0.24);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: max-height 0.22s ease, opacity 0.18s ease, margin 0.18s ease;
+}
+
+.menu-sublist.open {
+  margin: 2px 0 6px 10px;
+  max-height: 220px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .menu-subitem {
   border-radius: 10px;
-  min-height: 36px;
+  min-height: 35px;
   font-size: 0.9rem;
   padding: 7px 10px;
   border-color: transparent;

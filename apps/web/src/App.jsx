@@ -2811,143 +2811,116 @@ useEffect(() => {
               <h2>Menù</h2>
             </div>
 
-            <nav className="menu">
-              <div className="menu-group">
+            <nav className="menu menu-accordion">
+              <button
+                type="button"
+                className={menuItemClass("home")}
+                onClick={() => openMenuFeature("home")}
+                aria-current={activeMenu === "home" ? "page" : undefined}
+              >
+                Home
+              </button>
+
+              <button
+                type="button"
+                className={menuSectionsOpen.generali ? "menu-item menu-macro expanded" : "menu-item menu-macro"}
+                onClick={() => toggleMenuSection("generali")}
+                aria-expanded={menuSectionsOpen.generali}
+              >
+                <span>Generali</span>
+                <span className={menuSectionsOpen.generali ? "menu-group-chevron open" : "menu-group-chevron"} aria-hidden="true">
+                  &gt;
+                </span>
+              </button>
+              <div className={menuSectionsOpen.generali ? "menu-sublist open" : "menu-sublist"} aria-hidden={!menuSectionsOpen.generali}>
                 <button
-                  type="button"
-                  className={
-                    activeMenu === "home"
-                      ? "menu-group-toggle menu-group-toggle-direct active"
-                      : "menu-group-toggle menu-group-toggle-direct"
-                  }
-                  onClick={() => openMenuFeature("home")}
-                  aria-current={activeMenu === "home" ? "page" : undefined}
+                  className={`${menuItemClass("listone")} menu-subitem`}
+                  onClick={() => openMenuFeature("listone")}
                 >
-                  <span className="menu-group-title">Home</span>
+                  Listone
+                </button>
+                <button
+                  className={`${menuItemClass("stats")} menu-subitem`}
+                  onClick={() => openMenuFeature("stats")}
+                >
+                  Statistiche giocatori
+                </button>
+                <button
+                  className={`${menuItemClass("classifica-fixtures-seriea")} menu-subitem`}
+                  onClick={() => openMenuFeature("classifica-fixtures-seriea")}
+                >
+                  Serie A
                 </button>
               </div>
 
-              <div className="menu-group">
+              <button
+                type="button"
+                className={menuSectionsOpen.lega ? "menu-item menu-macro expanded" : "menu-item menu-macro"}
+                onClick={() => toggleMenuSection("lega")}
+                aria-expanded={menuSectionsOpen.lega}
+              >
+                <span>Lega</span>
+                <span className={menuSectionsOpen.lega ? "menu-group-chevron open" : "menu-group-chevron"} aria-hidden="true">
+                  &gt;
+                </span>
+              </button>
+              <div className={menuSectionsOpen.lega ? "menu-sublist open" : "menu-sublist"} aria-hidden={!menuSectionsOpen.lega}>
                 <button
-                  type="button"
-                  className="menu-group-toggle"
-                  onClick={() => toggleMenuSection("generali")}
-                  aria-expanded={menuSectionsOpen.generali}
+                  className={`${menuItemClass("rose")} menu-subitem`}
+                  onClick={() => openMenuFeature("rose")}
                 >
-                  <span className="menu-group-title">Generali</span>
-                  <span
-                    className={menuSectionsOpen.generali ? "menu-group-chevron open" : "menu-group-chevron"}
-                    aria-hidden="true"
-                  >
-                    &gt;
-                  </span>
+                  Rose
                 </button>
-                {menuSectionsOpen.generali ? (
-                  <div className="menu-group-items">
-                    <button
-                      className={`${menuItemClass("listone")} menu-subitem`}
-                      onClick={() => openMenuFeature("listone")}
-                    >
-                      Listone
-                    </button>
-                    <button
-                      className={`${menuItemClass("stats")} menu-subitem`}
-                      onClick={() => openMenuFeature("stats")}
-                    >
-                      Statistiche giocatori
-                    </button>
-                    <button
-                      className={`${menuItemClass("classifica-fixtures-seriea")} menu-subitem`}
-                      onClick={() => openMenuFeature("classifica-fixtures-seriea")}
-                    >
-                      Serie A
-                    </button>
-                  </div>
-                ) : null}
+                <button
+                  className={`${menuItemClass("formazioni")} menu-subitem`}
+                  onClick={() => openMenuFeature("formazioni")}
+                >
+                  Formazioni
+                </button>
+                <button
+                  className={`${menuItemClass("classifica-lega")} menu-subitem`}
+                  onClick={() => openMenuFeature("classifica-lega")}
+                >
+                  Classifica
+                </button>
+                <button
+                  className={`${menuItemClass("top-acquisti")} menu-subitem`}
+                  onClick={() => openMenuFeature("top-acquisti")}
+                >
+                  Giocatori piu acquistati
+                </button>
               </div>
 
-              <div className="menu-group">
+              <button
+                type="button"
+                className={menuSectionsOpen.extra ? "menu-item menu-macro expanded" : "menu-item menu-macro"}
+                onClick={() => toggleMenuSection("extra")}
+                aria-expanded={menuSectionsOpen.extra}
+              >
+                <span>Extra</span>
+                <span className={menuSectionsOpen.extra ? "menu-group-chevron open" : "menu-group-chevron"} aria-hidden="true">
+                  &gt;
+                </span>
+              </button>
+              <div className={menuSectionsOpen.extra ? "menu-sublist open" : "menu-sublist"} aria-hidden={!menuSectionsOpen.extra}>
                 <button
-                  type="button"
-                  className="menu-group-toggle"
-                  onClick={() => toggleMenuSection("lega")}
-                  aria-expanded={menuSectionsOpen.lega}
+                  className={`${menuItemClass("formazione-consigliata")} menu-subitem`}
+                  onClick={() => openMenuFeature("formazione-consigliata")}
                 >
-                  <span className="menu-group-title">Lega</span>
-                  <span
-                    className={menuSectionsOpen.lega ? "menu-group-chevron open" : "menu-group-chevron"}
-                    aria-hidden="true"
-                  >
-                    &gt;
-                  </span>
+                  Formazioni consigliate
                 </button>
-                {menuSectionsOpen.lega ? (
-                  <div className="menu-group-items">
-                    <button
-                      className={`${menuItemClass("rose")} menu-subitem`}
-                      onClick={() => openMenuFeature("rose")}
-                    >
-                      Rose
-                    </button>
-                    <button
-                      className={`${menuItemClass("formazioni")} menu-subitem`}
-                      onClick={() => openMenuFeature("formazioni")}
-                    >
-                      Formazioni
-                    </button>
-                    <button
-                      className={`${menuItemClass("classifica-lega")} menu-subitem`}
-                      onClick={() => openMenuFeature("classifica-lega")}
-                    >
-                      Classifica
-                    </button>
-                    <button
-                      className={`${menuItemClass("top-acquisti")} menu-subitem`}
-                      onClick={() => openMenuFeature("top-acquisti")}
-                    >
-                      Giocatori piu acquistati
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="menu-group">
                 <button
-                  type="button"
-                  className="menu-group-toggle"
-                  onClick={() => toggleMenuSection("extra")}
-                  aria-expanded={menuSectionsOpen.extra}
+                  className={`${menuItemClass("mercato")} menu-subitem`}
+                  onClick={() => openMenuFeature("mercato")}
                 >
-                  <span className="menu-group-title">Extra</span>
-                  <span
-                    className={menuSectionsOpen.extra ? "menu-group-chevron open" : "menu-group-chevron"}
-                    aria-hidden="true"
-                  >
-                    &gt;
-                  </span>
+                  Mercato
                 </button>
-                {menuSectionsOpen.extra ? (
-                  <div className="menu-group-items">
-                    <button
-                      className={`${menuItemClass("formazione-consigliata")} menu-subitem`}
-                      onClick={() => openMenuFeature("formazione-consigliata")}
-                    >
-                      Formazioni consigliate
-                    </button>
-                    <button
-                      className={`${menuItemClass("mercato")} menu-subitem`}
-                      onClick={() => openMenuFeature("mercato")}
-                    >
-                      Mercato
-                    </button>
-                    <button
-                      className={`${menuItemClass("plusvalenze")} menu-subitem`}
-                      onClick={() => openMenuFeature("plusvalenze")}
-                    >
-                      Plusvalenze
-                    </button>
-                  </div>
-                ) : null}
+                <button
+                  className={`${menuItemClass("plusvalenze")} menu-subitem`}
+                  onClick={() => openMenuFeature("plusvalenze")}
+                >
+                  Plusvalenze
+                </button>
               </div>
             </nav>
           </aside>
