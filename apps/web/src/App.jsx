@@ -251,6 +251,7 @@ export default function App() {
   const activeBundlePathRef = useRef("");
   const maintenanceStateRef = useRef({ enabled: false, updated_at: "" });
   const consigliataTeamAutoselectRef = useRef(false);
+  const formazioniRequestIdRef = useRef(0);
 
   /* ===== UI ===== */
   const [theme, setTheme] = useState("dark");
@@ -1025,6 +1026,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   };
 
   const loadFormazioni = async (roundValue = null, orderValue = null) => {
+    const requestId = formazioniRequestIdRef.current + 1;
+    formazioniRequestIdRef.current = requestId;
     try {
       const params = new URLSearchParams({ limit: "300" });
       const parsedRound = Number(roundValue);
@@ -1044,6 +1047,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         },
         { useAuth: true }
       );
+      if (requestId !== formazioniRequestIdRef.current) {
+        return true;
+      }
       setFormations(Array.isArray(data.items) ? data.items : []);
       const apiRound = Number(data?.round);
       const normalizedRound = Number.isFinite(apiRound) ? apiRound : null;
@@ -2959,7 +2965,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       String(formationRound || "") !== String(optimizerRoundCandidate)
     ) {
       setFormationRound(String(optimizerRoundCandidate));
-      loadFormazioni(String(optimizerRoundCandidate), formationOrder);
       return;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
