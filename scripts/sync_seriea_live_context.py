@@ -15,9 +15,11 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
+RUNTIME_DIR = DATA_DIR / "runtime"
 
 SERIEA_CONTEXT_OUT = DATA_DIR / "incoming" / "manual" / "seriea_context.csv"
-FIXTURES_OUT = DATA_DIR / "db" / "fixtures.csv"
+FIXTURES_OUT = RUNTIME_DIR / "db" / "fixtures.csv"
+FIXTURES_SEED = DATA_DIR / "db" / "fixtures.csv"
 
 CALENDAR_BASE_URL = "https://www.fantacalcio.it/serie-a/calendario"
 DEFAULT_USER_AGENT = (
@@ -560,7 +562,10 @@ def run(round_value: Optional[int], season_slug: Optional[str]) -> Dict[str, obj
 
     _write_seriea_context(standings_rows, SERIEA_CONTEXT_OUT)
 
-    existing_fixture_rows = _load_existing_fixture_rows(FIXTURES_OUT)
+    existing_fixture_rows = _load_existing_fixture_rows(FIXTURES_SEED)
+    runtime_existing_rows = _load_existing_fixture_rows(FIXTURES_OUT)
+    if runtime_existing_rows:
+        existing_fixture_rows = _merge_fixture_rows(existing_fixture_rows, runtime_existing_rows)
     merged_rows = _merge_fixture_rows(existing_fixture_rows, _build_fixture_pair_rows(fixture_rows))
     _write_fixtures(merged_rows, FIXTURES_OUT)
 

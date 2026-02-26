@@ -42,6 +42,7 @@ data/infortunati_clean.txt
 data/squalificati_clean.txt
 data/backups/
 data/reports/history/
+data/runtime/
 
 # Pipeline v2 runtime artifacts
 data/staging/

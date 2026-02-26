@@ -20,8 +20,10 @@ from apps.api.app.backup import run_backup_fail_fast
 from apps.api.app.config import BACKUP_DIR, BACKUP_KEEP_LAST, DATABASE_URL
 
 DATA_DIR = ROOT / "data"
+RUNTIME_DIR = DATA_DIR / "runtime"
 TEMPLATE_DIR = DATA_DIR / "templates" / "stats"
-OUT_DIR = DATA_DIR / "stats"
+OUT_DIR = RUNTIME_DIR / "stats"
+SEED_STATS_DIR = DATA_DIR / "stats"
 STATE_PATH = DATA_DIR / "history" / "last_stats_update.json"
 INCOMING_DIR = DATA_DIR / "incoming" / "stats"
 ARCHIVE_INCOMING = DATA_DIR / "archive" / "incoming" / "stats"
@@ -64,7 +66,8 @@ STAT_FILES = {
     "GolPareggio": "gpar.csv",
 }
 
-STATS_PLAYERS_PATH = DATA_DIR / "statistiche_giocatori.csv"
+STATS_PLAYERS_PATH = RUNTIME_DIR / "statistiche_giocatori.csv"
+SEED_STATS_PLAYERS_PATH = DATA_DIR / "statistiche_giocatori.csv"
 ROSE_PATH = DATA_DIR / "rose_fantaportoscuso.csv"
 QUOT_PATH = DATA_DIR / "quotazioni.csv"
 QUOT_MASTER_PATH = DATA_DIR / "db" / "quotazioni_master.csv"
@@ -590,8 +593,9 @@ def update_statistiche_giocatori() -> None:
             if role and key not in role_map:
                 role_map[display_map.get(key, key)] = role
 
-    if STATS_PLAYERS_PATH.exists():
-        base_df = pd.read_csv(STATS_PLAYERS_PATH)
+    base_stats_source = STATS_PLAYERS_PATH if STATS_PLAYERS_PATH.exists() else SEED_STATS_PLAYERS_PATH
+    if base_stats_source.exists():
+        base_df = pd.read_csv(base_stats_source)
     else:
         base_df = pd.DataFrame(columns=["Giocatore", "Squadra"])
 
@@ -672,6 +676,10 @@ def update_statistiche_giocatori() -> None:
     # Merge stats from cleaned files
     for stat_name, filename in STAT_FILES.items():
         path = OUT_DIR / filename
+        if not path.exists():
+            seed_path = SEED_STATS_DIR / filename
+            if seed_path.exists():
+                path = seed_path
         if not path.exists():
             continue
         try:

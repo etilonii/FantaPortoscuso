@@ -63,10 +63,13 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/data", tags=["data"])
 
 DATA_DIR = Path(__file__).resolve().parents[4] / "data"
+RUNTIME_DATA_DIR = DATA_DIR / "runtime"
+RUNTIME_DB_DIR = RUNTIME_DATA_DIR / "db"
+RUNTIME_STATS_DIR = RUNTIME_DATA_DIR / "stats"
 ROSE_PATH = DATA_DIR / "rose_fantaportoscuso.csv"
 QUOT_PATH = DATA_DIR / "quotazioni.csv"
 RESIDUAL_CREDITS_PATH = DATA_DIR / "rose_nuovo_credits.csv"
-STATS_PATH = DATA_DIR / "statistiche_giocatori.csv"
+STATS_PATH = RUNTIME_DATA_DIR / "statistiche_giocatori.csv"
 MARKET_PATH = DATA_DIR / "market_latest.json"
 STARTING_XI_REPORT_PATH = DATA_DIR / "reports" / "team_starting_xi.csv"
 PLAYER_STRENGTH_REPORT_PATH = DATA_DIR / "reports" / "team_strength_players.csv"
@@ -134,7 +137,7 @@ SERIEA_CONTEXT_CANDIDATES = [
 ]
 MARKET_REPORT_GLOB = "rose_changes_*.csv"
 ROSE_DIFF_GLOB = "diff_rose_*.txt"
-STATS_DIR = DATA_DIR / "stats"
+STATS_DIR = RUNTIME_STATS_DIR
 STATS_MASTER_HEADERS: Tuple[str, ...] = (
     "Giocatore",
     "Squadra",
@@ -179,9 +182,10 @@ LIVE_EVENT_TO_STATS_COLUMN: Dict[str, str] = {
 PLAYER_CARDS_PATH = DATA_DIR / "db" / "quotazioni_master.csv"
 PLAYER_STATS_PATH = DATA_DIR / "db" / "player_stats.csv"
 TEAMS_PATH = DATA_DIR / "db" / "teams.csv"
-FIXTURES_PATH = DATA_DIR / "db" / "fixtures.csv"
+FIXTURES_PATH = RUNTIME_DB_DIR / "fixtures.csv"
 REGULATION_PATH = DATA_DIR / "config" / "regolamento.json"
-SEED_DB_DIR = Path("/app/seed/db")
+SEED_DB_DIR = DATA_DIR / "db"
+LEGACY_SEED_DB_DIR = Path("/app/seed/db")
 ROSE_XLSX_DIR = DATA_DIR / "archive" / "incoming" / "rose"
 TABULAR_EXTENSIONS = {".csv", ".xlsx", ".xls"}
 _RESIDUAL_CREDITS_CACHE: Dict[str, object] = {}
@@ -355,23 +359,59 @@ class LiveImportVotesRequest(BaseModel):
     source_html: Optional[str] = Field(default=None, max_length=3_000_000)
 
 
-def _read_csv(path: Path) -> List[Dict[str, str]]:
-    if not path.exists():
+def _runtime_seed_fallback_paths(path: Path) -> List[Path]:
+    try:
+        rel = path.relative_to(RUNTIME_DATA_DIR)
+    except ValueError:
         return []
-    with path.open("r", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        rows = []
-        for row in reader:
-            if not row:
-                continue
-            cleaned = {}
-            for key, value in row.items():
-                if key is None:
-                    continue
-                clean_key = key.strip().lstrip("\ufeff")
-                cleaned[clean_key] = value
-            rows.append(cleaned)
-        return rows
+
+    candidates: List[Path] = [DATA_DIR / rel]
+    if len(rel.parts) >= 2 and rel.parts[0] == "db":
+        legacy_candidate = LEGACY_SEED_DB_DIR.joinpath(*rel.parts[1:])
+        candidates.append(legacy_candidate)
+
+    out: List[Path] = []
+    seen: Set[str] = set()
+    for candidate in candidates:
+        marker = str(candidate)
+        if marker in seen:
+            continue
+        seen.add(marker)
+        out.append(candidate)
+    return out
+
+
+def _read_csv(path: Path) -> List[Dict[str, str]]:
+    candidate_paths: List[Path] = [path, *_runtime_seed_fallback_paths(path)]
+    seen_paths: Set[str] = set()
+
+    for candidate in candidate_paths:
+        marker = str(candidate)
+        if marker in seen_paths:
+            continue
+        seen_paths.add(marker)
+        if not candidate.exists():
+            continue
+
+        try:
+            with candidate.open("r", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                rows = []
+                for row in reader:
+                    if not row:
+                        continue
+                    cleaned = {}
+                    for key, value in row.items():
+                        if key is None:
+                            continue
+                        clean_key = key.strip().lstrip("\ufeff")
+                        cleaned[clean_key] = value
+                    rows.append(cleaned)
+                if rows:
+                    return rows
+        except Exception:
+            continue
+    return []
 
 
 def _clean_row_keys(row: Dict[object, object]) -> Dict[str, str]:
@@ -677,6 +717,16 @@ def _count_lines(path: Path) -> int:
             return sum(1 for _ in handle)
     except Exception:
         return 0
+
+
+def _first_existing_data_path(path: Path) -> Optional[Path]:
+    for candidate in [path, *_runtime_seed_fallback_paths(path)]:
+        try:
+            if candidate.exists() and candidate.is_file() and candidate.stat().st_size > 0:
+                return candidate
+        except Exception:
+            continue
+    return None
 
 
 def _split_players_cell(value: str | None) -> List[str]:
@@ -10343,9 +10393,10 @@ def leghe_bootstrap_sync_required(
 
     for path in check_paths:
         try:
-            if not path.exists() or not path.is_file() or path.stat().st_size <= 0:
+            effective_path = _first_existing_data_path(path)
+            if effective_path is None:
                 return True
-            mtime_utc = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc)
+            mtime_utc = datetime.fromtimestamp(effective_path.stat().st_mtime, tz=timezone.utc)
             if mtime_utc < threshold:
                 return True
         except Exception:

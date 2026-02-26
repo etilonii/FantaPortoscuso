@@ -24,12 +24,25 @@ def _resolve_data_dir() -> Path:
 
 DATA_DIR = _resolve_data_dir()
 STATUS_PATH = DATA_DIR / "status.json"
-CORE_DATA_FILES = {
-    "rose": DATA_DIR / "rose_fantaportoscuso.csv",
-    "stats": DATA_DIR / "statistiche_giocatori.csv",
-    "strength": DATA_DIR / "classifica.csv",
-    "quotazioni": DATA_DIR / "quotazioni.csv",
+CORE_DATA_FILE_CANDIDATES = {
+    "rose": (DATA_DIR / "rose_fantaportoscuso.csv",),
+    "stats": (
+        DATA_DIR / "runtime" / "statistiche_giocatori.csv",
+        DATA_DIR / "statistiche_giocatori.csv",
+    ),
+    "strength": (DATA_DIR / "classifica.csv",),
+    "quotazioni": (DATA_DIR / "quotazioni.csv",),
 }
+
+
+def _first_valid_data_file(paths: tuple[Path, ...]) -> Path | None:
+    for path in paths:
+        try:
+            if path.exists() and path.is_file() and path.stat().st_size > 0:
+                return path
+        except Exception:
+            continue
+    return None
 
 
 def _normalize_payload(raw: dict, fallback: dict) -> dict:
@@ -79,11 +92,12 @@ def _normalize_payload(raw: dict, fallback: dict) -> dict:
 def _build_data_files_status(fallback: dict) -> dict:
     file_status = {}
     mtimes = []
-    for key, path in CORE_DATA_FILES.items():
-        ok = path.exists() and path.is_file() and path.stat().st_size > 0
+    for key, candidates in CORE_DATA_FILE_CANDIDATES.items():
+        selected = _first_valid_data_file(candidates)
+        ok = selected is not None
         file_status[key] = "ok" if ok else "error"
         if ok:
-            mtimes.append(path.stat().st_mtime)
+            mtimes.append(selected.stat().st_mtime)
 
     if not mtimes:
         return fallback

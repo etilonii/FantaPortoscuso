@@ -25,6 +25,17 @@ def history_dir() -> Path:
     return data_dir() / "history"
 
 
+def runtime_data_dir() -> Path:
+    return data_dir() / "runtime"
+
+
+def _first_existing(candidates: Tuple[Path, ...]) -> Path:
+    for path in candidates:
+        if path.exists():
+            return path
+    return candidates[0]
+
+
 def rose_path() -> Path:
     return data_dir() / "rose_fantaportoscuso.csv"
 
@@ -34,10 +45,18 @@ def quotazioni_path() -> Path:
 
 
 def stats_master_path() -> Path:
-    return data_dir() / "statistiche_giocatori.csv"
+    return _first_existing(
+        (
+            runtime_data_dir() / "statistiche_giocatori.csv",
+            data_dir() / "statistiche_giocatori.csv",
+        )
+    )
 
 
 def stats_dir() -> Path:
+    runtime_stats = runtime_data_dir() / "stats"
+    if runtime_stats.exists():
+        return runtime_stats
     return data_dir() / "stats"
 
 

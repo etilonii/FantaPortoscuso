@@ -9,9 +9,10 @@ from typing import Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
+RUNTIME_DIR = DATA_DIR / "runtime"
 INCOMING_FIXTURES_DIR = DATA_DIR / "incoming" / "fixtures"
 TEMPLATE_FIXTURES_PATH = DATA_DIR / "templates" / "fixtures_rounds_template.csv"
-OUTPUT_FIXTURES_PATH = DATA_DIR / "db" / "fixtures.csv"
+OUTPUT_FIXTURES_PATH = RUNTIME_DIR / "db" / "fixtures.csv"
 SUPPORTED_EXTENSIONS = {".csv", ".xlsx", ".xls"}
 
 
@@ -213,7 +214,7 @@ def _write_rows(path: Path, rows: List[Dict[str, str]]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(
         description=(
-            "Build data/db/fixtures.csv from a fixtures source (CSV/XLSX), "
+            "Build data/runtime/db/fixtures.csv from a fixtures source (CSV/XLSX), "
             "including optional match results."
         )
     )
@@ -225,7 +226,7 @@ def main() -> None:
     parser.add_argument(
         "--output",
         default=str(OUTPUT_FIXTURES_PATH),
-        help="Output fixtures path (default: data/db/fixtures.csv).",
+        help="Output fixtures path (default: data/runtime/db/fixtures.csv).",
     )
     args = parser.parse_args()
 
