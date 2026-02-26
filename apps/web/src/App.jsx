@@ -250,6 +250,7 @@ export default function App() {
   const topAcquistiRefreshTickRef = useRef(0);
   const activeBundlePathRef = useRef("");
   const maintenanceStateRef = useRef({ enabled: false, updated_at: "" });
+  const consigliataTeamAutoselectRef = useRef(false);
 
   /* ===== UI ===== */
   const [theme, setTheme] = useState("dark");
@@ -2923,6 +2924,30 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     setFormationOptimizer(null);
     setFormationOptimizerError("");
   }, [formationTeam, formationRound]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    if (activeMenu !== "formazione-consigliata") {
+      consigliataTeamAutoselectRef.current = false;
+      return;
+    }
+    if (consigliataTeamAutoselectRef.current) return;
+
+    const currentTeam = String(formationTeam || "").trim();
+    if (currentTeam && currentTeam.toLowerCase() !== "all") {
+      consigliataTeamAutoselectRef.current = true;
+      return;
+    }
+
+    const fallbackTeam =
+      String(suggestTeam || "").trim() ||
+      String(selectedTeam || "").trim() ||
+      String(teams?.[0] || "").trim();
+    if (!fallbackTeam) return;
+
+    consigliataTeamAutoselectRef.current = true;
+    setFormationTeam(fallbackTeam);
+  }, [loggedIn, activeMenu, formationTeam, suggestTeam, selectedTeam, teams]);
 
   useEffect(() => {
     if (!loggedIn) return;
