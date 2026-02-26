@@ -11413,10 +11413,12 @@ def stats_plusvalenze(
     include_negatives: bool = Query(default=True),
     period: str = Query(default="december"),
 ):
-    rose = _read_csv(ROSE_PATH)
+    rose = _apply_qa_from_quot(_read_csv(ROSE_PATH))
     team_totals = defaultdict(lambda: {"acquisto": 0.0, "attuale": 0.0})
     for row in rose:
-        team = row.get("Team", "")
+        team = str(row.get("Team") or "").strip()
+        if not team:
+            continue
         try:
             acquisto = float(row.get("PrezzoAcquisto", 0) or 0)
             attuale = float(row.get("PrezzoAttuale", 0) or 0)
