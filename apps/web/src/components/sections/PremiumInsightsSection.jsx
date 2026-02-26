@@ -118,12 +118,6 @@ export default function PremiumInsightsSection({
   openPlayer,
 }) {
   const playerTiers = Array.isArray(insights?.player_tiers) ? insights.player_tiers : [];
-  const teamStrengthTotal = Array.isArray(insights?.team_strength_total)
-    ? insights.team_strength_total
-    : [];
-  const teamStrengthStarting = Array.isArray(insights?.team_strength_starting)
-    ? insights.team_strength_starting
-    : [];
   const serieaTable = Array.isArray(insights?.seriea_current_table) ? insights.seriea_current_table : [];
   const serieaLiveTable = Array.isArray(insights?.seriea_live_table) ? insights.seriea_live_table : [];
   const serieaFixtures = Array.isArray(insights?.seriea_fixtures) ? insights.seriea_fixtures : [];
@@ -147,8 +141,6 @@ export default function PremiumInsightsSection({
   }, [serieaRounds, serieaFixtures, serieaRoundValue]);
 
   const [selectedRound, setSelectedRound] = useState("");
-  const [powerSortBy, setPowerSortBy] = useState("forza_tot");
-
   useEffect(() => {
     if (!rounds.length) {
       if (selectedRound !== "") setSelectedRound("");
@@ -197,99 +189,6 @@ export default function PremiumInsightsSection({
           { key: "score_auto", label: "Score", render: (row) => formatNumber(row?.score_auto, 3) },
           { key: "weight", label: "Weight", render: (row) => formatNumber(row?.weight, 3) },
           { key: "partite", label: "PG", render: (row) => formatNumber(row?.partite, 0) },
-        ]}
-      />
-    );
-  }
-
-  if (mode === "classifica-potenza") {
-    const startingMap = new Map();
-    teamStrengthStarting.forEach((row) => {
-      const key = String(row?.Team || "").trim().toLowerCase();
-      if (!key) return;
-      startingMap.set(key, row);
-    });
-
-    const combined = [];
-    const seen = new Set();
-
-    teamStrengthTotal.forEach((row) => {
-      const key = String(row?.Team || "").trim().toLowerCase();
-      if (!key) return;
-      const startingRow = startingMap.get(key);
-      combined.push({
-        Team: row?.Team || startingRow?.Team || "-",
-        ForzaSquadra: row?.ForzaSquadra ?? null,
-        ForzaMediaGiocatore: row?.ForzaMediaGiocatore ?? null,
-        ForzaTitolari: startingRow?.ForzaTitolari ?? null,
-      });
-      seen.add(key);
-    });
-
-    teamStrengthStarting.forEach((row) => {
-      const key = String(row?.Team || "").trim().toLowerCase();
-      if (!key || seen.has(key)) return;
-      combined.push({
-        Team: row?.Team || "-",
-        ForzaSquadra: null,
-        ForzaMediaGiocatore: null,
-        ForzaTitolari: row?.ForzaTitolari ?? null,
-      });
-    });
-
-    const sortValue = (row) => {
-      if (powerSortBy === "forza_xi") return toNumber(row?.ForzaTitolari);
-      return toNumber(row?.ForzaSquadra);
-    };
-
-    const rows = combined
-      .slice()
-      .sort((a, b) => {
-        const av = sortValue(a);
-        const bv = sortValue(b);
-        const an = av === null ? Number.NEGATIVE_INFINITY : av;
-        const bn = bv === null ? Number.NEGATIVE_INFINITY : bv;
-        return bn - an;
-      })
-      .map((row, index) => ({
-        ...row,
-        Pos: index + 1,
-      }));
-
-    return (
-      <ReportSection
-        eyebrow="Premium"
-        title="Classifica Potenza"
-        description="Forza totale rosa, media e forza XI (ordinabile)."
-        loading={loading}
-        error={error}
-        onReload={onReload}
-        headerControls={
-          <div className="filters inline centered">
-            <div className="field">
-              <span>Ordina per</span>
-              <select
-                className="select"
-                value={powerSortBy}
-                onChange={(event) => setPowerSortBy(event.target.value)}
-              >
-                <option value="forza_tot">Forza Tot</option>
-                <option value="forza_xi">Forza XI</option>
-              </select>
-            </div>
-          </div>
-        }
-        rows={rows}
-        columns={[
-          { key: "Pos", label: "Pos", render: (row) => row?.Pos || "-" },
-          { key: "Team", label: "Team" },
-          { key: "ForzaSquadra", label: "Forza Tot", render: (row) => formatNumber(row?.ForzaSquadra, 2) },
-          {
-            key: "ForzaMediaGiocatore",
-            label: "Media",
-            render: (row) => formatNumber(row?.ForzaMediaGiocatore, 2),
-          },
-          { key: "ForzaTitolari", label: "Forza XI", render: (row) => formatNumber(row?.ForzaTitolari, 2) },
         ]}
       />
     );

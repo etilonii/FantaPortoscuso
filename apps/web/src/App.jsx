@@ -163,7 +163,6 @@ const MENU_KEYS = new Set([
   "listone",
   "top-acquisti",
   "mercato",
-  "classifica-potenza",
   "classifica-fixtures-seriea",
   "player",
   "admin",
@@ -174,7 +173,6 @@ const API_BASE =
     ? "http://localhost:8001"
     : "https://fantaportoscuso.up.railway.app");
 const INSIGHTS_MENU_KEYS = new Set([
-  "classifica-potenza",
   "classifica-fixtures-seriea",
 ]);
 
@@ -2863,12 +2861,6 @@ useEffect(() => {
                 Mercato
               </button>
               <button
-                className={menuItemClass("classifica-potenza")}
-                onClick={() => openMenuFeature("classifica-potenza")}
-              >
-                Classifica Potenza
-              </button>
-              <button
                 className={menuItemClass("classifica-fixtures-seriea")}
                 onClick={() => openMenuFeature("classifica-fixtures-seriea")}
               >
@@ -2939,8 +2931,6 @@ useEffect(() => {
                   ? "Top Acquisti"
                   : activeMenu === "mercato"
                   ? "Mercato"
-                  : activeMenu === "classifica-potenza"
-                  ? "Classifica Potenza"
                   : activeMenu === "classifica-fixtures-seriea"
                   ? "Classifica + Fixtures Serie A"
                   : activeMenu === "player"
@@ -3227,18 +3217,6 @@ useEffect(() => {
                 manualLoading={manualLoading}
                 manualError={manualError}
                 normalizeName={normalizeName}
-              />
-            )}
-
-            {activeMenu === "classifica-potenza" && (
-              <PremiumInsightsSection
-                mode="classifica-potenza"
-                insights={premiumInsights}
-                loading={premiumInsightsLoading}
-                error={premiumInsightsError}
-                onReload={() => loadPremiumInsights(true)}
-                leagueStandings={marketStandings}
-                openPlayer={openPlayer}
               />
             )}
 
