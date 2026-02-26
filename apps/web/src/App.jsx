@@ -237,6 +237,7 @@ export default function App() {
   const [rememberKey, setRememberKey] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [sessionTeam, setSessionTeam] = useState("");
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   const [initialDataError, setInitialDataError] = useState("");
@@ -546,6 +547,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const clearAuthSession = (message = "") => {
     setLoggedIn(false);
     setIsAdmin(false);
+    setSessionTeam("");
     setStatus("idle");
     if (message) {
       setError(message);
@@ -667,6 +669,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const applyAuthSessionPayload = (data) => {
     setIsAdmin(Boolean(data?.is_admin));
+    setSessionTeam(String(data?.team || "").trim());
   };
 
   const loadAuthSession = async () => {
@@ -802,6 +805,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       persistTokens(data?.access_token || "", data?.refresh_token || "");
       touchAuthSessionTs();
       setError("");
+      void loadAuthSession();
 
       if (rememberKey) {
         localStorage.setItem(
@@ -1025,20 +1029,28 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
   };
 
-  const loadFormazioni = async (roundValue = null, orderValue = null) => {
+  const loadFormazioni = async (roundValue = null, orderValue = null, options = {}) => {
     const requestId = formazioniRequestIdRef.current + 1;
     formazioniRequestIdRef.current = requestId;
     try {
+      const currentOnly = Boolean(options?.currentOnly);
       const params = new URLSearchParams({ limit: "300" });
       const parsedRound = Number(roundValue);
-      if (Number.isFinite(parsedRound) && parsedRound > 0) {
+      if (!currentOnly && Number.isFinite(parsedRound) && parsedRound > 0) {
         params.set("round", String(parsedRound));
       }
       const normalizedOrder = String(orderValue || formationOrder || "classifica")
         .trim()
         .toLowerCase();
-      if (normalizedOrder === "classifica" || normalizedOrder === "live_total") {
+      if (
+        !currentOnly &&
+        (normalizedOrder === "classifica" || normalizedOrder === "live_total")
+      ) {
         params.set("order_by", normalizedOrder);
+      }
+      const scopedTeam = !isAdmin ? String(sessionTeam || "").trim() : "";
+      if (scopedTeam) {
+        params.set("team", scopedTeam);
       }
       const data = await fetchJsonWithRetry(
         `${API_BASE}/data/formazioni?${params.toString()}`,
@@ -1111,10 +1123,13 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   };
 
   const runFormationOptimizer = async (teamName, roundValue = null) => {
-    const safeTeam = String(teamName || "").trim();
+    const scopedTeam = !isAdmin ? String(sessionTeam || "").trim() : "";
+    const safeTeam = String((!isAdmin ? scopedTeam : teamName) || "").trim();
     if (!safeTeam || safeTeam.toLowerCase() === "all") {
       setFormationOptimizer(null);
-      setFormationOptimizerError("");
+      setFormationOptimizerError(
+        !isAdmin ? "Team associato alla key non disponibile." : ""
+      );
       return;
     }
     try {
@@ -2932,12 +2947,32 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   }, [formationTeam, formationRound]);
 
   useEffect(() => {
+    if (!loggedIn || isAdmin) return;
+    const scopedTeam = String(sessionTeam || "").trim();
+    if (!scopedTeam) return;
+    if (normalizeName(formationTeam) !== normalizeName(scopedTeam)) {
+      setFormationTeam(scopedTeam);
+    }
+  }, [loggedIn, isAdmin, sessionTeam, formationTeam]);
+
+  useEffect(() => {
     if (!loggedIn) return;
     if (activeMenu !== "formazione-consigliata") {
       consigliataTeamAutoselectRef.current = false;
       return;
     }
     if (consigliataTeamAutoselectRef.current) return;
+
+    const scopedTeam = !isAdmin ? String(sessionTeam || "").trim() : "";
+    if (scopedTeam) {
+      const currentTeam = String(formationTeam || "").trim();
+      if (normalizeName(currentTeam) !== normalizeName(scopedTeam)) {
+        setFormationTeam(scopedTeam);
+      }
+      consigliataTeamAutoselectRef.current = true;
+      return;
+    }
+    if (!isAdmin) return;
 
     const currentTeam = String(formationTeam || "").trim();
     if (currentTeam && currentTeam.toLowerCase() !== "all") {
@@ -2953,7 +2988,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
     consigliataTeamAutoselectRef.current = true;
     setFormationTeam(fallbackTeam);
-  }, [loggedIn, activeMenu, formationTeam, suggestTeam, selectedTeam, teams]);
+  }, [loggedIn, activeMenu, isAdmin, sessionTeam, formationTeam, suggestTeam, selectedTeam, teams]);
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -3041,7 +3076,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         } else if (menu === "formazioni") {
           tasks.push(loadFormazioni(formationRound || null, formationOrder));
         } else if (menu === "formazione-consigliata") {
-          tasks.push(loadFormazioni(formationRound || null, formationOrder));
+          tasks.push(loadFormazioni(null, null, { currentOnly: true }));
         } else if (menu === "live" && isAdmin) {
           tasks.push(loadLivePayload(livePayload?.round || null));
         } else if (menu === "plusvalenze") {
@@ -3109,6 +3144,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     formationOrder,
     formationTeam,
     suggestTeam,
+    sessionTeam,
     isAdmin,
     selectedPlayer,
     teams.length,
@@ -3624,6 +3660,7 @@ useEffect(() => {
 
             {activeMenu === "formazioni" && (
               <FormazioniSection
+                variant="formazioni"
                 formations={formations}
                 formationTeam={formationTeam}
                 setFormationTeam={setFormationTeam}
@@ -3639,11 +3676,14 @@ useEffect(() => {
                 runOptimizer={runFormationOptimizer}
                 openPlayer={openPlayer}
                 formatDecimal={formatDecimal}
+                isAdmin={isAdmin}
+                sessionTeam={sessionTeam}
               />
             )}
 
             {activeMenu === "formazione-consigliata" && (
               <FormazioniSection
+                variant="consigliata"
                 formations={formations}
                 formationTeam={formationTeam}
                 setFormationTeam={setFormationTeam}
@@ -3652,13 +3692,15 @@ useEffect(() => {
                 formationOrder={formationOrder}
                 onFormationOrderChange={onFormationOrderChange}
                 formationMeta={formationMeta}
-                reloadFormazioni={() => loadFormazioni(formationRound || null, formationOrder)}
+                reloadFormazioni={() => loadFormazioni(null, null, { currentOnly: true })}
                 optimizerData={formationOptimizer}
                 optimizerLoading={formationOptimizerLoading}
                 optimizerError={formationOptimizerError}
                 runOptimizer={runFormationOptimizer}
                 openPlayer={openPlayer}
                 formatDecimal={formatDecimal}
+                isAdmin={isAdmin}
+                sessionTeam={sessionTeam}
               />
             )}
 

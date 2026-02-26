@@ -983,6 +983,19 @@ def _require_login_key(
     return record
 
 
+def _team_scope_for_access_key(db: Session, access_key: AccessKey) -> Tuple[str, str]:
+    if bool(getattr(access_key, "is_admin", False)):
+        return "", ""
+
+    key_value = str(getattr(access_key, "key", "") or "").strip().lower()
+    if not key_value:
+        return "", ""
+
+    row = db.query(TeamKey).filter(TeamKey.key == key_value).first()
+    team_name = str(row.team or "").strip() if row else ""
+    return team_name, normalize_name(team_name)
+
+
 def _backup_or_500(prefix: str) -> None:
     try:
         run_backup_fail_fast(
@@ -11341,7 +11354,19 @@ def formazioni(
     x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
     authorization: str | None = Header(default=None, alias="Authorization"),
 ):
-    team_key = normalize_name(team or "")
+    access_record = _require_login_key(
+        db,
+        authorization=authorization,
+        x_access_key=x_access_key or x_admin_key,
+    )
+    requested_team_key = normalize_name(team or "")
+    scoped_team_name, scoped_team_key = _team_scope_for_access_key(db, access_record)
+    scope_enforced = not bool(access_record.is_admin)
+    scope_missing = bool(scope_enforced and not scoped_team_key)
+    team_key = scoped_team_key if scope_enforced else requested_team_key
+    if scope_missing:
+        # Keep payload shape stable but return no team data if key has no association.
+        team_key = "__team_scope_missing__"
     regulation = _load_regulation()
     default_order, allowed_orders = _reg_ordering(regulation)
     selected_order = str(order_by or default_order).strip().lower()
@@ -11462,6 +11487,9 @@ def formazioni(
             "real_unlocked": bool(real_unlocked),
             "real_unlock_reason": real_unlock_reason,
             "first_kickoff_local": first_kickoff_local.isoformat() if isinstance(first_kickoff_local, datetime) else "",
+            "scoped_team": scoped_team_name,
+            "team_scope_enforced": scope_enforced,
+            "team_scope_missing": scope_missing,
             "note": "",
         }
 
@@ -11477,7 +11505,9 @@ def formazioni(
     else:
         projected_items.sort(key=_formations_sort_key)
 
-    if source_path is None:
+    if scope_missing:
+        note = "Nessun team associato alla key: dati formazione non disponibili."
+    elif source_path is None:
         if not real_unlocked and target_round is not None:
             kickoff_label = (
                 first_kickoff_local.strftime("%d/%m/%Y %H:%M")
@@ -11515,6 +11545,9 @@ def formazioni(
         "real_unlocked": bool(real_unlocked),
         "real_unlock_reason": real_unlock_reason,
         "first_kickoff_local": first_kickoff_local.isoformat() if isinstance(first_kickoff_local, datetime) else "",
+        "scoped_team": scoped_team_name,
+        "team_scope_enforced": scope_enforced,
+        "team_scope_missing": scope_missing,
         "note": note,
     }
 
@@ -11529,14 +11562,25 @@ def formazione_optimizer(
     x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
     authorization: str | None = Header(default=None, alias="Authorization"),
 ):
-    _require_login_key(db, authorization=authorization, x_access_key=x_access_key or x_admin_key)
+    access_record = _require_login_key(
+        db,
+        authorization=authorization,
+        x_access_key=x_access_key or x_admin_key,
+    )
+    scoped_team_name, scoped_team_key = _team_scope_for_access_key(db, access_record)
     team_key = normalize_name(team)
+    if not bool(access_record.is_admin):
+        if not scoped_team_key:
+            raise HTTPException(status_code=403, detail="Key non associata a un team")
+        team_key = scoped_team_key
     if not team_key:
         raise HTTPException(status_code=400, detail="Team non valido")
 
     payload = _build_contextual_optimizer_payload(team_key, db, round, captain_mode=captain_mode)
     if payload is None:
         raise HTTPException(status_code=404, detail="Team non trovato o rosa non disponibile")
+    if scoped_team_name and not bool(access_record.is_admin):
+        payload["team"] = scoped_team_name
     return payload
 
 

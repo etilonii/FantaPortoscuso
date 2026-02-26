@@ -1,4 +1,5 @@
 export default function FormazioniSection({
+  variant = "formazioni",
   formations,
   formationTeam,
   setFormationTeam,
@@ -14,7 +15,12 @@ export default function FormazioniSection({
   runOptimizer,
   openPlayer,
   formatDecimal,
+  isAdmin = false,
+  sessionTeam = "",
 }) {
+  const isConsigliata = String(variant || "").trim().toLowerCase() === "consigliata";
+  const scopedTeam = String(sessionTeam || "").trim();
+  const teamScoped = !isAdmin;
   const source = String(formationMeta?.source || "projection").toLowerCase();
   const isRealSource = source === "real";
   const availableRounds = Array.from(
@@ -36,18 +42,23 @@ export default function FormazioniSection({
   const orderLabel =
     orderValue === "live_total" ? "classifica live giornata" : "classifica campionato";
 
-  const teamOptions = [
-    "all",
-    ...Array.from(
-      new Set((formations || []).map((item) => String(item.team || "").trim()).filter(Boolean))
-    ).sort((a, b) => a.localeCompare(b, "it", { sensitivity: "base" })),
-  ];
+  const teamOptions = teamScoped
+    ? (scopedTeam ? [scopedTeam] : [])
+    : [
+        "all",
+        ...Array.from(
+          new Set((formations || []).map((item) => String(item.team || "").trim()).filter(Boolean))
+        ).sort((a, b) => a.localeCompare(b, "it", { sensitivity: "base" })),
+      ];
+
+  const effectiveTeam = teamScoped ? scopedTeam : String(formationTeam || "").trim();
+  const hasEffectiveTeam = Boolean(effectiveTeam);
 
   const visibleItems =
-    formationTeam === "all"
+    !hasEffectiveTeam || effectiveTeam.toLowerCase() === "all"
       ? formations || []
       : (formations || []).filter(
-          (item) => String(item.team || "").trim() === String(formationTeam || "").trim()
+          (item) => String(item.team || "").trim() === effectiveTeam
         );
 
   const parseLiveTotal = (value) => {
@@ -73,7 +84,18 @@ export default function FormazioniSection({
   });
 
   const normalizePlayerKey = (value) => String(value || "").trim().toLowerCase();
-  const canOptimize = formationTeam !== "all" && String(formationTeam || "").trim().length > 0;
+  const canOptimize =
+    hasEffectiveTeam && String(effectiveTeam || "").trim().toLowerCase() !== "all";
+  const optimizerRoundCandidate = Number(formationMeta?.optimizerRound);
+  const optimizerRoundForRun =
+    Number.isFinite(optimizerRoundCandidate) && optimizerRoundCandidate > 0
+      ? optimizerRoundCandidate
+      : Number.isFinite(activeRound) && activeRound > 0
+        ? activeRound
+        : null;
+  const displayRound = isConsigliata
+    ? (optimizerRoundForRun || (hasRound ? activeRound : null))
+    : (hasRound ? activeRound : null);
   const unavailablePlayers = Array.isArray(optimizerData?.availability?.unavailable_players)
     ? optimizerData.availability.unavailable_players
     : [];
@@ -279,36 +301,51 @@ export default function FormazioniSection({
     <section className="dashboard">
       <div className="dashboard-header left row">
         <div>
-          <p className="eyebrow">Formazioni</p>
-          <h2>{hasRound ? `Giornata ${activeRound}` : "Giornata corrente"}</h2>
+          <p className="eyebrow">{isConsigliata ? "Formazione consigliata" : "Formazioni"}</p>
+          <h2>{displayRound ? `Giornata ${displayRound}` : "Giornata corrente"}</h2>
           <p className="muted">
-            {isRealSource
-              ? `Formazioni reali ordinate per ${orderLabel}.`
-              : `Fallback: miglior XI ordinato per ${orderLabel}.`}
+            {isConsigliata
+              ? "XI ottimizzata per il team selezionato."
+              : isRealSource
+                ? `Formazioni reali ordinate per ${orderLabel}.`
+                : `Fallback: miglior XI ordinato per ${orderLabel}.`}
           </p>
         </div>
       </div>
 
       <div className="panel">
         <div className="filters inline centered">
-          <label className="field">
-            <span>Squadra</span>
-            <select
-              className="select"
-              value={formationTeam}
-              onChange={(e) => setFormationTeam(e.target.value)}
-            >
-              <option value="all">Tutte</option>
-              {teamOptions
-                .filter((value) => value !== "all")
-                .map((team) => (
-                  <option key={team} value={team}>
-                    {team}
-                  </option>
-              ))}
-            </select>
-          </label>
-          {availableRounds.length > 0 && (
+          {!teamScoped ? (
+            <label className="field">
+              <span>Squadra</span>
+              <select
+                className="select"
+                value={formationTeam}
+                onChange={(e) => setFormationTeam(e.target.value)}
+              >
+                <option value="all">Tutte</option>
+                {teamOptions
+                  .filter((value) => value !== "all")
+                  .map((team) => (
+                    <option key={team} value={team}>
+                      {team}
+                    </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <label className="field">
+              <span>Squadra</span>
+              <select className="select" value={scopedTeam || ""} disabled>
+                {scopedTeam ? (
+                  <option value={scopedTeam}>{scopedTeam}</option>
+                ) : (
+                  <option value="">Non associata</option>
+                )}
+              </select>
+            </label>
+          )}
+          {!isConsigliata && availableRounds.length > 0 && (
             <label className="field">
               <span>Giornata</span>
               <select
@@ -324,7 +361,7 @@ export default function FormazioniSection({
               </select>
             </label>
           )}
-          {orderAllowed.length > 1 ? (
+          {!isConsigliata && orderAllowed.length > 1 ? (
             <label className="field">
               <span>Ordine</span>
               <select
@@ -341,21 +378,23 @@ export default function FormazioniSection({
               </select>
             </label>
           ) : null}
-          <button type="button" className="ghost" onClick={() => reloadFormazioni()}>
-            Corrente
-          </button>
+          {!isConsigliata ? (
+            <button type="button" className="ghost" onClick={() => reloadFormazioni()}>
+              Corrente
+            </button>
+          ) : null}
           {canOptimize ? (
             <button
               type="button"
               className="primary"
-              onClick={() => runOptimizer(formationTeam, formationRound || null)}
+              onClick={() => runOptimizer(effectiveTeam, optimizerRoundForRun || null)}
               disabled={optimizerLoading}
             >
               {optimizerLoading ? "Calcolo..." : "XI ottimizzata"}
             </button>
           ) : null}
         </div>
-        {formationMeta?.note ? <p className="muted compact">{formationMeta.note}</p> : null}
+        {!isConsigliata && formationMeta?.note ? <p className="muted compact">{formationMeta.note}</p> : null}
         {optimizerError ? <p className="error">{optimizerError}</p> : null}
 
         {canOptimize && optimizerData ? (
@@ -433,7 +472,13 @@ export default function FormazioniSection({
           </article>
         ) : null}
 
-        {orderedItems.length === 0 ? (
+        {isConsigliata ? (
+          !canOptimize ? (
+            <p className="muted">Team associato alla key non disponibile.</p>
+          ) : !optimizerData && !optimizerLoading ? (
+            <p className="muted">Dati formazione consigliata non disponibili.</p>
+          ) : null
+        ) : orderedItems.length === 0 ? (
           <p className="muted">Nessuna formazione disponibile.</p>
         ) : (
           <div className="formations-grid">
