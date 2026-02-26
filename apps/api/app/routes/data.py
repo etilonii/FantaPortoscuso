@@ -1096,6 +1096,22 @@ def _load_qa_map() -> Dict[str, float]:
     return qa_map
 
 
+def _load_quotazione_enrichment_map() -> Dict[str, Dict[str, str]]:
+    out: Dict[str, Dict[str, str]] = {}
+    for row in _read_csv(QUOT_PATH):
+        name = (row.get("Giocatore") or "").strip()
+        if not name:
+            continue
+        key = normalize_name(name)
+        if not key:
+            continue
+        out[key] = {
+            "Squadra": str(row.get("Squadra") or "").strip(),
+            "Ruolo": str(row.get("Ruolo") or "").strip().upper(),
+        }
+    return out
+
+
 def _load_player_force_map() -> Dict[str, float]:
     if not PLAYER_STRENGTH_REPORT_PATH.exists():
         return {}
@@ -1233,15 +1249,25 @@ def _load_last_quotazioni_map() -> Dict[str, Dict[str, str]]:
 
 def _apply_qa_from_quot(rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
     qa_map = _load_qa_map()
-    if not qa_map:
+    enrichment_map = _load_quotazione_enrichment_map()
+    if not qa_map and not enrichment_map:
         return rows
     out = []
     for row in rows:
         name_key = normalize_name(row.get("Giocatore", ""))
-        qa = qa_map.get(name_key)
-        if qa is not None:
+        qa = qa_map.get(name_key) if qa_map else None
+        enrich = enrichment_map.get(name_key) if enrichment_map else None
+        if qa is not None or enrich is not None:
             row = dict(row)
-            row["PrezzoAttuale"] = qa
+            if qa is not None:
+                row["PrezzoAttuale"] = qa
+            if isinstance(enrich, dict):
+                squadra = str(enrich.get("Squadra") or "").strip()
+                ruolo = str(enrich.get("Ruolo") or "").strip().upper()
+                if squadra:
+                    row["Squadra"] = squadra
+                if ruolo:
+                    row["Ruolo"] = ruolo
         out.append(row)
     return out
 
