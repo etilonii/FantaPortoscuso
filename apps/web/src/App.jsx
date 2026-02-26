@@ -1096,12 +1096,14 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           ? "live_total"
           : "classifica";
       setFormationOrder(nextOrder);
-      if (normalizedRound !== null) {
-        setFormationRound(String(normalizedRound));
-      } else if (availableRounds.length) {
-        setFormationRound(String(availableRounds[availableRounds.length - 1]));
-      } else {
-        setFormationRound("");
+      if (!currentOnly) {
+        if (normalizedRound !== null) {
+          setFormationRound(String(normalizedRound));
+        } else if (availableRounds.length) {
+          setFormationRound(String(availableRounds[availableRounds.length - 1]));
+        } else {
+          setFormationRound("");
+        }
       }
       return true;
     } catch {
@@ -2944,7 +2946,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   useEffect(() => {
     setFormationOptimizer(null);
     setFormationOptimizerError("");
-  }, [formationTeam, formationRound]);
+  }, [formationTeam]);
 
   useEffect(() => {
     if (!loggedIn || isAdmin) return;
