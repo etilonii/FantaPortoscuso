@@ -74,6 +74,65 @@ export default function FormazioniSection({
 
   const normalizePlayerKey = (value) => String(value || "").trim().toLowerCase();
   const canOptimize = formationTeam !== "all" && String(formationTeam || "").trim().length > 0;
+  const unavailablePlayers = Array.isArray(optimizerData?.availability?.unavailable_players)
+    ? optimizerData.availability.unavailable_players
+    : [];
+  const injuredPlayers = unavailablePlayers.filter(
+    (item) => String(item?.status || "").trim().toLowerCase() === "injured"
+  );
+  const suspendedPlayers = unavailablePlayers.filter(
+    (item) => String(item?.status || "").trim().toLowerCase() === "suspended"
+  );
+  const otherUnavailablePlayers = unavailablePlayers.filter((item) => {
+    const status = String(item?.status || "").trim().toLowerCase();
+    return status !== "injured" && status !== "suspended";
+  });
+
+  const formatUnavailableMeta = (item) => {
+    const role = String(item?.role || "").trim().toUpperCase();
+    const club = String(item?.club || "").trim();
+    const rounds = Array.isArray(item?.rounds)
+      ? item.rounds.filter((value) => Number.isFinite(Number(value)))
+      : [];
+    const roundsLabel = rounds.length
+      ? `G ${rounds
+          .map((value) => Number(value))
+          .sort((a, b) => a - b)
+          .join(", ")}`
+      : "";
+    return [role, club, roundsLabel].filter(Boolean).join(" | ");
+  };
+
+  const renderUnavailableGroup = (title, items, toneClass) => {
+    if (!items.length) return null;
+    return (
+      <div className={`formation-unavailability-group ${toneClass}`}>
+        <p className="formation-unavailability-title">
+          <span>{title}</span>
+          <strong>{items.length}</strong>
+        </p>
+        <div className="formation-unavailability-items">
+          {items.map((item, idx) => {
+            const name = String(item?.name || "").trim();
+            const note = String(item?.note || "").trim();
+            if (!name) return null;
+            return (
+              <button
+                key={`${title}-${name}-${idx}`}
+                type="button"
+                className="formation-unavailability-item"
+                onClick={() => openPlayer(name)}
+                title={note || String(item?.reason || "").trim()}
+              >
+                <span className="formation-unavailability-name">{name}</span>
+                <span className="formation-unavailability-meta">{formatUnavailableMeta(item)}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
 
   const toPlayerEntry = (entry) => {
     if (typeof entry === "string") {
@@ -332,6 +391,18 @@ export default function FormazioniSection({
                   ? ` | Agg. ${optimizerData.probable_formations.last_update_label}`
                   : ""}
               </p>
+            ) : null}
+            {unavailablePlayers.length > 0 ? (
+              <div className="formation-unavailability">
+                <p className="muted compact">
+                  Indisponibili esclusi dall&apos;XI ({unavailablePlayers.length})
+                </p>
+                <div className="formation-unavailability-grid">
+                  {renderUnavailableGroup("Infortunati", injuredPlayers, "injured")}
+                  {renderUnavailableGroup("Squalificati", suspendedPlayers, "suspended")}
+                  {renderUnavailableGroup("Altri", otherUnavailablePlayers, "other")}
+                </div>
+              </div>
             ) : null}
             <div className="formation-lines">
               <div className="formation-line">
