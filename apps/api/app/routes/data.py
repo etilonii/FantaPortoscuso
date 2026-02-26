@@ -5059,6 +5059,25 @@ def _captain_explain_payload(
     }
 
 
+def _optimizer_player_detail_payload(player: Dict[str, object]) -> Dict[str, object]:
+    probable_percentage = _parse_float(player.get("probable_percentage"))
+    return {
+        "name": str(player.get("name") or ""),
+        "role": _role_from_text(player.get("role")),
+        "club": str(player.get("club") or ""),
+        "base_force": round(float(player.get("base_force") or 0.0), 2),
+        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
+        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
+        "fixture_home_away": str(player.get("fixture_home_away") or ""),
+        "fixture_opponent": str(player.get("fixture_opponent") or ""),
+        "probable_bucket": str(player.get("probable_bucket") or ""),
+        "probable_percentage": round(float(probable_percentage), 2)
+        if probable_percentage is not None
+        else None,
+        "probable_recommended": bool(player.get("probable_recommended", False)),
+    }
+
+
 def _build_optimizer_lineup(
     players: List[Dict[str, object]],
     allowed_modules: List[str],
@@ -5159,63 +5178,23 @@ def _build_optimizer_lineup(
                     for player in chosen[1 + d_need + c_need : 1 + d_need + c_need + a_need]
                 ],
                 "portiere_details": [
-                    {
-                        "name": str(player.get("name") or ""),
-                        "role": _role_from_text(player.get("role")),
-                        "base_force": round(float(player.get("base_force") or 0.0), 2),
-                        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
-                        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
-                        "fixture_home_away": str(player.get("fixture_home_away") or ""),
-                        "fixture_opponent": str(player.get("fixture_opponent") or ""),
-                    }
+                    _optimizer_player_detail_payload(player)
                     for player in chosen[:1]
                 ],
                 "difensori_details": [
-                    {
-                        "name": str(player.get("name") or ""),
-                        "role": _role_from_text(player.get("role")),
-                        "base_force": round(float(player.get("base_force") or 0.0), 2),
-                        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
-                        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
-                        "fixture_home_away": str(player.get("fixture_home_away") or ""),
-                        "fixture_opponent": str(player.get("fixture_opponent") or ""),
-                    }
+                    _optimizer_player_detail_payload(player)
                     for player in chosen[1 : 1 + d_need]
                 ],
                 "centrocampisti_details": [
-                    {
-                        "name": str(player.get("name") or ""),
-                        "role": _role_from_text(player.get("role")),
-                        "base_force": round(float(player.get("base_force") or 0.0), 2),
-                        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
-                        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
-                        "fixture_home_away": str(player.get("fixture_home_away") or ""),
-                        "fixture_opponent": str(player.get("fixture_opponent") or ""),
-                    }
+                    _optimizer_player_detail_payload(player)
                     for player in chosen[1 + d_need : 1 + d_need + c_need]
                 ],
                 "attaccanti_details": [
-                    {
-                        "name": str(player.get("name") or ""),
-                        "role": _role_from_text(player.get("role")),
-                        "base_force": round(float(player.get("base_force") or 0.0), 2),
-                        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
-                        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
-                        "fixture_home_away": str(player.get("fixture_home_away") or ""),
-                        "fixture_opponent": str(player.get("fixture_opponent") or ""),
-                    }
+                    _optimizer_player_detail_payload(player)
                     for player in chosen[1 + d_need + c_need : 1 + d_need + c_need + a_need]
                 ],
                 "panchina_details": [
-                    {
-                        "name": str(player.get("name") or ""),
-                        "role": _role_from_text(player.get("role")),
-                        "base_force": round(float(player.get("base_force") or 0.0), 2),
-                        "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
-                        "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
-                        "fixture_home_away": str(player.get("fixture_home_away") or ""),
-                        "fixture_opponent": str(player.get("fixture_opponent") or ""),
-                    }
+                    _optimizer_player_detail_payload(player)
                     for player in bench
                 ],
             },
@@ -5294,63 +5273,23 @@ def _build_optimizer_lineup(
             "centrocampisti": [str(player.get("name") or "") for player in midfielders],
             "attaccanti": [str(player.get("name") or "") for player in attackers],
             "portiere_details": [
-                {
-                    "name": str(player.get("name") or ""),
-                    "role": _role_from_text(player.get("role")),
-                    "base_force": round(float(player.get("base_force") or 0.0), 2),
-                    "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
-                    "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
-                    "fixture_home_away": str(player.get("fixture_home_away") or ""),
-                    "fixture_opponent": str(player.get("fixture_opponent") or ""),
-                }
+                _optimizer_player_detail_payload(player)
                 for player in goalkeeper
             ],
             "difensori_details": [
-                {
-                    "name": str(player.get("name") or ""),
-                    "role": _role_from_text(player.get("role")),
-                    "base_force": round(float(player.get("base_force") or 0.0), 2),
-                    "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
-                    "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
-                    "fixture_home_away": str(player.get("fixture_home_away") or ""),
-                    "fixture_opponent": str(player.get("fixture_opponent") or ""),
-                }
+                _optimizer_player_detail_payload(player)
                 for player in defenders
             ],
             "centrocampisti_details": [
-                {
-                    "name": str(player.get("name") or ""),
-                    "role": _role_from_text(player.get("role")),
-                    "base_force": round(float(player.get("base_force") or 0.0), 2),
-                    "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
-                    "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
-                    "fixture_home_away": str(player.get("fixture_home_away") or ""),
-                    "fixture_opponent": str(player.get("fixture_opponent") or ""),
-                }
+                _optimizer_player_detail_payload(player)
                 for player in midfielders
             ],
             "attaccanti_details": [
-                {
-                    "name": str(player.get("name") or ""),
-                    "role": _role_from_text(player.get("role")),
-                    "base_force": round(float(player.get("base_force") or 0.0), 2),
-                    "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
-                    "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
-                    "fixture_home_away": str(player.get("fixture_home_away") or ""),
-                    "fixture_opponent": str(player.get("fixture_opponent") or ""),
-                }
+                _optimizer_player_detail_payload(player)
                 for player in attackers
             ],
             "panchina_details": [
-                {
-                    "name": str(player.get("name") or ""),
-                    "role": _role_from_text(player.get("role")),
-                    "base_force": round(float(player.get("base_force") or 0.0), 2),
-                    "adjusted_force": round(float(player.get("adjusted_force") or 0.0), 2),
-                    "fixture_factor": round(float(player.get("fixture_factor") or 1.0), 3),
-                    "fixture_home_away": str(player.get("fixture_home_away") or ""),
-                    "fixture_opponent": str(player.get("fixture_opponent") or ""),
-                }
+                _optimizer_player_detail_payload(player)
                 for player in bench
             ],
         },
