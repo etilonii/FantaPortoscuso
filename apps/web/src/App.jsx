@@ -207,6 +207,10 @@ export default function App() {
   const [authBootstrapped, setAuthBootstrapped] = useState(false);
   const [authRestoring, setAuthRestoring] = useState(false);
   const menuHistoryReadyRef = useRef(false);
+  const dataStatusPrevRef = useRef({ result: "", update_id: "" });
+  const dataStatusAutoRefreshRef = useRef(false);
+  const liveRefreshInFlightRef = useRef(false);
+  const topAcquistiRefreshTickRef = useRef(0);
 
   /* ===== UI ===== */
   const [theme, setTheme] = useState("dark");
@@ -522,7 +526,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     if (accessToken) {
       headers.Authorization = `Bearer ${accessToken}`;
     }
-    const response = await fetch(url, { ...options, headers });
+    const requestOptions = {
+      cache: options?.cache || "no-store",
+      ...options,
+      headers,
+    };
+    const response = await fetch(url, requestOptions);
     if (response.status !== 401 || !retryOn401) return response;
 
     const refreshed = await refreshAccessToken();
@@ -533,7 +542,11 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
     const retryHeaders = { ...(options.headers || {}) };
     retryHeaders.Authorization = `Bearer ${refreshed.accessToken}`;
-    return fetch(url, { ...options, headers: retryHeaders });
+    return fetch(url, {
+      cache: options?.cache || "no-store",
+      ...options,
+      headers: retryHeaders,
+    });
   };
 
   const waitMs = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -565,9 +578,13 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     const retryableStatuses = new Set([408, 429, 500, 502, 503, 504]);
     return runWithRetry(
       async () => {
+        const requestOptions = {
+          cache: options?.cache || "no-store",
+          ...options,
+        };
         const res = useAuth
-          ? await fetchWithAuth(url, options, retryOn401)
-          : await fetch(url, options);
+          ? await fetchWithAuth(url, requestOptions, retryOn401)
+          : await fetch(url, requestOptions);
         const payload = await res.json().catch(() => ({}));
         if (!res.ok) {
           const detail =
@@ -1550,41 +1567,62 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   /* ===========================
      PLAYER PROFILE
   =========================== */
-  const openPlayer = async (name) => {
-    if (!name) return;
-    setSelectedPlayer(name);
-    openMenuFeature("player", null, false, false);
-
+  const loadPlayerDetails = async (name, { openMenu = false } = {}) => {
+    const safeName = String(name || "").trim();
+    if (!safeName) return false;
+    if (openMenu) {
+      setSelectedPlayer(safeName);
+      openMenuFeature("player", null, false, false);
+    }
     try {
-      const [profileRes, statsRes] = await Promise.all([
-        fetch(`${API_BASE}/data/players?q=${encodeURIComponent(name)}&limit=200`),
-        fetch(`${API_BASE}/data/stats/player?name=${encodeURIComponent(name)}`),
+      const [profileResult, statsResult] = await Promise.allSettled([
+        fetchJsonWithRetry(
+          `${API_BASE}/data/players?q=${encodeURIComponent(safeName)}&limit=200`,
+          {},
+          { attempts: 2, baseDelayMs: 300 }
+        ),
+        fetchJsonWithRetry(
+          `${API_BASE}/data/stats/player?name=${encodeURIComponent(safeName)}`,
+          {},
+          { attempts: 2, baseDelayMs: 300 }
+        ),
       ]);
 
-      if (profileRes.ok) {
-        const data = await profileRes.json();
-        const items = data.items || [];
-
-        const exact = items.filter(
+      if (profileResult.status === "fulfilled") {
+        const profileItems = profileResult.value?.items || [];
+        const exact = profileItems.filter(
           (it) =>
             String(it.Giocatore || "")
               .trim()
-              .toLowerCase() === String(name).trim().toLowerCase()
+              .toLowerCase() === safeName.toLowerCase()
         );
-
-        const chosen = exact[0] || items[0] || null;
+        const chosen = exact[0] || profileItems[0] || null;
         setPlayerProfile(chosen);
-
         const teamSet = new Set(
           exact.map((it) => String(it.Team || "").trim()).filter(Boolean)
         );
         setPlayerTeamCount(teamSet.size);
+      } else {
+        setPlayerProfile(null);
+        setPlayerTeamCount(0);
       }
 
-      if (statsRes.ok) {
-        const data = await statsRes.json();
-        setPlayerStats(data.item || null);
+      if (statsResult.status === "fulfilled") {
+        setPlayerStats(statsResult.value?.item || null);
+      } else {
+        setPlayerStats(null);
       }
+      return profileResult.status === "fulfilled" || statsResult.status === "fulfilled";
+    } catch {
+      console.warn("openPlayer failed");
+      return false;
+    }
+  };
+
+  const openPlayer = async (name) => {
+    if (!name) return;
+    try {
+      await loadPlayerDetails(name, { openMenu: true });
     } catch {
       console.warn("openPlayer failed");
     }
@@ -2685,13 +2723,156 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   useEffect(() => {
     if (!loggedIn) return;
-    if (String(activeMenu || "").trim() !== "classifica-fixtures-seriea") return;
+    let cancelled = false;
+
+    const refreshActiveMenuData = async () => {
+      if (cancelled || liveRefreshInFlightRef.current) return;
+      liveRefreshInFlightRef.current = true;
+      try {
+        const menu = String(activeMenu || "").trim();
+        const tasks = [];
+
+        if (menu === "home") {
+          tasks.push(loadSummary());
+          tasks.push(loadTopQuotesAllRoles());
+          tasks.push(loadPlusvalenze());
+          tasks.push(loadStatList(statsTab));
+        } else if (menu === "stats") {
+          tasks.push(loadStatList(statsTab));
+        } else if (menu === "rose") {
+          tasks.push(loadTeams());
+          if (selectedTeam) {
+            tasks.push(loadRoster(selectedTeam));
+          }
+        } else if (menu === "formazioni") {
+          tasks.push(loadFormazioni(formationRound || null, formationOrder));
+        } else if (menu === "formazione-consigliata") {
+          tasks.push(loadFormazioni(formationRound || null, formationOrder));
+          const fallbackTeam =
+            String(suggestTeam || "").trim() ||
+            String(selectedTeam || "").trim() ||
+            String(teams?.[0] || "").trim();
+          const optimizerTeam =
+            String(formationTeam || "").trim().toLowerCase() === "all"
+              ? fallbackTeam
+              : String(formationTeam || "").trim();
+          if (optimizerTeam) {
+            tasks.push(runFormationOptimizer(optimizerTeam, formationRound || null));
+          }
+        } else if (menu === "live" && isAdmin) {
+          tasks.push(loadLivePayload(livePayload?.round || null));
+        } else if (menu === "plusvalenze") {
+          tasks.push(loadPlusvalenze());
+          tasks.push(loadAllPlusvalenze());
+        } else if (menu === "listone") {
+          tasks.push(loadListone());
+        } else if (menu === "top-acquisti") {
+          tasks.push(loadMarketStandings());
+          topAcquistiRefreshTickRef.current += 1;
+          const shouldRefreshAggregates =
+            !topAcquistiLoaded || topAcquistiRefreshTickRef.current % 5 === 0;
+          if (teams.length && shouldRefreshAggregates) {
+            tasks.push(loadLeagueAggregates());
+          }
+        } else if (menu === "mercato") {
+          tasks.push(loadMarketStandings());
+          tasks.push(loadMarket());
+          tasks.push(loadSuggestPayload(true));
+        } else if (menu === "classifica-lega") {
+          tasks.push(loadMarketStandings());
+        } else if (menu === "classifica-fixtures-seriea") {
+          tasks.push(loadPremiumInsights(true, { silent: true }));
+          tasks.push(loadMarketStandings());
+        } else if (menu === "player") {
+          if (selectedPlayer) {
+            tasks.push(loadPlayerDetails(selectedPlayer));
+          }
+        } else if (menu === "admin" && isAdmin) {
+          tasks.push(loadAdminStatus());
+          tasks.push(loadAdminTeamKeys());
+          tasks.push(loadAdminKeys());
+        }
+
+        if (tasks.length) {
+          await Promise.allSettled(tasks);
+        }
+      } finally {
+        liveRefreshInFlightRef.current = false;
+      }
+    };
+
+    void refreshActiveMenuData();
+    const intervalMs =
+      String(dataStatus?.result || "").toLowerCase() === "running" ? 15000 : 60000;
     const timer = setInterval(() => {
-      loadPremiumInsights(true, { silent: true });
-    }, 60000);
+      void refreshActiveMenuData();
+    }, intervalMs);
+
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    loggedIn,
+    activeMenu,
+    dataStatus?.result,
+    statsTab,
+    plusvalenzePeriod,
+    quoteRole,
+    quoteOrder,
+    selectedTeam,
+    formationRound,
+    formationOrder,
+    formationTeam,
+    suggestTeam,
+    isAdmin,
+    selectedPlayer,
+    teams.length,
+    topAcquistiLoaded,
+    livePayload?.round,
+  ]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    const intervalMs = String(dataStatus?.result || "").toLowerCase() === "running" ? 5000 : 30000;
+    const timer = setInterval(() => {
+      loadDataStatus();
+    }, intervalMs);
     return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedIn, activeMenu]);
+  }, [loggedIn, dataStatus?.result]);
+
+  useEffect(() => {
+    const currentResult = String(dataStatus?.result || "").toLowerCase();
+    const currentUpdateId = String(dataStatus?.update_id || "").trim();
+    const prev = dataStatusPrevRef.current;
+    dataStatusPrevRef.current = { result: currentResult, update_id: currentUpdateId };
+
+    if (!loggedIn) return;
+    const completedNow = prev.result === "running" && currentResult === "ok";
+    const newCompletedUpdate =
+      currentResult === "ok" &&
+      Boolean(prev.update_id) &&
+      Boolean(currentUpdateId) &&
+      prev.update_id !== currentUpdateId;
+
+    if (!completedNow && !newCompletedUpdate) return;
+    if (dataStatusAutoRefreshRef.current) return;
+
+    dataStatusAutoRefreshRef.current = true;
+    void (async () => {
+      try {
+        await loadInitialData({ silent: true });
+        if (INSIGHTS_MENU_KEYS.has(String(activeMenu || "").trim())) {
+          await loadPremiumInsights(true, { silent: true });
+        }
+      } finally {
+        dataStatusAutoRefreshRef.current = false;
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataStatus?.result, dataStatus?.update_id, loggedIn, activeMenu]);
 
   /* ===========================
      MENU OPEN (mobile)
