@@ -3812,6 +3812,7 @@ def _availability_default_payload() -> Dict[str, object]:
     return {
         "fetched_at": "",
         "sources": {
+            "probable": PROBABLE_FORMATIONS_SOURCE_URL,
             "injuries": INJURIES_SOURCE_URL,
             "suspensions": SUSPENSIONS_SOURCE_URL,
         },
@@ -4353,6 +4354,244 @@ def _team_card_blocks(source_html: str) -> List[str]:
     return blocks
 
 
+def _extract_probable_team_names_from_match_block(
+    block_html: str,
+    club_index: Dict[str, str],
+) -> List[Tuple[str, str]]:
+    teams: List[Tuple[str, str]] = []
+    for match in re.finditer(
+        r"<h3\s+class=\"h6\s+team-name\">\s*(.*?)\s*</h3>",
+        str(block_html or ""),
+        flags=re.IGNORECASE | re.DOTALL,
+    ):
+        team_name = _display_team_name(_strip_html_tags(match.group(1)), club_index)
+        team_key = normalize_name(team_name)
+        if not team_key:
+            continue
+        teams.append((team_name, team_key))
+    return teams[:2]
+
+
+def _extract_probable_section_players(
+    section_html: str,
+    *,
+    with_note: bool,
+) -> List[Dict[str, str]]:
+    out: List[Dict[str, str]] = []
+    for item in re.finditer(
+        r"<li>\s*(.*?)\s*</li>",
+        str(section_html or ""),
+        flags=re.IGNORECASE | re.DOTALL,
+    ):
+        item_html = str(item.group(1) or "")
+        player_match = re.search(
+            r"<a[^>]*class=\"[^\"]*player-name[^\"]*\"[^>]*>(.*?)</a>",
+            item_html,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        if player_match is None:
+            continue
+        player_name = _canonicalize_name(_strip_html_tags(player_match.group(1)))
+        player_key = normalize_name(player_name)
+        if not player_key:
+            continue
+        note = ""
+        if with_note:
+            note_match = re.search(
+                r"<p[^>]*class=\"[^\"]*description[^\"]*\"[^>]*>(.*?)</p>",
+                item_html,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            note = _strip_html_tags(note_match.group(1)) if note_match else ""
+        out.append(
+            {
+                "name": player_name,
+                "name_key": player_key,
+                "note": note,
+            }
+        )
+    return out
+
+
+def _extract_probable_availability_entries_from_html(
+    source_html: str,
+    club_index: Dict[str, str],
+) -> Dict[str, object]:
+    injured: List[Dict[str, object]] = []
+    suspended: List[Dict[str, object]] = []
+    diffidati: List[Dict[str, object]] = []
+    seen_injured: Set[Tuple[str, str]] = set()
+    seen_suspended: Set[Tuple[str, str, Tuple[int, ...]]] = set()
+    seen_diffidati: Set[Tuple[str, str]] = set()
+    rounds_seen: Set[int] = set()
+
+    for match_block in _probable_match_item_blocks(source_html):
+        teams = _extract_probable_team_names_from_match_block(match_block, club_index)
+        if not teams:
+            continue
+        round_value = _extract_probable_round_from_match_block(match_block)
+        if round_value is not None and round_value > 0:
+            rounds_seen.add(int(round_value))
+
+        section_specs = (
+            ("injured", "injureds", True),
+            ("suspended", "suspendeds", False),
+            ("diffidati", "cautioneds", False),
+        )
+        for section_kind, section_class, with_note in section_specs:
+            section_match = re.search(
+                rf"<section\s+class=\"{section_class}\">(.*?)</section>",
+                match_block,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            if section_match is None:
+                continue
+            section_html = str(section_match.group(1) or "")
+            content_blocks = re.findall(
+                r"<div\s+class=\"content\">(.*?)</div>",
+                section_html,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            if not content_blocks:
+                continue
+
+            for idx, content_html in enumerate(content_blocks):
+                if idx >= len(teams):
+                    break
+                team_name, team_key = teams[idx]
+                players = _extract_probable_section_players(content_html, with_note=with_note)
+                for item in players:
+                    name = str(item.get("name") or "")
+                    name_key = str(item.get("name_key") or "")
+                    if not name_key:
+                        continue
+                    note = str(item.get("note") or "")
+                    if section_kind == "injured":
+                        marker = (name_key, team_key)
+                        if marker in seen_injured:
+                            continue
+                        seen_injured.add(marker)
+                        injured.append(
+                            {
+                                "name": name,
+                                "name_key": name_key,
+                                "team": team_name,
+                                "team_key": team_key,
+                                "note": note,
+                            }
+                        )
+                    elif section_kind == "suspended":
+                        rounds = [int(round_value)] if round_value is not None and round_value > 0 else []
+                        marker = (name_key, team_key, tuple(rounds))
+                        if marker in seen_suspended:
+                            continue
+                        seen_suspended.add(marker)
+                        suspended.append(
+                            {
+                                "name": name,
+                                "name_key": name_key,
+                                "team": team_name,
+                                "team_key": team_key,
+                                "rounds": rounds,
+                                "indefinite": bool(not rounds),
+                                "note": note,
+                            }
+                        )
+                    else:
+                        marker = (name_key, team_key)
+                        if marker in seen_diffidati:
+                            continue
+                        seen_diffidati.add(marker)
+                        diffidati.append(
+                            {
+                                "name": name,
+                                "name_key": name_key,
+                                "team": team_name,
+                                "team_key": team_key,
+                            }
+                        )
+
+    injured.sort(key=lambda row: (str(row.get("team_key") or ""), str(row.get("name_key") or "")))
+    suspended.sort(key=lambda row: (str(row.get("team_key") or ""), str(row.get("name_key") or "")))
+    diffidati.sort(key=lambda row: (str(row.get("team_key") or ""), str(row.get("name_key") or "")))
+    return {
+        "injured": injured,
+        "suspended": suspended,
+        "diffidati": diffidati,
+        "round": max(rounds_seen) if rounds_seen else None,
+    }
+
+
+def _enrich_injured_from_secondary(
+    primary_rows: List[Dict[str, object]],
+    secondary_rows: List[Dict[str, object]],
+) -> List[Dict[str, object]]:
+    if not primary_rows or not secondary_rows:
+        return primary_rows
+    secondary_map = {
+        (
+            normalize_name(str(item.get("name_key") or item.get("name") or "")),
+            normalize_name(str(item.get("team_key") or item.get("team") or "")),
+        ): item
+        for item in secondary_rows
+        if normalize_name(str(item.get("name_key") or item.get("name") or ""))
+    }
+    for row in primary_rows:
+        key = (
+            normalize_name(str(row.get("name_key") or row.get("name") or "")),
+            normalize_name(str(row.get("team_key") or row.get("team") or "")),
+        )
+        extra = secondary_map.get(key)
+        if not isinstance(extra, dict):
+            continue
+        note = str(row.get("note") or "").strip()
+        if not note:
+            row["note"] = str(extra.get("note") or "").strip()
+    return primary_rows
+
+
+def _enrich_suspended_from_secondary(
+    primary_rows: List[Dict[str, object]],
+    secondary_rows: List[Dict[str, object]],
+) -> List[Dict[str, object]]:
+    if not primary_rows or not secondary_rows:
+        return primary_rows
+    secondary_map = {
+        (
+            normalize_name(str(item.get("name_key") or item.get("name") or "")),
+            normalize_name(str(item.get("team_key") or item.get("team") or "")),
+        ): item
+        for item in secondary_rows
+        if normalize_name(str(item.get("name_key") or item.get("name") or ""))
+    }
+    for row in primary_rows:
+        key = (
+            normalize_name(str(row.get("name_key") or row.get("name") or "")),
+            normalize_name(str(row.get("team_key") or row.get("team") or "")),
+        )
+        extra = secondary_map.get(key)
+        if not isinstance(extra, dict):
+            continue
+        rounds = [
+            int(value)
+            for value in (row.get("rounds") or [])
+            if _parse_int(value) is not None and int(value) > 0
+        ]
+        if not rounds:
+            extra_rounds = [
+                int(value)
+                for value in (extra.get("rounds") or [])
+                if _parse_int(value) is not None and int(value) > 0
+            ]
+            if extra_rounds:
+                row["rounds"] = sorted(set(extra_rounds))
+        row["indefinite"] = bool(not row.get("rounds"))
+        note = str(row.get("note") or "").strip()
+        if not note:
+            row["note"] = str(extra.get("note") or "").strip()
+    return primary_rows
+
+
 def _extract_rounds_from_suspension_note(note: str) -> List[int]:
     cleaned = _strip_html_tags(note).lower()
     if not cleaned:
@@ -4532,30 +4771,76 @@ def _write_name_list_file(path: Path, names: List[str]) -> None:
 
 def _sync_player_availability_sources() -> Dict[str, object]:
     club_index = _load_club_name_index()
+    primary_mode = "probable_primary"
+    warnings: List[str] = []
+
+    probable_entries = {"injured": [], "suspended": [], "diffidati": [], "round": None}
+    probable_error = ""
     try:
-        injuries_html = _fetch_text_url(INJURIES_SOURCE_URL, timeout_seconds=25.0)
-        injuries = _extract_injured_entries_from_html(injuries_html, club_index)
+        probable_html = _fetch_text_url(PROBABLE_FORMATIONS_SOURCE_URL, timeout_seconds=25.0)
+        probable_entries = _extract_probable_availability_entries_from_html(probable_html, club_index)
     except Exception as exc:
         detail = exc.detail if isinstance(exc, HTTPException) and hasattr(exc, "detail") else str(exc)
-        return {
-            "ok": False,
-            "error": f"injuries_fetch_failed: {detail}",
-            "source": INJURIES_SOURCE_URL,
-        }
+        probable_error = f"probable_fetch_failed: {detail}"
+
+    fallback_injuries: List[Dict[str, object]] = []
+    fallback_suspended: List[Dict[str, object]] = []
+    fallback_diffidati: List[Dict[str, object]] = []
+
+    try:
+        injuries_html = _fetch_text_url(INJURIES_SOURCE_URL, timeout_seconds=25.0)
+        fallback_injuries = _extract_injured_entries_from_html(injuries_html, club_index)
+    except Exception as exc:
+        detail = exc.detail if isinstance(exc, HTTPException) and hasattr(exc, "detail") else str(exc)
+        warnings.append(f"injuries_fetch_failed: {detail}")
 
     try:
         suspensions_html = _fetch_text_url(SUSPENSIONS_SOURCE_URL, timeout_seconds=25.0)
-        suspended, diffidati = _extract_suspension_entries_from_html(suspensions_html, club_index)
+        fallback_suspended, fallback_diffidati = _extract_suspension_entries_from_html(
+            suspensions_html,
+            club_index,
+        )
     except Exception as exc:
         detail = exc.detail if isinstance(exc, HTTPException) and hasattr(exc, "detail") else str(exc)
+        warnings.append(f"suspensions_fetch_failed: {detail}")
+
+    probable_has_data = bool(
+        probable_entries.get("injured")
+        or probable_entries.get("suspended")
+        or probable_entries.get("diffidati")
+    )
+    if probable_has_data:
+        injuries = [dict(item) for item in (probable_entries.get("injured") or []) if isinstance(item, dict)]
+        suspended = [dict(item) for item in (probable_entries.get("suspended") or []) if isinstance(item, dict)]
+        diffidati = [dict(item) for item in (probable_entries.get("diffidati") or []) if isinstance(item, dict)]
+        injuries = _enrich_injured_from_secondary(injuries, fallback_injuries)
+        suspended = _enrich_suspended_from_secondary(suspended, fallback_suspended)
+    else:
+        primary_mode = "legacy_fallback"
+        if probable_error:
+            warnings.append(probable_error)
+        injuries = fallback_injuries
+        suspended = fallback_suspended
+        diffidati = fallback_diffidati
+
+    if not (injuries or suspended or diffidati):
+        detail = "; ".join(warnings) if warnings else (probable_error or "no availability entries parsed")
         return {
             "ok": False,
-            "error": f"suspensions_fetch_failed: {detail}",
-            "source": SUSPENSIONS_SOURCE_URL,
+            "error": detail,
+            "source": PROBABLE_FORMATIONS_SOURCE_URL,
         }
 
     snapshot = _availability_default_payload()
     snapshot["fetched_at"] = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+    snapshot["sources"] = {
+        "mode": primary_mode,
+        "probable": PROBABLE_FORMATIONS_SOURCE_URL,
+        "injuries": INJURIES_SOURCE_URL,
+        "suspensions": SUSPENSIONS_SOURCE_URL,
+    }
+    if probable_entries.get("round") is not None:
+        snapshot["probable_round"] = _parse_int(probable_entries.get("round"))
     snapshot["injured"] = injuries
     snapshot["suspended"] = suspended
     snapshot["diffidati"] = diffidati
@@ -4568,11 +4853,13 @@ def _sync_player_availability_sources() -> Dict[str, object]:
 
     return {
         "ok": True,
+        "mode": primary_mode,
         "injured_count": len(injuries),
         "suspended_count": len(suspended),
         "diffidati_count": len(diffidati),
         "path": str(AVAILABILITY_STATUS_PATH),
         "fetched_at": str(snapshot.get("fetched_at") or ""),
+        "warnings": warnings,
     }
 
 
