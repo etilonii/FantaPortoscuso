@@ -2307,39 +2307,44 @@ body.admin-menu-open .admin-menu-overlay {
 }
 
 .formation-pill-probable {
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 800;
   letter-spacing: 0.01em;
   border-radius: 999px;
-  border: 1px solid var(--border);
+  color: #e8f1ff;
+  border: 1px solid rgba(116, 168, 255, 0.58);
   padding: 2px 7px;
   line-height: 1.1;
+  background: linear-gradient(135deg, rgba(12, 44, 108, 0.95), rgba(21, 76, 170, 0.88));
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
 }
 
 .formation-pill-probable.titolare {
-  color: #0f7a43;
-  border-color: rgba(16, 185, 129, 0.65);
-  background: rgba(16, 185, 129, 0.18);
+  color: #7df0b4;
+  border-color: rgba(74, 222, 128, 0.88);
+  box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.22);
 }
 
 .formation-pill-probable.ballottaggio {
-  color: #b45309;
-  border-color: rgba(249, 115, 22, 0.66);
-  background: rgba(249, 115, 22, 0.18);
+  color: #ffd166;
+  border-color: rgba(251, 191, 36, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.24);
 }
 
 .formation-pill-probable.panchina {
-  color: #b91c1c;
-  border-color: rgba(239, 68, 68, 0.68);
-  background: rgba(239, 68, 68, 0.18);
+  color: #ff9e9e;
+  border-color: rgba(248, 113, 113, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.24);
 }
 
 .formation-pill-probable.unknown {
-  color: var(--muted);
+  color: #c9dcff;
+  border-color: rgba(147, 197, 253, 0.55);
 }
 
 .formation-pill-probable.off {
-  opacity: 0.72;
+  opacity: 0.82;
+  filter: saturate(0.82) brightness(0.94);
 }
 
 .formation-pill-metrics.sv {
@@ -3846,22 +3851,29 @@ body.theme-light .formation-pill {
   border-color: var(--border);
 }
 
+body.theme-light .formation-pill-probable {
+  color: #eaf2ff;
+  border-color: rgba(89, 145, 235, 0.62);
+  background: linear-gradient(135deg, rgba(19, 69, 150, 0.9), rgba(23, 88, 192, 0.82));
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+
 body.theme-light .formation-pill-probable.titolare {
-  color: #0f7a43;
-  border-color: rgba(16, 185, 129, 0.62);
-  background: rgba(16, 185, 129, 0.16);
+  color: #9bf7c4;
+  border-color: rgba(74, 222, 128, 0.86);
+  box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.2);
 }
 
 body.theme-light .formation-pill-probable.ballottaggio {
-  color: #b45309;
-  border-color: rgba(249, 115, 22, 0.62);
-  background: rgba(249, 115, 22, 0.16);
+  color: #ffe08a;
+  border-color: rgba(251, 191, 36, 0.86);
+  box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.2);
 }
 
 body.theme-light .formation-pill-probable.panchina {
-  color: #b91c1c;
-  border-color: rgba(239, 68, 68, 0.64);
-  background: rgba(239, 68, 68, 0.16);
+  color: #ffb0b0;
+  border-color: rgba(248, 113, 113, 0.88);
+  box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.22);
 }
 
 body.theme-light .data-status-step-inline.ok {
