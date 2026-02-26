@@ -2307,7 +2307,7 @@ body.admin-menu-open .admin-menu-overlay {
 }
 
 .formation-pill-probable {
-  font-size: 0.56rem;
+  font-size: 0.6rem;
   font-weight: 800;
   letter-spacing: 0.01em;
   border-radius: 999px;
@@ -2317,21 +2317,21 @@ body.admin-menu-open .admin-menu-overlay {
 }
 
 .formation-pill-probable.titolare {
-  color: #2e8d60;
-  border-color: rgba(57, 194, 127, 0.4);
-  background: rgba(57, 194, 127, 0.14);
+  color: #0f7a43;
+  border-color: rgba(16, 185, 129, 0.65);
+  background: rgba(16, 185, 129, 0.18);
 }
 
 .formation-pill-probable.ballottaggio {
-  color: #9a6d20;
-  border-color: rgba(255, 182, 63, 0.45);
-  background: rgba(255, 182, 63, 0.16);
+  color: #b45309;
+  border-color: rgba(249, 115, 22, 0.66);
+  background: rgba(249, 115, 22, 0.18);
 }
 
 .formation-pill-probable.panchina {
-  color: #7d4e4e;
-  border-color: rgba(232, 126, 126, 0.45);
-  background: rgba(232, 126, 126, 0.14);
+  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.68);
+  background: rgba(239, 68, 68, 0.18);
 }
 
 .formation-pill-probable.unknown {
@@ -3847,21 +3847,21 @@ body.theme-light .formation-pill {
 }
 
 body.theme-light .formation-pill-probable.titolare {
-  color: #1f5a37;
-  border-color: rgba(70, 160, 100, 0.5);
-  background: rgba(70, 160, 100, 0.12);
+  color: #0f7a43;
+  border-color: rgba(16, 185, 129, 0.62);
+  background: rgba(16, 185, 129, 0.16);
 }
 
 body.theme-light .formation-pill-probable.ballottaggio {
-  color: #6b4a12;
-  border-color: rgba(210, 150, 32, 0.48);
-  background: rgba(210, 150, 32, 0.16);
+  color: #b45309;
+  border-color: rgba(249, 115, 22, 0.62);
+  background: rgba(249, 115, 22, 0.16);
 }
 
 body.theme-light .formation-pill-probable.panchina {
-  color: #7c2424;
-  border-color: rgba(200, 70, 70, 0.48);
-  background: rgba(200, 70, 70, 0.14);
+  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.64);
+  background: rgba(239, 68, 68, 0.16);
 }
 
 body.theme-light .data-status-step-inline.ok {

@@ -174,6 +174,7 @@ export default function FormazioniSection({
           const probableRecommended = Boolean(entry?.probable_recommended);
           const probableLabel = probableBucketLabel(probableBucket);
           const opponentLabel = opponent ? `${venueLabel} vs ${opponent}` : venueLabel;
+          const factorLabel = Number.isFinite(factor) ? `x${factor.toFixed(3)}` : "x1.000";
           return (
             <button
               key={`${name}-${idx}`}
@@ -197,12 +198,15 @@ export default function FormazioniSection({
                 </span>
               </span>
               <span className="formation-pill-metrics">
-                Indice Fanta {Number.isFinite(adjusted) ? formatDecimal(adjusted, 2) : "-"} |
-                Valore stagione {Number.isFinite(base) ? formatDecimal(base, 2) : "-"}
+                Valore Base: {Number.isFinite(base) ? formatDecimal(base, 2) : "-"}
               </span>
               <span className="formation-pill-metrics">
-                Fattore partita {Number.isFinite(factor) ? formatDecimal(factor, 3) : "1,000"} |
-                {" "}
+                Fattore Partita: {factorLabel}
+              </span>
+              <span className="formation-pill-metrics">
+                Valore Finale: {Number.isFinite(adjusted) ? formatDecimal(adjusted, 2) : "-"}
+              </span>
+              <span className="formation-pill-metrics">
                 {opponentLabel}
               </span>
             </button>

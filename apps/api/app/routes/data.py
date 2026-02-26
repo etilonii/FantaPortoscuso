@@ -111,7 +111,8 @@ INJURIES_SOURCE_URL = "https://www.fantacalcio.it/infortunati-serie-a"
 SUSPENSIONS_SOURCE_URL = "https://www.fantacalcio.it/squalificati-e-diffidati-campionato-serie-a"
 PROBABLE_FORMATIONS_SOURCE_URL = "https://www.fantacalcio.it/probabili-formazioni-serie-a"
 AVAILABILITY_STATUS_PATH = DATA_DIR / "availability_status.json"
-PROBABLE_FORMATIONS_STATUS_PATH = DATA_DIR / "probabili_formazioni_status.json"
+PROBABLE_FORMATIONS_STATUS_PATH = RUNTIME_DATA_DIR / "probabili_formazioni_status.json"
+PROBABLE_FORMATIONS_SEED_PATH = DATA_DIR / "probabili_formazioni_status.json"
 PROBABLE_FORMATIONS_MAX_AGE_HOURS = 4.0
 INJURED_CLEAN_PATH = DATA_DIR / "infortunati_clean.txt"
 SUSPENDED_CLEAN_PATH = DATA_DIR / "squalificati_clean.txt"
@@ -4132,31 +4133,8 @@ def _sync_probable_formations_source() -> Dict[str, object]:
     }
 
 
-def _load_probable_formations_status(
-    *,
-    refresh_if_stale: bool = True,
-    max_age_hours: float = PROBABLE_FORMATIONS_MAX_AGE_HOURS,
-) -> Dict[str, object]:
+def _read_probable_formations_status_file(path: Path) -> Dict[str, object]:
     defaults = _probable_formations_default_payload()
-    path = PROBABLE_FORMATIONS_STATUS_PATH
-    now_utc = datetime.now(tz=timezone.utc)
-
-    should_refresh = False
-    if not path.exists():
-        should_refresh = True
-    elif refresh_if_stale and max_age_hours > 0:
-        try:
-            age_seconds = max(0.0, now_utc.timestamp() - float(path.stat().st_mtime))
-            if age_seconds >= float(max_age_hours) * 3600.0:
-                should_refresh = True
-        except Exception:
-            should_refresh = True
-
-    if should_refresh and refresh_if_stale:
-        sync_result = _sync_probable_formations_source()
-        if sync_result.get("ok") is False and not path.exists():
-            return defaults
-
     if not path.exists():
         return defaults
 
@@ -4189,6 +4167,47 @@ def _load_probable_formations_status(
 
     _PROBABLE_FORMATIONS_CACHE[cache_key] = {"mtime": mtime, "data": data}
     return dict(data)
+
+
+def _load_probable_formations_status(
+    *,
+    refresh_if_stale: bool = True,
+    max_age_hours: float = PROBABLE_FORMATIONS_MAX_AGE_HOURS,
+) -> Dict[str, object]:
+    defaults = _probable_formations_default_payload()
+    runtime_path = PROBABLE_FORMATIONS_STATUS_PATH
+    seed_path = PROBABLE_FORMATIONS_SEED_PATH
+    now_utc = datetime.now(tz=timezone.utc)
+
+    def _active_path() -> Optional[Path]:
+        if runtime_path.exists():
+            return runtime_path
+        if seed_path.exists():
+            return seed_path
+        return None
+
+    should_refresh = False
+    current_path = _active_path()
+    if current_path is None:
+        should_refresh = True
+    elif refresh_if_stale and max_age_hours > 0:
+        try:
+            age_seconds = max(0.0, now_utc.timestamp() - float(current_path.stat().st_mtime))
+            if age_seconds >= float(max_age_hours) * 3600.0:
+                should_refresh = True
+        except Exception:
+            should_refresh = True
+
+    if should_refresh and refresh_if_stale:
+        sync_result = _sync_probable_formations_source()
+        current_path = _active_path()
+        if sync_result.get("ok") is False and current_path is None:
+            return defaults
+
+    current_path = _active_path()
+    if current_path is None:
+        return defaults
+    return _read_probable_formations_status_file(current_path)
 
 
 def _build_optimizer_probable_lookup(
