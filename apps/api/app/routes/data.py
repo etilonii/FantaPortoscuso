@@ -29,6 +29,7 @@ from apps.api.app.config import (
     BACKUP_DIR,
     BACKUP_KEEP_LAST,
     DATABASE_URL,
+    AUTO_LEGHE_SYNC_SLOT_HOURS,
     LEGHE_ALIAS,
     LEGHE_USERNAME,
     LEGHE_PASSWORD,
@@ -99,7 +100,7 @@ VOTI_BASE_URL = "https://www.fantacalcio.it/voti-fantacalcio-serie-a"
 CALENDAR_BASE_URL = "https://www.fantacalcio.it/serie-a/calendario"
 LEGHE_BASE_URL = "https://leghe.fantacalcio.it"
 LEGHE_SYNC_TZ = ZoneInfo("Europe/Rome")
-LEGHE_SYNC_SLOT_HOURS = 3
+LEGHE_SYNC_SLOT_HOURS = max(1, int(AUTO_LEGHE_SYNC_SLOT_HOURS))
 LEGHE_BOOTSTRAP_MAX_AGE_HOURS = 20
 LEGHE_DAILY_ROSE_JOB_NAME = "auto_leghe_sync_rose_daily"
 LEGHE_DAILY_LIVE_JOB_NAME = "auto_leghe_sync_live_daily"
@@ -221,6 +222,9 @@ LIVE_EVENT_FIELDS: Tuple[str, ...] = (
 )
 APPKEY_BONUS_GV_DEFAULT_INDEX = 8
 APPKEY_BONUS_GP_DEFAULT_INDEX = 9
+
+LEGHE_MATCHDAY_SYNC_START_HOUR_MON_SAT = 15
+LEGHE_MATCHDAY_SYNC_START_HOUR_SUN = 12
 
 FORMATION_ROLE_ORDER: Tuple[str, ...] = ("P", "D", "C", "A")
 FORMATION_OUTFIELD_ROLES: Tuple[str, ...] = ("D", "C", "A")
@@ -10323,6 +10327,21 @@ def _leghe_sync_slot_start_local(local_dt: datetime) -> datetime:
     return local_dt.replace(hour=slot_hour, minute=0, second=0, microsecond=0)
 
 
+def _leghe_matchday_sync_window_label() -> str:
+    return (
+        f"mon-sat {LEGHE_MATCHDAY_SYNC_START_HOUR_MON_SAT:02d}:00-23:59, "
+        f"sun {LEGHE_MATCHDAY_SYNC_START_HOUR_SUN:02d}:00-23:59"
+    )
+
+
+def _is_leghe_matchday_sync_allowed_now(local_dt: datetime) -> bool:
+    weekday = int(local_dt.weekday())  # Monday=0, Sunday=6
+    hour = int(local_dt.hour)
+    if weekday == 6:
+        return hour >= int(LEGHE_MATCHDAY_SYNC_START_HOUR_SUN)
+    return hour >= int(LEGHE_MATCHDAY_SYNC_START_HOUR_MON_SAT)
+
+
 def leghe_sync_seconds_until_next_slot(now_utc: Optional[datetime] = None) -> int:
     local_now = _leghe_sync_local_now(now_utc)
     slot_start_local = _leghe_sync_slot_start_local(local_now)
@@ -10888,6 +10907,18 @@ def run_auto_leghe_sync(
                 "availability_sync": availability_sync_result,
             }
 
+    if not _is_leghe_matchday_sync_allowed_now(local_now):
+        return {
+            "ok": True,
+            "skipped": True,
+            "reason": "outside_matchday_sync_hours",
+            "matchday": int(scheduled_matchday),
+            "local_time": local_now.isoformat(),
+            "allowed_window_local": _leghe_matchday_sync_window_label(),
+            "timezone": str(LEGHE_SYNC_TZ),
+            "availability_sync": availability_sync_result,
+        }
+
     slot_start_local = _leghe_sync_slot_start_local(local_now)
     slot_start_utc_ts = int(slot_start_local.astimezone(timezone.utc).timestamp())
     claimed = _claim_scheduled_job_slot(
@@ -10931,8 +10962,8 @@ def run_auto_leghe_sync(
             competition_id=LEGHE_COMPETITION_ID,
             competition_name=LEGHE_COMPETITION_NAME,
             formations_matchday=int(scheduled_matchday),
-            fetch_quotazioni=True,
-            fetch_global_stats=True,
+            fetch_quotazioni=False,
+            fetch_global_stats=False,
             run_pipeline=bool(run_pipeline),
         )
         if isinstance(result, dict):

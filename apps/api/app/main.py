@@ -11,7 +11,7 @@ from .config import (
     RATE_LIMIT_REQUESTS,
     RATE_LIMIT_WINDOW_SECONDS,
     AUTO_LIVE_IMPORT_ENABLED,
-    AUTO_LIVE_IMPORT_INTERVAL_HOURS,
+    AUTO_LIVE_IMPORT_INTERVAL_MINUTES,
     AUTO_LIVE_IMPORT_ON_START,
     AUTO_LIVE_IMPORT_ROUND,
     AUTO_LIVE_IMPORT_SEASON,
@@ -90,7 +90,7 @@ def create_app() -> FastAPI:
     app.include_router(market_advisor.router)
 
     if AUTO_LIVE_IMPORT_ENABLED:
-        interval_seconds = max(1, int(AUTO_LIVE_IMPORT_INTERVAL_HOURS)) * 3600
+        interval_seconds = max(1, int(AUTO_LIVE_IMPORT_INTERVAL_MINUTES)) * 60
 
         def _run_auto_live_import_once() -> None:
             db = SessionLocal()
@@ -135,8 +135,8 @@ def create_app() -> FastAPI:
             app.state.auto_live_import_stop_event = stop_event
             app.state.auto_live_import_task = task
             logger.info(
-                "Auto live import scheduler enabled (interval=%sh, on_start=%s, fixed_round=%s)",
-                AUTO_LIVE_IMPORT_INTERVAL_HOURS,
+                "Auto live import scheduler enabled (interval=%sm, on_start=%s, fixed_round=%s)",
+                AUTO_LIVE_IMPORT_INTERVAL_MINUTES,
                 AUTO_LIVE_IMPORT_ON_START,
                 AUTO_LIVE_IMPORT_ROUND if AUTO_LIVE_IMPORT_ROUND is not None else "auto",
             )
@@ -222,10 +222,15 @@ def create_app() -> FastAPI:
             db = SessionLocal()
             try:
                 result = data.run_auto_leghe_sync(db)
-                if result.get("skipped") and allow_bootstrap_fallback:
+                skip_reason = str(result.get("reason", "not_due"))
+                can_bootstrap_on_start = skip_reason in {
+                    "outside_scheduled_match_windows",
+                    "outside_scheduled_match_windows_and_daily_rose_already_synced",
+                }
+                if result.get("skipped") and allow_bootstrap_fallback and can_bootstrap_on_start:
                     logger.warning(
                         "Auto leghe sync skipped on startup (%s): forcing bootstrap sync",
-                        result.get("reason", "not_due"),
+                        skip_reason,
                     )
                     result = data.run_bootstrap_leghe_sync(db)
                     if result.get("skipped"):
