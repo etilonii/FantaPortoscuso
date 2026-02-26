@@ -3623,6 +3623,85 @@ def _is_round_completed_from_fixtures(round_value: Optional[int]) -> bool:
     return bool(state.get("all_played"))
 
 
+def _round_completion_rollover_local_threshold(
+    round_value: Optional[int],
+    fixture_rows: List[Dict[str, object]],
+) -> Optional[datetime]:
+    round_num = _parse_int(round_value)
+    if round_num is None or round_num <= 0:
+        return None
+
+    kickoff_candidates: List[datetime] = []
+    for fixture in fixture_rows:
+        if _parse_int(fixture.get("round")) != int(round_num):
+            continue
+        kickoff_local = _parse_kickoff_local_datetime(fixture.get("kickoff_iso"))
+        if kickoff_local is None:
+            continue
+        kickoff_candidates.append(kickoff_local)
+
+    if kickoff_candidates:
+        # Use next-day noon from the last known kickoff of the round.
+        rollover_day = (max(kickoff_candidates) + timedelta(days=1)).date()
+        return datetime(
+            rollover_day.year,
+            rollover_day.month,
+            rollover_day.day,
+            12,
+            0,
+            0,
+            tzinfo=LEGHE_SYNC_TZ,
+        )
+
+    # Fallback to configured sync windows when kickoff timestamps are unavailable.
+    for matchday, _start_day, end_day in LEGHE_SYNC_WINDOWS:
+        if int(matchday) != int(round_num):
+            continue
+        rollover_day = end_day + timedelta(days=1)
+        return datetime(
+            rollover_day.year,
+            rollover_day.month,
+            rollover_day.day,
+            12,
+            0,
+            0,
+            tzinfo=LEGHE_SYNC_TZ,
+        )
+
+    return None
+
+
+def _resolve_formazioni_optimizer_round(
+    target_round: Optional[int],
+    payload_rounds: List[int],
+    fixture_rows: List[Dict[str, object]],
+    *,
+    now_local: Optional[datetime] = None,
+) -> Optional[int]:
+    optimizer_round = _parse_int(target_round)
+    if optimizer_round is None:
+        return None
+    if not _is_round_completed_from_fixtures(optimizer_round):
+        return int(optimizer_round)
+
+    rollover_threshold = _round_completion_rollover_local_threshold(optimizer_round, fixture_rows)
+    if rollover_threshold is None:
+        return int(optimizer_round)
+
+    now_ref = now_local if now_local is not None else _leghe_sync_local_now()
+    if now_ref < rollover_threshold:
+        return int(optimizer_round)
+
+    next_round_candidates = [
+        int(value)
+        for value in payload_rounds
+        if isinstance(value, int) and int(value) > int(optimizer_round)
+    ]
+    if not next_round_candidates:
+        return int(optimizer_round)
+    return min(next_round_candidates)
+
+
 def _infer_matchday_from_fixtures() -> Optional[int]:
     by_round = _round_play_state_from_fixtures()
     if not by_round:
@@ -11338,15 +11417,11 @@ def formazioni(
         if parsed_extra is not None and parsed_extra > 0:
             payload_rounds_set.add(int(parsed_extra))
     payload_rounds = sorted(payload_rounds_set)
-    optimizer_round = _parse_int(target_round)
-    if optimizer_round is not None and _is_round_completed_from_fixtures(optimizer_round):
-        next_round_candidates = [
-            int(value)
-            for value in payload_rounds
-            if isinstance(value, int) and int(value) > int(optimizer_round)
-        ]
-        if next_round_candidates:
-            optimizer_round = min(next_round_candidates)
+    optimizer_round = _resolve_formazioni_optimizer_round(
+        target_round,
+        payload_rounds,
+        seriea_fixtures_for_kickoff,
+    )
 
     real_items = []
     if real_rows:
