@@ -405,15 +405,15 @@ body.theme-light {
 }
 
 .menu-accordion .menu-item {
-  min-height: 44px;
+  min-height: 40px;
 }
 
 .menu-macro {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 46px;
-  padding: 10px 12px;
+  min-height: 40px;
+  padding: 8px 11px;
   font-weight: 700;
   letter-spacing: 0.18px;
   border-color: rgba(91, 209, 255, 0.22);
@@ -423,6 +423,21 @@ body.theme-light {
 .menu-macro.open {
   border-color: rgba(91, 209, 255, 0.34);
   box-shadow: inset 0 1px 0 rgba(138, 216, 255, 0.2);
+}
+
+.menu-macro:hover {
+  transform: none;
+  border-color: rgba(91, 209, 255, 0.3);
+  box-shadow: 0 7px 14px rgba(91, 209, 255, 0.12);
+}
+
+.menu-macro.open:hover {
+  transform: none;
+  box-shadow: inset 0 1px 0 rgba(138, 216, 255, 0.2), 0 7px 14px rgba(91, 209, 255, 0.14);
+}
+
+.menu-macro:active {
+  transform: none;
 }
 
 .menu-sublist {
