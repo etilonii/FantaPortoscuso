@@ -2839,7 +2839,7 @@ useEffect(() => {
                     className={menuSectionsOpen.generali ? "menu-group-chevron open" : "menu-group-chevron"}
                     aria-hidden="true"
                   >
-                    v
+                    &gt;
                   </span>
                 </button>
                 {menuSectionsOpen.generali ? (
@@ -2878,7 +2878,7 @@ useEffect(() => {
                     className={menuSectionsOpen.lega ? "menu-group-chevron open" : "menu-group-chevron"}
                     aria-hidden="true"
                   >
-                    v
+                    &gt;
                   </span>
                 </button>
                 {menuSectionsOpen.lega ? (
@@ -2923,7 +2923,7 @@ useEffect(() => {
                     className={menuSectionsOpen.extra ? "menu-group-chevron open" : "menu-group-chevron"}
                     aria-hidden="true"
                   >
-                    v
+                    &gt;
                   </span>
                 </button>
                 {menuSectionsOpen.extra ? (
