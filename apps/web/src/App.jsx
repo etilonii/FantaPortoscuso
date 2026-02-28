@@ -579,6 +579,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const fetchWithAuth = async (url, options = {}, retryOn401 = true) => {
     const headers = { ...(options.headers || {}) };
+    const hasAuthSession =
+      Boolean(String(accessToken || "").trim()) || Boolean(String(refreshToken || "").trim());
     if (accessToken) {
       headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -592,7 +594,9 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
     const refreshed = await refreshAccessToken();
     if (!refreshed.ok) {
-      clearAuthSession("Sessione scaduta. Effettua nuovamente il login.");
+      if (hasAuthSession) {
+        clearAuthSession("Sessione scaduta. Effettua nuovamente il login.");
+      }
       return response;
     }
 
