@@ -3,6 +3,7 @@ const MIN_INTERVAL_SECONDS = "300";
 
 function resolveBaseUrl(): string {
   const candidates = [
+    process.env.TARGET_API_BASE_URL,
     process.env.RAILWAY_SERVICE_FANTAPORTOSCUSO_URL,
     process.env.RAILWAY_PRIVATE_DOMAIN,
     process.env.RAILWAY_PUBLIC_DOMAIN,
