@@ -1578,19 +1578,21 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
     setInitialDataError("");
     try {
-      const tasks = [
+      const requiredTasks = [
         { key: "summary", label: "Summary", run: loadSummary },
         { key: "status", label: "Data status", run: loadDataStatus },
         { key: "teams", label: "Teams", run: loadTeams },
         { key: "standings", label: "Standings", run: loadMarketStandings },
-        { key: "formazioni", label: "Formazioni", run: loadFormazioni },
         { key: "plus_top", label: "Plusvalenze top", run: loadPlusvalenze },
         { key: "plus_all", label: "Plusvalenze all", run: loadAllPlusvalenze },
         { key: "listone", label: "Listone", run: loadListone },
         { key: "quotes_all", label: "Top quotazioni", run: loadTopQuotesAllRoles },
       ];
+      const optionalTasks = [
+        { key: "formazioni", label: "Formazioni", run: loadFormazioni },
+      ];
 
-      let pending = tasks.slice();
+      let pending = requiredTasks.slice();
       let failedLabels = [];
 
       for (let pass = 1; pass <= 2; pass += 1) {
@@ -1613,12 +1615,17 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         }
       }
 
+      // Optional bootstrap tasks should never block Home with a global error.
+      if (optionalTasks.length) {
+        await Promise.allSettled(optionalTasks.map((task) => task.run()));
+      }
+
       const preview =
         failedLabels.length <= 4
           ? failedLabels.join(", ")
           : `${failedLabels.slice(0, 4).join(", ")}, ...`;
       setInitialDataError(
-        `Alcuni dati non sono stati caricati (${failedLabels.length}/9): ${preview}. Premi "Riprova".`
+        `Alcuni dati non sono stati caricati (${failedLabels.length}/8): ${preview}. Premi "Riprova".`
       );
       return false;
     } finally {
@@ -2785,11 +2792,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       setTheme(next);
       document.body.classList.toggle("theme-light", next === "light");
     } catch {}
-  }, []);
-
-  useEffect(() => {
-    loadInitialData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
