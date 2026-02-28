@@ -1,5 +1,6 @@
 import base64
 import csv
+import hmac
 import json
 import logging
 import math
@@ -39,6 +40,7 @@ from apps.api.app.config import (
     LEGHE_COMPETITION_ID,
     LEGHE_COMPETITION_NAME,
     LEGHE_FORMATIONS_MATCHDAY,
+    IMPORT_SECRET,
 )
 from apps.api.app.db import SessionLocal
 from apps.api.app.deps import get_db
@@ -956,6 +958,15 @@ def _require_admin_key(
     if not record.used:
         raise HTTPException(status_code=403, detail="Admin key non ancora attivata")
     ensure_key_not_blocked(db, record)
+
+
+def _require_import_secret(x_import_secret: str | None) -> None:
+    expected_secret = str(IMPORT_SECRET or "").strip()
+    if not expected_secret:
+        raise HTTPException(status_code=503, detail="IMPORT_SECRET non configurato")
+    provided_secret = str(x_import_secret or "").strip()
+    if not provided_secret or not hmac.compare_digest(provided_secret, expected_secret):
+        raise HTTPException(status_code=403, detail="Import secret non valido")
 
 
 def _resolve_access_key_for_request(
@@ -11468,6 +11479,50 @@ def run_auto_leghe_sync(
             "timezone": str(LEGHE_SYNC_TZ),
             "availability_sync": availability_sync_result,
         }
+
+
+@router.post("/internal/scheduler/run")
+def internal_scheduler_run(
+    job: str = Query(
+        ...,
+        pattern="^(live_import|seriea_live_sync|leghe_sync|bootstrap_leghe_sync)$",
+    ),
+    run_pipeline: bool = Query(default=True),
+    round: Optional[int] = Query(default=None, ge=1, le=99),
+    season: Optional[str] = Query(default=None),
+    min_interval_seconds: Optional[int] = Query(default=None, ge=1),
+    db: Session = Depends(get_db),
+    x_import_secret: str | None = Header(default=None, alias="X-Import-Secret"),
+):
+    _require_import_secret(x_import_secret)
+    normalized_job = str(job or "").strip().lower()
+
+    if normalized_job == "live_import":
+        return run_auto_live_import(
+            db,
+            configured_round=round,
+            season=season,
+            min_interval_seconds=min_interval_seconds,
+        )
+    if normalized_job == "seriea_live_sync":
+        return run_auto_seriea_live_context_sync(
+            db,
+            configured_round=round,
+            season=season,
+            min_interval_seconds=min_interval_seconds,
+        )
+    if normalized_job == "leghe_sync":
+        return run_auto_leghe_sync(
+            db,
+            run_pipeline=bool(run_pipeline),
+        )
+    if normalized_job == "bootstrap_leghe_sync":
+        return run_bootstrap_leghe_sync(
+            db,
+            run_pipeline=bool(run_pipeline),
+        )
+
+    raise HTTPException(status_code=400, detail="job non supportato")
 
 
 @router.post("/live/import-voti")
