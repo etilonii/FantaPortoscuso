@@ -69,14 +69,17 @@ export default function FormazioniSection({
   };
 
   const orderedItems = [...visibleItems].sort((a, b) => {
-    if (orderValue !== "live_total") return 0;
-    const left = parseLiveTotal(a?.totale_live);
-    const right = parseLiveTotal(b?.totale_live);
-    if (left !== null && right !== null && left !== right) return right - left;
-    if (left !== null && right === null) return -1;
-    if (left === null && right !== null) return 1;
     const posA = Number(a?.standing_pos ?? a?.pos ?? 9999);
     const posB = Number(b?.standing_pos ?? b?.pos ?? 9999);
+
+    if (orderValue === "live_total") {
+      const left = parseLiveTotal(a?.totale_live);
+      const right = parseLiveTotal(b?.totale_live);
+      if (left !== null && right !== null && left !== right) return right - left;
+      if (left !== null && right === null) return -1;
+      if (left === null && right !== null) return 1;
+    }
+
     if (Number.isFinite(posA) && Number.isFinite(posB) && posA !== posB) return posA - posB;
     return String(a?.team || "").localeCompare(String(b?.team || ""), "it", {
       sensitivity: "base",
@@ -383,7 +386,7 @@ export default function FormazioniSection({
               Corrente
             </button>
           ) : null}
-          {canOptimize ? (
+          {isConsigliata && canOptimize ? (
             <button
               type="button"
               className="primary"
@@ -395,9 +398,9 @@ export default function FormazioniSection({
           ) : null}
         </div>
         {!isConsigliata && formationMeta?.note ? <p className="muted compact">{formationMeta.note}</p> : null}
-        {optimizerError ? <p className="error">{optimizerError}</p> : null}
+        {isConsigliata && optimizerError ? <p className="error">{optimizerError}</p> : null}
 
-        {canOptimize && optimizerData ? (
+        {isConsigliata && canOptimize && optimizerData ? (
           <article className="formation-card formation-optimizer-card">
             <header className="formation-card-head">
               <p className="rank-title">
