@@ -206,6 +206,8 @@ _ROUND_FIRST_KICKOFF_CACHE: Dict[str, object] = {}
 _AUTO_VOTI_IMPORT_ATTEMPTED_ROUNDS: Set[int] = set()
 _SYNC_COMPLETE_BACKGROUND_LOCK = threading.Lock()
 _SYNC_COMPLETE_BACKGROUND_RUNNING = False
+_SYNC_COMPLETE_BACKGROUND_DB_LOCK_JOB = "sync_complete_total_bg_lock"
+_SYNC_COMPLETE_BACKGROUND_DB_LOCK_LEASE_SECONDS = 2 * 60 * 60
 
 LIVE_EVENT_FIELDS: Tuple[str, ...] = (
     "goal",
@@ -4518,7 +4520,16 @@ def _write_text_if_changed(path: Path, content: str) -> None:
             return
     except Exception:
         pass
-    path.write_text(content, encoding="utf-8")
+    tmp = path.with_name(f".{path.name}.tmp.{os.getpid()}.{threading.get_ident()}")
+    try:
+        tmp.write_text(content, encoding="utf-8")
+        tmp.replace(path)
+    finally:
+        try:
+            if tmp.exists():
+                tmp.unlink()
+        except Exception:
+            pass
 
 
 def _team_card_blocks(source_html: str) -> List[str]:
@@ -10588,6 +10599,94 @@ def _release_scheduled_job_slot(
         return False
 
 
+def _acquire_leased_job_lock(
+    db: Session,
+    *,
+    job_name: str,
+    lease_seconds: int,
+) -> Tuple[bool, int]:
+    now_ts = int(datetime.utcnow().timestamp())
+    lease = max(60, int(lease_seconds))
+    lock_until_ts = now_ts + lease
+
+    state = db.query(ScheduledJobState).filter(ScheduledJobState.job_name == job_name).first()
+    if state is None:
+        db.add(
+            ScheduledJobState(
+                job_name=job_name,
+                last_run_ts=0,
+                updated_at=datetime.utcnow(),
+            )
+        )
+        try:
+            db.commit()
+        except Exception:
+            logger.debug("Leased lock state commit failed for %s", job_name, exc_info=True)
+            db.rollback()
+        state = db.query(ScheduledJobState).filter(ScheduledJobState.job_name == job_name).first()
+        if state is None:
+            return False, 0
+
+    previous_ts = int(state.last_run_ts or 0)
+    if previous_ts > now_ts:
+        return False, previous_ts
+
+    try:
+        updated = (
+            db.query(ScheduledJobState)
+            .filter(
+                ScheduledJobState.job_name == job_name,
+                ScheduledJobState.last_run_ts == previous_ts,
+            )
+            .update(
+                {
+                    ScheduledJobState.last_run_ts: lock_until_ts,
+                    ScheduledJobState.updated_at: datetime.utcnow(),
+                },
+                synchronize_session=False,
+            )
+        )
+        db.commit()
+        if updated == 1:
+            return True, lock_until_ts
+        return False, previous_ts
+    except Exception:
+        db.rollback()
+        return False, previous_ts
+
+
+def _release_leased_job_lock(
+    db: Session,
+    *,
+    job_name: str,
+    lock_until_ts: int,
+) -> bool:
+    expected_ts = int(lock_until_ts or 0)
+    if expected_ts <= 0:
+        return False
+    release_ts = int(datetime.utcnow().timestamp())
+    try:
+        updated = (
+            db.query(ScheduledJobState)
+            .filter(
+                ScheduledJobState.job_name == job_name,
+                ScheduledJobState.last_run_ts == expected_ts,
+            )
+            .update(
+                {
+                    ScheduledJobState.last_run_ts: release_ts,
+                    ScheduledJobState.updated_at: datetime.utcnow(),
+                },
+                synchronize_session=False,
+            )
+        )
+        db.commit()
+        return bool(updated == 1)
+    except Exception:
+        db.rollback()
+        return False
+
+
 def run_auto_live_import(
     db: Session,
     *,
@@ -11306,6 +11405,7 @@ def _sync_complete_background_worker(
     fetch_quotazioni: bool,
     fetch_global_stats: bool,
     formations_matchday: Optional[int],
+    distributed_lock_until_ts: Optional[int],
 ) -> None:
     global _SYNC_COMPLETE_BACKGROUND_RUNNING
     db = SessionLocal()
@@ -11326,6 +11426,12 @@ def _sync_complete_background_worker(
     except Exception:
         logger.exception("sync_complete_total background failed")
     finally:
+        if distributed_lock_until_ts is not None and int(distributed_lock_until_ts) > 0:
+            _release_leased_job_lock(
+                db,
+                job_name=_SYNC_COMPLETE_BACKGROUND_DB_LOCK_JOB,
+                lock_until_ts=int(distributed_lock_until_ts),
+            )
         try:
             db.close()
         except Exception:
@@ -11335,6 +11441,7 @@ def _sync_complete_background_worker(
 
 
 def _enqueue_sync_complete_background(
+    db: Session,
     *,
     run_pipeline: bool,
     fetch_quotazioni: bool,
@@ -11351,19 +11458,46 @@ def _enqueue_sync_complete_background(
                 "mode": "sync_complete_total",
                 "message": "Sync completa totale gia in corso.",
             }
-        _SYNC_COMPLETE_BACKGROUND_RUNNING = True
-        worker = threading.Thread(
-            target=_sync_complete_background_worker,
-            kwargs={
-                "run_pipeline": bool(run_pipeline),
-                "fetch_quotazioni": bool(fetch_quotazioni),
-                "fetch_global_stats": bool(fetch_global_stats),
-                "formations_matchday": formations_matchday,
-            },
-            name="sync-complete-total-worker",
-            daemon=True,
+        acquired, lock_ts = _acquire_leased_job_lock(
+            db,
+            job_name=_SYNC_COMPLETE_BACKGROUND_DB_LOCK_JOB,
+            lease_seconds=_SYNC_COMPLETE_BACKGROUND_DB_LOCK_LEASE_SECONDS,
         )
-        worker.start()
+        if not acquired:
+            lock_until_label = ""
+            if int(lock_ts or 0) > 0:
+                lock_until_label = datetime.fromtimestamp(int(lock_ts), tz=timezone.utc).isoformat()
+            return {
+                "ok": True,
+                "queued": False,
+                "running": True,
+                "mode": "sync_complete_total",
+                "message": "Sync completa totale gia in corso su un'altra istanza.",
+                "lock_until_utc": lock_until_label,
+            }
+        _SYNC_COMPLETE_BACKGROUND_RUNNING = True
+        try:
+            worker = threading.Thread(
+                target=_sync_complete_background_worker,
+                kwargs={
+                    "run_pipeline": bool(run_pipeline),
+                    "fetch_quotazioni": bool(fetch_quotazioni),
+                    "fetch_global_stats": bool(fetch_global_stats),
+                    "formations_matchday": formations_matchday,
+                    "distributed_lock_until_ts": int(lock_ts),
+                },
+                name="sync-complete-total-worker",
+                daemon=True,
+            )
+            worker.start()
+        except Exception:
+            _SYNC_COMPLETE_BACKGROUND_RUNNING = False
+            _release_leased_job_lock(
+                db,
+                job_name=_SYNC_COMPLETE_BACKGROUND_DB_LOCK_JOB,
+                lock_until_ts=int(lock_ts),
+            )
+            raise
     return {
         "ok": True,
         "queued": True,
@@ -11394,6 +11528,7 @@ def admin_leghe_sync_complete(
 
     if bool(background):
         return _enqueue_sync_complete_background(
+            db,
             run_pipeline=bool(run_pipeline),
             fetch_quotazioni=bool(fetch_quotazioni),
             fetch_global_stats=bool(fetch_global_stats),
