@@ -985,6 +985,8 @@ def download_fantacalcio_quotazioni_csv(
     auth_attempted = bool((username or "").strip() and (password or "").strip())
     auth_ok = False
     rows: list[dict[str, object]] = []
+    xlsx_rows: list[dict[str, object]] = []
+    html_rows: list[dict[str, object]] = []
     xlsx_path = resolved_out.with_suffix(".xlsx")
 
     if auth_attempted:
@@ -1007,15 +1009,15 @@ def download_fantacalcio_quotazioni_csv(
             )
             if bool(downloaded_xlsx.get("ok")):
                 try:
-                    rows = _extract_fantacalcio_quotazioni_rows_from_xlsx(xlsx_path)
-                    if rows:
+                    xlsx_rows = _extract_fantacalcio_quotazioni_rows_from_xlsx(xlsx_path)
+                    if xlsx_rows:
                         source_kind = "xlsx_authenticated"
                 except Exception as exc:
                     warnings.append(f"quotazioni xlsx parse failed: {exc}")
             else:
                 warnings.append(str(downloaded_xlsx.get("warning") or "quotazioni xlsx download failed"))
 
-    if not rows:
+    try:
         opener = build_opener()
         body, _ = _http_read_bytes(
             opener,
@@ -1027,7 +1029,51 @@ def download_fantacalcio_quotazioni_csv(
             timeout_seconds=45,
         )
         source = body.decode("utf-8", errors="replace")
-        rows = _extract_fantacalcio_quotazioni_rows_from_html(source)
+        html_rows = _extract_fantacalcio_quotazioni_rows_from_html(source)
+    except Exception as exc:
+        warnings.append(f"quotazioni html parse failed: {exc}")
+
+    def _row_key(row: dict[str, object]) -> str:
+        player = _normalize_stats_header(row.get("Giocatore") or "")
+        role = _normalize_stats_header(row.get("Ruolo") or "")
+        if not player:
+            return ""
+        return f"{player}|{role}" if role else player
+
+    if html_rows and xlsx_rows:
+        merged_rows: list[dict[str, object]] = []
+        key_to_index: dict[str, int] = {}
+        for row in xlsx_rows:
+            normalized = {
+                "Giocatore": str(row.get("Giocatore") or "").strip(),
+                "Squadra": str(row.get("Squadra") or "").strip(),
+                "Ruolo": str(row.get("Ruolo") or "").strip(),
+                "PrezzoIniziale": int(_parse_int_number(str(row.get("PrezzoIniziale") or 0), default=0)),
+                "PrezzoAttuale": int(_parse_int_number(str(row.get("PrezzoAttuale") or 0), default=0)),
+            }
+            merged_rows.append(normalized)
+            row_key = _row_key(normalized)
+            if row_key:
+                key_to_index[row_key] = len(merged_rows) - 1
+        for row in html_rows:
+            normalized = {
+                "Giocatore": str(row.get("Giocatore") or "").strip(),
+                "Squadra": str(row.get("Squadra") or "").strip(),
+                "Ruolo": str(row.get("Ruolo") or "").strip(),
+                "PrezzoIniziale": int(_parse_int_number(str(row.get("PrezzoIniziale") or 0), default=0)),
+                "PrezzoAttuale": int(_parse_int_number(str(row.get("PrezzoAttuale") or 0), default=0)),
+            }
+            row_key = _row_key(normalized)
+            if row_key and row_key in key_to_index:
+                merged_rows[key_to_index[row_key]] = normalized
+        rows = merged_rows
+        source_kind = "merged_authenticated_html"
+    elif html_rows:
+        rows = html_rows
+        source_kind = "html_public"
+    elif xlsx_rows:
+        rows = xlsx_rows
+        source_kind = "xlsx_authenticated"
 
     if not rows:
         result: dict[str, object] = {
@@ -1059,7 +1105,7 @@ def download_fantacalcio_quotazioni_csv(
         "source": source_kind,
         "auth_attempted": auth_attempted,
         "auth_ok": auth_ok,
-        "xlsx_path": str(xlsx_path) if source_kind == "xlsx_authenticated" else None,
+        "xlsx_path": str(xlsx_path) if source_kind in {"xlsx_authenticated", "merged_authenticated_html"} else None,
         "path": str(resolved_out),
         "rows": int(len(rows)),
     }

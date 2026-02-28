@@ -201,6 +201,7 @@ _PROBABLE_FORMATIONS_CACHE: Dict[str, object] = {}
 _FORMAZIONI_REMOTE_REFRESH_CACHE: Dict[str, float] = {}
 _CLASSIFICA_MATCHDAY_TOTALS_CACHE: Dict[str, object] = {}
 _CLASSIFICA_POSITIONS_CACHE: Dict[str, object] = {}
+_LIVE_STANDINGS_POSITIONS_CACHE: Dict[str, object] = {}
 _ROUND_FIRST_KICKOFF_CACHE: Dict[str, object] = {}
 _AUTO_VOTI_IMPORT_ATTEMPTED_ROUNDS: Set[int] = set()
 _SYNC_COMPLETE_BACKGROUND_LOCK = threading.Lock()
@@ -2645,6 +2646,71 @@ def _apply_classifica_positions_override(
             continue
         item["standing_pos"] = int(pos_value)
         item["pos"] = int(pos_value)
+
+
+def _load_live_standings_positions(db: Session) -> Dict[str, Dict[str, object]]:
+    now_ts = float(datetime.utcnow().timestamp())
+    cached_ts = float(_LIVE_STANDINGS_POSITIONS_CACHE.get("ts", 0.0) or 0.0)
+    cached_positions_raw = _LIVE_STANDINGS_POSITIONS_CACHE.get("positions")
+    cached_positions = cached_positions_raw if isinstance(cached_positions_raw, dict) else {}
+    if now_ts - cached_ts < 180 and cached_positions:
+        out: Dict[str, Dict[str, object]] = {}
+        for key, value in cached_positions.items():
+            if not isinstance(value, dict):
+                continue
+            out[str(key)] = {
+                "team": str(value.get("team") or ""),
+                "pos": int(_parse_int(value.get("pos")) or 0),
+            }
+        return out
+
+    try:
+        payload = _build_live_standings_rows(db, requested_round=None)
+    except Exception:
+        logger.debug("Unable to load live standings positions", exc_info=True)
+        payload = {"items": []}
+
+    parsed_positions: Dict[str, Dict[str, object]] = {}
+    rows = payload.get("items") if isinstance(payload, dict) else []
+    if isinstance(rows, list):
+        for idx, row in enumerate(rows, start=1):
+            if not isinstance(row, dict):
+                continue
+            team_name = str(row.get("team") or "").strip()
+            team_key = normalize_name(team_name)
+            if not team_key:
+                continue
+            pos_value = _parse_int(row.get("live_pos"))
+            if pos_value is None or pos_value <= 0:
+                pos_value = _parse_int(row.get("pos"))
+            if pos_value is None or pos_value <= 0:
+                pos_value = idx
+            parsed_positions[team_key] = {
+                "team": team_name,
+                "pos": int(pos_value),
+            }
+
+    if parsed_positions:
+        _LIVE_STANDINGS_POSITIONS_CACHE["ts"] = now_ts
+        _LIVE_STANDINGS_POSITIONS_CACHE["positions"] = {
+            str(key): {
+                "team": str(value.get("team") or ""),
+                "pos": int(_parse_int(value.get("pos")) or 0),
+            }
+            for key, value in parsed_positions.items()
+            if isinstance(value, dict)
+        }
+        return parsed_positions
+
+    out: Dict[str, Dict[str, object]] = {}
+    for key, value in cached_positions.items():
+        if not isinstance(value, dict):
+            continue
+        out[str(key)] = {
+            "team": str(value.get("team") or ""),
+            "pos": int(_parse_int(value.get("pos")) or 0),
+        }
+    return out
 
 
 def _load_classifica_matchday_totals() -> Tuple[Optional[int], Dict[str, float]]:
@@ -11460,8 +11526,11 @@ def formazioni(
             real_items.append(item)
 
     classifica_positions = _load_classifica_positions()
+    live_standings_positions = _load_live_standings_positions(db)
     if classifica_positions:
         _apply_classifica_positions_override(real_items, classifica_positions)
+    if live_standings_positions:
+        _apply_classifica_positions_override(real_items, live_standings_positions)
 
     if real_items:
         live_context = _load_live_round_context(db, target_round)
@@ -11498,6 +11567,8 @@ def formazioni(
         item["round"] = target_round
     if classifica_positions:
         _apply_classifica_positions_override(projected_items, classifica_positions)
+    if live_standings_positions:
+        _apply_classifica_positions_override(projected_items, live_standings_positions)
     live_context = _load_live_round_context(db, target_round)
     _attach_live_scores_to_formations(projected_items, live_context)
     if selected_order == "live_total":
