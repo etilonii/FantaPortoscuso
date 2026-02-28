@@ -65,6 +65,7 @@ AUTO_LIVE_IMPORT_INTERVAL_MINUTES = get_env_int(
 AUTO_LIVE_IMPORT_ON_START = get_env_bool("AUTO_LIVE_IMPORT_ON_START", True)
 AUTO_LIVE_IMPORT_ROUND = get_env_optional_int("AUTO_LIVE_IMPORT_ROUND")
 AUTO_LIVE_IMPORT_SEASON = get_env("AUTO_LIVE_IMPORT_SEASON", "").strip()
+AUTO_INTERNAL_SCHEDULERS_ENABLED = get_env_bool("AUTO_INTERNAL_SCHEDULERS_ENABLED", True)
 
 # Lightweight Serie A live context sync (fixtures + standings context for Premium Insights)
 AUTO_SERIEA_LIVE_SYNC_ENABLED = get_env_bool("AUTO_SERIEA_LIVE_SYNC_ENABLED", True)

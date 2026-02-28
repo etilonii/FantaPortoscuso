@@ -228,6 +228,12 @@ class MaintenanceState(Base):
 
 
 def ensure_schema(engine) -> None:
+    dialect_name = str(getattr(getattr(engine, "dialect", None), "name", "") or "").lower()
+    # Legacy schema patching below is SQLite-specific (PRAGMA + sqlite defaults).
+    # For Postgres and other dialects we rely on SQLAlchemy metadata + migrations.
+    if dialect_name != "sqlite":
+        return
+
     with engine.connect() as conn:
         result = conn.execute(text("PRAGMA table_info(access_keys)"))
         columns = {row[1] for row in result}

@@ -11,6 +11,7 @@ import threading
 import unicodedata
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
+from functools import wraps
 from html import unescape as html_unescape
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
@@ -29,6 +30,8 @@ from apps.api.app.config import (
     BACKUP_DIR,
     BACKUP_KEEP_LAST,
     DATABASE_URL,
+    AUTO_LIVE_IMPORT_INTERVAL_MINUTES,
+    AUTO_SERIEA_LIVE_SYNC_INTERVAL_MINUTES,
     AUTO_LEGHE_SYNC_SLOT_HOURS,
     LEGHE_ALIAS,
     LEGHE_USERNAME,
@@ -133,6 +136,8 @@ LEGHE_SYNC_WINDOWS: Tuple[Tuple[int, date, date], ...] = (
     (38, date(2026, 5, 22), date(2026, 5, 24)),
 )
 STATUS_PATH = DATA_DIR / "status.json"
+JOB_OBSERVABILITY_PATH = RUNTIME_DATA_DIR / "job_observability.json"
+JOB_OBSERVABILITY_HISTORY_LIMIT = 40
 SERIEA_CONTEXT_CANDIDATES = [
     DATA_DIR / "incoming" / "manual" / "seriea_context.csv",
     DATA_DIR / "config" / "seriea_context.csv",
@@ -207,7 +212,9 @@ _AUTO_VOTI_IMPORT_ATTEMPTED_ROUNDS: Set[int] = set()
 _SYNC_COMPLETE_BACKGROUND_LOCK = threading.Lock()
 _SYNC_COMPLETE_BACKGROUND_RUNNING = False
 _SYNC_COMPLETE_BACKGROUND_DB_LOCK_JOB = "sync_complete_total_bg_lock"
-_SYNC_COMPLETE_BACKGROUND_DB_LOCK_LEASE_SECONDS = 2 * 60 * 60
+_SYNC_COMPLETE_BACKGROUND_DB_LOCK_LEASE_SECONDS = 15 * 60
+_SYNC_COMPLETE_BACKGROUND_DB_LOCK_HEARTBEAT_SECONDS = 60
+_JOB_OBSERVABILITY_LOCK = threading.Lock()
 
 LIVE_EVENT_FIELDS: Tuple[str, ...] = (
     "goal",
@@ -4530,6 +4537,183 @@ def _write_text_if_changed(path: Path, content: str) -> None:
                 tmp.unlink()
         except Exception:
             pass
+
+
+def _job_observability_default_payload() -> Dict[str, object]:
+    return {
+        "updated_at": "",
+        "jobs": {},
+    }
+
+
+def _load_job_observability_payload() -> Dict[str, object]:
+    defaults = _job_observability_default_payload()
+    if not JOB_OBSERVABILITY_PATH.exists():
+        return defaults
+    try:
+        parsed = json.loads(JOB_OBSERVABILITY_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return defaults
+    if not isinstance(parsed, dict):
+        return defaults
+    jobs = parsed.get("jobs")
+    if not isinstance(jobs, dict):
+        jobs = {}
+    return {
+        "updated_at": str(parsed.get("updated_at") or ""),
+        "jobs": jobs,
+    }
+
+
+def _save_job_observability_payload(payload: Dict[str, object]) -> None:
+    rendered = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    _write_text_if_changed(JOB_OBSERVABILITY_PATH, rendered)
+
+
+def _next_run_estimate_utc_for_job(job_name: str, *, now_utc: datetime) -> str:
+    normalized = str(job_name or "").strip()
+    if not normalized:
+        return ""
+    if normalized == "auto_live_import":
+        return (now_utc + timedelta(minutes=max(1, int(AUTO_LIVE_IMPORT_INTERVAL_MINUTES)))).isoformat()
+    if normalized == SERIEA_LIVE_CONTEXT_JOB_NAME:
+        return (
+            now_utc + timedelta(minutes=max(1, int(AUTO_SERIEA_LIVE_SYNC_INTERVAL_MINUTES)))
+        ).isoformat()
+    if normalized == "auto_leghe_sync":
+        seconds = max(1, int(leghe_sync_seconds_until_next_slot(now_utc=now_utc)))
+        return (now_utc + timedelta(seconds=seconds)).isoformat()
+    if normalized == LEGHE_DAILY_LIVE_JOB_NAME:
+        local_now = _leghe_sync_local_now(now_utc)
+        day_start_local = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+        slot_local = day_start_local.replace(hour=int(LEGHE_DAILY_LIVE_HOUR_LOCAL))
+        if local_now >= slot_local:
+            slot_local = slot_local + timedelta(days=1)
+        return slot_local.astimezone(timezone.utc).isoformat()
+    if normalized == LEGHE_DAILY_ROSE_JOB_NAME:
+        local_now = _leghe_sync_local_now(now_utc)
+        day_start_local = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+        next_slot_local = day_start_local if local_now < day_start_local else (day_start_local + timedelta(days=1))
+        return next_slot_local.astimezone(timezone.utc).isoformat()
+    if normalized == AVAILABILITY_SYNC_JOB_NAME:
+        local_now = _leghe_sync_local_now(now_utc)
+        day_start_local = local_now.replace(hour=0, minute=0, second=0, microsecond=0)
+        due_hours = sorted({max(0, min(23, int(value))) for value in AVAILABILITY_SYNC_HOURS_LOCAL})
+        for hour in due_hours:
+            slot_local = day_start_local.replace(hour=hour)
+            if slot_local > local_now:
+                return slot_local.astimezone(timezone.utc).isoformat()
+        if due_hours:
+            slot_local = (day_start_local + timedelta(days=1)).replace(hour=due_hours[0])
+            return slot_local.astimezone(timezone.utc).isoformat()
+    return ""
+
+
+def _record_job_observation(
+    *,
+    job_name: str,
+    started_at_utc: datetime,
+    finished_at_utc: datetime,
+    result_payload: Dict[str, object],
+) -> None:
+    if not job_name:
+        return
+    started_iso = started_at_utc.astimezone(timezone.utc).isoformat()
+    finished_iso = finished_at_utc.astimezone(timezone.utc).isoformat()
+    duration_seconds = max(0.0, (finished_at_utc - started_at_utc).total_seconds())
+    ok_value = bool(result_payload.get("ok", True))
+    skipped_value = bool(result_payload.get("skipped", False))
+    reason_value = str(result_payload.get("reason") or "")
+    error_value = str(result_payload.get("error") or "")
+    mode_value = str(result_payload.get("mode") or "")
+    round_value = _parse_int(result_payload.get("round"))
+    if round_value is None:
+        round_value = _parse_int(result_payload.get("scheduled_matchday"))
+
+    history_entry = {
+        "started_at": started_iso,
+        "finished_at": finished_iso,
+        "duration_seconds": round(float(duration_seconds), 3),
+        "ok": ok_value,
+        "skipped": skipped_value,
+        "reason": reason_value,
+        "error": error_value,
+        "mode": mode_value,
+        "round": int(round_value) if round_value is not None else None,
+    }
+
+    with _JOB_OBSERVABILITY_LOCK:
+        payload = _load_job_observability_payload()
+        jobs_payload_raw = payload.get("jobs")
+        jobs_payload = jobs_payload_raw if isinstance(jobs_payload_raw, dict) else {}
+        job_entry_raw = jobs_payload.get(job_name)
+        job_entry = dict(job_entry_raw) if isinstance(job_entry_raw, dict) else {}
+
+        previous_count = int(_parse_int(job_entry.get("runs_count")) or 0)
+        history_raw = job_entry.get("history")
+        history = list(history_raw) if isinstance(history_raw, list) else []
+        history.append(history_entry)
+        if len(history) > int(JOB_OBSERVABILITY_HISTORY_LIMIT):
+            history = history[-int(JOB_OBSERVABILITY_HISTORY_LIMIT) :]
+
+        now_utc = datetime.utcnow().replace(tzinfo=timezone.utc)
+        next_run_estimate = _next_run_estimate_utc_for_job(job_name, now_utc=now_utc)
+
+        job_entry.update(
+            {
+                "job_name": job_name,
+                "last_started_at": started_iso,
+                "last_finished_at": finished_iso,
+                "last_duration_seconds": round(float(duration_seconds), 3),
+                "last_ok": ok_value,
+                "last_skipped": skipped_value,
+                "last_reason": reason_value,
+                "last_error": error_value,
+                "last_mode": mode_value,
+                "last_round": int(round_value) if round_value is not None else None,
+                "runs_count": previous_count + 1,
+                "next_run_estimate_utc": next_run_estimate,
+                "history": history,
+            }
+        )
+
+        jobs_payload[job_name] = job_entry
+        payload["jobs"] = jobs_payload
+        payload["updated_at"] = now_utc.isoformat()
+        _save_job_observability_payload(payload)
+
+
+def _observe_job_execution(job_name: str):
+    def decorator(fn):
+        @wraps(fn)
+        def wrapped(*args, **kwargs):
+            started_at_utc = datetime.utcnow().replace(tzinfo=timezone.utc)
+            result_payload: Dict[str, object] = {"ok": False, "error": "unexpected_error"}
+            try:
+                result = fn(*args, **kwargs)
+                if isinstance(result, dict):
+                    result_payload = result
+                else:
+                    result_payload = {"ok": True}
+                return result
+            except Exception as exc:
+                result_payload = {"ok": False, "error": str(exc)}
+                raise
+            finally:
+                finished_at_utc = datetime.utcnow().replace(tzinfo=timezone.utc)
+                try:
+                    _record_job_observation(
+                        job_name=job_name,
+                        started_at_utc=started_at_utc,
+                        finished_at_utc=finished_at_utc,
+                        result_payload=result_payload,
+                    )
+                except Exception:
+                    logger.debug("Unable to record job observation for %s", job_name, exc_info=True)
+
+        return wrapped
+
+    return decorator
 
 
 def _team_card_blocks(source_html: str) -> List[str]:
@@ -10687,6 +10871,42 @@ def _release_leased_job_lock(
         return False
 
 
+def _renew_leased_job_lock(
+    db: Session,
+    *,
+    job_name: str,
+    expected_lock_until_ts: int,
+    lease_seconds: int,
+) -> Tuple[bool, int]:
+    expected_ts = int(expected_lock_until_ts or 0)
+    if expected_ts <= 0:
+        return False, 0
+    new_lock_until_ts = int(datetime.utcnow().timestamp()) + max(60, int(lease_seconds))
+    try:
+        updated = (
+            db.query(ScheduledJobState)
+            .filter(
+                ScheduledJobState.job_name == job_name,
+                ScheduledJobState.last_run_ts == expected_ts,
+            )
+            .update(
+                {
+                    ScheduledJobState.last_run_ts: new_lock_until_ts,
+                    ScheduledJobState.updated_at: datetime.utcnow(),
+                },
+                synchronize_session=False,
+            )
+        )
+        db.commit()
+        if updated == 1:
+            return True, new_lock_until_ts
+        return False, expected_ts
+    except Exception:
+        db.rollback()
+        return False, expected_ts
+
+
+@_observe_job_execution("auto_live_import")
 def run_auto_live_import(
     db: Session,
     *,
@@ -10714,6 +10934,7 @@ def run_auto_live_import(
     )
 
 
+@_observe_job_execution(SERIEA_LIVE_CONTEXT_JOB_NAME)
 def run_auto_seriea_live_context_sync(
     db: Session,
     *,
@@ -11033,6 +11254,7 @@ def run_bootstrap_leghe_sync(
     return result
 
 
+@_observe_job_execution("auto_leghe_sync")
 def run_auto_leghe_sync(
     db: Session,
     *,
@@ -11321,6 +11543,7 @@ def admin_sync_player_availability(
     return result
 
 
+@_observe_job_execution("sync_complete_total")
 def _run_sync_complete_total_internal(
     db: Session,
     *,
@@ -11408,6 +11631,51 @@ def _sync_complete_background_worker(
     distributed_lock_until_ts: Optional[int],
 ) -> None:
     global _SYNC_COMPLETE_BACKGROUND_RUNNING
+
+    heartbeat_stop_event = threading.Event()
+    lock_state_guard = threading.Lock()
+    lock_state = {"value": int(distributed_lock_until_ts or 0)}
+
+    def _heartbeat_lock_loop() -> None:
+        while not heartbeat_stop_event.wait(timeout=max(15, int(_SYNC_COMPLETE_BACKGROUND_DB_LOCK_HEARTBEAT_SECONDS))):
+            with lock_state_guard:
+                expected_ts = int(lock_state.get("value") or 0)
+            if expected_ts <= 0:
+                continue
+            hb_db = SessionLocal()
+            try:
+                renewed, new_ts = _renew_leased_job_lock(
+                    hb_db,
+                    job_name=_SYNC_COMPLETE_BACKGROUND_DB_LOCK_JOB,
+                    expected_lock_until_ts=expected_ts,
+                    lease_seconds=_SYNC_COMPLETE_BACKGROUND_DB_LOCK_LEASE_SECONDS,
+                )
+                if renewed:
+                    with lock_state_guard:
+                        if int(lock_state.get("value") or 0) == expected_ts:
+                            lock_state["value"] = int(new_ts)
+                else:
+                    logger.warning(
+                        "sync_complete_total heartbeat could not renew distributed lock (expected=%s)",
+                        expected_ts,
+                    )
+            except Exception:
+                logger.debug("sync_complete_total heartbeat failed", exc_info=True)
+            finally:
+                try:
+                    hb_db.close()
+                except Exception:
+                    pass
+
+    heartbeat_thread: Optional[threading.Thread] = None
+    if int(distributed_lock_until_ts or 0) > 0:
+        heartbeat_thread = threading.Thread(
+            target=_heartbeat_lock_loop,
+            name="sync-complete-total-lock-heartbeat",
+            daemon=True,
+        )
+        heartbeat_thread.start()
+
     db = SessionLocal()
     try:
         result = _run_sync_complete_total_internal(
@@ -11426,11 +11694,18 @@ def _sync_complete_background_worker(
     except Exception:
         logger.exception("sync_complete_total background failed")
     finally:
-        if distributed_lock_until_ts is not None and int(distributed_lock_until_ts) > 0:
+        heartbeat_stop_event.set()
+        if heartbeat_thread is not None:
+            heartbeat_thread.join(timeout=5.0)
+
+        with lock_state_guard:
+            final_lock_until_ts = int(lock_state.get("value") or 0)
+
+        if final_lock_until_ts > 0:
             _release_leased_job_lock(
                 db,
                 job_name=_SYNC_COMPLETE_BACKGROUND_DB_LOCK_JOB,
-                lock_until_ts=int(distributed_lock_until_ts),
+                lock_until_ts=final_lock_until_ts,
             )
         try:
             db.close()
@@ -11542,6 +11817,95 @@ def admin_leghe_sync_complete(
         fetch_global_stats=bool(fetch_global_stats),
         formations_matchday=formations_matchday,
     )
+
+
+@router.get("/admin/jobs/observability")
+def admin_jobs_observability(
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+
+    now_utc = datetime.utcnow().replace(tzinfo=timezone.utc)
+    payload = _load_job_observability_payload()
+    jobs_payload_raw = payload.get("jobs")
+    jobs_payload = jobs_payload_raw if isinstance(jobs_payload_raw, dict) else {}
+
+    scheduled_rows = db.query(ScheduledJobState).all()
+    scheduled_index: Dict[str, Dict[str, object]] = {}
+    for row in scheduled_rows:
+        name = str(getattr(row, "job_name", "") or "").strip()
+        if not name:
+            continue
+        last_run_ts = int(getattr(row, "last_run_ts", 0) or 0)
+        updated_at = getattr(row, "updated_at", None)
+        scheduled_index[name] = {
+            "last_run_ts": last_run_ts,
+            "updated_at": updated_at.isoformat() if isinstance(updated_at, datetime) else "",
+        }
+
+    known_jobs: Set[str] = {
+        "auto_live_import",
+        SERIEA_LIVE_CONTEXT_JOB_NAME,
+        "auto_leghe_sync",
+        LEGHE_DAILY_ROSE_JOB_NAME,
+        LEGHE_DAILY_LIVE_JOB_NAME,
+        AVAILABILITY_SYNC_JOB_NAME,
+        "sync_complete_total",
+        _SYNC_COMPLETE_BACKGROUND_DB_LOCK_JOB,
+    }
+    known_jobs.update({str(key) for key in jobs_payload.keys()})
+    known_jobs.update({str(key) for key in scheduled_index.keys()})
+
+    items: List[Dict[str, object]] = []
+    now_ts = int(now_utc.timestamp())
+    for job_name in sorted(known_jobs):
+        observed_raw = jobs_payload.get(job_name)
+        observed = dict(observed_raw) if isinstance(observed_raw, dict) else {}
+        state = scheduled_index.get(job_name) or {}
+        claim_ts = int(_parse_int(state.get("last_run_ts")) or 0)
+        claim_iso = datetime.fromtimestamp(claim_ts, tz=timezone.utc).isoformat() if claim_ts > 0 else ""
+        lock_active = bool(
+            job_name == _SYNC_COMPLETE_BACKGROUND_DB_LOCK_JOB and claim_ts > now_ts
+        )
+        next_run_estimate = str(observed.get("next_run_estimate_utc") or "")
+        if not next_run_estimate:
+            next_run_estimate = _next_run_estimate_utc_for_job(job_name, now_utc=now_utc)
+
+        history_raw = observed.get("history")
+        history = list(history_raw) if isinstance(history_raw, list) else []
+        recent_history = history[-5:]
+
+        items.append(
+            {
+                "job_name": job_name,
+                "last_ok": bool(observed.get("last_ok")) if "last_ok" in observed else None,
+                "last_skipped": bool(observed.get("last_skipped")) if "last_skipped" in observed else None,
+                "last_reason": str(observed.get("last_reason") or ""),
+                "last_error": str(observed.get("last_error") or ""),
+                "last_mode": str(observed.get("last_mode") or ""),
+                "last_round": _parse_int(observed.get("last_round")),
+                "last_started_at": str(observed.get("last_started_at") or ""),
+                "last_finished_at": str(observed.get("last_finished_at") or ""),
+                "last_duration_seconds": _parse_float(observed.get("last_duration_seconds")),
+                "runs_count": int(_parse_int(observed.get("runs_count")) or 0),
+                "scheduled_last_claim_ts": claim_ts if claim_ts > 0 else None,
+                "scheduled_last_claim_utc": claim_iso,
+                "scheduled_state_updated_at": str(state.get("updated_at") or ""),
+                "lock_active": lock_active,
+                "next_run_estimate_utc": next_run_estimate,
+                "recent_history": recent_history,
+            }
+        )
+
+    return {
+        "ok": True,
+        "generated_at": now_utc.isoformat(),
+        "observability_updated_at": str(payload.get("updated_at") or ""),
+        "timezone": str(LEGHE_SYNC_TZ),
+        "jobs": items,
+    }
 
 
 @router.get("/formazioni")
