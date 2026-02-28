@@ -4213,18 +4213,11 @@ useEffect(() => {
               </section>
             )}
           </main>
-          {maintenanceBlockActive || deployBlockActive ? (
+          {maintenanceBlockActive ? (
             <div className="blocking-alert-overlay" role="alertdialog" aria-modal="true">
               <div className="blocking-alert-card">
                 <p className="eyebrow">Avviso</p>
-                <h3>
-                  {maintenanceBlockActive
-                    ? "Manutenzione in corso..."
-                    : "Nuovo aggiornamento disponibile"}
-                </h3>
-                {!maintenanceBlockActive ? (
-                  <p className="muted">{DEPLOY_UPDATE_ALERT_MESSAGE}</p>
-                ) : null}
+                <h3>Manutenzione in corso...</h3>
                 {maintenanceBlockActive && maintenanceReloadAttempts >= 2 ? (
                   <p className="maintenance-retry-warning">
                     Riprova tra {maintenanceRetryMinutes} minuti
@@ -4243,6 +4236,20 @@ useEffect(() => {
                       Metti in background
                     </button>
                   ) : null}
+                </div>
+              </div>
+            </div>
+          ) : null}
+          {deployBlockActive ? (
+            <div className="deploy-alert-floating" role="status" aria-live="polite">
+              <div className="deploy-alert-card">
+                <p className="eyebrow">Aggiornamento</p>
+                <h3>Nuova versione disponibile</h3>
+                <p className="muted">{DEPLOY_UPDATE_ALERT_MESSAGE}</p>
+                <div className="panel-actions">
+                  <button className="primary" type="button" onClick={forceReloadPage}>
+                    Ricarica
+                  </button>
                 </div>
               </div>
             </div>

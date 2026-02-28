@@ -642,6 +642,42 @@ body.theme-light {
   font-weight: 700;
 }
 
+.deploy-alert-floating {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 210;
+  width: min(360px, calc(100vw - 24px));
+}
+
+.deploy-alert-card {
+  border-radius: 14px;
+  border: 1px solid rgba(120, 196, 255, 0.35);
+  background: linear-gradient(150deg, rgba(19, 33, 55, 0.96), rgba(10, 18, 33, 0.96));
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.35);
+  padding: 14px 14px 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.deploy-alert-card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.deploy-alert-card .panel-actions {
+  justify-content: flex-end;
+}
+
+@media (max-width: 720px) {
+  .deploy-alert-floating {
+    right: 12px;
+    left: 12px;
+    bottom: 12px;
+    width: auto;
+  }
+}
+
 .mobile-topbar {
   display: flex;
   align-items: center;
