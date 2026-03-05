@@ -2390,6 +2390,77 @@ def teams():
     return {"items": team_set}
 
 
+@router.get("/top-acquisti")
+def top_acquisti(limit: int = Query(default=500, ge=1, le=2000)):
+    rose_rows = _apply_qa_from_quot(_read_csv(ROSE_PATH))
+    role_buckets: Dict[str, Dict[str, Dict[str, object]]] = {
+        "P": {},
+        "D": {},
+        "C": {},
+        "A": {},
+    }
+    seen_teams: Set[str] = set()
+
+    for row in rose_rows:
+        team_name = str(row.get("Team") or "").strip()
+        player_name = str(row.get("Giocatore") or "").strip()
+        role_name = str(row.get("Ruolo") or row.get("ruolo_base") or "").strip().upper()
+        if not team_name or not player_name or role_name not in role_buckets:
+            continue
+
+        seen_teams.add(team_name)
+        player_key = normalize_name(player_name)
+        if not player_key:
+            continue
+
+        team_set = role_buckets[role_name].setdefault(
+            player_key,
+            {
+                "name": player_name,
+                "squadra": str(row.get("Squadra") or "").strip() or "-",
+                "_teams": set(),
+                "qa": float(_parse_float(row.get("QA")) or _parse_float(row.get("PrezzoAttuale")) or 0.0),
+            },
+        )
+        team_set["_teams"].add(team_name)
+        if team_set.get("squadra") in ("", "-"):
+            team_set["squadra"] = str(row.get("Squadra") or "").strip() or "-"
+        qa_value = float(_parse_float(row.get("QA")) or _parse_float(row.get("PrezzoAttuale")) or 0.0)
+        if qa_value > float(team_set.get("qa") or 0.0):
+            team_set["qa"] = qa_value
+
+    items_by_role: Dict[str, List[Dict[str, object]]] = {"P": [], "D": [], "C": [], "A": []}
+    for role_name in ("P", "D", "C", "A"):
+        values: List[Dict[str, object]] = []
+        for entry in role_buckets[role_name].values():
+            teams = sorted(
+                {str(team).strip() for team in entry.get("_teams", set()) if str(team).strip()},
+                key=lambda value: value.lower(),
+            )
+            values.append(
+                {
+                    "name": str(entry.get("name") or "").strip(),
+                    "squadra": str(entry.get("squadra") or "-").strip() or "-",
+                    "teams": teams,
+                    "count": len(teams),
+                    "qa": float(entry.get("qa") or 0.0),
+                }
+            )
+        values.sort(
+            key=lambda row: (
+                -int(row.get("count") or 0),
+                -float(row.get("qa") or 0.0),
+                str(row.get("name") or "").lower(),
+            )
+        )
+        items_by_role[role_name] = values[:limit]
+
+    return {
+        "items_by_role": items_by_role,
+        "teams_total": len(seen_teams),
+    }
+
+
 def _load_standings_rows() -> List[Dict[str, object]]:
     candidates = [
         DATA_DIR / "incoming" / "classifica" / "classifica.xlsx",

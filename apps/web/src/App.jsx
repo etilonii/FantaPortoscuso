@@ -1705,66 +1705,156 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   =========================== */
   const [aggregatesLoading, setAggregatesLoading] = useState(false);
 
+  const normalizeTopAcquistiPayload = (payload) => {
+    const out = { P: [], D: [], C: [], A: [] };
+    ["P", "D", "C", "A"].forEach((role) => {
+      const list = Array.isArray(payload?.[role]) ? payload[role] : [];
+      out[role] = list
+        .map((item) => {
+          const name = String(item?.name || item?.Giocatore || "").trim();
+          if (!name) return null;
+          const teams = Array.isArray(item?.teams)
+            ? Array.from(
+                new Set(
+                  item.teams
+                    .map((teamName) => String(teamName || "").trim())
+                    .filter(Boolean)
+                )
+              ).sort((a, b) => a.localeCompare(b, "it", { sensitivity: "base" }))
+            : [];
+          const countValue = Number(item?.count);
+          const count = Number.isFinite(countValue) ? countValue : teams.length;
+          const qaValue = Number(item?.qa);
+          return {
+            name,
+            squadra: String(item?.squadra || item?.Squadra || "-").trim() || "-",
+            teams,
+            count,
+            qa: Number.isFinite(qaValue) ? qaValue : 0,
+          };
+        })
+        .filter(Boolean)
+        .sort((a, b) => {
+          if ((b.count || 0) !== (a.count || 0)) return (b.count || 0) - (a.count || 0);
+          if ((b.qa || 0) !== (a.qa || 0)) return (b.qa || 0) - (a.qa || 0);
+          return String(a.name || "").localeCompare(String(b.name || ""), "it", {
+            sensitivity: "base",
+          });
+        });
+    });
+    return out;
+  };
+
+  const buildTopAcquistiFromTeamRosters = async (teamNames) => {
+    const responses = [];
+    const failedTeams = [];
+    const chunkSize = 8;
+    for (let idx = 0; idx < teamNames.length; idx += chunkSize) {
+      const chunk = teamNames.slice(idx, idx + chunkSize);
+      const chunkResponses = await Promise.all(
+        chunk.map(async (team) => {
+          try {
+            const data = await fetchJsonWithRetry(
+              `${API_BASE}/data/team/${encodeURIComponent(team)}`,
+              {},
+              { attempts: 3, baseDelayMs: 250 }
+            );
+            return { team, items: data.items || [] };
+          } catch {
+            failedTeams.push(team);
+            return null;
+          }
+        })
+      );
+      responses.push(...chunkResponses.filter(Boolean));
+      if (idx + chunkSize < teamNames.length) {
+        await waitMs(120);
+      }
+    }
+
+    if (failedTeams.length > 0) {
+      const sample = failedTeams.slice(0, 4).join(", ");
+      throw new Error(
+        `Caricamento rose incompleto (${failedTeams.length} team non letti: ${sample}${
+          failedTeams.length > 4 ? ", ..." : ""
+        })`
+      );
+    }
+
+    const byRole = { P: new Map(), D: new Map(), C: new Map(), A: new Map() };
+
+    responses.forEach(({ team, items }) => {
+      items.forEach((p) => {
+        const name = String(p.Giocatore || p.nome || "").trim();
+        const role = String(p.Ruolo || p.ruolo_base || "").trim().toUpperCase();
+        if (!name || !["P", "D", "C", "A"].includes(role)) return;
+
+        if (!byRole[role].has(name)) {
+          byRole[role].set(name, {
+            name,
+            teams: new Set(),
+            count: 0,
+            squadra: p.Squadra || "-",
+            qa: Number(p.QA ?? p.PrezzoAttuale ?? p.prezzo_attuale ?? 0) || 0,
+          });
+        }
+        const entry = byRole[role].get(name);
+        entry.teams.add(team);
+        entry.count = entry.teams.size;
+        entry.squadra = p.Squadra || entry.squadra || "-";
+        const qaValue = Number(p.QA ?? p.PrezzoAttuale ?? p.prezzo_attuale ?? 0) || 0;
+        if (qaValue > (Number(entry.qa) || 0)) {
+          entry.qa = qaValue;
+        }
+      });
+    });
+
+    const out = { P: [], D: [], C: [], A: [] };
+    ["P", "D", "C", "A"].forEach((role) => {
+      out[role] = Array.from(byRole[role].values())
+        .map((entry) => ({
+          name: entry.name,
+          squadra: entry.squadra,
+          teams: Array.from(entry.teams).sort((a, b) =>
+            a.localeCompare(b, "it", { sensitivity: "base" })
+          ),
+          count: entry.count,
+          qa: Number(entry.qa) || 0,
+        }))
+        .sort((a, b) => {
+          if (b.count !== a.count) return b.count - a.count;
+          if ((b.qa || 0) !== (a.qa || 0)) return (b.qa || 0) - (a.qa || 0);
+          return a.name.localeCompare(b.name, "it", { sensitivity: "base" });
+        });
+    });
+    return out;
+  };
+
   const loadLeagueAggregates = async () => {
     if (!teams.length || aggregatesLoading) return;
 
     setAggregatesLoading(true);
     try {
-      const responses = [];
-      const chunkSize = 8;
-      for (let idx = 0; idx < teams.length; idx += chunkSize) {
-        const chunk = teams.slice(idx, idx + chunkSize);
-        const chunkResponses = await Promise.all(
-          chunk.map(async (team) => {
-            try {
-              const data = await fetchJsonWithRetry(
-                `${API_BASE}/data/team/${encodeURIComponent(team)}`,
-                {},
-                { attempts: 2, baseDelayMs: 250 }
-              );
-              return { team, items: data.items || [] };
-            } catch {
-              return { team, items: [] };
-            }
-          })
+      try {
+        const payload = await fetchJsonWithRetry(
+          `${API_BASE}/data/top-acquisti`,
+          {},
+          { attempts: 4, baseDelayMs: 400 }
         );
-        responses.push(...chunkResponses);
-        if (idx + chunkSize < teams.length) {
-          await waitMs(120);
-        }
+        const normalized = normalizeTopAcquistiPayload(
+          payload?.items_by_role || payload?.itemsByRole || {}
+        );
+        setTopPlayersByRole(normalized);
+        return;
+      } catch (err) {
+        console.warn("loadLeagueAggregates /data/top-acquisti failed, fallback to team fanout", err);
       }
 
-      const byRole = { P: new Map(), D: new Map(), C: new Map(), A: new Map() };
-
-      responses.forEach(({ team, items }) => {
-        items.forEach((p) => {
-          const name = String(p.Giocatore || p.nome || "").trim();
-          const role = String(p.Ruolo || p.ruolo_base || "").trim().toUpperCase();
-          if (!name || !["P", "D", "C", "A"].includes(role)) return;
-
-          if (!byRole[role].has(name)) {
-            byRole[role].set(name, { name, teams: new Set(), count: 0, squadra: p.Squadra || "-" });
-          }
-          const entry = byRole[role].get(name);
-          entry.teams.add(team);
-          entry.count = entry.teams.size;
-          entry.squadra = p.Squadra || entry.squadra || "-";
-        });
-      });
-
-      const out = { P: [], D: [], C: [], A: [] };
-      (["P", "D", "C", "A"]).forEach((r) => {
-        out[r] = Array.from(byRole[r].values())
-          .map((e) => ({
-            name: e.name,
-            squadra: e.squadra,
-            teams: Array.from(e.teams).sort((a, b) => a.localeCompare(b)),
-            count: e.count,
-          }))
-          .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
-      });
-
-      setTopPlayersByRole(out);
+      const fallback = await buildTopAcquistiFromTeamRosters(teams);
+      setTopPlayersByRole(fallback);
+    } catch (err) {
+      console.warn("loadLeagueAggregates failed");
+      console.warn(err);
     } finally {
       setAggregatesLoading(false);
     }
