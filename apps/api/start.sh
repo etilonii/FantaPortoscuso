@@ -1,12 +1,9 @@
 #!/usr/bin/env sh
 set -e
 
+DATA_ROOT="/app/data"
+SEED_ROOT="/app/seed"
 DB_PATH="/app/data/db/app.db"
-SEED_PATH="/app/seed/app.db.seed"
-SEED_DB_DIR="/app/seed/db"
-SEED_HISTORY_DIR="/app/seed/history"
-SEED_ROSE="/app/seed/rose_fantaportoscuso.csv"
-ROSE_PATH="/app/data/rose_fantaportoscuso.csv"
 
 warn() {
   echo "WARN: $1" >&2
@@ -22,39 +19,37 @@ safe_copy() {
   cp "$src" "$dst" || warn "copy failed: $src -> $dst"
 }
 
-safe_mkdir /app/data/db
+seed_missing_files() {
+  src_root="$1"
+  dst_root="$2"
 
-if [ ! -f "$DB_PATH" ] && [ -f "$SEED_PATH" ]; then
-  safe_copy "$SEED_PATH" "$DB_PATH"
-fi
+  [ -d "$src_root" ] || return 0
 
-if [ -d "$SEED_DB_DIR" ]; then
-  for seed_file in "$SEED_DB_DIR"/*.csv; do
-    [ -f "$seed_file" ] || continue
-    target="/app/data/db/$(basename "$seed_file")"
-    if [ ! -s "$target" ]; then
-      safe_copy "$seed_file" "$target"
+  find "$src_root" -type d | while IFS= read -r src_dir; do
+    rel_path="${src_dir#"$src_root"}"
+    [ -n "$rel_path" ] || continue
+    safe_mkdir "$dst_root$rel_path"
+  done
+
+  find "$src_root" -type f | while IFS= read -r src_file; do
+    rel_path="${src_file#"$src_root"}"
+    target="$dst_root$rel_path"
+    if [ ! -e "$target" ]; then
+      safe_mkdir "$(dirname "$target")"
+      safe_copy "$src_file" "$target"
     fi
   done
-fi
+}
 
-# Seed rose snapshot if missing or older than seed.
-if [ -f "$SEED_ROSE" ]; then
-  if [ ! -f "$ROSE_PATH" ] || [ "$SEED_ROSE" -nt "$ROSE_PATH" ]; then
-    safe_copy "$SEED_ROSE" "$ROSE_PATH"
-  fi
-fi
+safe_mkdir "$DATA_ROOT"
+safe_mkdir "$DATA_ROOT/db"
+safe_mkdir "$DATA_ROOT/backups"
 
-# Seed history data if volume is empty (needed for starred QA fallback).
-if [ -d "$SEED_HISTORY_DIR" ]; then
-  for hist_dir in "$SEED_HISTORY_DIR"/*; do
-    [ -d "$hist_dir" ] || continue
-    target="/app/data/history/$(basename "$hist_dir")"
-    if [ ! -d "$target" ] || [ -z "$(ls -A "$target" 2>/dev/null)" ]; then
-      safe_mkdir "$target"
-      cp -r "$hist_dir"/* "$target"/ 2>/dev/null || warn "history seed copy failed for $(basename "$hist_dir")"
-    fi
-  done
+# Populate an empty or partial persistent volume from the image snapshot.
+seed_missing_files "$SEED_ROOT" "$DATA_ROOT"
+
+if [ ! -f "$DB_PATH" ]; then
+  warn "database file not found at $DB_PATH; a new SQLite database will be created on first write"
 fi
 
 PORT="${PORT:-8001}"

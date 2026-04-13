@@ -218,7 +218,7 @@ const API_BASE =
   import.meta.env.VITE_API_BASE ||
   (import.meta.env.DEV
     ? "http://localhost:8001"
-    : "https://fantaportoscuso.up.railway.app");
+    : "/api");
 const DEPLOY_UPDATE_ALERT_MESSAGE = "L'admin ha effettuato delle modifiche, ricarica la pagina!";
 const INSIGHTS_MENU_KEYS = new Set([
   "classifica-fixtures-seriea",

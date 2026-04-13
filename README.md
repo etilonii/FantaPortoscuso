@@ -81,6 +81,10 @@ File consigliato: `apps/web/.env`
 VITE_API_BASE=http://localhost:8001
 ```
 
+## Deploy
+- Deploy backend fuori Railway: vedi `deploy/coolify/README.md`
+- Per Vercel imposta `VITE_API_BASE` all'URL pubblico del backend oppure usa un proxy `/api`
+
 ## Aggiornamento dati giornaliero
 Metti i nuovi file in:
 - `data/incoming/rose/`

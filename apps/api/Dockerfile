@@ -11,9 +11,11 @@ RUN grep -Ev "^\s*(#|$)|pytest==" /tmp/requirements.txt > /tmp/requirements.runt
     && pip install -r /tmp/requirements.runtime.txt
 
 COPY apps/api /app/apps/api
-COPY data /app/data
+COPY data /app/seed
 COPY scripts /app/scripts
+
+RUN chmod +x /app/apps/api/start.sh
 
 EXPOSE 8001
 
-CMD ["sh", "-c", "mkdir -p /app/data/db /app/data/backups && uvicorn apps.api.app.main:create_app --factory --host 0.0.0.0 --port ${PORT:-8001}"]
+CMD ["sh", "/app/apps/api/start.sh"]
