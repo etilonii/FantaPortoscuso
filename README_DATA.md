@@ -123,6 +123,7 @@ Nota formazioni:
 
 Comportamento scheduler:
 - slot fissi ogni 3 ore (`00:00`, `03:00`, `06:00`, `09:00`, `12:00`, `15:00`, `18:00`, `21:00`) durante le finestre giornate configurate (26-38)
+  - default configurazione: `AUTO_LEGHE_SYNC_SLOT_HOURS=3`
 - fuori dalle finestre partita: un solo sync giornaliero "daily rose" (rose + quotazioni + stats globali)
 
 ### Trigger manuale (admin)

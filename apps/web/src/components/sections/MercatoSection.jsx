@@ -6,6 +6,14 @@ export default function MercatoSection({
   marketItems,
   marketStandings,
   formatInt,
+  suggestions,
+  formatDecimal,
+  openPlayer,
+  runSuggest,
+  suggestLoading,
+  suggestError,
+  suggestHasRun,
+  suggestPayload,
 }) {
   const [activeTeam, setActiveTeam] = useState("");
   const [boughtVisibleCount, setBoughtVisibleCount] = useState(10);
@@ -13,8 +21,8 @@ export default function MercatoSection({
 
   const marketTeamsByName = useMemo(() => {
     const map = new Map();
-    marketItems.forEach((item, index) => {
-      const rawTeam = (item.team || "").trim();
+    (marketItems || []).forEach((item, index) => {
+      const rawTeam = String(item?.team || "").trim();
       if (!rawTeam) return;
       const entry = map.get(rawTeam) || {
         team: rawTeam,
@@ -24,7 +32,7 @@ export default function MercatoSection({
         lastIndex: index,
       };
       entry.items.push(item);
-      if (item.date && item.date > entry.lastDate) {
+      if (item?.date && item.date > entry.lastDate) {
         entry.lastDate = item.date;
       }
       entry.lastIndex = Math.max(entry.lastIndex ?? index, index);
@@ -50,9 +58,9 @@ export default function MercatoSection({
   const standingsMap = useMemo(() => {
     const map = new Map();
     (marketStandings || []).forEach((row, idx) => {
-      const team = String(row.team || row.Squadra || "").trim();
+      const team = String(row?.team || row?.Squadra || "").trim();
       if (!team) return;
-      const rawPos = Number(row.pos ?? row.Pos ?? idx + 1);
+      const rawPos = Number(row?.pos ?? row?.Pos ?? idx + 1);
       const pos = Number.isFinite(rawPos) ? rawPos : idx + 1;
       map.set(normalizeTeam(team), pos);
     });
@@ -154,6 +162,13 @@ export default function MercatoSection({
     () => topReleased.slice(0, releasedVisibleCount),
     [topReleased, releasedVisibleCount]
   );
+  const visibleSuggestions = Array.isArray(suggestions) ? suggestions : [];
+  const hasSuggestions = visibleSuggestions.length > 0;
+  const canRunSuggest =
+    Boolean(suggestPayload) && typeof runSuggest === "function" && !suggestLoading;
+  const suggestRosterCount = Array.isArray(suggestPayload?.user_squad)
+    ? suggestPayload.user_squad.length
+    : 0;
 
   useEffect(() => {
     if (!orderedTeams.length) {
@@ -176,6 +191,24 @@ export default function MercatoSection({
     if (idx === 1) return "silver";
     if (idx === 2) return "bronze";
     return "";
+  };
+
+  const formatGain = (value) =>
+    typeof formatDecimal === "function" ? formatDecimal(value, 2) : formatInt(value);
+
+  const renderPlayerAction = (name) => {
+    const safeName = String(name || "").trim();
+    if (!safeName) return <span>-</span>;
+    if (typeof openPlayer !== "function") return <span>{safeName}</span>;
+    return (
+      <button
+        type="button"
+        className="link-button"
+        onClick={() => openPlayer(safeName)}
+      >
+        {safeName}
+      </button>
+    );
   };
 
   return (
@@ -312,7 +345,7 @@ export default function MercatoSection({
                                   <span className="market-ranking-name">{row.name}</span>
                                 </p>
                                 <span className="muted">
-                                  {(row.role || "-")} - {(row.squadra || "-")} ·{" "}
+                                  {(row.role || "-")} - {(row.squadra || "-")} -{" "}
                                   {row.teamCount} team
                                 </span>
                                 <details className="market-inline-accordion">
@@ -371,7 +404,7 @@ export default function MercatoSection({
                                   <span className="market-ranking-name">{row.name}</span>
                                 </p>
                                 <span className="muted">
-                                  {(row.role || "-")} - {(row.squadra || "-")} ·{" "}
+                                  {(row.role || "-")} - {(row.squadra || "-")} -{" "}
                                   {row.teamCount} team
                                 </span>
                                 <details className="market-inline-accordion">
@@ -418,6 +451,104 @@ export default function MercatoSection({
           ) : (
             <p className="muted">Nessun trasferimento disponibile.</p>
           )}
+        </div>
+      </div>
+
+      <div className="panel">
+        <div className="suggest-shell">
+          <div className="suggest-header">
+            <div className="suggest-title-row">
+              <span className="suggest-badge">Advisor</span>
+              <div>
+                <h3>Consigli automatici</h3>
+                <p className="muted">
+                  Scenari rapidi costruiti sulla rosa del team autenticato.
+                </p>
+              </div>
+            </div>
+
+            <div className="suggest-actions">
+              <button
+                type="button"
+                className="primary suggest-cta"
+                onClick={() => runSuggest?.()}
+                disabled={!canRunSuggest}
+              >
+                {suggestLoading ? "Calcolo..." : "Genera scenari"}
+              </button>
+            </div>
+
+            {suggestError ? (
+              <p className="muted suggest-error">{suggestError}</p>
+            ) : null}
+          </div>
+
+          <div className="suggest-footer">
+            {suggestPayload ? (
+              <span className="muted">
+                Rosa caricata: {suggestRosterCount} giocatori - Crediti residui:{" "}
+                {formatInt(suggestPayload?.credits_residui)}
+              </span>
+            ) : (
+              <span className="muted">
+                Accedi con una key associata a un team per attivare il motore consigli.
+              </span>
+            )}
+          </div>
+
+          <div className={`suggest-list ${hasSuggestions ? "" : "is-empty"}`}>
+            {visibleSuggestions.map((solution, index) => (
+              <article
+                key={`solution-${index}`}
+                className="suggest-card"
+              >
+                <div className="suggest-card-header">
+                  <div>
+                    <p className="suggest-title">Scenario #{index + 1}</p>
+                    <p className="muted">
+                      Gain stimato {formatGain(solution?.total_gain)} - Budget finale{" "}
+                      {formatInt(solution?.budget_final)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="suggest-swaps">
+                  {(solution?.swaps || []).map((swap, swapIndex) => (
+                    <div
+                      key={`swap-${index}-${swapIndex}-${swap?.out || ""}-${swap?.in || ""}`}
+                      className="swap-row"
+                    >
+                      <div>
+                        <p className="rank-title">
+                          {renderPlayerAction(swap?.out)}
+                          <span className="muted"> -&gt; </span>
+                          {renderPlayerAction(swap?.in)}
+                        </p>
+                        <p className="muted">
+                          {(swap?.out_role || "-")} - {(swap?.out_team || "-")} /{" "}
+                          {(swap?.in_role || "-")} - {(swap?.in_team || "-")}
+                        </p>
+                      </div>
+                      <div className="swap-gain">
+                        <strong>{formatGain(swap?.gain)}</strong>
+                        <div className="muted">gain</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {Array.isArray(solution?.warnings) && solution.warnings.length ? (
+                  <p className="muted">
+                    Warning: {solution.warnings.join(" | ")}
+                  </p>
+                ) : null}
+              </article>
+            ))}
+          </div>
+
+          {suggestHasRun && !hasSuggestions && !suggestLoading ? (
+            <p className="muted">Nessuno scenario disponibile con i parametri correnti.</p>
+          ) : null}
         </div>
       </div>
     </section>

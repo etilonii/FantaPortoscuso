@@ -81,7 +81,7 @@ AUTO_SERIEA_LIVE_SYNC_SEASON = get_env("AUTO_SERIEA_LIVE_SYNC_SEASON", "").strip
 # Leghe Fantacalcio sync (download XLSX + run local pipeline)
 AUTO_LEGHE_SYNC_ENABLED = get_env_bool("AUTO_LEGHE_SYNC_ENABLED", False)
 AUTO_LEGHE_SYNC_ON_START = get_env_bool("AUTO_LEGHE_SYNC_ON_START", False)
-AUTO_LEGHE_SYNC_SLOT_HOURS = get_env_int("AUTO_LEGHE_SYNC_SLOT_HOURS", 1, min_value=1)
+AUTO_LEGHE_SYNC_SLOT_HOURS = get_env_int("AUTO_LEGHE_SYNC_SLOT_HOURS", 3, min_value=1)
 
 LEGHE_ALIAS = get_env_optional("LEGHE_ALIAS")
 LEGHE_USERNAME = get_env_optional("LEGHE_USERNAME")

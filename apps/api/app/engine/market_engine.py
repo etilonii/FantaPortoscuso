@@ -675,7 +675,7 @@ def suggest_transfers(
         max_changes = max(max_changes, len(required_outs_set))
     if max_changes == 0:
         return []
-    min_changes = max(5, len(required_outs_set))
+    min_changes = max(1, len(required_outs_set), len(fixed_pairs))
 
     log(
         f"suggest_transfers: max_changes={max_changes} k_pool={k_pool} m_out={m_out} "
@@ -713,6 +713,8 @@ def suggest_transfers(
         # Tier-driven scoring (primary)
         value += tier_score(key) * 100.0
         value += starter_norm * 25.0
+        # Recent bonus production breaks ties between otherwise similar profiles.
+        value += bonus_rate_recent(p) * 8.0
         if is_bench_profile(p) and starter < 0.60 and not newcomer:
             value *= 0.6
         if starter < 0.45 and not newcomer and key not in injury_return_allow:
