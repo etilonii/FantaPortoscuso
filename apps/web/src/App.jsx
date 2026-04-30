@@ -49,6 +49,8 @@ const normalizeName = (value) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "");
 
+const TOP_ACQUISTI_SELECTION_KEY = "fp_top_acquisti_selected_players";
+
 const slugify = (value) =>
   String(value || "")
     .trim()
@@ -253,6 +255,7 @@ export default function App() {
   const maintenanceStateRef = useRef({ enabled: false, updated_at: "" });
   const consigliataTeamAutoselectRef = useRef(false);
   const formazioniRequestIdRef = useRef(0);
+  const topAcquistiSelectionHydratedRef = useRef(false);
 
   /* ===== UI ===== */
   const [theme, setTheme] = useState("dark");
@@ -418,6 +421,7 @@ export default function App() {
   });
   const [activeTopRole, setActiveTopRole] = useState("P");
   const [topAcquistiQuery, setTopAcquistiQuery] = useState("");
+  const [topAcquistiSelected, setTopAcquistiSelected] = useState([]);
   const [topPosFrom, setTopPosFrom] = useState("");
   const [topPosTo, setTopPosTo] = useState("");
 
@@ -2008,6 +2012,166 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const topQuotes = useMemo(() => (topQuotesAll || []).slice(0, 5), [topQuotesAll]);
   const topPlusvalenze = useMemo(() => (plusvalenze || []).slice(0, 5), [plusvalenze]);
   const topStats = useMemo(() => (statsItems || []).slice(0, 5), [statsItems]);
+
+  const topAcquistiCatalog = useMemo(() => {
+    const map = new Map();
+    ["P", "D", "C", "A"].forEach((role) => {
+      (topPlayersByRole?.[role] || []).forEach((item) => {
+        const name = String(item?.name || "").trim();
+        const key = normalizeName(name);
+        if (!key) return;
+        const existing = map.get(key) || {
+          name,
+          role,
+          squadra: String(item?.squadra || "-").trim() || "-",
+          qa: 0,
+          teams: new Set(),
+        };
+        existing.role = existing.role || role;
+        existing.squadra =
+          existing.squadra && existing.squadra !== "-"
+            ? existing.squadra
+            : String(item?.squadra || "-").trim() || "-";
+        existing.qa = Math.max(Number(existing.qa) || 0, Number(item?.qa) || 0);
+        (Array.isArray(item?.teams) ? item.teams : []).forEach((teamName) => {
+          const cleanTeam = String(teamName || "").trim();
+          if (cleanTeam) existing.teams.add(cleanTeam);
+        });
+        map.set(key, existing);
+      });
+    });
+
+    return Array.from(map.values())
+      .map((item) => ({
+        ...item,
+        teams: Array.from(item.teams).sort((a, b) =>
+          a.localeCompare(b, "it", { sensitivity: "base" })
+        ),
+      }))
+      .sort((a, b) => {
+        if ((b.teams?.length || 0) !== (a.teams?.length || 0)) {
+          return (b.teams?.length || 0) - (a.teams?.length || 0);
+        }
+        if ((b.qa || 0) !== (a.qa || 0)) return (b.qa || 0) - (a.qa || 0);
+        return String(a.name || "").localeCompare(String(b.name || ""), "it", {
+          sensitivity: "base",
+        });
+      });
+  }, [topPlayersByRole]);
+
+  const topAcquistiSearchMatches = useMemo(() => {
+    const q = String(topAcquistiQuery || "").trim().toLowerCase();
+    if (!q) return [];
+    const selectedKeys = new Set(
+      (topAcquistiSelected || []).map((item) => normalizeName(item?.name || ""))
+    );
+    return topAcquistiCatalog
+      .filter((item) => {
+        const key = normalizeName(item?.name || "");
+        return (
+          key &&
+          !selectedKeys.has(key) &&
+          String(item?.name || "").toLowerCase().includes(q)
+        );
+      })
+      .slice(0, 8);
+  }, [topAcquistiCatalog, topAcquistiQuery, topAcquistiSelected]);
+
+  const addTopAcquistiSelected = (player) => {
+    const name = String(player?.name || player || "").trim();
+    const key = normalizeName(name);
+    if (!key) return;
+    const match =
+      topAcquistiCatalog.find((item) => normalizeName(item?.name || "") === key) ||
+      (typeof player === "object" ? player : null);
+    if (!match) return;
+    setTopAcquistiSelected((current) => {
+      if ((current || []).some((item) => normalizeName(item?.name || "") === key)) {
+        return current;
+      }
+      return [
+        ...(current || []),
+        {
+          name: match.name,
+          role: match.role || "",
+          squadra: match.squadra || "-",
+          qa: Number(match.qa) || 0,
+          teams: Array.isArray(match.teams) ? match.teams : [],
+        },
+      ];
+    });
+    setTopAcquistiQuery("");
+  };
+
+  const removeTopAcquistiSelected = (name) => {
+    const key = normalizeName(name);
+    setTopAcquistiSelected((current) =>
+      (current || []).filter((item) => normalizeName(item?.name || "") !== key)
+    );
+  };
+
+  const clearTopAcquistiSelected = () => setTopAcquistiSelected([]);
+
+  const topAcquistiIntersection = useMemo(() => {
+    const selected = topAcquistiSelected || [];
+    if (!selected.length) {
+      return { players: [], teams: [], count: 0 };
+    }
+
+    const teamSets = selected.map(
+      (item) =>
+        new Set(
+          (Array.isArray(item?.teams) ? item.teams : [])
+            .map((teamName) => String(teamName || "").trim())
+            .filter(Boolean)
+        )
+    );
+    const [firstSet, ...otherSets] = teamSets;
+    const teams = Array.from(firstSet || [])
+      .filter((teamName) => otherSets.every((set) => set.has(teamName)))
+      .sort((a, b) => a.localeCompare(b, "it", { sensitivity: "base" }));
+
+    return {
+      players: selected.map((item) => item.name).filter(Boolean),
+      teams,
+      count: teams.length,
+    };
+  }, [topAcquistiSelected]);
+
+  useEffect(() => {
+    if (topAcquistiSelectionHydratedRef.current || !topAcquistiCatalog.length) return;
+
+    let savedNames = [];
+    try {
+      const raw = localStorage.getItem(TOP_ACQUISTI_SELECTION_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      savedNames = Array.isArray(parsed)
+        ? parsed.map((name) => String(name || "").trim()).filter(Boolean)
+        : [];
+    } catch {
+      savedNames = [];
+    }
+
+    if (savedNames.length) {
+      const savedKeys = new Set(savedNames.map((name) => normalizeName(name)).filter(Boolean));
+      const restored = topAcquistiCatalog.filter((item) =>
+        savedKeys.has(normalizeName(item?.name || ""))
+      );
+      setTopAcquistiSelected(restored);
+    }
+
+    topAcquistiSelectionHydratedRef.current = true;
+  }, [topAcquistiCatalog]);
+
+  useEffect(() => {
+    if (!topAcquistiSelectionHydratedRef.current) return;
+    try {
+      localStorage.setItem(
+        TOP_ACQUISTI_SELECTION_KEY,
+        JSON.stringify((topAcquistiSelected || []).map((item) => item.name).filter(Boolean))
+      );
+    } catch {}
+  }, [topAcquistiSelected]);
 
   const rankedPlusvalenze = useMemo(
     () =>
@@ -3849,6 +4013,12 @@ useEffect(() => {
                 aggregatesLoading={aggregatesLoading}
                 topAcquistiQuery={topAcquistiQuery}
                 setTopAcquistiQuery={setTopAcquistiQuery}
+                topAcquistiSelected={topAcquistiSelected}
+                topAcquistiSearchMatches={topAcquistiSearchMatches}
+                topAcquistiIntersection={topAcquistiIntersection}
+                onAddTopAcquistiPlayer={addTopAcquistiSelected}
+                onRemoveTopAcquistiPlayer={removeTopAcquistiSelected}
+                onClearTopAcquistiPlayers={clearTopAcquistiSelected}
                 topPosFrom={topPosFrom}
                 setTopPosFrom={setTopPosFrom}
                 topPosTo={topPosTo}
