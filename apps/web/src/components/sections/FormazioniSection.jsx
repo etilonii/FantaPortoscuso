@@ -20,7 +20,7 @@ export default function FormazioniSection({
 }) {
   const isConsigliata = String(variant || "").trim().toLowerCase() === "consigliata";
   const scopedTeam = String(sessionTeam || "").trim();
-  const teamScoped = !isAdmin;
+  const teamScoped = !isAdmin && isConsigliata;
   const source = String(formationMeta?.source || "projection").toLowerCase();
   const isRealSource = source === "real";
   const availableRounds = Array.from(

@@ -12243,12 +12243,11 @@ def formazioni(
     )
     requested_team_key = normalize_name(team or "")
     scoped_team_name, scoped_team_key = _team_scope_for_access_key(db, access_record)
-    scope_enforced = not bool(access_record.is_admin)
-    scope_missing = bool(scope_enforced and not scoped_team_key)
-    team_key = scoped_team_key if scope_enforced else requested_team_key
-    if scope_missing:
-        # Keep payload shape stable but return no team data if key has no association.
-        team_key = "__team_scope_missing__"
+    # League formations are visible to all authenticated users. Team-scoped keys still
+    # limit sensitive endpoints such as the optimizer and market payloads.
+    scope_enforced = False
+    scope_missing = False
+    team_key = requested_team_key
     regulation = _load_regulation()
     default_order, allowed_orders = _reg_ordering(regulation)
     selected_order = str(order_by or default_order).strip().lower()

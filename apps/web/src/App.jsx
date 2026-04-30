@@ -1052,10 +1052,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       ) {
         params.set("order_by", normalizedOrder);
       }
-      const scopedTeam = !isAdmin ? String(sessionTeam || "").trim() : "";
-      if (scopedTeam) {
-        params.set("team", scopedTeam);
-      }
       const data = await fetchJsonWithRetry(
         `${API_BASE}/data/formazioni?${params.toString()}`,
         {

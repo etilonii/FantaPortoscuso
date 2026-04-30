@@ -37,6 +37,65 @@ class MarketRoutesTests(unittest.TestCase):
 
         self.assertEqual(ctx.exception.status_code, 403)
 
+    def test_formazioni_non_admin_can_view_all_teams(self):
+        access_record = SimpleNamespace(is_admin=False)
+        projected_rows = [
+            {"team": "Team A", "round": None, "standing_pos": 1, "pos": 1},
+            {"team": "Team B", "round": None, "standing_pos": 2, "pos": 2},
+        ]
+
+        with patch.object(data_core, "_require_login_key", return_value=access_record), patch.object(
+            data_core,
+            "_team_scope_for_access_key",
+            return_value=("Team A", "teama"),
+        ), patch.object(data_core, "_load_regulation", return_value={}), patch.object(
+            data_core,
+            "_reg_ordering",
+            return_value=("classifica", ["classifica", "live_total"]),
+        ), patch.object(data_core, "_build_standings_index", return_value={}), patch.object(
+            data_core,
+            "_load_status_matchday",
+            return_value=35,
+        ), patch.object(data_core, "_leghe_sync_reference_round_now", return_value=None), patch.object(
+            data_core,
+            "_latest_round_with_live_votes",
+            return_value=None,
+        ), patch.object(data_core, "_load_club_name_index", return_value={}), patch.object(
+            data_core,
+            "_load_seriea_fixtures_for_insights",
+            return_value=[],
+        ), patch.object(data_core, "_is_formazioni_real_unlocked_for_round", return_value=(False, None, "")), patch.object(
+            data_core,
+            "_load_fixture_rows_for_live",
+            return_value=[{"round": 35}],
+        ), patch.object(data_core, "_resolve_formazioni_optimizer_round", return_value=35), patch.object(
+            data_core,
+            "_load_classifica_positions",
+            return_value={},
+        ), patch.object(data_core, "_load_live_standings_positions", return_value={}), patch.object(
+            data_core,
+            "_load_projected_formazioni_rows",
+            return_value=projected_rows,
+        ) as load_projected, patch.object(data_core, "_load_live_round_context", return_value={}), patch.object(
+            data_core,
+            "_attach_live_scores_to_formations",
+            return_value=None,
+        ):
+            result = data_core.formazioni(
+                team=None,
+                round=None,
+                order_by=None,
+                x_access_key="abc",
+                db=object(),
+                limit=200,
+            )
+
+        self.assertEqual([item["team"] for item in result["items"]], ["Team A", "Team B"])
+        self.assertFalse(result["team_scope_enforced"])
+        self.assertFalse(result["team_scope_missing"])
+        load_projected.assert_called_once()
+        self.assertEqual(load_projected.call_args.args[0], "")
+
     def test_market_suggest_serializes_engine_response(self):
         captured = {}
 
