@@ -20,7 +20,7 @@ from urllib.error import URLError, HTTPError
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter, Query, Body, Depends, Header, HTTPException
+from fastapi import APIRouter, Query, Body, Depends, Header, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
@@ -41,6 +41,9 @@ from apps.api.app.config import (
     LEGHE_COMPETITION_NAME,
     LEGHE_FORMATIONS_MATCHDAY,
     IMPORT_SECRET,
+    ENABLE_LEGACY_REMOTE_IMPORTS,
+    ENABLE_MANUAL_IMPORTS,
+    product_mode_status,
 )
 from apps.api.app.db import SessionLocal
 from apps.api.app.deps import get_db
@@ -67,6 +70,10 @@ from apps.api.app.utils.names import normalize_name, strip_star, is_starred
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/data", tags=["data"])
+LEGACY_REMOTE_IMPORTS_DISABLED_MESSAGE = (
+    "Import remoti legacy disattivati. Usa upload/manual import o fonti autorizzate."
+)
+from apps.api.app.services.manual_imports import save_and_activate_manual_import
 
 DATA_DIR = Path(__file__).resolve().parents[4] / "data"
 RUNTIME_DATA_DIR = DATA_DIR / "runtime"
@@ -138,6 +145,34 @@ LEGHE_SYNC_WINDOWS: Tuple[Tuple[int, date, date], ...] = (
     (38, date(2026, 5, 22), date(2026, 5, 24)),
 )
 STATUS_PATH = DATA_DIR / "status.json"
+
+
+def _legacy_remote_import_disabled_detail() -> Dict[str, object]:
+    detail = {
+        "ok": False,
+        "reason": "legacy_remote_imports_disabled",
+        "message": LEGACY_REMOTE_IMPORTS_DISABLED_MESSAGE,
+    }
+    detail.update(product_mode_status())
+    return detail
+
+
+def _ensure_legacy_remote_imports_enabled() -> None:
+    if not ENABLE_LEGACY_REMOTE_IMPORTS:
+        raise HTTPException(status_code=403, detail=_legacy_remote_import_disabled_detail())
+
+
+def _ensure_manual_imports_enabled() -> None:
+    if not ENABLE_MANUAL_IMPORTS:
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "ok": False,
+                "reason": "manual_imports_disabled",
+                "message": "Import manuali disattivati da configurazione.",
+                **product_mode_status(),
+            },
+        )
 JOB_OBSERVABILITY_PATH = RUNTIME_DATA_DIR / "job_observability.json"
 JOB_OBSERVABILITY_HISTORY_LIMIT = 40
 SERIEA_CONTEXT_CANDIDATES = [
@@ -11567,6 +11602,9 @@ def internal_scheduler_run(
 ):
     _require_import_secret(x_import_secret)
     normalized_job = str(job or "").strip().lower()
+    legacy_remote_jobs = {"live_import", "seriea_live_sync", "leghe_sync", "bootstrap_leghe_sync"}
+    if normalized_job in legacy_remote_jobs:
+        _ensure_legacy_remote_imports_enabled()
 
     if normalized_job == "live_import":
         return run_auto_live_import(
@@ -11596,6 +11634,72 @@ def internal_scheduler_run(
     raise HTTPException(status_code=400, detail="job non supportato")
 
 
+async def _manual_import_upload_from_request(request: Request):
+    try:
+        form = await request.form()
+    except Exception as exc:
+        raise HTTPException(
+            status_code=400,
+            detail="Upload multipart non valido. Invia il file nel campo 'file'.",
+        ) from exc
+
+    upload = form.get("file")
+    if upload is None or not getattr(upload, "filename", "") or not getattr(upload, "file", None):
+        raise HTTPException(status_code=400, detail="File richiesto nel campo 'file'.")
+    return upload
+
+
+@router.post("/admin/manual-import/rose")
+async def admin_manual_import_rose(
+    request: Request,
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+    _ensure_manual_imports_enabled()
+    upload = await _manual_import_upload_from_request(request)
+    return save_and_activate_manual_import(
+        "rose",
+        original_filename=str(upload.filename),
+        fileobj=upload.file,
+    )
+
+
+@router.post("/admin/manual-import/quotazioni")
+async def admin_manual_import_quotazioni(
+    request: Request,
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+    _ensure_manual_imports_enabled()
+    upload = await _manual_import_upload_from_request(request)
+    return save_and_activate_manual_import(
+        "quotazioni",
+        original_filename=str(upload.filename),
+        fileobj=upload.file,
+    )
+
+
+@router.post("/admin/manual-import/formazioni")
+async def admin_manual_import_formazioni(
+    request: Request,
+    db: Session = Depends(get_db),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    _require_admin_key(x_admin_key, db, authorization)
+    _ensure_manual_imports_enabled()
+    upload = await _manual_import_upload_from_request(request)
+    return save_and_activate_manual_import(
+        "formazioni",
+        original_filename=str(upload.filename),
+        fileobj=upload.file,
+    )
+
+
 @router.post("/live/import-voti")
 def import_live_votes(
     payload: LiveImportVotesRequest,
@@ -11604,6 +11708,8 @@ def import_live_votes(
     authorization: str | None = Header(default=None, alias="Authorization"),
 ):
     _require_admin_key(x_admin_key, db, authorization)
+    if payload.source_url:
+        _ensure_legacy_remote_imports_enabled()
     return _import_live_votes_internal(
         db,
         round_value=payload.round,
@@ -11625,6 +11731,7 @@ def admin_leghe_sync(
     authorization: str | None = Header(default=None, alias="Authorization"),
 ):
     _require_admin_key(x_admin_key, db, authorization)
+    _ensure_legacy_remote_imports_enabled()
 
     if force:
         if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
@@ -11663,6 +11770,7 @@ def admin_sync_player_availability(
     authorization: str | None = Header(default=None, alias="Authorization"),
 ):
     _require_admin_key(x_admin_key, db, authorization)
+    _ensure_legacy_remote_imports_enabled()
     result = _sync_player_availability_sources()
     if result.get("ok") is False:
         raise HTTPException(status_code=502, detail=str(result.get("error") or "Availability sync failed"))
@@ -11920,6 +12028,7 @@ def admin_leghe_sync_complete(
     authorization: str | None = Header(default=None, alias="Authorization"),
 ):
     _require_admin_key(x_admin_key, db, authorization)
+    _ensure_legacy_remote_imports_enabled()
 
     if not LEGHE_ALIAS or not LEGHE_USERNAME or not LEGHE_PASSWORD:
         raise HTTPException(

@@ -3425,6 +3425,10 @@ body.admin-menu-open .admin-menu-overlay {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .manual-import-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 700px) {
@@ -3514,6 +3518,169 @@ body.admin-menu-open .admin-menu-overlay {
   font-size: 1.1rem;
   color: var(--accent);
   letter-spacing: 1px;
+}
+
+.manual-import-panel {
+  text-align: left;
+}
+
+.manual-import-panel .panel-header {
+  align-items: flex-start;
+}
+
+.manual-import-panel .panel-header .muted {
+  max-width: 760px;
+  margin-top: 6px;
+}
+
+.manual-import-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.manual-import-mode span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(91, 209, 255, 0.12);
+  border: 1px solid rgba(91, 209, 255, 0.22);
+  color: #cfeeff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.manual-import-disabled {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(243, 95, 95, 0.45);
+  background: rgba(243, 95, 95, 0.12);
+  color: #ffb7b7;
+  font-weight: 800;
+}
+
+.manual-import-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.manual-import-source {
+  min-width: 0;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.manual-import-source-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.manual-import-source-head h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.manual-import-source-head strong {
+  white-space: nowrap;
+  color: var(--accent);
+}
+
+.manual-import-meta {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.manual-import-meta span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.manual-import-empty,
+.manual-import-selected {
+  margin: 10px 0 0;
+}
+
+.manual-import-upload {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.manual-import-upload input[type="file"] {
+  min-width: 0;
+  width: 100%;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px;
+  background: rgba(10, 21, 34, 0.55);
+}
+
+.manual-import-upload input[type="file"]:disabled {
+  opacity: 0.55;
+}
+
+.manual-import-result {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.manual-import-result.ok {
+  background: rgba(75, 201, 122, 0.12);
+  border-color: rgba(75, 201, 122, 0.35);
+}
+
+.manual-import-result.error {
+  background: rgba(243, 95, 95, 0.12);
+  border-color: rgba(243, 95, 95, 0.35);
+}
+
+.manual-import-messages {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.manual-import-messages p {
+  margin: 0 0 6px;
+  font-weight: 800;
+}
+
+.manual-import-messages ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.manual-import-messages li {
+  margin: 3px 0;
+  overflow-wrap: anywhere;
+}
+
+.manual-import-messages.warning {
+  background: rgba(255, 201, 79, 0.12);
+  border: 1px solid rgba(255, 201, 79, 0.3);
+  color: #ffe2a1;
+}
+
+.manual-import-messages.error {
+  background: rgba(243, 95, 95, 0.12);
+  border: 1px solid rgba(243, 95, 95, 0.3);
+  color: #ffb7b7;
 }
 
 .note-save-btn {

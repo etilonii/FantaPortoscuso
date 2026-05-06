@@ -10,6 +10,7 @@ import LiveSection from "./components/sections/LiveSection";
 import PremiumInsightsSection from "./components/sections/PremiumInsightsSection";
 import StatsSection from "./components/sections/StatsSection";
 import TopAcquistiSection from "./components/sections/TopAcquistiSection";
+import ManualImportPanel from "./components/admin/ManualImportPanel";
 
 /* ===========================
    DEVICE ID
@@ -278,6 +279,16 @@ export default function App() {
     matchday: null,
     update_id: "",
     steps: {},
+    product: {},
+    manual_imports: {},
+  });
+  const [productModeStatus, setProductModeStatus] = useState({
+    product_mode: "manual_import",
+    data_import_mode: "manual",
+    manual_imports_enabled: true,
+    legacy_remote_imports_enabled: false,
+    licensed_api_imports_enabled: false,
+    effective_mode_label: "Safe manual import mode",
   });
   const [maintenanceStatus, setMaintenanceStatus] = useState({
     enabled: false,
@@ -872,6 +883,11 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         season: String(data?.season || ""),
         matchday: parsedMatchday,
         update_id: String(data?.update_id || ""),
+        product: data?.product && typeof data.product === "object" ? data.product : {},
+        manual_imports:
+          data?.manual_imports && typeof data.manual_imports === "object"
+            ? data.manual_imports
+            : {},
         steps: (() => {
           const rawSteps =
             data?.steps && typeof data.steps === "object" ? data.steps : {};
@@ -886,6 +902,19 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           return normalizedSteps;
         })(),
       };
+      if (data?.product && typeof data.product === "object") {
+        setProductModeStatus((prev) => ({
+          ...prev,
+          product_mode: String(data.product.product_mode || prev.product_mode),
+          data_import_mode: String(data.product.data_import_mode || prev.data_import_mode),
+          manual_imports_enabled: Boolean(data.product.manual_imports_enabled),
+          legacy_remote_imports_enabled: Boolean(data.product.legacy_remote_imports_enabled),
+          licensed_api_imports_enabled: Boolean(data.product.licensed_api_imports_enabled),
+          effective_mode_label: String(
+            data.product.effective_mode_label || prev.effective_mode_label || "Safe manual import mode"
+          ),
+        }));
+      }
       setDataStatus(normalized);
       return true;
     } catch {
@@ -4258,11 +4287,24 @@ useEffect(() => {
                 <div className="panel">
                   <div className="panel-header">
                     <h3>Stato dati</h3>
-                    <button className="ghost" onClick={loadAdminStatus}>
+                    <button className="ghost" onClick={() => { loadAdminStatus(); loadDataStatus(); }}>
                       Aggiorna
                     </button>
                   </div>
                   <div className="list">
+                    <div className="list-item player-card">
+                      <div>
+                        <p>Modalita dati: {productModeStatus?.effective_mode_label || "Safe manual import mode"}</p>
+                        <span className="muted">
+                          {productModeStatus?.legacy_remote_imports_enabled
+                            ? "Modalita privata analyzer: import automatici legacy attivi"
+                            : "Import remoti legacy disattivati. Usa upload/manual import o fonti autorizzate."}
+                        </span>
+                      </div>
+                      <strong>
+                        {productModeStatus?.legacy_remote_imports_enabled ? "LEGACY" : "SAFE"}
+                      </strong>
+                    </div>
                     <div className="list-item player-card">
                       <div>
                         <p>Rose &amp; Quotazioni</p>
@@ -4302,6 +4344,14 @@ useEffect(() => {
                     </button>
                   </div>
                 </div>
+
+                <ManualImportPanel
+                  API_BASE={API_BASE}
+                  fetchWithAuth={fetchWithAuth}
+                  dataStatus={dataStatus}
+                  productModeStatus={productModeStatus}
+                  onReloadDataStatus={loadDataStatus}
+                />
 
                 <div className="panel">
                   <div className="panel-header">

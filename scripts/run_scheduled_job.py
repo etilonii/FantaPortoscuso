@@ -14,8 +14,15 @@ ROOT = _repo_root()
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from apps.api.app.config import ENABLE_LEGACY_REMOTE_IMPORTS, product_mode_status  # noqa: E402
 from apps.api.app.db import SessionLocal  # noqa: E402
 from apps.api.app.routes import data  # noqa: E402
+
+
+LEGACY_REMOTE_JOBS = {"live_import", "seriea_live_sync", "leghe_sync", "bootstrap_leghe_sync"}
+LEGACY_REMOTE_DISABLED_MESSAGE = (
+    "Import remoti legacy disattivati. Usa upload/manual import o fonti autorizzate."
+)
 
 
 def _bool_arg(value: object) -> bool:
@@ -24,6 +31,17 @@ def _bool_arg(value: object) -> bool:
 
 
 def _run_job(args: argparse.Namespace) -> dict[str, object]:
+    if str(args.job or "").strip().lower() in LEGACY_REMOTE_JOBS and not ENABLE_LEGACY_REMOTE_IMPORTS:
+        payload = {
+            "ok": True,
+            "skipped": True,
+            "reason": "legacy_remote_imports_disabled",
+            "message": LEGACY_REMOTE_DISABLED_MESSAGE,
+            "job": str(args.job),
+        }
+        payload.update(product_mode_status())
+        return payload
+
     db = SessionLocal()
     try:
         if args.job == "live_import":

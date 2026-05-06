@@ -5,8 +5,10 @@ from pathlib import Path
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from ..config import product_mode_status
 from ..deps import get_db
 from ..models import MaintenanceState
+from ..services.manual_imports import load_manual_import_status
 
 
 router = APIRouter(prefix="/meta", tags=["meta"])
@@ -155,11 +157,22 @@ def data_status():
             # status.json may include BOM when produced by some editors/scripts.
             raw = json.loads(STATUS_PATH.read_text(encoding="utf-8-sig"))
             if isinstance(raw, dict):
-                return _normalize_payload(raw, fallback)
+                payload = _normalize_payload(raw, fallback)
+                payload["product"] = product_mode_status()
+                payload["manual_imports"] = load_manual_import_status()
+                return payload
         except Exception:
             pass
 
-    return _build_data_files_status(fallback)
+    payload = _build_data_files_status(fallback)
+    payload["product"] = product_mode_status()
+    payload["manual_imports"] = load_manual_import_status()
+    return payload
+
+
+@router.get("/product-mode")
+def product_mode():
+    return product_mode_status()
 
 
 @router.get("/maintenance")

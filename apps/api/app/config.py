@@ -56,33 +56,71 @@ RATE_LIMIT_REQUESTS = int(get_env("RATE_LIMIT_REQUESTS", "120"))
 RATE_LIMIT_WINDOW_SECONDS = int(get_env("RATE_LIMIT_WINDOW_SECONDS", "60"))
 BACKUP_DIR = get_env("BACKUP_DIR", "./data/backups")
 BACKUP_KEEP_LAST = int(get_env("BACKUP_KEEP_LAST", "20"))
-AUTO_LIVE_IMPORT_ENABLED = get_env_bool("AUTO_LIVE_IMPORT_ENABLED", True)
+
+# Product/data-source modes.
+# Production defaults are manual-import-first: admins upload/import authorized data,
+# while legacy remote integrations stay disabled unless explicitly enabled.
+# Private/personal league usage can opt into legacy remote mode via env.
+PRODUCT_MODE = get_env("PRODUCT_MODE", "manual_import").strip().lower() or "manual_import"
+DATA_IMPORT_MODE = get_env("DATA_IMPORT_MODE", "manual").strip().lower() or "manual"
+ENABLE_LEGACY_REMOTE_IMPORTS = get_env_bool("ENABLE_LEGACY_REMOTE_IMPORTS", False)
+ENABLE_MANUAL_IMPORTS = get_env_bool("ENABLE_MANUAL_IMPORTS", True)
+ENABLE_LICENSED_API_IMPORTS = get_env_bool("ENABLE_LICENSED_API_IMPORTS", False)
+
+
+def legacy_remote_imports_enabled() -> bool:
+    return bool(ENABLE_LEGACY_REMOTE_IMPORTS)
+
+
+def manual_imports_enabled() -> bool:
+    return bool(ENABLE_MANUAL_IMPORTS)
+
+
+def effective_mode_label() -> str:
+    if legacy_remote_imports_enabled():
+        return "Private analyzer legacy remote mode"
+    return "Safe manual import mode"
+
+
+def product_mode_status() -> dict[str, object]:
+    return {
+        "product_mode": PRODUCT_MODE,
+        "data_import_mode": DATA_IMPORT_MODE,
+        "manual_imports_enabled": manual_imports_enabled(),
+        "legacy_remote_imports_enabled": legacy_remote_imports_enabled(),
+        "licensed_api_imports_enabled": bool(ENABLE_LICENSED_API_IMPORTS),
+        "effective_mode_label": effective_mode_label(),
+    }
+
+
+AUTO_LIVE_IMPORT_ENABLED = legacy_remote_imports_enabled() and get_env_bool("AUTO_LIVE_IMPORT_ENABLED", True)
 AUTO_LIVE_IMPORT_INTERVAL_MINUTES = get_env_int(
     "AUTO_LIVE_IMPORT_INTERVAL_MINUTES",
     5,
     min_value=1,
 )
-AUTO_LIVE_IMPORT_ON_START = get_env_bool("AUTO_LIVE_IMPORT_ON_START", True)
+AUTO_LIVE_IMPORT_ON_START = legacy_remote_imports_enabled() and get_env_bool("AUTO_LIVE_IMPORT_ON_START", True)
 AUTO_LIVE_IMPORT_ROUND = get_env_optional_int("AUTO_LIVE_IMPORT_ROUND")
 AUTO_LIVE_IMPORT_SEASON = get_env("AUTO_LIVE_IMPORT_SEASON", "").strip()
 AUTO_INTERNAL_SCHEDULERS_ENABLED = get_env_bool("AUTO_INTERNAL_SCHEDULERS_ENABLED", True)
 
-# Lightweight Serie A live context sync (fixtures + standings context for Premium Insights)
-AUTO_SERIEA_LIVE_SYNC_ENABLED = get_env_bool("AUTO_SERIEA_LIVE_SYNC_ENABLED", True)
+# Legacy remote Serie A live context sync (fixtures + standings context for Premium Insights)
+AUTO_SERIEA_LIVE_SYNC_ENABLED = legacy_remote_imports_enabled() and get_env_bool("AUTO_SERIEA_LIVE_SYNC_ENABLED", True)
 AUTO_SERIEA_LIVE_SYNC_INTERVAL_MINUTES = get_env_int(
     "AUTO_SERIEA_LIVE_SYNC_INTERVAL_MINUTES",
     5,
     min_value=1,
 )
-AUTO_SERIEA_LIVE_SYNC_ON_START = get_env_bool("AUTO_SERIEA_LIVE_SYNC_ON_START", True)
+AUTO_SERIEA_LIVE_SYNC_ON_START = legacy_remote_imports_enabled() and get_env_bool("AUTO_SERIEA_LIVE_SYNC_ON_START", True)
 AUTO_SERIEA_LIVE_SYNC_ROUND = get_env_optional_int("AUTO_SERIEA_LIVE_SYNC_ROUND")
 AUTO_SERIEA_LIVE_SYNC_SEASON = get_env("AUTO_SERIEA_LIVE_SYNC_SEASON", "").strip()
 
-# Leghe Fantacalcio sync (download XLSX + run local pipeline)
-AUTO_LEGHE_SYNC_ENABLED = get_env_bool("AUTO_LEGHE_SYNC_ENABLED", False)
-AUTO_LEGHE_SYNC_ON_START = get_env_bool("AUTO_LEGHE_SYNC_ON_START", False)
+# Legacy Leghe Fantacalcio sync (remote download + run local pipeline)
+AUTO_LEGHE_SYNC_ENABLED = legacy_remote_imports_enabled() and get_env_bool("AUTO_LEGHE_SYNC_ENABLED", False)
+AUTO_LEGHE_SYNC_ON_START = legacy_remote_imports_enabled() and get_env_bool("AUTO_LEGHE_SYNC_ON_START", False)
 AUTO_LEGHE_SYNC_SLOT_HOURS = get_env_int("AUTO_LEGHE_SYNC_SLOT_HOURS", 1, min_value=1)
 
+# Legacy remote credentials. Safe-mode production should leave these unset.
 LEGHE_ALIAS = get_env_optional("LEGHE_ALIAS")
 LEGHE_USERNAME = get_env_optional("LEGHE_USERNAME")
 LEGHE_PASSWORD = get_env_optional("LEGHE_PASSWORD")

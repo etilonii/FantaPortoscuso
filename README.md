@@ -2,6 +2,9 @@
 
 Monorepo con backend FastAPI e frontend React/Vite per analisi lega, rose, mercato e statistiche.
 
+Il prodotto e manual-import-first: in produzione il default e safe mode, con dati caricati
+dall'admin o da fonti autorizzate. Vedi [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
+
 ## Stack
 - Backend: FastAPI (`apps/api`)
 - Frontend: React + Vite (`apps/web`)

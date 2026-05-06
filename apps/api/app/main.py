@@ -23,6 +23,7 @@ from .config import (
     AUTO_SERIEA_LIVE_SYNC_SEASON,
     AUTO_LEGHE_SYNC_ENABLED,
     AUTO_LEGHE_SYNC_ON_START,
+    ENABLE_LEGACY_REMOTE_IMPORTS,
 )
 from .db import Base, engine, SessionLocal
 from .migrations import apply_pending_migrations
@@ -90,7 +91,7 @@ def create_app() -> FastAPI:
     app.include_router(data.router)
     app.include_router(market_advisor.router)
 
-    if AUTO_INTERNAL_SCHEDULERS_ENABLED and AUTO_LIVE_IMPORT_ENABLED:
+    if AUTO_INTERNAL_SCHEDULERS_ENABLED and ENABLE_LEGACY_REMOTE_IMPORTS and AUTO_LIVE_IMPORT_ENABLED:
         interval_seconds = max(1, int(AUTO_LIVE_IMPORT_INTERVAL_MINUTES)) * 60
 
         def _run_auto_live_import_once() -> None:
@@ -153,7 +154,7 @@ def create_app() -> FastAPI:
                 with suppress(asyncio.CancelledError):
                     await task
 
-    if AUTO_INTERNAL_SCHEDULERS_ENABLED and AUTO_SERIEA_LIVE_SYNC_ENABLED:
+    if AUTO_INTERNAL_SCHEDULERS_ENABLED and ENABLE_LEGACY_REMOTE_IMPORTS and AUTO_SERIEA_LIVE_SYNC_ENABLED:
         interval_seconds = max(1, int(AUTO_SERIEA_LIVE_SYNC_INTERVAL_MINUTES)) * 60
 
         def _run_auto_seriea_live_sync_once() -> None:
@@ -218,7 +219,7 @@ def create_app() -> FastAPI:
                 with suppress(asyncio.CancelledError):
                     await task
 
-    if AUTO_INTERNAL_SCHEDULERS_ENABLED and AUTO_LEGHE_SYNC_ENABLED:
+    if AUTO_INTERNAL_SCHEDULERS_ENABLED and ENABLE_LEGACY_REMOTE_IMPORTS and AUTO_LEGHE_SYNC_ENABLED:
         def _run_auto_leghe_sync_once(*, allow_bootstrap_fallback: bool = False) -> None:
             db = SessionLocal()
             try:
