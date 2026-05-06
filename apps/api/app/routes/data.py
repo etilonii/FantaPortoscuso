@@ -17,7 +17,7 @@ from html import unescape as html_unescape
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
 from urllib.error import URLError, HTTPError
-from urllib.request import Request, urlopen
+from urllib.request import Request as UrlRequest, urlopen
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Query, Body, Depends, Header, HTTPException, Request
@@ -4192,6 +4192,30 @@ def _extract_probable_percentage(player_item_html: str) -> float:
     return 0.0
 
 
+def _default_probable_percentage(list_kind: str) -> float:
+    list_token = normalize_name(list_kind)
+    if list_token == "reserves":
+        return 5.0
+    if list_token == "ballots":
+        return 50.0
+    return 100.0
+
+
+def _extract_team_name_from_player_href(
+    href_value: str,
+    club_index: Dict[str, str],
+) -> Tuple[str, str]:
+    href = str(href_value or "").strip()
+    if not href:
+        return "", ""
+    match = re.search(r"/squadre/([^/]+)/", href, flags=re.IGNORECASE)
+    if not match:
+        return "", ""
+    team_slug = str(match.group(1) or "").strip()
+    team_name = _display_team_name(team_slug, club_index)
+    return team_name, normalize_name(team_name)
+
+
 def _probable_bucket_from_player(list_kind: str, status_value: str) -> str:
     list_token = normalize_name(list_kind)
     if list_token == "reserves":
@@ -4240,9 +4264,82 @@ def _extract_probable_players_from_list(
     round_value: int,
 ) -> List[Dict[str, object]]:
     entries: List[Dict[str, object]] = []
+    patterns = [
+        r"<li\s+class=\"player-item\s+pill\"([^>]*)>(.*?)</li>",
+        r"<li\s+class=\"player\b[^\"]*\"([^>]*)>(.*?)</li>",
+    ]
+    source_html = str(list_html or "")
+    seen_players: Set[str] = set()
+    for pattern in patterns:
+        for item in re.finditer(pattern, source_html, flags=re.IGNORECASE | re.DOTALL):
+            attrs_raw = str(item.group(1) or "")
+            body_raw = str(item.group(2) or "")
+
+            status_match = re.search(r"data-status=\"([^\"]+)\"", attrs_raw, flags=re.IGNORECASE)
+            status_value = str(status_match.group(1) or "").strip().lower() if status_match else ""
+
+            role_match = re.search(
+                r"<span\s+class=\"role\"[^>]*data-value=\"([a-z])\"",
+                body_raw,
+                flags=re.IGNORECASE,
+            )
+            role_value = _role_from_text(role_match.group(1) if role_match else "")
+
+            name_match = re.search(
+                r"<a[^>]*class=\"[^\"]*player-name[^\"]*\"[^>]*>(.*?)</a>",
+                body_raw,
+                flags=re.IGNORECASE | re.DOTALL,
+            )
+            if not name_match:
+                continue
+            player_name = _canonicalize_name(_strip_html_tags(name_match.group(1)))
+            player_key = normalize_name(player_name)
+            if not player_key or player_key in seen_players:
+                continue
+            seen_players.add(player_key)
+
+            percentage = _extract_probable_percentage(body_raw)
+            if percentage <= 0:
+                percentage = _default_probable_percentage(list_kind)
+            bucket = _probable_bucket_from_player(list_kind, status_value)
+            weight = _probable_weight_from_percent(percentage, bucket)
+            multiplier = _probable_multiplier_from_weight(weight, bucket)
+            recommended = bool(
+                bucket in {"titolare", "ballottaggio"}
+                or (bucket == "panchina" and percentage > 25.0)
+            )
+
+            entries.append(
+                {
+                    "round": int(round_value),
+                    "team": team_name,
+                    "team_key": team_key,
+                    "name": player_name,
+                    "name_key": player_key,
+                    "role": role_value,
+                    "list": list_kind,
+                    "status": status_value,
+                    "bucket": bucket,
+                    "percentage": round(float(percentage), 2),
+                    "weight": float(weight),
+                    "multiplier": float(multiplier),
+                    "recommended": recommended,
+                }
+            )
+    return entries
+
+
+def _extract_probable_ballot_entries_from_match_block(
+    *,
+    block_html: str,
+    round_value: int,
+    club_index: Dict[str, str],
+) -> List[Dict[str, object]]:
+    entries: List[Dict[str, object]] = []
+    seen: Set[Tuple[str, str]] = set()
     for item in re.finditer(
         r"<li\s+class=\"player-item\s+pill\"([^>]*)>(.*?)</li>",
-        str(list_html or ""),
+        str(block_html or ""),
         flags=re.IGNORECASE | re.DOTALL,
     ):
         attrs_raw = str(item.group(1) or "")
@@ -4270,8 +4367,22 @@ def _extract_probable_players_from_list(
         if not player_key:
             continue
 
+        href_match = re.search(r"href=\"([^\"]+)\"", name_match.group(0), flags=re.IGNORECASE)
+        team_name, team_key = _extract_team_name_from_player_href(
+            href_match.group(1) if href_match else "",
+            club_index,
+        )
+        if not team_key:
+            continue
+        marker = (team_key, player_key)
+        if marker in seen:
+            continue
+        seen.add(marker)
+
         percentage = _extract_probable_percentage(body_raw)
-        bucket = _probable_bucket_from_player(list_kind, status_value)
+        if percentage <= 0:
+            percentage = _default_probable_percentage("ballots")
+        bucket = _probable_bucket_from_player("ballots", status_value)
         weight = _probable_weight_from_percent(percentage, bucket)
         multiplier = _probable_multiplier_from_weight(weight, bucket)
         recommended = bool(
@@ -4287,7 +4398,7 @@ def _extract_probable_players_from_list(
                 "name": player_name,
                 "name_key": player_key,
                 "role": role_value,
-                "list": list_kind,
+                "list": "ballots",
                 "status": status_value,
                 "bucket": bucket,
                 "percentage": round(float(percentage), 2),
@@ -4374,6 +4485,22 @@ def _extract_probable_formations_entries_from_html(
                         continue
                     seen.add(marker)
                     entries.append(item)
+
+        for item in _extract_probable_ballot_entries_from_match_block(
+            block_html=match_block,
+            round_value=int(round_value),
+            club_index=club_index,
+        ):
+            marker = (
+                int(item.get("round") or 0),
+                str(item.get("team_key") or ""),
+                str(item.get("name_key") or ""),
+                str(item.get("list") or ""),
+            )
+            if marker in seen:
+                continue
+            seen.add(marker)
+            entries.append(item)
 
     entries.sort(
         key=lambda row: (
@@ -7010,7 +7137,7 @@ def _load_round_decisive_badges_from_calendar_pages(
 
 
 def _fetch_text_url(url: str, timeout_seconds: float = 20.0) -> str:
-    request = Request(
+    request = UrlRequest(
         str(url),
         headers={
             "User-Agent": (

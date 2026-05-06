@@ -254,7 +254,12 @@ export default function FormazioniSection({
           const venueLabel =
             homeAway === "H" ? "Casa" : homeAway === "A" ? "Trasferta" : "Match non disp.";
           const probableBucket = String(entry?.probable_bucket || "").trim().toLowerCase();
-          const probablePercentage = Number(entry?.probable_percentage);
+          const probablePercentage =
+            entry?.probable_percentage === null ||
+            entry?.probable_percentage === undefined ||
+            entry?.probable_percentage === ""
+              ? null
+              : Number(entry?.probable_percentage);
           const probableRecommended = Boolean(entry?.probable_recommended);
           const probableLabel = probableBucketLabel(probableBucket);
           const opponentLabel = opponent ? `${venueLabel} vs ${opponent}` : venueLabel;
