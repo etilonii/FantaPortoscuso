@@ -10,7 +10,7 @@ import LiveSection from "./components/sections/LiveSection";
 import PremiumInsightsSection from "./components/sections/PremiumInsightsSection";
 import StatsSection from "./components/sections/StatsSection";
 import TopAcquistiSection from "./components/sections/TopAcquistiSection";
-import ManualImportPanel from "./components/admin/ManualImportPanel";
+import AdminRoom from "./components/admin/AdminRoom";
 
 /* ===========================
    DEVICE ID
@@ -297,6 +297,7 @@ export default function App() {
     updated_at: "",
     updated_by_key: null,
   });
+  const [maintenanceMessageDraft, setMaintenanceMessageDraft] = useState("");
   const [maintenanceRetryMinutesDraft, setMaintenanceRetryMinutesDraft] = useState("10");
   const [maintenanceApplying, setMaintenanceApplying] = useState(false);
   const [maintenanceReloadAttempts, setMaintenanceReloadAttempts] = useState(0);
@@ -958,6 +959,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           sessionStorage.removeItem(MAINTENANCE_RELOAD_ATTEMPTS_STORAGE);
         } catch {}
       }
+      setMaintenanceMessageDraft(String(normalized.message || ""));
       setMaintenanceRetryMinutesDraft(String(normalized.retry_after_minutes));
       return true;
     } catch {
@@ -981,7 +983,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         }),
         body: JSON.stringify({
           enabled: Boolean(enabled),
-          message: "",
+          message: String(maintenanceMessageDraft || "").trim(),
           retry_after_minutes: retryAfter,
         }),
       });
@@ -992,6 +994,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       }
       const normalized = normalizeMaintenancePayload(payload || {});
       setMaintenanceStatus(normalized);
+      setMaintenanceMessageDraft(String(normalized.message || ""));
       setMaintenanceRetryMinutesDraft(String(normalized.retry_after_minutes));
       setAdminNotice(
         normalized.enabled
@@ -4216,313 +4219,61 @@ useEffect(() => {
                 GESTIONE
             =========================== */}
             {activeMenu === "admin" && isAdmin && (
-              <section className="dashboard">
-                <div className="dashboard-header">
-                  <div>
-                    <p className="eyebrow">Gestione</p>
-                    <h2>Gestione Key</h2>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="admin-actions">
-                    <button className="primary" onClick={createNewKey}>
-                      Genera nuova key
-                    </button>
-
-                    {newKey ? (
-                      <div className="new-key">
-                        <span>Nuova key:</span>
-                        <strong>{String(newKey || "").toUpperCase()}</strong>
-                      </div>
-                    ) : null}
-                    {adminNotice ? <div className="new-key">{adminNotice}</div> : null}
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="panel-header">
-                    <h3>Modalita manutenzione</h3>
-                    <button className="ghost" onClick={loadMaintenanceStatus}>
-                      Aggiorna
-                    </button>
-                  </div>
-                  <div className="admin-actions">
-                    <div className="admin-row admin-row-stacked">
-                      <p className="muted">
-                        Stato: {maintenanceStatus?.enabled ? "ATTIVA" : "DISATTIVA"}
-                        {maintenanceStatus?.updated_at
-                          ? ` · Ultimo update ${formatDataStatusDate(maintenanceStatus.updated_at)}`
-                          : ""}
-                      </p>
-                    </div>
-                    <div className="admin-row">
-                      <input
-                        className="input"
-                        type="number"
-                        min="1"
-                        max="120"
-                        placeholder="Minuti attesa (es. 10)"
-                        value={maintenanceRetryMinutesDraft}
-                        onChange={(e) => setMaintenanceRetryMinutesDraft(e.target.value)}
-                      />
-                      <button
-                        className="ghost"
-                        onClick={() => setMaintenanceMode(true)}
-                        disabled={maintenanceApplying || maintenanceStatus?.enabled}
-                      >
-                        {maintenanceApplying ? "Aggiorno..." : "Attiva manutenzione"}
-                      </button>
-                      <button
-                        className="ghost"
-                        onClick={() => setMaintenanceMode(false)}
-                        disabled={maintenanceApplying || !maintenanceStatus?.enabled}
-                      >
-                        {maintenanceApplying ? "Aggiorno..." : "Disattiva manutenzione"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="panel-header">
-                    <h3>Stato dati</h3>
-                    <button className="ghost" onClick={() => { loadAdminStatus(); loadDataStatus(); }}>
-                      Aggiorna
-                    </button>
-                  </div>
-                  <div className="list">
-                    <div className="list-item player-card">
-                      <div>
-                        <p>Modalita dati: {productModeStatus?.effective_mode_label || "Safe manual import mode"}</p>
-                        <span className="muted">
-                          {productModeStatus?.legacy_remote_imports_enabled
-                            ? "Modalita privata analyzer: import automatici legacy attivi"
-                            : "Import remoti legacy disattivati. Usa upload/manual import o fonti autorizzate."}
-                        </span>
-                      </div>
-                      <strong>
-                        {productModeStatus?.legacy_remote_imports_enabled ? "LEGACY" : "SAFE"}
-                      </strong>
-                    </div>
-                    <div className="list-item player-card">
-                      <div>
-                        <p>Rose &amp; Quotazioni</p>
-                        <span className="muted">Ultimo update</span>
-                      </div>
-                      <strong>
-                        {adminStatus?.data?.last_update?.last_signature ? "OK" : "N/A"}
-                      </strong>
-                    </div>
-                    <div className="list-item player-card">
-                      <div>
-                        <p>Statistiche</p>
-                        <span className="muted">Ultimo update</span>
-                      </div>
-                      <strong>
-                        {adminStatus?.data?.last_stats_update?.last_signature ? "OK" : "N/A"}
-                      </strong>
-                    </div>
-                    <div className="list-item player-card">
-                      <div>
-                        <p>Mercato</p>
-                        <span className="muted">Ultima data</span>
-                      </div>
-                      <strong>{adminStatus?.market?.latest_date || "-"}</strong>
-                    </div>
-                    <div className="list-item player-card">
-                      <div>
-                        <p>Device online</p>
-                        <span className="muted">Ultimi 5 minuti</span>
-                      </div>
-                      <strong>{adminStatus?.auth?.online_devices ?? 0}</strong>
-                    </div>
-                  </div>
-                  <div className="admin-actions">
-                    <button className="ghost" onClick={refreshMarketAdmin}>
-                      Force refresh mercato
-                    </button>
-                  </div>
-                </div>
-
-                <ManualImportPanel
-                  API_BASE={API_BASE}
-                  fetchWithAuth={fetchWithAuth}
-                  dataStatus={dataStatus}
-                  productModeStatus={productModeStatus}
-                  onReloadDataStatus={loadDataStatus}
-                />
-
-                <div className="panel">
-                  <div className="panel-header">
-                    <h3>Operazioni Admin</h3>
-                  </div>
-                  <div className="admin-actions">
-                    <div className="admin-row">
-                      <input
-                        className="input"
-                        placeholder="Key da rendere ADMIN"
-                        value={adminSetAdminKey}
-                        onChange={(e) => setAdminSetAdminKey(e.target.value)}
-                      />
-                      <button className="ghost" onClick={setAdminForKey}>
-                        Rendi admin
-                      </button>
-                    </div>
-
-                    <div className="admin-row">
-                      <input
-                        className="input"
-                        placeholder="Key da associare"
-                        value={adminTeamKey}
-                        onChange={(e) => setAdminTeamKey(e.target.value)}
-                      />
-                      <input
-                        className="input"
-                        placeholder="Team (es. Pi-Ciaccio)"
-                        value={adminTeamName}
-                        onChange={(e) => setAdminTeamName(e.target.value)}
-                      />
-                      <button className="ghost" onClick={assignTeamKey}>
-                        Associa team
-                      </button>
-                    </div>
-
-                    <div className="admin-row">
-                      <input
-                        className="input"
-                        placeholder="Key da resettare"
-                        value={adminResetKey}
-                        onChange={(e) => setAdminResetKey(e.target.value)}
-                      />
-                      <input
-                        className="input"
-                        placeholder="Nota reset (opzionale)"
-                        value={adminResetNote}
-                        onChange={(e) => setAdminResetNote(e.target.value)}
-                      />
-                      <button className="ghost" onClick={resetKeyAdmin}>
-                        Reset key
-                      </button>
-                    </div>
-
-                    <div className="admin-row admin-row-stacked">
-                      <p className="muted">
-                        Key selezionata ({(adminResetKey || "-").toUpperCase()}): reset usati{" "}
-                        {adminResetUsage?.used ?? 0}/{adminResetUsage?.limit ?? 3}
-                        {adminResetUsage?.season
-                          ? ` · Stagione ${adminResetUsage.season}`
-                          : ""}
-                      </p>
-                    </div>
-
-                    <div className="admin-row admin-row-stacked">
-                      <p className="muted">Le associazioni key-team si gestiscono sopra.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="panel-header">
-                    <h3>Lista Key</h3>
-                    <button className="ghost" onClick={loadAdminKeys}>
-                      Aggiorna
-                    </button>
-                  </div>
-
-                  <div className="list">
-                    {adminKeys.length === 0 ? (
-                      <p className="muted">Nessuna key disponibile.</p>
-                    ) : (
-                      adminKeys.map((item) => {
-                        const rowKey = String(item?.key || "").trim().toLowerCase();
-                        const noteDraft = String(adminKeyNotesDraft[rowKey] ?? item?.note ?? "");
-                        const savingNote = adminSavingNoteKey === rowKey;
-                        const deletingKey = adminDeletingKey === rowKey;
-                        const blockingKey = adminBlockingKey === rowKey;
-                        const isBlocked = Boolean(item?.blocked);
-                        return (
-                          <div key={item.key} className="list-item player-card">
-                            <div>
-                              <p>{String(item.key || "").toUpperCase()}</p>
-                              <span className="muted">
-                                {item.is_admin ? "ADMIN" : "USER"} - {item.used ? "Attivata" : "Non usata"}
-                              </span>
-                              <span className="muted">Team: {item.team || "-"}</span>
-                              <span className="muted">
-                                Reset: {item.reset_used ?? 0}/{item.reset_limit ?? 3}
-                                {item.reset_season ? ` · Stagione ${item.reset_season}` : ""}
-                              </span>
-                              <span className="muted">
-                                Ultimo accesso: {item.online ? "Online" : formatLastAccess(item.last_seen_at || item.used_at)}
-                              </span>
-                              <span className={isBlocked ? "muted key-blocked" : "muted"}>
-                                Blocco:{" "}
-                                {isBlocked
-                                  ? item.blocked_until
-                                    ? `attivo fino a ${formatLastAccess(item.blocked_until)}`
-                                    : "attivo (sblocco manuale)"
-                                  : "nessuno"}
-                              </span>
-                              {isBlocked && item.blocked_reason ? (
-                                <span className="muted key-blocked-reason">Motivo: {item.blocked_reason}</span>
-                              ) : null}
-                              <span className="muted key-note-preview">
-                                Nota: {String(item.note || "").trim() || "-"}
-                              </span>
-                              <div className="admin-row admin-row-key-note">
-                                <input
-                                  className="input"
-                                  placeholder="Nota opzionale per questa key"
-                                  value={noteDraft}
-                                  maxLength={255}
-                                  onChange={(e) => updateAdminKeyNoteDraft(rowKey, e.target.value)}
-                                />
-                                <button
-                                  className={savingNote ? "ghost note-save-btn is-loading" : "ghost note-save-btn"}
-                                  onClick={() => saveAdminKeyNote(rowKey)}
-                                  disabled={savingNote || deletingKey || blockingKey}
-                                >
-                                  {savingNote ? "Salvataggio..." : "Salva nota"}
-                                </button>
-                              </div>
-                            </div>
-                            <div className="admin-key-actions">
-                              <button
-                                className={
-                                  blockingKey
-                                    ? "ghost key-block-btn is-loading"
-                                    : isBlocked
-                                    ? "ghost key-block-btn is-unblock"
-                                    : "ghost key-block-btn"
-                                }
-                                onClick={() =>
-                                  isBlocked ? unblockAdminKey(item.key) : blockAdminKey(item.key)
-                                }
-                                disabled={blockingKey || deletingKey || savingNote}
-                              >
-                                {blockingKey
-                                  ? "Aggiorno..."
-                                  : isBlocked
-                                  ? "Sblocca"
-                                  : "Blocca"}
-                              </button>
-                              <button
-                                className={deletingKey ? "ghost key-delete-btn is-loading" : "ghost key-delete-btn"}
-                                onClick={() => deleteAdminKey(item.key)}
-                                disabled={deletingKey || savingNote || blockingKey}
-                              >
-                                {deletingKey ? "Eliminazione..." : "Elimina"}
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-                </div>
-
-              </section>
+              <AdminRoom
+                API_BASE={API_BASE}
+                fetchWithAuth={fetchWithAuth}
+                dataStatus={dataStatus}
+                productModeStatus={productModeStatus}
+                loadDataStatus={loadDataStatus}
+                loadAdminStatus={loadAdminStatus}
+                adminStatus={adminStatus}
+                adminKeys={adminKeys}
+                maintenanceStatus={maintenanceStatus}
+                maintenanceRetryMinutesDraft={maintenanceRetryMinutesDraft}
+                setMaintenanceRetryMinutesDraft={setMaintenanceRetryMinutesDraft}
+                maintenanceMessageDraft={maintenanceMessageDraft}
+                setMaintenanceMessageDraft={setMaintenanceMessageDraft}
+                maintenanceApplying={maintenanceApplying}
+                setMaintenanceMode={setMaintenanceMode}
+                loadMaintenanceStatus={loadMaintenanceStatus}
+                createNewKey={createNewKey}
+                loadAdminKeys={loadAdminKeys}
+                adminNotice={adminNotice}
+                newKey={newKey}
+                adminSetAdminKey={adminSetAdminKey}
+                setAdminSetAdminKey={setAdminSetAdminKey}
+                setAdminForKey={setAdminForKey}
+                adminTeamKey={adminTeamKey}
+                setAdminTeamKey={setAdminTeamKey}
+                adminTeamName={adminTeamName}
+                setAdminTeamName={setAdminTeamName}
+                assignTeamKey={assignTeamKey}
+                adminResetKey={adminResetKey}
+                setAdminResetKey={setAdminResetKey}
+                adminResetNote={adminResetNote}
+                setAdminResetNote={setAdminResetNote}
+                adminResetUsage={adminResetUsage}
+                resetKeyAdmin={resetKeyAdmin}
+                adminImportKeys={adminImportKeys}
+                setAdminImportKeys={setAdminImportKeys}
+                adminImportIsAdmin={adminImportIsAdmin}
+                setAdminImportIsAdmin={setAdminImportIsAdmin}
+                importKeysAdmin={importKeysAdmin}
+                adminImportTeamKeys={adminImportTeamKeys}
+                setAdminImportTeamKeys={setAdminImportTeamKeys}
+                importTeamKeysAdmin={importTeamKeysAdmin}
+                adminKeyNotesDraft={adminKeyNotesDraft}
+                updateAdminKeyNoteDraft={updateAdminKeyNoteDraft}
+                saveAdminKeyNote={saveAdminKeyNote}
+                adminSavingNoteKey={adminSavingNoteKey}
+                adminDeletingKey={adminDeletingKey}
+                adminBlockingKey={adminBlockingKey}
+                blockAdminKey={blockAdminKey}
+                unblockAdminKey={unblockAdminKey}
+                deleteAdminKey={deleteAdminKey}
+                formatLastAccess={formatLastAccess}
+                refreshMarketAdmin={refreshMarketAdmin}
+              />
             )}
           </main>
           {maintenanceBlockActive ? (

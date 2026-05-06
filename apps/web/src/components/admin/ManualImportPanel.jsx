@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { asArray, cleanText, formatDateTime, manualImportStatusLabel, statusTone } from "./adminRoomUtils";
 
 const SOURCES = [
   {
@@ -14,41 +15,6 @@ const SOURCES = [
     buttonLabel: "Carica quotazioni",
   },
 ];
-
-const asArray = (value) => {
-  if (!value) return [];
-  return Array.isArray(value) ? value.filter(Boolean) : [String(value)];
-};
-
-const cleanLabel = (value, fallback = "-") => {
-  const text = String(value || "").trim();
-  return text || fallback;
-};
-
-const statusLabel = (status) => {
-  const normalized = String(status || "").trim().toLowerCase();
-  if (normalized === "ok") return "ok";
-  if (normalized === "error") return "error";
-  return "mai importato";
-};
-
-const statusClass = (status) => {
-  const normalized = String(status || "").trim().toLowerCase();
-  if (normalized === "ok") return "ok";
-  if (normalized === "error") return "error";
-  return "pending";
-};
-
-const formatDateTime = (value) => {
-  const raw = String(value || "").trim();
-  if (!raw) return "-";
-  const parsed = new Date(raw);
-  if (Number.isNaN(parsed.getTime())) return raw;
-  return parsed.toLocaleString("it-IT", {
-    dateStyle: "short",
-    timeStyle: "short",
-  });
-};
 
 const extractBackendMessages = (payload) => {
   const detail = payload?.detail;
@@ -77,7 +43,7 @@ function StatusList({ title, items, kind }) {
       <p>{title}</p>
       <ul>
         {values.map((item, index) => (
-          <li key={`${kind}-${index}`}>{cleanLabel(item)}</li>
+          <li key={`${kind}-${index}`}>{cleanText(item)}</li>
         ))}
       </ul>
     </div>
@@ -100,30 +66,45 @@ function SourceBlock({
   const resultMessages = extractBackendMessages(result || {});
 
   return (
-    <div className="manual-import-source">
+    <div className="manual-import-source admin-card">
       <div className="manual-import-source-head">
         <div>
           <h4>{source.title}</h4>
-          <span className={`status-badge compact ${statusClass(status?.status)}`}>
-            {statusLabel(status?.status)}
+          <span className={`status-badge compact ${statusTone(status?.status)}`}>
+            {manualImportStatusLabel(status?.status)}
           </span>
         </div>
         <strong>{Number(status?.imported_rows || 0)} righe</strong>
       </div>
 
-      <div className="manual-import-meta">
-        <span>Ultimo import: {formatDateTime(status?.last_import_at)}</span>
-        <span>File: {cleanLabel(status?.original_filename)}</span>
-        <span>Stored: {cleanLabel(status?.stored_path)}</span>
-        <span>Attivo: {cleanLabel(status?.activated_path)}</span>
+      <div className="manual-import-summary">
+        <div className="manual-import-summary-item">
+          <span>Ultimo import</span>
+          <strong>{formatDateTime(status?.last_import_at)}</strong>
+        </div>
+        <div className="manual-import-summary-item">
+          <span>File</span>
+          <strong>{cleanText(status?.original_filename)}</strong>
+        </div>
+        <div className="manual-import-summary-item">
+          <span>Righe</span>
+          <strong>{Number(status?.imported_rows || 0)}</strong>
+        </div>
       </div>
 
       {!status ? (
         <p className="muted manual-import-empty">Nessun import manuale eseguito</p>
       ) : null}
 
-      <StatusList title="Warning" items={warnings} kind="warning" />
-      <StatusList title="Errori" items={errors} kind="error" />
+      {warnings.length || errors.length ? (
+        <details className="admin-details">
+          <summary>Esito ultimo import</summary>
+          <div className="admin-details-body">
+            <StatusList title="Warning" items={warnings} kind="warning" />
+            <StatusList title="Errori" items={errors} kind="error" />
+          </div>
+        </details>
+      ) : null}
 
       <div className="manual-import-upload">
         <input
@@ -152,9 +133,26 @@ function SourceBlock({
           {result.imported_rows !== undefined ? (
             <span>{Number(result.imported_rows || 0)} righe elaborate</span>
           ) : null}
-          <StatusList title="Warning" items={resultMessages.warnings} kind="warning" />
-          <StatusList title="Errori" items={resultMessages.errors} kind="error" />
+          {resultMessages.warnings.length || resultMessages.errors.length ? (
+            <details className="admin-details">
+              <summary>Dettaglio risposta backend</summary>
+              <div className="admin-details-body">
+                <StatusList title="Warning" items={resultMessages.warnings} kind="warning" />
+                <StatusList title="Errori" items={resultMessages.errors} kind="error" />
+              </div>
+            </details>
+          ) : null}
         </div>
+      ) : null}
+
+      {status?.stored_path || status?.activated_path ? (
+        <details className="admin-details">
+          <summary>Dettagli tecnici</summary>
+          <div className="admin-details-body">
+            <p>Stored path: {cleanText(status?.stored_path)}</p>
+            <p>Activated path: {cleanText(status?.activated_path)}</p>
+          </div>
+        </details>
       ) : null}
     </div>
   );
@@ -248,9 +246,10 @@ export default function ManualImportPanel({
   };
 
   return (
-    <div className="panel manual-import-panel">
-      <div className="panel-header">
+    <section className="panel admin-section manual-import-panel">
+      <div className="admin-section-header">
         <div>
+          <p className="eyebrow">Import manuale</p>
           <h3>Import Manuale Dati</h3>
           <p className="muted">
             {product.legacy_remote_imports_enabled
@@ -261,9 +260,9 @@ export default function ManualImportPanel({
       </div>
 
       <div className="manual-import-mode">
-        <span>Mode: {cleanLabel(product.effective_mode_label)}</span>
-        <span>Product mode: {cleanLabel(product.product_mode)}</span>
-        <span>Data import: {cleanLabel(product.data_import_mode)}</span>
+        <span>Mode: {cleanText(product.effective_mode_label)}</span>
+        <span>Product mode: {cleanText(product.product_mode)}</span>
+        <span>Data import: {cleanText(product.data_import_mode)}</span>
         <span>Manual imports: {manualImportsEnabled ? "attivi" : "disattivati"}</span>
         <span>Legacy remote: {product.legacy_remote_imports_enabled ? "attivi" : "disattivati"}</span>
       </div>
@@ -288,6 +287,6 @@ export default function ManualImportPanel({
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 }

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -32,6 +33,7 @@ def _bool_arg(value: object) -> bool:
 
 def _run_job(args: argparse.Namespace) -> dict[str, object]:
     if str(args.job or "").strip().lower() in LEGACY_REMOTE_JOBS and not ENABLE_LEGACY_REMOTE_IMPORTS:
+        started_at_utc = datetime.now(timezone.utc)
         payload = {
             "ok": True,
             "skipped": True,
@@ -40,6 +42,16 @@ def _run_job(args: argparse.Namespace) -> dict[str, object]:
             "job": str(args.job),
         }
         payload.update(product_mode_status())
+        try:
+            data._mark_job_running(str(args.job), started_at_utc=started_at_utc)
+            data._record_job_observation(
+                job_name=str(args.job),
+                started_at_utc=started_at_utc,
+                finished_at_utc=datetime.now(timezone.utc),
+                result_payload=payload,
+            )
+        except Exception:
+            pass
         return payload
 
     db = SessionLocal()

@@ -9,6 +9,7 @@ from ..config import product_mode_status
 from ..deps import get_db
 from ..models import MaintenanceState
 from ..services.manual_imports import load_manual_import_status
+from . import data as data_routes
 
 
 router = APIRouter(prefix="/meta", tags=["meta"])
@@ -144,6 +145,39 @@ def _build_data_files_status(fallback: dict) -> dict:
     }
 
 
+def _jobs_status_payload() -> dict:
+    payload = data_routes._load_job_observability_payload()
+    jobs_payload_raw = payload.get("jobs")
+    jobs_payload = jobs_payload_raw if isinstance(jobs_payload_raw, dict) else {}
+    jobs = []
+    for job_name in sorted(jobs_payload.keys()):
+        raw = jobs_payload.get(job_name)
+        if not isinstance(raw, dict):
+            continue
+        jobs.append(
+            {
+                "job_name": str(raw.get("job_name") or job_name),
+                "started_at": str(raw.get("started_at") or raw.get("last_started_at") or ""),
+                "finished_at": str(raw.get("finished_at") or raw.get("last_finished_at") or ""),
+                "status": str(raw.get("status") or raw.get("last_status") or ""),
+                "reason": str(raw.get("reason") or raw.get("last_reason") or ""),
+                "message": str(raw.get("message") or raw.get("last_message") or ""),
+                "source": str(raw.get("source") or raw.get("last_source") or ""),
+                "imported_rows": raw.get("imported_rows", raw.get("last_imported_rows")),
+                "downloaded_keys": raw.get("downloaded_keys", raw.get("last_downloaded_keys")) or [],
+                "duration_ms": raw.get("duration_ms", raw.get("last_duration_ms")),
+                "running": bool(raw.get("running", False)),
+                "updated_at": str(raw.get("updated_at") or ""),
+                "next_run_estimate_utc": str(raw.get("next_run_estimate_utc") or ""),
+            }
+        )
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "observability_updated_at": str(payload.get("updated_at") or ""),
+        "jobs": jobs,
+    }
+
+
 @router.get("/data-status")
 def data_status():
     fallback = {
@@ -160,6 +194,7 @@ def data_status():
                 payload = _normalize_payload(raw, fallback)
                 payload["product"] = product_mode_status()
                 payload["manual_imports"] = load_manual_import_status()
+                payload["jobs_status"] = _jobs_status_payload()
                 return payload
         except Exception:
             pass
@@ -167,12 +202,18 @@ def data_status():
     payload = _build_data_files_status(fallback)
     payload["product"] = product_mode_status()
     payload["manual_imports"] = load_manual_import_status()
+    payload["jobs_status"] = _jobs_status_payload()
     return payload
 
 
 @router.get("/product-mode")
 def product_mode():
     return product_mode_status()
+
+
+@router.get("/jobs-status")
+def jobs_status():
+    return _jobs_status_payload()
 
 
 @router.get("/maintenance")

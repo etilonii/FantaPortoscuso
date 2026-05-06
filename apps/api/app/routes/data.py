@@ -4687,6 +4687,80 @@ def _save_job_observability_payload(payload: Dict[str, object]) -> None:
     _write_text_if_changed(JOB_OBSERVABILITY_PATH, rendered)
 
 
+def _job_status_from_result_payload(result_payload: Dict[str, object]) -> str:
+    if bool(result_payload.get("skipped", False)):
+        return "skipped"
+    if bool(result_payload.get("ok", True)):
+        return "ok"
+    return "error"
+
+
+def _job_source_from_result_payload(job_name: str, result_payload: Dict[str, object]) -> str:
+    source_value = str(result_payload.get("source") or "").strip()
+    if source_value:
+        return source_value
+    mode_value = str(result_payload.get("mode") or "").strip()
+    if mode_value:
+        return mode_value
+    return str(job_name or "").strip()
+
+
+def _job_message_from_result_payload(result_payload: Dict[str, object]) -> str:
+    for key in ("message", "error", "reason"):
+        value = str(result_payload.get(key) or "").strip()
+        if value:
+            return value
+    return ""
+
+
+def _job_downloaded_keys_from_result_payload(result_payload: Dict[str, object]) -> List[str]:
+    downloaded_raw = result_payload.get("downloaded")
+    if isinstance(downloaded_raw, dict):
+        return sorted(str(key) for key in downloaded_raw.keys() if str(key).strip())
+    return []
+
+
+def _job_imported_rows_from_result_payload(result_payload: Dict[str, object]) -> Optional[int]:
+    for key in ("imported_rows", "rows", "processed_rows"):
+        parsed = _parse_int(result_payload.get(key))
+        if parsed is not None:
+            return int(parsed)
+    return None
+
+
+def _mark_job_running(job_name: str, *, started_at_utc: datetime) -> None:
+    if not job_name:
+        return
+    started_iso = started_at_utc.astimezone(timezone.utc).isoformat()
+    with _JOB_OBSERVABILITY_LOCK:
+        payload = _load_job_observability_payload()
+        jobs_payload_raw = payload.get("jobs")
+        jobs_payload = jobs_payload_raw if isinstance(jobs_payload_raw, dict) else {}
+        job_entry_raw = jobs_payload.get(job_name)
+        job_entry = dict(job_entry_raw) if isinstance(job_entry_raw, dict) else {}
+        now_utc = datetime.utcnow().replace(tzinfo=timezone.utc)
+        job_entry.update(
+            {
+                "job_name": job_name,
+                "status": "running",
+                "running": True,
+                "started_at": started_iso,
+                "finished_at": "",
+                "duration_ms": None,
+                "message": "",
+                "reason": "running",
+                "source": _job_source_from_result_payload(job_name, {}),
+                "imported_rows": None,
+                "downloaded_keys": [],
+                "updated_at": now_utc.isoformat(),
+            }
+        )
+        jobs_payload[job_name] = job_entry
+        payload["jobs"] = jobs_payload
+        payload["updated_at"] = now_utc.isoformat()
+        _save_job_observability_payload(payload)
+
+
 def _next_run_estimate_utc_for_job(job_name: str, *, now_utc: datetime) -> str:
     normalized = str(job_name or "").strip()
     if not normalized:
@@ -4738,24 +4812,37 @@ def _record_job_observation(
     started_iso = started_at_utc.astimezone(timezone.utc).isoformat()
     finished_iso = finished_at_utc.astimezone(timezone.utc).isoformat()
     duration_seconds = max(0.0, (finished_at_utc - started_at_utc).total_seconds())
+    duration_ms = max(0, int(round(duration_seconds * 1000)))
     ok_value = bool(result_payload.get("ok", True))
     skipped_value = bool(result_payload.get("skipped", False))
+    status_value = _job_status_from_result_payload(result_payload)
     reason_value = str(result_payload.get("reason") or "")
     error_value = str(result_payload.get("error") or "")
     mode_value = str(result_payload.get("mode") or "")
+    message_value = _job_message_from_result_payload(result_payload)
+    source_value = _job_source_from_result_payload(job_name, result_payload)
+    imported_rows_value = _job_imported_rows_from_result_payload(result_payload)
+    downloaded_keys_value = _job_downloaded_keys_from_result_payload(result_payload)
     round_value = _parse_int(result_payload.get("round"))
     if round_value is None:
         round_value = _parse_int(result_payload.get("scheduled_matchday"))
 
     history_entry = {
+        "job_name": job_name,
         "started_at": started_iso,
         "finished_at": finished_iso,
+        "status": status_value,
         "duration_seconds": round(float(duration_seconds), 3),
+        "duration_ms": duration_ms,
         "ok": ok_value,
         "skipped": skipped_value,
         "reason": reason_value,
+        "message": message_value,
         "error": error_value,
         "mode": mode_value,
+        "source": source_value,
+        "imported_rows": imported_rows_value,
+        "downloaded_keys": downloaded_keys_value,
         "round": int(round_value) if round_value is not None else None,
     }
 
@@ -4779,18 +4866,35 @@ def _record_job_observation(
         job_entry.update(
             {
                 "job_name": job_name,
+                "status": status_value,
+                "running": False,
+                "started_at": started_iso,
+                "finished_at": finished_iso,
+                "duration_ms": duration_ms,
+                "message": message_value,
+                "reason": reason_value,
+                "source": source_value,
+                "imported_rows": imported_rows_value,
+                "downloaded_keys": downloaded_keys_value,
                 "last_started_at": started_iso,
                 "last_finished_at": finished_iso,
                 "last_duration_seconds": round(float(duration_seconds), 3),
+                "last_duration_ms": duration_ms,
                 "last_ok": ok_value,
                 "last_skipped": skipped_value,
                 "last_reason": reason_value,
+                "last_message": message_value,
                 "last_error": error_value,
                 "last_mode": mode_value,
+                "last_status": status_value,
+                "last_source": source_value,
+                "last_imported_rows": imported_rows_value,
+                "last_downloaded_keys": downloaded_keys_value,
                 "last_round": int(round_value) if round_value is not None else None,
                 "runs_count": previous_count + 1,
                 "next_run_estimate_utc": next_run_estimate,
                 "history": history,
+                "updated_at": now_utc.isoformat(),
             }
         )
 
@@ -4806,6 +4910,10 @@ def _observe_job_execution(job_name: str):
         def wrapped(*args, **kwargs):
             started_at_utc = datetime.utcnow().replace(tzinfo=timezone.utc)
             result_payload: Dict[str, object] = {"ok": False, "error": "unexpected_error"}
+            try:
+                _mark_job_running(job_name, started_at_utc=started_at_utc)
+            except Exception:
+                logger.debug("Unable to mark job %s as running", job_name, exc_info=True)
             try:
                 result = fn(*args, **kwargs)
                 if isinstance(result, dict):
