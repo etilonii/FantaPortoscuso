@@ -5583,6 +5583,17 @@ body.theme-light .login-shell .select {
   font-size: 1.05rem;
 }
 
+.player-profile-card strong,
+.player-profile-stats .summary-card strong,
+.player-profile-note strong {
+  color: rgba(249, 250, 255, 0.96);
+}
+
+.player-profile-card span,
+.player-profile-stats .summary-card span {
+  color: rgba(226, 231, 240, 0.82);
+}
+
 .team-alert-list {
   display: grid;
   gap: 10px;
@@ -5627,6 +5638,73 @@ body.theme-light .login-shell .select {
   border-radius: 8px;
   padding: 12px 14px;
   background: rgba(255, 255, 255, 0.04);
+}
+
+.player-profile-stats .summary-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.team-trend-copy {
+  margin: 4px 0 0;
+}
+
+.team-trend-kpis,
+.team-trend-bars {
+  display: grid;
+  gap: 12px;
+}
+
+.team-trend-kpis {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-bottom: 12px;
+}
+
+.team-trend-kpi,
+.team-trend-bar-card {
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.team-trend-kpi {
+  padding: 12px 14px;
+  display: grid;
+  gap: 6px;
+}
+
+.team-trend-kpi span,
+.team-trend-bar-card span,
+.team-trend-bar-card small {
+  color: rgba(214, 219, 230, 0.72);
+}
+
+.team-trend-bars {
+  grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+  align-items: end;
+}
+
+.team-trend-bar-card {
+  padding: 12px 10px;
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}
+
+.team-trend-bar-track {
+  height: 92px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.08));
+  overflow: hidden;
+}
+
+.team-trend-bar-fill {
+  width: 100%;
+  border-radius: 8px 8px 4px 4px;
+  background: linear-gradient(180deg, rgba(247, 176, 74, 0.88), rgba(126, 92, 255, 0.92));
 }
 
 .team-trend-list,
@@ -5683,8 +5761,15 @@ body.theme-light .team-alert-item {
 }
 
 body.theme-light .team-strength-kpi,
-body.theme-light .team-trend-item {
+body.theme-light .team-trend-item,
+body.theme-light .team-trend-kpi,
+body.theme-light .team-trend-bar-card,
+body.theme-light .player-profile-stats .summary-card {
   background: rgba(16, 24, 40, 0.04);
+}
+
+body.theme-light .team-trend-bar-track {
+  background: linear-gradient(180deg, rgba(16, 24, 40, 0.03), rgba(16, 24, 40, 0.08));
 }
 
 @media (max-width: 720px) {
@@ -5695,5 +5780,126 @@ body.theme-light .team-trend-item {
 
   .league-live-rank {
     min-width: 0;
+  }
+}
+
+.market-advisor-page,
+.market-advisor-shell,
+.market-advisor-grid,
+.market-advisor-column,
+.market-suggestion-list,
+.market-advisor-overview,
+.market-advisor-meta,
+.market-credit-grid,
+.market-tech-grid,
+.market-priority-list,
+.market-moves-list {
+  display: grid;
+  gap: 12px;
+}
+
+.market-advisor-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.market-advisor-overview,
+.market-credit-grid,
+.market-tech-grid {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.market-advisor-grid {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.market-advisor-card {
+  display: grid;
+  gap: 10px;
+}
+
+.market-advisor-card.actionable {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.market-advisor-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.market-advisor-card-head h4 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+
+.market-advisor-meta {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.market-advisor-meta span,
+.market-tech-grid span {
+  display: block;
+  color: rgba(214, 219, 230, 0.72);
+  font-size: 0.82rem;
+}
+
+.market-advisor-copy {
+  margin: 0;
+  color: rgba(234, 237, 245, 0.86);
+}
+
+.market-priority-item,
+.market-move-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.market-priority-item p {
+  margin: 4px 0 0;
+}
+
+.market-move-card .market-swap-card.compact {
+  margin-top: 8px;
+}
+
+.market-overview-panel {
+  margin-top: 18px;
+}
+
+.advisor-market-ranking-grid {
+  margin-top: 12px;
+}
+
+.market-advisor-empty {
+  margin-top: 12px;
+}
+
+body.theme-light .market-priority-item,
+body.theme-light .market-move-card {
+  background: rgba(16, 24, 40, 0.04);
+  border-color: rgba(16, 24, 40, 0.08);
+}
+
+@media (max-width: 720px) {
+  .market-advisor-card-head,
+  .market-priority-item,
+  .market-move-card {
+    flex-direction: column;
+  }
+
+  .market-advisor-toolbar {
+    align-items: stretch;
   }
 }

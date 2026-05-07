@@ -64,6 +64,7 @@ from apps.api.app.models import (
     Team,
     TeamKey,
 )
+from apps.api.app.services.team_trend import build_team_trend_payload
 from apps.api.app.utils.names import normalize_name, strip_star, is_starred
 
 
@@ -3219,6 +3220,97 @@ def _build_live_standings_rows(
     }
 
 
+def _collect_team_trend_rows_from_items(
+    team_key: str,
+    items: List[Dict[str, object]],
+) -> Dict[int, Dict[str, object]]:
+    collected: Dict[int, Dict[str, object]] = {}
+
+    for item in items:
+        if normalize_name(str(item.get("team") or "")) != team_key:
+            continue
+        round_value = _parse_int(item.get("round"))
+        if round_value is None or round_value <= 0:
+            continue
+        score_value = _parse_float(item.get("totale_precalc"))
+        if score_value is None:
+            score_value = _parse_float(item.get("totale_live"))
+        if score_value is None:
+            continue
+
+        candidate = {
+            "round": int(round_value),
+            "score": round(float(score_value), 2),
+            "position": None,
+            "live_status": str(item.get("live_status") or "").strip().lower(),
+        }
+        current = collected.get(int(round_value))
+        if current is None or (not current.get("live_status") and candidate.get("live_status")):
+            collected[int(round_value)] = candidate
+
+    return collected
+
+
+def _load_team_trend_rows(
+    db: Session,
+    team_name: str,
+) -> List[Dict[str, object]]:
+    resolved_team = str(team_name or "").strip()
+    team_key = normalize_name(resolved_team)
+    if not team_key:
+        return []
+
+    standings_index = _build_standings_index()
+    rows_by_round: Dict[int, Dict[str, object]] = {}
+
+    if REAL_FORMATIONS_TMP_DIR.exists() and REAL_FORMATIONS_TMP_DIR.is_dir():
+        cached_paths = sorted(
+            [path for path in REAL_FORMATIONS_TMP_DIR.glob(REAL_FORMATIONS_APPKEY_GLOB) if path.is_file()],
+            key=lambda path: path.stat().st_mtime,
+        )
+        for path in cached_paths:
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8-sig"))
+                cached_items, _cached_rounds = _parse_formazioni_payload_to_items(payload, standings_index)
+            except Exception:
+                continue
+            rows_by_round.update(_collect_team_trend_rows_from_items(team_key, cached_items))
+
+    if not rows_by_round:
+        fallback_items, _fallback_rounds, _source_path = _load_real_formazioni_rows(
+            standings_index,
+            preferred_round=None,
+        )
+        rows_by_round.update(_collect_team_trend_rows_from_items(team_key, fallback_items))
+
+    if not rows_by_round:
+        return []
+
+    latest_round = max(rows_by_round.keys())
+    try:
+        latest_snapshot = _build_live_standings_rows(db, requested_round=latest_round)
+        latest_items = latest_snapshot.get("items") if isinstance(latest_snapshot, dict) else []
+        if isinstance(latest_items, list):
+            latest_row = next(
+                (
+                    item
+                    for item in latest_items
+                    if normalize_name(str(item.get("team") or "")) == team_key
+                ),
+                None,
+            )
+            if isinstance(latest_row, dict):
+                latest_entry = rows_by_round.get(latest_round)
+                if latest_entry is not None:
+                    latest_entry["position"] = _parse_int(latest_row.get("pos"))
+                    if not latest_entry.get("live_status"):
+                        latest_entry["live_status"] = str(latest_row.get("live_status") or "").strip().lower()
+    except Exception:
+        logger.debug("Unable to enrich latest team trend snapshot for %s", resolved_team, exc_info=True)
+
+    return [rows_by_round[round_value] for round_value in sorted(rows_by_round.keys())]
+
+
 @router.get("/standings")
 def standings(
     live: bool = Query(default=False),
@@ -3228,6 +3320,32 @@ def standings(
     if not bool(live):
         return {"items": _load_standings_rows()}
     return _build_live_standings_rows(db, requested_round=round)
+
+
+@router.get("/team/{team_name}/trend")
+def team_trend(
+    team_name: str,
+    db: Session = Depends(get_db),
+    x_access_key: str | None = Header(default=None, alias="X-Access-Key"),
+    x_admin_key: str | None = Header(default=None, alias="X-Admin-Key"),
+    authorization: str | None = Header(default=None, alias="Authorization"),
+):
+    access_record = _require_login_key(
+        db,
+        authorization=authorization,
+        x_access_key=x_access_key or x_admin_key,
+    )
+    scoped_team_name, scoped_team_key = _team_scope_for_access_key(db, access_record)
+    requested_team_name = str(team_name or "").strip()
+    resolved_team_name = requested_team_name
+
+    if not bool(access_record.is_admin):
+        if not scoped_team_key:
+            raise HTTPException(status_code=403, detail="Key non associata a un team")
+        resolved_team_name = scoped_team_name or requested_team_name
+
+    rows = _load_team_trend_rows(db, resolved_team_name)
+    return build_team_trend_payload(resolved_team_name, rows)
 
 
 def _sort_rows_numeric(

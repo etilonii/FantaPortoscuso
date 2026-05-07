@@ -81,6 +81,20 @@ const expandTeamName = (value, teamSet) => {
   return raw;
 };
 
+const emptyTeamTrend = (teamName = "", overrides = {}) => ({
+  team: String(teamName || "").trim(),
+  available: false,
+  rounds: [],
+  last_5: [],
+  average_last_5: null,
+  best_round: null,
+  worst_round: null,
+  position_trend: "unknown",
+  message: "Andamento non ancora disponibile.",
+  loading: false,
+  ...overrides,
+});
+
 const formatInt = (value) => {
   if (value === undefined || value === null || value === "") return "-";
   const n = Number(value);
@@ -380,6 +394,7 @@ export default function App() {
   const [selectedTeam, setSelectedTeam] = useState("");
   const [roster, setRoster] = useState([]);
   const [formations, setFormations] = useState([]);
+  const [teamTrendMap, setTeamTrendMap] = useState({});
   const [formationTeam, setFormationTeam] = useState("all");
   const [formationRound, setFormationRound] = useState("");
   const [formationOrder, setFormationOrder] = useState("classifica");
@@ -465,32 +480,12 @@ export default function App() {
   const [adminDeletingKey, setAdminDeletingKey] = useState("");
   const [adminBlockingKey, setAdminBlockingKey] = useState("");
 
-  /* ===== MERCATO + SUGGEST ===== */
-  const [marketView, setMarketView] = useState("players");
-
   const {
     marketCountdown,
     marketItems,
-    marketTeams,
-    marketPreview,
-    setMarketPreview,
     marketUpdatedAt,
     loadMarket,
   } = useMarketPlaceholder(API_BASE, loggedIn);
-
-const [suggestPayload, setSuggestPayload] = useState(null);
-const [suggestTeam, setSuggestTeam] = useState("");
-const [suggestions, setSuggestions] = useState([]);
-const [suggestError, setSuggestError] = useState("");
-const [suggestLoading, setSuggestLoading] = useState(false);
-const [suggestHasRun, setSuggestHasRun] = useState(false);
-
-const [manualOuts, setManualOuts] = useState([]);
-const [manualResult, setManualResult] = useState(null);
-const [manualError, setManualError] = useState("");
-const [manualLoading, setManualLoading] = useState(false);
-const [manualDislikes, setManualDislikes] = useState(new Set());
-const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
 
   const touchAuthSessionTs = () => {
     try {
@@ -1071,6 +1066,50 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
   };
 
+  const loadTeamTrend = async (teamName) => {
+    const rawTeamName = String(teamName || "").trim();
+    if (!loggedIn || !rawTeamName) return false;
+    const teamKey = normalizeName(rawTeamName);
+    if (!teamKey) return false;
+
+    setTeamTrendMap((prev) => ({
+      ...prev,
+      [teamKey]: {
+        ...(prev[teamKey] || emptyTeamTrend(rawTeamName)),
+        team: rawTeamName,
+        loading: true,
+      },
+    }));
+
+    try {
+      const data = await fetchJsonWithRetry(
+        `${API_BASE}/data/team/${encodeURIComponent(rawTeamName)}/trend`,
+        {
+          headers: buildAuthHeaders({ legacyAccessKey: true }),
+        },
+        { useAuth: true }
+      );
+      setTeamTrendMap((prev) => ({
+        ...prev,
+        [teamKey]: emptyTeamTrend(rawTeamName, {
+          ...data,
+          team: String(data?.team || rawTeamName).trim(),
+          loading: false,
+        }),
+      }));
+      return true;
+    } catch (err) {
+      setTeamTrendMap((prev) => ({
+        ...prev,
+        [teamKey]: emptyTeamTrend(rawTeamName, {
+          loading: false,
+          message: err?.message || "Andamento non disponibile.",
+        }),
+      }));
+      return false;
+    }
+  };
+
   const loadFormazioni = async (roundValue = null, orderValue = null, options = {}) => {
     const requestId = formazioniRequestIdRef.current + 1;
     formazioniRequestIdRef.current = requestId;
@@ -1540,6 +1579,23 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     return String(sessionTeam || "").trim();
   }, [isAdmin, sessionTeam]);
 
+  useEffect(() => {
+    if (!loggedIn) {
+      setTeamTrendMap({});
+      return;
+    }
+
+    const teamsToLoad = new Set();
+    const scopedTeam = String(activeUserTeam || "").trim();
+    const selectedTrendTeam = String(selectedTeam || "").trim();
+    if (scopedTeam) teamsToLoad.add(scopedTeam);
+    if (selectedTrendTeam) teamsToLoad.add(selectedTrendTeam);
+
+    teamsToLoad.forEach((teamName) => {
+      void loadTeamTrend(teamName);
+    });
+  }, [loggedIn, activeUserTeam, selectedTeam]);
+
   const teamStrengthBreakdownMap = useMemo(() => {
     return premiumInsights?.team_strength_by_role && typeof premiumInsights.team_strength_by_role === "object"
       ? premiumInsights.team_strength_by_role
@@ -1577,6 +1633,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     const startingStrengthRow =
       (premiumInsights?.team_strength_starting || []).find((row) => normalizeName(row?.Team) === teamKey) || null;
     const strengthBreakdown = teamStrengthBreakdownMap?.[teamKey] || null;
+    const trend = teamTrendMap?.[teamKey] || emptyTeamTrend(teamName, { loading: loggedIn });
 
     const alerts = [];
     if (teamFormation?.live_status === "needs_review") {
@@ -1629,7 +1686,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       strengthRow,
       startingStrengthRow,
       strengthBreakdown,
-      trend: { recent_rounds: [] },
+      trend,
     };
   }, [
     activeUserTeam,
@@ -1638,6 +1695,8 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     formations,
     premiumInsights,
     teamStrengthBreakdownMap,
+    teamTrendMap,
+    loggedIn,
   ]);
 
   const loadPlusvalenze = async () => {
@@ -2106,48 +2165,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     setListoneQuery("");
   };
 
-  /* ===========================
-     MERCATO + SUGGEST (MEMO)
-  =========================== */
-  const manualSwapMap = useMemo(() => {
-    const map = new Map();
-    (manualResult?.swaps || []).forEach((s) => {
-      map.set(normalizeName(s.out), s);
-    });
-    return map;
-  }, [manualResult]);
-
-  const qaOfPlayer = (player) =>
-    Number(player?.QA ?? player?.PrezzoAttuale ?? player?.prezzo_attuale ?? 0) || 0;
-
-  const manualBudgetSummary = useMemo(() => {
-    const credits = Number(suggestPayload?.credits_residui ?? 0) || 0;
-    const squad = suggestPayload?.user_squad || [];
-    const outNames = (manualOuts || [])
-      .map((v) => String(v || "").trim())
-      .filter(Boolean);
-    const outMap = new Map(
-      squad.map((p) => [normalizeName(p.nome || p.Giocatore), p])
-    );
-    const outSum = outNames.reduce((sum, name) => {
-      const player = outMap.get(normalizeName(name));
-      return sum + (player ? qaOfPlayer(player) : 0);
-    }, 0);
-    const maxBudget = credits + outSum;
-    const spent = (manualResult?.swaps || []).reduce(
-      (sum, s) => sum + (Number(s.qa_in) || 0),
-      0
-    );
-    const budgetFinal = maxBudget - spent;
-    return {
-      credits,
-      outSum,
-      maxBudget,
-      spent,
-      budgetFinal,
-    };
-  }, [suggestPayload, manualOuts, manualResult]);
-
   const topQuotes = useMemo(() => (topQuotesAll || []).slice(0, 5), [topQuotesAll]);
   const topPlusvalenze = useMemo(() => (plusvalenze || []).slice(0, 5), [plusvalenze]);
   const topStats = useMemo(() => (statsItems || []).slice(0, 5), [statsItems]);
@@ -2161,7 +2178,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         strengthRow: null,
         startingStrengthRow: null,
         strengthBreakdown: null,
-        teamTrend: { recent_rounds: [] },
+        teamTrend: emptyTeamTrend(""),
       };
     }
     if (userTeamDashboard && normalizeName(userTeamDashboard.teamName) === normalizeName(teamName)) {
@@ -2185,6 +2202,7 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     const startingStrengthRow =
       (premiumInsights?.team_strength_starting || []).find((row) => normalizeName(row?.Team) === teamKey) || null;
     const strengthBreakdown = teamStrengthBreakdownMap?.[teamKey] || null;
+    const teamTrend = teamTrendMap?.[teamKey] || emptyTeamTrend(teamName, { loading: loggedIn });
     const teamAlerts = [];
     if (teamFormation?.live_status_reason) {
       teamAlerts.push({
@@ -2200,9 +2218,18 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
       strengthRow,
       startingStrengthRow,
       strengthBreakdown,
-      teamTrend: { recent_rounds: [] },
+      teamTrend,
     };
-  }, [selectedTeam, userTeamDashboard, marketStandings, formations, premiumInsights, teamStrengthBreakdownMap]);
+  }, [
+    selectedTeam,
+    userTeamDashboard,
+    marketStandings,
+    formations,
+    premiumInsights,
+    teamStrengthBreakdownMap,
+    teamTrendMap,
+    loggedIn,
+  ]);
 
   const topAcquistiCatalog = useMemo(() => {
     const map = new Map();
@@ -2468,242 +2495,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     setTopAcquistiQuery("");
     setTopPosFrom("");
     setTopPosTo("");
-  };
-
-  /* ===========================
-     MERCATO: placeholder
-  =========================== */
-
-  /* ===========================
-     SUGGEST: payload
-  =========================== */
-  const loadSuggestPayload = async (force = false) => {
-    if (!accessKey.trim()) return false;
-    if (!force && suggestPayload) return true;
-
-    try {
-      const res = await fetchWithAuth(`${API_BASE}/data/market/payload`, {
-        headers: buildAuthHeaders({ legacyAccessKey: true }),
-      });
-      if (!res.ok) return false;
-
-      const data = await res.json();
-      const payload = data.payload || data;
-
-      setSuggestTeam(data.team || "");
-      setSuggestPayload(payload);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
-  /* ===========================
-     SUGGEST: run
-  =========================== */
-  const runSuggest = async () => {
-    setSuggestError("");
-    setSuggestions([]);
-    setSuggestHasRun(true);
-
-    if (!suggestPayload) {
-      setSuggestError("Payload non disponibile. Riprova il login o aggiorna i dati.");
-      return;
-    }
-
-    setSuggestLoading(true);
-
-    const payloadToSend = { ...suggestPayload };
-    if (!payloadToSend.teams_data || !Object.keys(payloadToSend.teams_data).length) {
-      const clubs = new Set(
-        (payloadToSend.user_squad || [])
-          .map((p) => String(p.Squadra || "").trim())
-          .filter(Boolean)
-      );
-      const fallbackTeams = {};
-      clubs.forEach((club) => {
-        fallbackTeams[club] = {
-          PPG_S: 0,
-          PPG_R8: 0,
-          GFpg_S: 0,
-          GFpg_R8: 0,
-          GApg_S: 0,
-          GApg_R8: 0,
-          MoodTeam: 0.5,
-          CoachStyle_P: 0.5,
-          CoachStyle_D: 0.5,
-          CoachStyle_C: 0.5,
-          CoachStyle_A: 0.5,
-          CoachStability: 0.5,
-          CoachBoost: 0.5,
-          GamesRemaining: 0,
-        };
-      });
-      payloadToSend.teams_data = fallbackTeams;
-    }
-
-    try {
-      const res = await fetch(`${API_BASE}/data/market/suggest`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payloadToSend),
-      });
-
-      if (!res.ok) {
-        setSuggestError("Errore nel motore consigli.");
-        return;
-      }
-
-      const data = await res.json();
-      const rawSolutions = data.solutions || [];
-      setSuggestions(rawSolutions);
-
-      if (rawSolutions.length === 0) {
-        setSuggestError("Nessuna soluzione disponibile.");
-      } else if (rawSolutions.length < 3) {
-        setSuggestError(`Solo ${rawSolutions.length} soluzioni disponibili.`);
-      }
-    } catch {
-      setSuggestError("Errore di connessione al motore consigli.");
-    } finally {
-      setSuggestLoading(false);
-    }
-  };
-
-  /* ===========================
-     GUIDED: max outs (stelle)
-  =========================== */
-  const getStarCount = (squad = []) =>
-    squad.filter((p) => String(p.nome || p.Giocatore || "").trim().endsWith(" *")).length;
-
-  const maxManualOuts = useMemo(() => {
-    if (!suggestPayload?.user_squad) return 5;
-    return 5 + getStarCount(suggestPayload.user_squad);
-  }, [suggestPayload]);
-
-  /* ===========================
-     GUIDED: init outs
-  =========================== */
-  useEffect(() => {
-    setManualOuts(Array.from({ length: maxManualOuts }, () => ""));
-    setManualResult(null);
-    setManualError("");
-    setManualDislikes(new Set());
-    setManualExcludedIns(new Set());
-  }, [maxManualOuts, suggestPayload]);
-
-  const resetManual = () => {
-    setManualOuts(Array.from({ length: maxManualOuts }, () => ""));
-    setManualResult(null);
-    setManualError("");
-    setManualDislikes(new Set());
-    setManualExcludedIns(new Set());
-  };
-
-  /* ===========================
-     GUIDED: compute (client-side)
-  =========================== */
-  const computeManualSuggestions = async () => {
-    if (!suggestPayload) {
-      setManualError("Payload non disponibile.");
-      return;
-    }
-
-    const outs = (manualOuts || [])
-      .map((v) => String(v || "").trim())
-      .filter(Boolean);
-
-    if (!outs.length) {
-      setManualError("Seleziona almeno un OUT.");
-      setManualResult(null);
-      return;
-    }
-
-    setManualError("");
-    setManualLoading(true);
-    const previousResult = manualResult;
-
-    try {
-      const fixedSwaps =
-        manualResult?.swaps
-          ?.filter((s) => s?.in && !manualDislikes.has(normalizeName(s.in)))
-          .map((s) => [s.out, s.in]) || [];
-
-      const params = {
-        ...(suggestPayload.params || {}),
-        required_outs: outs,
-        exclude_ins: Array.from(
-          new Set([...(manualDislikes || []), ...(manualExcludedIns || [])])
-        ),
-        fixed_swaps: fixedSwaps,
-        max_changes: outs.length,
-      };
-
-      const res = await fetch(`${API_BASE}/data/market/suggest`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...suggestPayload,
-          params,
-        }),
-      });
-
-      if (!res.ok) {
-        setManualError("Errore nel motore consigli.");
-        setManualResult(null);
-        return;
-      }
-
-      const data = await res.json();
-      const solutions = data.solutions || [];
-      if (!solutions.length) {
-        setManualError("Nessun IN trovato con i vincoli dati.");
-        setManualResult(null);
-        return;
-      }
-
-      let next = solutions[0];
-      if (next && previousResult?.swaps?.length && fixedSwaps.length) {
-        const prevMap = new Map(
-          previousResult.swaps.map((s) => [normalizeName(s.out), s])
-        );
-        const fixedSet = new Set(fixedSwaps.map((s) => normalizeName(s[0])));
-        const merged = [];
-        const used = new Set();
-        (next.swaps || []).forEach((s) => {
-          const outKey = normalizeName(s.out);
-          if (fixedSet.has(outKey) && prevMap.has(outKey)) {
-            merged.push(prevMap.get(outKey));
-          } else {
-            merged.push(s);
-          }
-          used.add(outKey);
-        });
-        fixedSet.forEach((outKey) => {
-          if (!used.has(outKey) && prevMap.has(outKey)) {
-            merged.push(prevMap.get(outKey));
-          }
-        });
-        next = { ...next, swaps: merged };
-      }
-      setManualResult(next);
-      setManualExcludedIns((prev) => {
-        const nextSet = new Set(prev);
-        (next?.swaps || []).forEach((s) => {
-          if (s?.in) {
-            nextSet.add(normalizeName(s.in));
-          }
-        });
-        manualDislikes.forEach((name) => nextSet.add(name));
-        return nextSet;
-      });
-      setManualDislikes(new Set());
-    } catch {
-      setManualError("Errore durante il calcolo degli IN.");
-      setManualResult(null);
-    } finally {
-      setManualLoading(false);
-    }
   };
 
   /* ===========================
@@ -3447,14 +3238,12 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     }
 
     const fallbackTeam =
-      String(suggestTeam || "").trim() ||
-      String(selectedTeam || "").trim() ||
-      String(teams?.[0] || "").trim();
+      String(selectedTeam || "").trim() || String(teams?.[0] || "").trim();
     if (!fallbackTeam) return;
 
     consigliataTeamAutoselectRef.current = true;
     setFormationTeam(fallbackTeam);
-  }, [loggedIn, activeMenu, isAdmin, sessionTeam, formationTeam, suggestTeam, selectedTeam, teams]);
+  }, [loggedIn, activeMenu, isAdmin, sessionTeam, formationTeam, selectedTeam, teams]);
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -3568,7 +3357,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         } else if (menu === "mercato") {
           tasks.push(loadMarketStandings());
           tasks.push(loadMarket());
-          tasks.push(loadSuggestPayload(true));
         } else if (menu === "classifica-lega") {
           tasks.push(loadMarketStandings());
         } else if (menu === "classifica-fixtures-seriea") {
@@ -3616,7 +3404,6 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     formationRound,
     formationOrder,
     formationTeam,
-    suggestTeam,
     sessionTeam,
     isAdmin,
     selectedPlayer,
@@ -4256,34 +4043,16 @@ useEffect(() => {
 
             {activeMenu === "mercato" && (
               <MercatoSection
+                API_BASE={API_BASE}
+                sessionTeam={sessionTeam}
                 marketUpdatedAt={marketUpdatedAt}
                 marketCountdown={marketCountdown}
                 marketStandings={marketStandings}
                 isAdmin={isAdmin}
-                marketPreview={marketPreview}
-                setMarketPreview={setMarketPreview}
                 marketItems={marketItems}
                 formatInt={formatInt}
-                suggestions={suggestions}
                 formatDecimal={formatDecimal}
                 openPlayer={openPlayer}
-                runSuggest={runSuggest}
-                suggestLoading={suggestLoading}
-                suggestError={suggestError}
-                suggestHasRun={suggestHasRun}
-                manualOuts={manualOuts}
-                setManualOuts={setManualOuts}
-                suggestPayload={suggestPayload}
-                manualResult={manualResult}
-                manualBudgetSummary={manualBudgetSummary}
-                manualSwapMap={manualSwapMap}
-                manualDislikes={manualDislikes}
-                setManualDislikes={setManualDislikes}
-                computeManualSuggestions={computeManualSuggestions}
-                resetManual={resetManual}
-                manualLoading={manualLoading}
-                manualError={manualError}
-                normalizeName={normalizeName}
               />
             )}
 
