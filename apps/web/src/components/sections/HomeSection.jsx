@@ -1,3 +1,5 @@
+import UserHomeDashboard from "./UserHomeDashboard";
+
 export default function HomeSection({
   summary,
   dataStatus,
@@ -23,6 +25,9 @@ export default function HomeSection({
   statColumn,
   goToTeam,
   setActiveMenu,
+  isPersonalHome = false,
+  personalDashboard = null,
+  formatDecimal,
 }) {
   const stepLabels = {
     rose: "Rose",
@@ -64,6 +69,29 @@ export default function HomeSection({
     dataStatus?.matchday !== null &&
     dataStatus?.matchday !== undefined &&
     Number.isFinite(Number(dataStatus.matchday));
+
+  if (isPersonalHome && personalDashboard) {
+    return (
+      <UserHomeDashboard
+        teamName={personalDashboard.teamName}
+        dataStatus={dataStatus}
+        formatDataStatusDate={formatDataStatusDate}
+        standingRow={personalDashboard.standingRow}
+        rosterSummary={personalDashboard.rosterSummary}
+        teamFormation={personalDashboard.teamFormation}
+        alerts={personalDashboard.alerts}
+        strengthRow={personalDashboard.strengthRow}
+        startingStrengthRow={personalDashboard.startingStrengthRow}
+        strengthBreakdown={personalDashboard.strengthBreakdown}
+        trend={personalDashboard.trend}
+        formatInt={formatInt}
+        formatDecimal={formatDecimal}
+        onOpenTeam={() => setActiveMenu("rose")}
+        onOpenStandings={() => setActiveMenu("classifica-lega")}
+        onOpenFormation={() => setActiveMenu("formazioni")}
+      />
+    );
+  }
 
   return (
     <section className="dashboard">

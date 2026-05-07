@@ -61,6 +61,51 @@ def test_build_live_standings_rows_adds_live_totals(monkeypatch):
     assert items[1]["pos"] == 2
 
 
+def test_build_live_standings_rows_exposes_live_status_fields(monkeypatch):
+    monkeypatch.setattr(
+        d,
+        "_load_standings_rows",
+        lambda: [{"pos": 1, "team": "Alpha", "played": 24, "points": 50.0}],
+    )
+    monkeypatch.setattr(d, "_build_standings_index", lambda: {"alpha": {"team": "Alpha", "pos": 1}})
+    monkeypatch.setattr(d, "_load_status_matchday", lambda: 25)
+    monkeypatch.setattr(d, "_infer_matchday_from_fixtures", lambda: None)
+    monkeypatch.setattr(d, "_infer_matchday_from_stats", lambda: None)
+    monkeypatch.setattr(
+        d,
+        "_load_real_formazioni_rows",
+        lambda standings_index, preferred_round=None: (
+            [{"team": "Alpha", "round": 25}],
+            [25],
+            None,
+        ),
+    )
+    monkeypatch.setattr(d, "_load_live_round_context", lambda db, round_value: {"votes_by_team_player": {"x": {}}})
+
+    def _fake_attach(items, live_context):
+        for item in items:
+            item["totale_live"] = 70.0
+            item["live_status"] = "final"
+            item["live_status_label"] = "Finale"
+            item["live_status_reason"] = "Tutti gli 11 effettivi hanno voto definitivo"
+            item["pending_players"] = []
+            item["resolved_substitutions"] = 1
+            item["resolved_substitutions_list"] = [{"out": "A", "in": "B"}]
+            item["pending_substitutions"] = 0
+            item["pending_substitutions_list"] = []
+            item["modifiers_status"] = {"difesa": "final", "capitano": "final"}
+
+    monkeypatch.setattr(d, "_attach_live_scores_to_formations", _fake_attach)
+
+    payload = d._build_live_standings_rows(db=None, requested_round=None)
+    item = payload["items"][0]
+
+    assert item["live_status"] == "final"
+    assert item["live_status_label"] == "Finale"
+    assert item["resolved_substitutions"] == 1
+    assert item["modifiers_status"]["difesa"] == "final"
+
+
 def test_backfill_standings_played_if_missing_prefers_status_matchday(monkeypatch):
     rows = [
         {"pos": 1, "team": "Alpha", "played": 0, "points": 50.0},

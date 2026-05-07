@@ -73,6 +73,7 @@ router = APIRouter(prefix="/data", tags=["data"])
 LEGACY_REMOTE_IMPORTS_DISABLED_MESSAGE = (
     "Import remoti legacy disattivati. Usa upload/manual import o fonti autorizzate."
 )
+from apps.api.app.services.live_team_status import build_live_team_status
 from apps.api.app.services.manual_imports import save_and_activate_manual_import
 
 DATA_DIR = Path(__file__).resolve().parents[4] / "data"
@@ -3053,6 +3054,34 @@ def _build_live_standings_rows(
                     continue
                 live_total_by_team[team_key] = float(official_total)
 
+    live_status_by_team: Dict[str, Dict[str, object]] = {}
+    for item in formazioni_items:
+        team_name = str(item.get("team") or "").strip()
+        team_key = normalize_name(team_name)
+        if not team_key:
+            continue
+        live_status_by_team[team_key] = {
+            "live_status": str(item.get("live_status") or "").strip(),
+            "live_status_label": str(item.get("live_status_label") or "").strip(),
+            "live_status_reason": str(item.get("live_status_reason") or "").strip(),
+            "pending_players": item.get("pending_players") if isinstance(item.get("pending_players"), list) else [],
+            "resolved_substitutions": int(item.get("resolved_substitutions") or 0),
+            "resolved_substitutions_list": (
+                item.get("resolved_substitutions_list")
+                if isinstance(item.get("resolved_substitutions_list"), list)
+                else []
+            ),
+            "pending_substitutions": int(item.get("pending_substitutions") or 0),
+            "pending_substitutions_list": (
+                item.get("pending_substitutions_list")
+                if isinstance(item.get("pending_substitutions_list"), list)
+                else []
+            ),
+            "modifiers_status": (
+                item.get("modifiers_status") if isinstance(item.get("modifiers_status"), dict) else {}
+            ),
+        }
+
     enriched_rows: List[Dict[str, object]] = []
     covered_keys: Set[str] = set()
     for idx, row in enumerate(base_rows):
@@ -3092,6 +3121,7 @@ def _build_live_standings_rows(
         points_live = base_points + (live_total if live_total is not None else 0.0)
         played_live = base_played + (1 if live_total is not None else 0)
         avg_live = (points_live / played_live) if played_live > 0 else 0.0
+        team_live_status = live_status_by_team.get(team_key, {})
 
         enriched_rows.append(
             {
@@ -3107,6 +3137,33 @@ def _build_live_standings_rows(
                 "points_live": round(points_live, 2),
                 "points": round(points_live, 2),
                 "pts_avg": round(avg_live, 2),
+                "live_status": str(team_live_status.get("live_status") or "needs_review"),
+                "live_status_label": str(team_live_status.get("live_status_label") or "Da verificare"),
+                "live_status_reason": str(
+                    team_live_status.get("live_status_reason") or "Dati formazione live non completi"
+                ),
+                "pending_players": (
+                    team_live_status.get("pending_players")
+                    if isinstance(team_live_status.get("pending_players"), list)
+                    else []
+                ),
+                "resolved_substitutions": int(team_live_status.get("resolved_substitutions") or 0),
+                "resolved_substitutions_list": (
+                    team_live_status.get("resolved_substitutions_list")
+                    if isinstance(team_live_status.get("resolved_substitutions_list"), list)
+                    else []
+                ),
+                "pending_substitutions": int(team_live_status.get("pending_substitutions") or 0),
+                "pending_substitutions_list": (
+                    team_live_status.get("pending_substitutions_list")
+                    if isinstance(team_live_status.get("pending_substitutions_list"), list)
+                    else []
+                ),
+                "modifiers_status": (
+                    team_live_status.get("modifiers_status")
+                    if isinstance(team_live_status.get("modifiers_status"), dict)
+                    else {}
+                ),
             }
         )
 
@@ -3127,6 +3184,15 @@ def _build_live_standings_rows(
                 "points_live": round(float(live_total), 2),
                 "points": round(float(live_total), 2),
                 "pts_avg": round(float(live_total), 2),
+                "live_status": "needs_review",
+                "live_status_label": "Da verificare",
+                "live_status_reason": "Formazione live non disponibile per questa squadra",
+                "pending_players": [],
+                "resolved_substitutions": 0,
+                "resolved_substitutions_list": [],
+                "pending_substitutions": 0,
+                "pending_substitutions_list": [],
+                "modifiers_status": {"difesa": "unknown", "capitano": "unknown"},
             }
         )
 
@@ -3626,6 +3692,7 @@ def premium_insights(
         reverse=True,
         default_value=-1.0,
     )
+    team_strength_by_role = _build_team_strength_by_role(_read_csv(PLAYER_STRENGTH_REPORT_PATH))
 
     team_strength_total_rows = _read_csv(TEAM_STRENGTH_RANKING_PATH)
     team_strength_total = _sort_rows_numeric(
@@ -3671,6 +3738,7 @@ def premium_insights(
         "player_tiers": player_tiers,
         "team_strength_total": team_strength_total,
         "team_strength_starting": team_strength_starting,
+        "team_strength_by_role": team_strength_by_role,
         "seriea_current_table": seriea_current_table,
         "seriea_round": seriea_snapshot.get("round"),
         "seriea_rounds": seriea_snapshot.get("rounds", []),
@@ -7416,6 +7484,51 @@ def _format_live_number(value: Optional[float]) -> str:
     return f"{rounded:.2f}".rstrip("0").rstrip(".").replace(".", ",")
 
 
+def _build_team_strength_by_role(rows: List[Dict[str, str]]) -> Dict[str, Dict[str, object]]:
+    by_team: Dict[str, Dict[str, object]] = {}
+    for row in rows:
+        team_name = str(row.get("Team") or "").strip()
+        role_name = str(row.get("Ruolo") or "").strip().upper()
+        force_value = _parse_float(row.get("ForzaGiocatore"))
+        if not team_name or role_name not in {"P", "D", "C", "A"} or force_value is None:
+            continue
+        team_key = normalize_name(team_name)
+        payload = by_team.setdefault(
+            team_key,
+            {
+                "team": team_name,
+                "roles": {
+                    "P": {"total_force": 0.0, "players": 0, "average_force": 0.0},
+                    "D": {"total_force": 0.0, "players": 0, "average_force": 0.0},
+                    "C": {"total_force": 0.0, "players": 0, "average_force": 0.0},
+                    "A": {"total_force": 0.0, "players": 0, "average_force": 0.0},
+                },
+            },
+        )
+        role_payload = payload["roles"][role_name]
+        role_payload["total_force"] = round(float(role_payload["total_force"]) + float(force_value), 2)
+        role_payload["players"] = int(role_payload["players"]) + 1
+
+    for payload in by_team.values():
+        roles = payload.get("roles", {})
+        role_totals: List[Tuple[str, float]] = []
+        for role_name, role_payload in roles.items():
+            total_force = float(role_payload.get("total_force") or 0.0)
+            players_count = int(role_payload.get("players") or 0)
+            role_payload["average_force"] = (
+                round(total_force / players_count, 2) if players_count > 0 else 0.0
+            )
+            role_totals.append((role_name, total_force))
+        non_empty = [item for item in role_totals if item[1] > 0]
+        if non_empty:
+            payload["strongest_role"] = max(non_empty, key=lambda item: item[1])[0]
+            payload["weakest_role"] = min(non_empty, key=lambda item: item[1])[0]
+        else:
+            payload["strongest_role"] = ""
+            payload["weakest_role"] = ""
+    return by_team
+
+
 def _safe_float_value(value: object, default: float) -> float:
     parsed = _parse_float(value)
     return float(default if parsed is None else parsed)
@@ -8559,6 +8672,7 @@ def _attach_live_scores_to_formations(
             "captain_player": captain_player,
             "captain_vote": captain_vote,
         }
+        item.update(build_live_team_status(item, regulation=regulation))
 
 
 def _load_projected_formazioni_rows(

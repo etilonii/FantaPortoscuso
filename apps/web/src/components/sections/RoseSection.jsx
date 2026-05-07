@@ -1,3 +1,8 @@
+import LiveStatusBadge from "./LiveStatusBadge";
+import TeamAlertsCard from "./TeamAlertsCard";
+import TeamStrengthExplainer from "./TeamStrengthExplainer";
+import TeamTrendCard from "./TeamTrendCard";
+
 export default function RoseSection({
   teams,
   selectedTeam,
@@ -11,6 +16,15 @@ export default function RoseSection({
   roster,
   formatInt,
   openPlayer,
+  formatDecimal,
+  sessionTeam = "",
+  teamStanding = null,
+  teamFormation = null,
+  teamAlerts = [],
+  strengthRow = null,
+  startingStrengthRow = null,
+  strengthBreakdown = null,
+  teamTrend = null,
 }) {
   const baseFiltered = (roster || [])
     .filter((it) => (roleFilter === "all" ? true : it.Ruolo === roleFilter))
@@ -33,14 +47,59 @@ export default function RoseSection({
     },
     { acquisto: 0, attuale: 0 }
   );
+  const isOwnTeam =
+    String(sessionTeam || "").trim() &&
+    String(sessionTeam || "").trim().toLowerCase() === String(selectedTeam || "").trim().toLowerCase();
 
   return (
     <section className="dashboard">
       <div className="dashboard-header">
         <div>
           <p className="eyebrow">Rose</p>
-          <h2>Rosa squadra</h2>
+          <h2>{isOwnTeam ? "La tua rosa" : "Rosa squadra"}</h2>
         </div>
+        {teamFormation?.live_status ? (
+          <LiveStatusBadge
+            status={teamFormation.live_status}
+            label={teamFormation.live_status_label}
+            reason={teamFormation.live_status_reason}
+          />
+        ) : null}
+      </div>
+
+      <div className="team-page-grid">
+        <div className="panel team-page-summary">
+          <div className="panel-header">
+            <h3>{isOwnTeam ? "La tua giornata" : "Riepilogo squadra"}</h3>
+          </div>
+          <div className="team-page-summary-grid">
+            <div className="summary-card">
+              <span>Posizione</span>
+              <strong>{Number.isFinite(Number(teamStanding?.pos)) ? `#${teamStanding.pos}` : "-"}</strong>
+            </div>
+            <div className="summary-card">
+              <span>Punteggio live</span>
+              <strong>
+                {Number.isFinite(Number(teamStanding?.live_total))
+                  ? formatDecimal(teamStanding?.live_total, 2)
+                  : "Dato non disponibile"}
+              </strong>
+            </div>
+            <div className="summary-card">
+              <span>Valore attuale</span>
+              <strong>{formatInt(totals.attuale)}</strong>
+            </div>
+            <div className="summary-card">
+              <span>Delta valore</span>
+              <strong>{`${totals.attuale - totals.acquisto >= 0 ? "+" : ""}${formatInt(totals.attuale - totals.acquisto)}`}</strong>
+            </div>
+          </div>
+        </div>
+
+        <TeamAlertsCard
+          alerts={teamAlerts}
+          emptyLabel={isOwnTeam ? "I tuoi alert non segnalano criticita immediate." : "Nessun alert rilevante."}
+        />
       </div>
 
       <div className="panel rose-compact">
@@ -182,6 +241,16 @@ export default function RoseSection({
             <strong>{formatInt(totals.attuale)}</strong>
           </div>
         </div>
+      </div>
+
+      <div className="team-page-grid">
+        <TeamStrengthExplainer
+          strengthRow={strengthRow}
+          startingStrengthRow={startingStrengthRow}
+          breakdown={strengthBreakdown}
+          formatDecimal={formatDecimal}
+        />
+        <TeamTrendCard trend={teamTrend} />
       </div>
     </section>
   );

@@ -10,6 +10,7 @@ import LiveSection from "./components/sections/LiveSection";
 import PremiumInsightsSection from "./components/sections/PremiumInsightsSection";
 import StatsSection from "./components/sections/StatsSection";
 import TopAcquistiSection from "./components/sections/TopAcquistiSection";
+import PlayerProfileCard from "./components/sections/PlayerProfileCard";
 import AdminRoom from "./components/admin/AdminRoom";
 
 /* ===========================
@@ -307,6 +308,7 @@ export default function App() {
     player_tiers: [],
     team_strength_total: [],
     team_strength_starting: [],
+    team_strength_by_role: {},
     seriea_current_table: [],
     seriea_round: null,
     seriea_rounds: [],
@@ -1533,6 +1535,111 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     [roster, teamNameSet]
   );
 
+  const activeUserTeam = useMemo(() => {
+    if (isAdmin) return "";
+    return String(sessionTeam || "").trim();
+  }, [isAdmin, sessionTeam]);
+
+  const teamStrengthBreakdownMap = useMemo(() => {
+    return premiumInsights?.team_strength_by_role && typeof premiumInsights.team_strength_by_role === "object"
+      ? premiumInsights.team_strength_by_role
+      : {};
+  }, [premiumInsights]);
+
+  const userTeamDashboard = useMemo(() => {
+    const teamName = String(activeUserTeam || "").trim();
+    if (!teamName) return null;
+
+    const byRole = { P: { count: 0 }, D: { count: 0 }, C: { count: 0 }, A: { count: 0 } };
+    const totals = rosterDisplay.reduce(
+      (acc, row) => {
+        const role = String(row?.Ruolo || "").trim().toUpperCase();
+        if (byRole[role]) {
+          byRole[role].count += 1;
+        }
+        const acquisto = Number(row?.PrezzoAcquisto || 0);
+        const attuale = Number(row?.PrezzoAttuale || 0);
+        if (Number.isFinite(acquisto)) acc.acquisto += acquisto;
+        if (Number.isFinite(attuale)) acc.attuale += attuale;
+        return acc;
+      },
+      { acquisto: 0, attuale: 0 }
+    );
+    totals.delta = totals.attuale - totals.acquisto;
+
+    const teamKey = normalizeName(teamName);
+    const standingRow =
+      (marketStandings || []).find((row) => normalizeName(row?.team) === teamKey) || null;
+    const teamFormation =
+      (formations || []).find((row) => normalizeName(row?.team) === teamKey) || null;
+    const strengthRow =
+      (premiumInsights?.team_strength_total || []).find((row) => normalizeName(row?.Team) === teamKey) || null;
+    const startingStrengthRow =
+      (premiumInsights?.team_strength_starting || []).find((row) => normalizeName(row?.Team) === teamKey) || null;
+    const strengthBreakdown = teamStrengthBreakdownMap?.[teamKey] || null;
+
+    const alerts = [];
+    if (teamFormation?.live_status === "needs_review") {
+      alerts.push({
+        severity: "danger",
+        title: "Formazione da verificare",
+        message: teamFormation?.live_status_reason || "Il punteggio live richiede controllo manuale.",
+      });
+    } else if (teamFormation?.live_status === "in_progress") {
+      const pendingPlayers = Array.isArray(teamFormation?.pending_players)
+        ? teamFormation.pending_players.slice(0, 3)
+        : [];
+      alerts.push({
+        severity: "warning",
+        title: "Giornata ancora aperta",
+        message:
+          pendingPlayers.length > 0
+            ? `Restano pendenti: ${pendingPlayers.join(", ")}.`
+            : teamFormation?.live_status_reason || "Il punteggio puo ancora cambiare.",
+      });
+    }
+    if (Number.isFinite(totals.delta) && totals.delta < 0) {
+      alerts.push({
+        severity: "warning",
+        title: "Valore rosa in calo",
+        message: `La rosa vale ${formatInt(Math.abs(totals.delta))} in meno rispetto all'acquisto.`,
+      });
+    } else if (Number.isFinite(totals.delta) && totals.delta > 0) {
+      alerts.push({
+        severity: "success",
+        title: "Valore rosa in crescita",
+        message: `La rosa ha accumulato ${formatInt(totals.delta)} di plusvalore.`,
+      });
+    }
+    if (strengthBreakdown?.weakest_role) {
+      const roleMap = { P: "portieri", D: "difesa", C: "centrocampo", A: "attacco" };
+      alerts.push({
+        severity: "info",
+        title: "Reparto piu fragile",
+        message: `Il reparto con meno forza aggregata oggi e ${roleMap[strengthBreakdown.weakest_role] || "n/d"}.`,
+      });
+    }
+
+    return {
+      teamName,
+      rosterSummary: { byRole, totals },
+      standingRow,
+      teamFormation,
+      alerts: alerts.slice(0, 5),
+      strengthRow,
+      startingStrengthRow,
+      strengthBreakdown,
+      trend: { recent_rounds: [] },
+    };
+  }, [
+    activeUserTeam,
+    rosterDisplay,
+    marketStandings,
+    formations,
+    premiumInsights,
+    teamStrengthBreakdownMap,
+  ]);
+
   const loadPlusvalenze = async () => {
     try {
       const data = await fetchJsonWithRetry(
@@ -2044,6 +2151,58 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
   const topQuotes = useMemo(() => (topQuotesAll || []).slice(0, 5), [topQuotesAll]);
   const topPlusvalenze = useMemo(() => (plusvalenze || []).slice(0, 5), [plusvalenze]);
   const topStats = useMemo(() => (statsItems || []).slice(0, 5), [statsItems]);
+  const selectedTeamOverview = useMemo(() => {
+    const teamName = String(selectedTeam || "").trim();
+    if (!teamName) {
+      return {
+        standingRow: null,
+        teamFormation: null,
+        teamAlerts: [],
+        strengthRow: null,
+        startingStrengthRow: null,
+        strengthBreakdown: null,
+        teamTrend: { recent_rounds: [] },
+      };
+    }
+    if (userTeamDashboard && normalizeName(userTeamDashboard.teamName) === normalizeName(teamName)) {
+      return {
+        standingRow: userTeamDashboard.standingRow,
+        teamFormation: userTeamDashboard.teamFormation,
+        teamAlerts: userTeamDashboard.alerts,
+        strengthRow: userTeamDashboard.strengthRow,
+        startingStrengthRow: userTeamDashboard.startingStrengthRow,
+        strengthBreakdown: userTeamDashboard.strengthBreakdown,
+        teamTrend: userTeamDashboard.trend,
+      };
+    }
+    const teamKey = normalizeName(teamName);
+    const standingRow =
+      (marketStandings || []).find((row) => normalizeName(row?.team) === teamKey) || null;
+    const teamFormation =
+      (formations || []).find((row) => normalizeName(row?.team) === teamKey) || null;
+    const strengthRow =
+      (premiumInsights?.team_strength_total || []).find((row) => normalizeName(row?.Team) === teamKey) || null;
+    const startingStrengthRow =
+      (premiumInsights?.team_strength_starting || []).find((row) => normalizeName(row?.Team) === teamKey) || null;
+    const strengthBreakdown = teamStrengthBreakdownMap?.[teamKey] || null;
+    const teamAlerts = [];
+    if (teamFormation?.live_status_reason) {
+      teamAlerts.push({
+        severity: teamFormation?.live_status === "final" ? "success" : "info",
+        title: teamFormation?.live_status_label || "Stato live",
+        message: teamFormation?.live_status_reason,
+      });
+    }
+    return {
+      standingRow,
+      teamFormation,
+      teamAlerts,
+      strengthRow,
+      startingStrengthRow,
+      strengthBreakdown,
+      teamTrend: { recent_rounds: [] },
+    };
+  }, [selectedTeam, userTeamDashboard, marketStandings, formations, premiumInsights, teamStrengthBreakdownMap]);
 
   const topAcquistiCatalog = useMemo(() => {
     const map = new Map();
@@ -2968,6 +3127,10 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
         team_strength_starting: Array.isArray(payload?.team_strength_starting)
           ? payload.team_strength_starting
           : [],
+        team_strength_by_role:
+          payload?.team_strength_by_role && typeof payload.team_strength_by_role === "object"
+            ? payload.team_strength_by_role
+            : {},
         seriea_current_table: Array.isArray(payload?.seriea_current_table)
           ? payload.seriea_current_table
           : [],
@@ -3244,6 +3407,15 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
     if (!loggedIn || isAdmin) return;
     const scopedTeam = String(sessionTeam || "").trim();
     if (!scopedTeam) return;
+    if (normalizeName(selectedTeam) !== normalizeName(scopedTeam)) {
+      setSelectedTeam(scopedTeam);
+    }
+  }, [loggedIn, isAdmin, sessionTeam, selectedTeam]);
+
+  useEffect(() => {
+    if (!loggedIn || isAdmin) return;
+    const scopedTeam = String(sessionTeam || "").trim();
+    if (!scopedTeam) return;
     if (normalizeName(formationTeam) !== normalizeName(scopedTeam)) {
       setFormationTeam(scopedTeam);
     }
@@ -3360,6 +3532,13 @@ const [manualExcludedIns, setManualExcludedIns] = useState(new Set());
           tasks.push(loadTopQuotesAllRoles());
           tasks.push(loadPlusvalenze());
           tasks.push(loadStatList(statsTab));
+          if (!isAdmin && String(sessionTeam || "").trim()) {
+            tasks.push(loadMarketStandings());
+            tasks.push(loadPremiumInsights(true, { silent: true }));
+            tasks.push(loadFormazioni(null, null, { currentOnly: true }));
+            tasks.push(loadTeams());
+            tasks.push(loadRoster(String(sessionTeam || "").trim()));
+          }
         } else if (menu === "stats") {
           tasks.push(loadStatList(statsTab));
         } else if (menu === "rose") {
@@ -3897,6 +4076,9 @@ useEffect(() => {
                 statColumn={statColumn}
                 goToTeam={goToTeam}
                 setActiveMenu={(menuKey) => openMenuFeature(menuKey, null, false, false)}
+                isPersonalHome={!isAdmin && Boolean(String(sessionTeam || "").trim())}
+                personalDashboard={userTeamDashboard}
+                formatDecimal={formatDecimal}
               />
             )}
 
@@ -3948,7 +4130,16 @@ useEffect(() => {
                 setSquadraFilter={setSquadraFilter}
                 roster={rosterDisplay}
                 formatInt={formatInt}
+                formatDecimal={formatDecimal}
                 openPlayer={openPlayer}
+                sessionTeam={sessionTeam}
+                teamStanding={selectedTeamOverview.standingRow}
+                teamFormation={selectedTeamOverview.teamFormation}
+                teamAlerts={selectedTeamOverview.teamAlerts}
+                strengthRow={selectedTeamOverview.strengthRow}
+                startingStrengthRow={selectedTeamOverview.startingStrengthRow}
+                strengthBreakdown={selectedTeamOverview.strengthBreakdown}
+                teamTrend={selectedTeamOverview.teamTrend}
               />
             )}
 
@@ -4124,95 +4315,18 @@ useEffect(() => {
                 PLAYER
             =========================== */}
             {activeMenu === "player" && (
-              <section className="dashboard">
-                <div className="dashboard-header">
-                  <div>
-                    <p className="eyebrow">Scheda giocatore</p>
-                    <h2>{selectedPlayer || "Giocatore"}</h2>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="list">
-                    <div
-                      className="list-item player-card"
-                      onClick={() => goToSquadra(playerProfile?.Squadra, playerProfile?.Ruolo)}
-                    >
-                      <div>
-                        <p>Profilo</p>
-                        <span className="muted">Squadra · Ruolo</span>
-                      </div>
-                      <strong>
-                        {playerProfile?.Squadra || "-"} · {playerProfile?.Ruolo || "-"}
-                      </strong>
-                    </div>
-
-                    <div
-                      className="list-item player-card"
-                      onClick={() =>
-                        jumpToId(
-                          `listone-${playerSlug}`,
-                          "listone",
-                          () => setListoneQuery(selectedPlayer || "")
-                        )
-                      }
-                    >
-                      <div>
-                        <p>Prezzo attuale</p>
-                        <span className="muted">Quotazione</span>
-                      </div>
-                      <strong>{formatInt(playerProfile?.PrezzoAttuale)}</strong>
-                    </div>
-
-                    <div className="list-item player-card">
-                      <div>
-                        <p>Teams</p>
-                        <span className="muted">Nella lega</span>
-                      </div>
-                      <strong>{playerTeamCount}</strong>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="panel">
-                  <div className="panel-header">
-                    <h3>Statistiche</h3>
-                  </div>
-
-                  {playerStats ? (
-                    <div className="list">
-                      {[
-                        ["gol", "Gol", playerStats.Gol],
-                        ["assist", "Assist", playerStats.Assist],
-                        ["ammonizioni", "Ammonizioni", playerStats.Ammonizioni],
-                        ["cleansheet", "Cleansheet", playerStats.Cleansheet],
-                        ["espulsioni", "Espulsioni", playerStats.Espulsioni],
-                        ["autogol", "Autogol", playerStats.Autogol],
-                      ].map(([key, label, value]) => (
-                        <div
-                          key={key}
-                          className="list-item player-card"
-                          onClick={() =>
-                            jumpToId(
-                              `stat-${key}-${playerSlug}`,
-                              "stats",
-                              () => setStatsTab(key)
-                            )
-                          }
-                        >
-                          <div>
-                            <p>{label}</p>
-                            <span className="muted">Stagione</span>
-                          </div>
-                          <strong>{value ?? "-"}</strong>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="muted">Statistiche non disponibili.</p>
-                  )}
-                </div>
-              </section>
+              <PlayerProfileCard
+                selectedPlayer={selectedPlayer}
+                playerProfile={playerProfile}
+                playerStats={playerStats}
+                playerTeamCount={playerTeamCount}
+                formatInt={formatInt}
+                goToSquadra={goToSquadra}
+                jumpToId={jumpToId}
+                playerSlug={playerSlug}
+                setListoneQuery={setListoneQuery}
+                setStatsTab={setStatsTab}
+              />
             )}
 
             {/* ===========================
@@ -4322,5 +4436,6 @@ useEffect(() => {
     </div>
   );
 }
+
 
 

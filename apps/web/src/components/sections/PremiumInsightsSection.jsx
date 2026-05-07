@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import ReportSection from "./ReportSection";
+import LiveStatusBadge from "./LiveStatusBadge";
 
 const toNumber = (value) => {
   const parsed = Number(String(value ?? "").replace(",", "."));
@@ -196,72 +197,68 @@ export default function PremiumInsightsSection({
 
   if (mode === "classifica-lega") {
     const rows = Array.isArray(leagueStandings) ? leagueStandings : [];
-    const liveValues = rows
-      .map((row) => resolveLiveDelta(row))
-      .filter((value) => Number.isFinite(value));
-    const liveAverage =
-      liveValues.length > 0
-        ? liveValues.reduce((sum, value) => sum + Number(value), 0) / liveValues.length
-        : null;
     return (
-      <ReportSection
-        eyebrow="Lega"
-        title="Classifica Lega"
-        description="Classifica ufficiale FantaPortoscuso."
-        loading={false}
-        error=""
-        onReload={null}
-        rows={rows}
-        columns={[
-          { key: "pos", label: "Pos", render: (row) => row?.pos ?? "-" },
-          { key: "team", label: "Team" },
-          { key: "points", label: "Pt Tot", render: (row) => formatNumber(row?.points, 2) },
-          {
-            key: "live_delta",
-            label: "Live Δ",
-            render: (row) => {
-              const delta = resolveLiveDelta(row);
-              if (!Number.isFinite(delta)) return "-";
-              const trend = buildLiveTrendMeta(delta, liveAverage);
-              const averageLabel = formatNumber(liveAverage, 2);
-              const diffLabel =
-                trend.pctDiff === null ? "-" : `${formatSignedNumber(trend.pctDiff, 1)}%`;
-              return (
-                <span
-                  className={`live-trend-pill ${trend.tierClass}`}
-                  title={`Live ${formatSignedNumber(delta, 2)} | Media giornata ${averageLabel} | Scarto ${diffLabel}`}
-                >
-                  <span className="live-trend-arrow">{trend.arrow}</span>
-                  <span className="live-trend-value">{formatSignedNumber(delta, 2)}</span>
-                </span>
-              );
-            },
-          },
-          {
-            key: "position_delta",
-            label: "Pos Δ",
-            render: (row) => {
-              const delta = resolvePositionDelta(row);
-              const trend = buildPositionTrendMeta(delta);
-              const basePos = toNumber(row?.base_pos);
-              const livePos = toNumber(row?.live_pos ?? row?.pos);
-              const title =
-                Number.isFinite(basePos) && Number.isFinite(livePos)
-                  ? `Posizione ${Math.trunc(basePos)} → ${Math.trunc(livePos)}`
-                  : "Variazione posizione live";
-              const signed = trend.value > 0 ? `+${trend.value}` : String(trend.value);
-              return (
-                <span className={`position-trend-pill ${trend.tierClass}`} title={title}>
-                  <span className="position-trend-arrow">{trend.arrow}</span>
-                  <span className="position-trend-value">{signed}</span>
-                </span>
-              );
-            },
-          },
-          { key: "played", label: "PG", render: (row) => formatNumber(row?.played, 0) },
-          { key: "pts_avg", label: "Media", render: (row) => formatNumber(row?.pts_avg, 2) },
-        ]}
-      />
+      <section className="dashboard">
+        <div className="dashboard-header left row">
+          <div>
+            <p className="eyebrow">Lega</p>
+            <h2>Classifica live</h2>
+            <p className="muted">Stato intelligente della giornata per ogni squadra.</p>
+          </div>
+        </div>
+
+        <div className="league-live-table">
+          {rows.map((row, index) => {
+            const pendingPlayers = Array.isArray(row?.pending_players) ? row.pending_players : [];
+            const resolvedSubs = Number(row?.resolved_substitutions || 0);
+            const pendingSubs = Number(row?.pending_substitutions || 0);
+            return (
+              <article key={`${row?.team || "team"}-${index}`} className="league-live-row">
+                <div className="league-live-main">
+                  <div className="league-live-rank">#{row?.pos || index + 1}</div>
+                  <div>
+                    <h3>{row?.team || "-"}</h3>
+                    <p className="muted">
+                      Totale {formatNumber(row?.points_live ?? row?.points, 2)} � Giornata{" "}
+                      {formatNumber(row?.live_total, 2)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="league-live-meta">
+                  <LiveStatusBadge
+                    status={row?.live_status}
+                    label={row?.live_status_label}
+                    reason={row?.live_status_reason}
+                  />
+                  <span className="muted">{row?.live_status_reason || "Dato non disponibile"}</span>
+                </div>
+
+                {(pendingPlayers.length > 0 || pendingSubs > 0 || resolvedSubs > 0) ? (
+                  <details className="admin-details">
+                    <summary>Dettagli live</summary>
+                    <div className="league-live-details">
+                      <div>
+                        <span>Sostituzioni risolte</span>
+                        <strong>{resolvedSubs}</strong>
+                      </div>
+                      <div>
+                        <span>Sostituzioni pendenti</span>
+                        <strong>{pendingSubs}</strong>
+                      </div>
+                      <div>
+                        <span>Giocatori pendenti</span>
+                        <strong>{pendingPlayers.length}</strong>
+                      </div>
+                    </div>
+                    {pendingPlayers.length > 0 ? <p className="muted">{pendingPlayers.join(", ")}</p> : null}
+                  </details>
+                ) : null}
+              </article>
+            );
+          })}
+        </div>
+      </section>
     );
   }
 
@@ -477,3 +474,4 @@ export default function PremiumInsightsSection({
     />
   );
 }
+

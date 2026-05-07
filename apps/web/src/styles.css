@@ -5475,3 +5475,225 @@ body.theme-light .login-shell .select {
     min-width: 560px;
   }
 }
+
+.status-badge.is-ok,
+.live-status-badge.is-ok {
+  background: rgba(79, 209, 149, 0.18);
+  color: #9df2bf;
+  border: 1px solid rgba(79, 209, 149, 0.34);
+}
+
+.status-badge.is-running,
+.live-status-badge.is-running {
+  background: rgba(255, 184, 77, 0.18);
+  color: #ffd08a;
+  border: 1px solid rgba(255, 184, 77, 0.34);
+}
+
+.status-badge.is-warning,
+.live-status-badge.is-warning,
+.status-badge.is-danger {
+  background: rgba(255, 107, 107, 0.16);
+  color: #ffb0b0;
+  border: 1px solid rgba(255, 107, 107, 0.32);
+}
+
+.status-badge.is-neutral,
+.live-status-badge.is-neutral,
+.status-badge.is-info {
+  background: rgba(143, 155, 179, 0.16);
+  color: #d5dcee;
+  border: 1px solid rgba(143, 155, 179, 0.28);
+}
+
+.user-home-header,
+.user-home-status-row,
+.user-home-hero,
+.user-home-role-grid,
+.user-home-panels,
+.team-page-grid,
+.team-page-summary-grid,
+.team-strength-summary,
+.team-strength-role-grid,
+.player-profile-grid,
+.player-profile-stats,
+.league-live-details {
+  display: grid;
+  gap: 12px;
+}
+
+.user-home-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.user-home-hero,
+.team-page-summary-grid,
+.player-profile-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.user-home-role-grid,
+.team-strength-summary,
+.team-strength-role-grid,
+.player-profile-stats {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.user-home-panels,
+.team-page-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-top: 16px;
+}
+
+.user-hero-card,
+.player-profile-card,
+.team-strength-role-card,
+.league-live-row,
+.team-alert-item {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(25, 24, 34, 0.96), rgba(16, 16, 22, 0.96));
+}
+
+.user-hero-card,
+.player-profile-card {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.user-hero-card span,
+.player-profile-card span,
+.team-strength-role-card span,
+.team-strength-kpi span,
+.team-trend-item span,
+.league-live-details span {
+  color: rgba(214, 219, 230, 0.72);
+  font-size: 0.84rem;
+}
+
+.user-hero-card strong,
+.player-profile-card strong,
+.team-strength-role-card strong,
+.team-strength-kpi strong,
+.team-trend-item strong {
+  font-size: 1.05rem;
+}
+
+.team-alert-list {
+  display: grid;
+  gap: 10px;
+}
+
+.team-alert-item {
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.team-alert-item strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.team-alert-item p {
+  margin: 0;
+  color: rgba(234, 237, 245, 0.84);
+}
+
+.team-alert-item.is-success {
+  border-color: rgba(79, 209, 149, 0.28);
+}
+
+.team-alert-item.is-warning,
+.team-alert-item.is-danger {
+  border-color: rgba(255, 107, 107, 0.28);
+}
+
+.team-alert-item.is-info {
+  border-color: rgba(143, 155, 179, 0.28);
+}
+
+.team-strength-copy,
+.player-profile-note p {
+  margin: 0;
+}
+
+.team-strength-role-card,
+.team-strength-kpi,
+.team-trend-item {
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.team-trend-list,
+.league-live-table {
+  display: grid;
+  gap: 12px;
+}
+
+.league-live-row {
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.league-live-main,
+.league-live-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.league-live-rank {
+  min-width: 56px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffb35c;
+}
+
+.league-live-main h3 {
+  margin: 0 0 4px;
+}
+
+.league-live-meta {
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.league-live-details {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-top: 10px;
+}
+
+.player-profile-note {
+  margin-top: 16px;
+}
+
+body.theme-light .user-hero-card,
+body.theme-light .player-profile-card,
+body.theme-light .team-strength-role-card,
+body.theme-light .league-live-row,
+body.theme-light .team-alert-item {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(245, 247, 252, 0.96));
+  border-color: rgba(25, 25, 35, 0.08);
+}
+
+body.theme-light .team-strength-kpi,
+body.theme-light .team-trend-item {
+  background: rgba(16, 24, 40, 0.04);
+}
+
+@media (max-width: 720px) {
+  .league-live-main,
+  .league-live-meta {
+    flex-direction: column;
+  }
+
+  .league-live-rank {
+    min-width: 0;
+  }
+}
