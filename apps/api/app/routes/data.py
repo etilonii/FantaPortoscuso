@@ -9356,7 +9356,7 @@ def _download_formazioni_pagina_payload(
         "Referer": f"{LEGHE_BASE_URL}/{alias}/formazioni/{int(round_num)}",
         "X-Requested-With": "XMLHttpRequest",
     }
-    req = Request(url, headers=headers, method="GET")
+    req = UrlRequest(url, headers=headers, method="GET")
     try:
         with urlopen(req, timeout=30) as response:
             payload_bytes = response.read()
