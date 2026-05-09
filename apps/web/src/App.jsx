@@ -3504,14 +3504,6 @@ export default function App() {
     Number(maintenanceStatus?.retry_after_minutes || 10)
   );
 
-useEffect(() => {
-  setSuggestPayload(null);
-  setSuggestTeam("");
-  setSuggestions([]);
-  setSuggestError("");
-  setSuggestHasRun(false);
-}, [loggedIn]);
-
   /* ===========================
      RENDER
   =========================== */
