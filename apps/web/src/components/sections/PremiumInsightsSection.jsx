@@ -117,6 +117,7 @@ export default function PremiumInsightsSection({
   onReload,
   leagueStandings,
   openPlayer,
+  sessionTeam = "",
 }) {
   const playerTiers = Array.isArray(insights?.player_tiers) ? insights.player_tiers : [];
   const serieaTable = Array.isArray(insights?.seriea_current_table) ? insights.seriea_current_table : [];
@@ -197,46 +198,71 @@ export default function PremiumInsightsSection({
 
   if (mode === "classifica-lega") {
     const rows = Array.isArray(leagueStandings) ? leagueStandings : [];
+    const ownTeamKey = String(sessionTeam || "").trim().toLowerCase();
     return (
       <section className="dashboard">
         <div className="dashboard-header left row">
           <div>
             <p className="eyebrow">Lega</p>
             <h2>Classifica live</h2>
-            <p className="muted">Stato intelligente della giornata per ogni squadra.</p>
+            <p className="muted">Vista globale della lega con delta e stato live compatto.</p>
           </div>
         </div>
 
-        <div className="league-live-table">
+        <div className="league-live-table compact">
           {rows.map((row, index) => {
             const pendingPlayers = Array.isArray(row?.pending_players) ? row.pending_players : [];
             const resolvedSubs = Number(row?.resolved_substitutions || 0);
             const pendingSubs = Number(row?.pending_substitutions || 0);
+            const positionDelta = resolvePositionDelta(row);
+            const positionTrend = buildPositionTrendMeta(positionDelta);
+            const liveDelta = resolveLiveDelta(row);
+            const liveTrend = buildLiveTrendMeta(liveDelta, 0);
+            const isOwnTeam =
+              ownTeamKey && String(row?.team || "").trim().toLowerCase() === ownTeamKey;
             return (
-              <article key={`${row?.team || "team"}-${index}`} className="league-live-row">
-                <div className="league-live-main">
+              <article
+                key={`${row?.team || "team"}-${index}`}
+                className={`league-live-row compact${isOwnTeam ? " is-own-team" : ""}`}
+              >
+                <div className="league-live-main compact">
                   <div className="league-live-rank">#{row?.pos || index + 1}</div>
-                  <div>
-                    <h3>{row?.team || "-"}</h3>
-                    <p className="muted">
-                      Totale {formatNumber(row?.points_live ?? row?.points, 2)} · Giornata{" "}
-                      {formatNumber(row?.live_total, 2)}
-                    </p>
+                  <div className="league-live-team-block">
+                    <h3>
+                      {row?.team || "-"}
+                      {isOwnTeam ? <span className="league-live-own-badge">La tua squadra</span> : null}
+                    </h3>
+                    <div className="league-live-inline-meta">
+                      <span className="league-live-score">
+                        {formatNumber(row?.points_live ?? row?.points, 2)} pt
+                      </span>
+                      <span className="muted">Giornata {formatNumber(row?.live_total, 2)}</span>
+                    </div>
                   </div>
-                </div>
-
-                <div className="league-live-meta">
-                  <LiveStatusBadge
-                    status={row?.live_status}
-                    label={row?.live_status_label}
-                    reason={row?.live_status_reason}
-                  />
-                  <span className="muted">{row?.live_status_reason || "Dato non disponibile"}</span>
+                  <div className="league-live-compact-metrics">
+                    <span className={`position-trend-pill ${positionTrend.tierClass}`}>
+                      <span className="position-trend-arrow">{positionTrend.arrow}</span>
+                      <span className="position-trend-value">
+                        {positionTrend.value > 0 ? `+${positionTrend.value}` : String(positionTrend.value)}
+                      </span>
+                    </span>
+                    <span className={`live-trend-pill ${liveTrend.tierClass}`}>
+                      <span className="live-trend-arrow">{liveTrend.arrow}</span>
+                      <span className="live-trend-value">{formatSignedNumber(liveDelta, 2)}</span>
+                    </span>
+                    <LiveStatusBadge
+                      status={row?.live_status}
+                      label={row?.live_status_label}
+                      reason={row?.live_status_reason}
+                      compact
+                    />
+                  </div>
                 </div>
 
                 {(pendingPlayers.length > 0 || pendingSubs > 0 || resolvedSubs > 0) ? (
                   <details className="admin-details">
                     <summary>Dettagli live</summary>
+                    <p className="muted compact">{row?.live_status_reason || "Dato non disponibile"}</p>
                     <div className="league-live-details">
                       <div>
                         <span>Sostituzioni risolte</span>
@@ -252,6 +278,11 @@ export default function PremiumInsightsSection({
                       </div>
                     </div>
                     {pendingPlayers.length > 0 ? <p className="muted">{pendingPlayers.join(", ")}</p> : null}
+                  </details>
+                ) : row?.live_status_reason ? (
+                  <details className="admin-details">
+                    <summary>Dettagli live</summary>
+                    <p className="muted compact">{row.live_status_reason}</p>
                   </details>
                 ) : null}
               </article>
@@ -474,4 +505,4 @@ export default function PremiumInsightsSection({
     />
   );
 }
-
+

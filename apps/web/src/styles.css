@@ -2527,6 +2527,24 @@ body.admin-menu-open .admin-menu-overlay {
   text-align: left;
 }
 
+.formation-card-own {
+  border-color: rgba(246, 176, 77, 0.5);
+  box-shadow: 0 0 0 1px rgba(246, 176, 77, 0.12);
+}
+
+.formation-own-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ffd8a3;
+  background: rgba(246, 176, 77, 0.14);
+  border: 1px solid rgba(246, 176, 77, 0.24);
+}
+
 .formation-optimizer-card {
   margin-top: 12px;
   border-color: rgba(91, 209, 255, 0.45);
@@ -5718,6 +5736,14 @@ body.theme-light .login-shell .select {
   padding: 16px;
 }
 
+.league-live-table.compact {
+  gap: 10px;
+}
+
+.league-live-row.compact {
+  padding: 12px 14px;
+}
+
 .league-live-main,
 .league-live-meta {
   display: flex;
@@ -5726,11 +5752,62 @@ body.theme-light .login-shell .select {
   align-items: flex-start;
 }
 
+.league-live-main.compact {
+  align-items: center;
+}
+
 .league-live-rank {
   min-width: 56px;
   font-size: 1.2rem;
   font-weight: 700;
   color: #ffb35c;
+}
+
+.league-live-team-block {
+  min-width: 0;
+  flex: 1;
+}
+
+.league-live-team-block h3 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.league-live-inline-meta,
+.league-live-compact-metrics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.league-live-inline-meta {
+  margin-top: 4px;
+}
+
+.league-live-score {
+  font-weight: 700;
+  color: rgba(249, 250, 255, 0.94);
+}
+
+.league-live-own-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ffd8a3;
+  background: rgba(246, 176, 77, 0.14);
+  border: 1px solid rgba(246, 176, 77, 0.24);
+}
+
+.league-live-row.is-own-team {
+  border: 1px solid rgba(246, 176, 77, 0.42);
+  box-shadow: 0 0 0 1px rgba(246, 176, 77, 0.1);
 }
 
 .league-live-main h3 {
@@ -5768,6 +5845,17 @@ body.theme-light .player-profile-stats .summary-card {
   background: rgba(16, 24, 40, 0.04);
 }
 
+body.theme-light .league-live-score {
+  color: #101828;
+}
+
+body.theme-light .league-live-own-badge,
+body.theme-light .formation-own-badge {
+  color: #9a5a12;
+  background: rgba(246, 176, 77, 0.12);
+  border-color: rgba(246, 176, 77, 0.24);
+}
+
 body.theme-light .team-trend-bar-track {
   background: linear-gradient(180deg, rgba(16, 24, 40, 0.03), rgba(16, 24, 40, 0.08));
 }
@@ -5776,6 +5864,10 @@ body.theme-light .team-trend-bar-track {
   .league-live-main,
   .league-live-meta {
     flex-direction: column;
+  }
+
+  .league-live-main.compact {
+    align-items: flex-start;
   }
 
   .league-live-rank {

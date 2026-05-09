@@ -1,3 +1,10 @@
+import { useEffect, useState } from "react";
+
+const normalizeText = (value) =>
+  String(value || "")
+    .trim()
+    .toLowerCase();
+
 export default function FormazioniSection({
   variant = "formazioni",
   formations,
@@ -20,7 +27,8 @@ export default function FormazioniSection({
 }) {
   const isConsigliata = String(variant || "").trim().toLowerCase() === "consigliata";
   const scopedTeam = String(sessionTeam || "").trim();
-  const teamScoped = !isAdmin;
+  const teamScoped = isConsigliata && !isAdmin;
+  const [showOnlyOwnTeam, setShowOnlyOwnTeam] = useState(false);
   const source = String(formationMeta?.source || "projection").toLowerCase();
   const isRealSource = source === "real";
   const availableRounds = Array.from(
@@ -42,6 +50,12 @@ export default function FormazioniSection({
   const orderLabel =
     orderValue === "live_total" ? "classifica live giornata" : "classifica campionato";
 
+  useEffect(() => {
+    if (!scopedTeam) {
+      setShowOnlyOwnTeam(false);
+    }
+  }, [scopedTeam]);
+
   const teamOptions = teamScoped
     ? (scopedTeam ? [scopedTeam] : [])
     : [
@@ -51,7 +65,11 @@ export default function FormazioniSection({
         ).sort((a, b) => a.localeCompare(b, "it", { sensitivity: "base" })),
       ];
 
-  const effectiveTeam = teamScoped ? scopedTeam : String(formationTeam || "").trim();
+  const effectiveTeam = teamScoped
+    ? scopedTeam
+    : showOnlyOwnTeam && scopedTeam
+      ? scopedTeam
+      : String(formationTeam || "").trim();
   const hasEffectiveTeam = Boolean(effectiveTeam);
 
   const visibleItems =
@@ -353,6 +371,23 @@ export default function FormazioniSection({
               </select>
             </label>
           )}
+          {!isConsigliata && scopedTeam ? (
+            <button
+              type="button"
+              className={showOnlyOwnTeam ? "primary" : "ghost"}
+              onClick={() => {
+                setShowOnlyOwnTeam((prev) => {
+                  const next = !prev;
+                  if (!next && (!formationTeam || normalizeText(formationTeam) === normalizeText(scopedTeam))) {
+                    setFormationTeam("all");
+                  }
+                  return next;
+                });
+              }}
+            >
+              {showOnlyOwnTeam ? "Mostra tutte" : "La mia squadra"}
+            </button>
+          ) : null}
           {!isConsigliata && availableRounds.length > 0 && (
             <label className="field">
               <span>Giornata</span>
@@ -511,13 +546,25 @@ export default function FormazioniSection({
                 viceCaptainName: item.vice_capitano,
               };
               return (
-              <article key={`${item.team}-${index}`} className="formation-card">
+              <article
+                key={`${item.team}-${index}`}
+                className={`formation-card${
+                  scopedTeam && normalizeText(item.team) === normalizeText(scopedTeam)
+                    ? " formation-card-own"
+                    : ""
+                }`}
+              >
                 <header className="formation-card-head">
                   <p className="rank-title">
                     <span className={`rank-badge ${rankClass}`.trim()}>
                       #{rankNumber}
                     </span>
-                    <span>{item.team}</span>
+                    <span>
+                      {item.team}
+                      {scopedTeam && normalizeText(item.team) === normalizeText(scopedTeam) ? (
+                        <span className="formation-own-badge">La tua squadra</span>
+                      ) : null}
+                    </span>
                   </p>
                   <div className="formation-meta">
                     <span className="muted">Modulo {item.modulo || "-"}</span>

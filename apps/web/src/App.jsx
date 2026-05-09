@@ -1129,10 +1129,6 @@ export default function App() {
       ) {
         params.set("order_by", normalizedOrder);
       }
-      const scopedTeam = !isAdmin ? String(sessionTeam || "").trim() : "";
-      if (scopedTeam) {
-        params.set("team", scopedTeam);
-      }
       const data = await fetchJsonWithRetry(
         `${API_BASE}/data/formazioni?${params.toString()}`,
         {
@@ -3204,15 +3200,6 @@ export default function App() {
   }, [loggedIn, isAdmin, sessionTeam, selectedTeam]);
 
   useEffect(() => {
-    if (!loggedIn || isAdmin) return;
-    const scopedTeam = String(sessionTeam || "").trim();
-    if (!scopedTeam) return;
-    if (normalizeName(formationTeam) !== normalizeName(scopedTeam)) {
-      setFormationTeam(scopedTeam);
-    }
-  }, [loggedIn, isAdmin, sessionTeam, formationTeam]);
-
-  useEffect(() => {
     if (!loggedIn) return;
     if (activeMenu !== "formazione-consigliata") {
       consigliataTeamAutoselectRef.current = false;
@@ -4057,6 +4044,7 @@ export default function App() {
                 onReload={null}
                 leagueStandings={marketStandings}
                 openPlayer={openPlayer}
+                sessionTeam={sessionTeam}
               />
             )}
 
