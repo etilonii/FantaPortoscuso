@@ -204,7 +204,7 @@ export default function PremiumInsightsSection({
     const rows = Array.isArray(leagueStandings) ? leagueStandings : [];
     const ownTeamKey = String(sessionTeam || "").trim().toLowerCase();
     const liveValues = rows
-      .map((row) => resolveLiveDelta(row))
+      .map((row) => toNumber(row?.live_score ?? row?.live_total))
       .filter((value) => Number.isFinite(value));
     const liveAverage =
       liveValues.length > 0
@@ -249,29 +249,29 @@ export default function PremiumInsightsSection({
           },
           { key: "points", label: "Pt Tot", render: (row) => formatNumber(row?.points, 2) },
           {
-            key: "live_delta",
-            label: "Live ?",
+            key: "live_score",
+            label: "Live",
             render: (row) => {
-              const delta = resolveLiveDelta(row);
-              if (!Number.isFinite(delta)) return "-";
-              const trend = buildLiveTrendMeta(delta, liveAverage);
+              const liveScore = toNumber(row?.live_score ?? row?.live_total);
+              if (!Number.isFinite(liveScore)) return "-";
+              const trend = buildLiveTrendMeta(liveScore, liveAverage);
               const averageLabel = formatNumber(liveAverage, 2);
               const diffLabel =
                 trend.pctDiff === null ? "-" : `${formatSignedNumber(trend.pctDiff, 1)}%`;
               return (
                 <span
                   className={`live-trend-pill ${trend.tierClass}`}
-                  title={`Live ${formatSignedNumber(delta, 2)} | Media giornata ${averageLabel} | Scarto ${diffLabel}`}
+                  title={`Live ${formatNumber(liveScore, 2)} | Media giornata ${averageLabel} | Scarto ${diffLabel}`}
                 >
                   <span className="live-trend-arrow">{trend.arrow}</span>
-                  <span className="live-trend-value">{formatSignedNumber(delta, 2)}</span>
+                  <span className="live-trend-value">{formatNumber(liveScore, 2)}</span>
                 </span>
               );
             },
           },
           {
             key: "position_delta",
-            label: "Pos ?",
+            label: "Pos Δ",
             render: (row) => {
               const delta = resolvePositionDelta(row);
               const trend = buildPositionTrendMeta(delta);
@@ -279,7 +279,7 @@ export default function PremiumInsightsSection({
               const livePos = toNumber(row?.live_pos ?? row?.pos);
               const title =
                 Number.isFinite(basePos) && Number.isFinite(livePos)
-                  ? `Posizione ${Math.trunc(basePos)} ? ${Math.trunc(livePos)}`
+                  ? `Posizione ${Math.trunc(basePos)} -> ${Math.trunc(livePos)}`
                   : "Variazione posizione live";
               const signed = trend.value > 0 ? `+${trend.value}` : String(trend.value);
               return (

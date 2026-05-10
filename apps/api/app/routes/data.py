@@ -3207,6 +3207,21 @@ def _build_live_standings_rows(
     for idx, row in enumerate(enriched_rows, start=1):
         row["live_pos"] = int(idx)
         row["pos"] = int(idx)
+        base_pos = _parse_int(row.get("base_pos"))
+        points_base = _parse_float(row.get("points_base"))
+        points_live = _parse_float(row.get("points_live"))
+        live_total = _parse_float(row.get("live_total"))
+        row["position_delta"] = (
+            int(base_pos - idx)
+            if base_pos is not None and base_pos > 0
+            else None
+        )
+        row["live_delta"] = (
+            round(float(points_live) - float(points_base), 2)
+            if points_live is not None and points_base is not None
+            else (round(float(live_total), 2) if live_total is not None else None)
+        )
+        row["live_score"] = round(float(live_total), 2) if live_total is not None else None
 
     return {
         "items": enriched_rows,
