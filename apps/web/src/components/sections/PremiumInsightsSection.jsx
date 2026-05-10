@@ -22,6 +22,8 @@ const formatSignedNumber = (value, digits = 2) => {
 };
 
 const resolveLiveDelta = (row) => {
+  const explicitDelta = toNumber(row?.live_delta);
+  if (explicitDelta !== null) return explicitDelta;
   const explicitLive = toNumber(row?.live_total);
   if (explicitLive !== null) return explicitLive;
   const pointsLive = toNumber(row?.points_live ?? row?.points);
@@ -31,6 +33,8 @@ const resolveLiveDelta = (row) => {
 };
 
 const resolvePositionDelta = (row) => {
+  const explicitDelta = toNumber(row?.position_delta);
+  if (explicitDelta !== null) return Math.trunc(explicitDelta);
   const livePos = toNumber(row?.live_pos ?? row?.pos);
   const basePos = toNumber(row?.base_pos ?? row?.played_base_pos ?? row?.pos);
   if (!Number.isFinite(livePos) || !Number.isFinite(basePos) || livePos <= 0 || basePos <= 0) {
@@ -205,11 +209,18 @@ export default function PremiumInsightsSection({
           <div>
             <p className="eyebrow">Lega</p>
             <h2>Classifica live</h2>
-            <p className="muted">Vista globale della lega con delta e stato live compatto.</p>
+            <p className="muted">Vista globale compatta con punteggio, giornata, delta e stato live.</p>
           </div>
         </div>
 
-        <div className="league-live-table compact">
+        <div className="league-live-table compact retro">
+          <div className="league-live-header compact" aria-hidden="true">
+            <span>Pos</span>
+            <span>Squadra</span>
+            <span>Punti</span>
+            <span>Delta</span>
+            <span>Stato</span>
+          </div>
           {rows.map((row, index) => {
             const pendingPlayers = Array.isArray(row?.pending_players) ? row.pending_players : [];
             const resolvedSubs = Number(row?.resolved_substitutions || 0);
@@ -223,33 +234,37 @@ export default function PremiumInsightsSection({
             return (
               <article
                 key={`${row?.team || "team"}-${index}`}
-                className={`league-live-row compact${isOwnTeam ? " is-own-team" : ""}`}
+                className={`league-live-row compact retro${isOwnTeam ? " is-own-team" : ""}`}
               >
-                <div className="league-live-main compact">
+                <div className="league-live-main compact retro">
                   <div className="league-live-rank">#{row?.pos || index + 1}</div>
                   <div className="league-live-team-block">
                     <h3>
                       {row?.team || "-"}
                       {isOwnTeam ? <span className="league-live-own-badge">La tua squadra</span> : null}
                     </h3>
-                    <div className="league-live-inline-meta">
-                      <span className="league-live-score">
-                        {formatNumber(row?.points_live ?? row?.points, 2)} pt
-                      </span>
-                      <span className="muted">Giornata {formatNumber(row?.live_total, 2)}</span>
-                    </div>
                   </div>
-                  <div className="league-live-compact-metrics">
-                    <span className={`position-trend-pill ${positionTrend.tierClass}`}>
+                  <div className="league-live-points-block">
+                    <span className="league-live-score">{formatNumber(row?.points_live ?? row?.points, 2)}</span>
+                    <span className="league-live-score-sub">
+                      {toNumber(row?.live_total) !== null ? `G ${formatNumber(row?.live_total, 2)}` : "G -"}
+                    </span>
+                  </div>
+                  <div className="league-live-compact-metrics retro">
+                    <span className={`position-trend-pill ${positionTrend.tierClass}`} title="Delta posizione">
+                      <span className="position-trend-label">Pos</span>
                       <span className="position-trend-arrow">{positionTrend.arrow}</span>
                       <span className="position-trend-value">
                         {positionTrend.value > 0 ? `+${positionTrend.value}` : String(positionTrend.value)}
                       </span>
                     </span>
-                    <span className={`live-trend-pill ${liveTrend.tierClass}`}>
+                    <span className={`live-trend-pill ${liveTrend.tierClass}`} title="Delta punteggio live">
+                      <span className="live-trend-label">Pt</span>
                       <span className="live-trend-arrow">{liveTrend.arrow}</span>
                       <span className="live-trend-value">{formatSignedNumber(liveDelta, 2)}</span>
                     </span>
+                  </div>
+                  <div className="league-live-status-slot">
                     <LiveStatusBadge
                       status={row?.live_status}
                       label={row?.live_status_label}
@@ -260,7 +275,7 @@ export default function PremiumInsightsSection({
                 </div>
 
                 {(pendingPlayers.length > 0 || pendingSubs > 0 || resolvedSubs > 0) ? (
-                  <details className="admin-details">
+                  <details className="admin-details league-live-details-toggle">
                     <summary>Dettagli live</summary>
                     <p className="muted compact">{row?.live_status_reason || "Dato non disponibile"}</p>
                     <div className="league-live-details">
@@ -277,10 +292,10 @@ export default function PremiumInsightsSection({
                         <strong>{pendingPlayers.length}</strong>
                       </div>
                     </div>
-                    {pendingPlayers.length > 0 ? <p className="muted">{pendingPlayers.join(", ")}</p> : null}
+                    {pendingPlayers.length > 0 ? <p className="muted compact">{pendingPlayers.join(", ")}</p> : null}
                   </details>
                 ) : row?.live_status_reason ? (
-                  <details className="admin-details">
+                  <details className="admin-details league-live-details-toggle">
                     <summary>Dettagli live</summary>
                     <p className="muted compact">{row.live_status_reason}</p>
                   </details>
@@ -505,4 +520,5 @@ export default function PremiumInsightsSection({
     />
   );
 }
-
+
+
