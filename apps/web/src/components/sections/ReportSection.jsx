@@ -8,6 +8,7 @@ export default function ReportSection({
   headerControls = null,
   rows,
   columns,
+  rowClassName = null,
   emptyLabel = "Nessun dato disponibile.",
 }) {
   const safeRows = Array.isArray(rows) ? rows : [];
@@ -48,7 +49,10 @@ export default function ReportSection({
               </thead>
               <tbody>
                 {safeRows.map((row, index) => (
-                  <tr key={row?.id || row?.name || row?.Team || row?.team || `${index}`}>
+                  <tr
+                    key={row?.id || row?.name || row?.Team || row?.team || `${index}`}
+                    className={typeof rowClassName === "function" ? rowClassName(row, index) : undefined}
+                  >
                     {safeColumns.map((col) => (
                       <td key={`${col.key || col.label}-${index}`}>
                         {typeof col.render === "function"

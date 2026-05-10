@@ -4364,6 +4364,33 @@ body.admin-menu-open .admin-menu-overlay {
   color: var(--muted);
 }
 
+.report-row-own-team td {
+  background: rgba(246, 176, 77, 0.05);
+}
+
+.report-row-own-team td:first-child {
+  box-shadow: inset 2px 0 0 rgba(246, 176, 77, 0.52);
+}
+
+.league-standings-team {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.league-standings-team-name {
+  font-weight: 700;
+}
+
+.league-standings-inline-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .live-trend-pill {
   display: inline-flex;
   align-items: center;
@@ -4605,6 +4632,10 @@ body.theme-light .last5-pill.loss {
   color: #a12f2f;
   border-color: rgba(161, 47, 47, 0.36);
   background: rgba(161, 47, 47, 0.12);
+}
+
+body.theme-light .report-row-own-team td {
+  background: rgba(246, 176, 77, 0.08);
 }
 
 body.theme-light .position-trend-pill.up {
@@ -5952,6 +5983,16 @@ body.theme-light .team-trend-bar-track {
 }
 
 @media (max-width: 720px) {
+  .league-standings-team {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .league-standings-inline-badges {
+    justify-content: flex-start;
+  }
+
   .league-live-header.compact {
     display: none;
   }

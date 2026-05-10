@@ -203,108 +203,97 @@ export default function PremiumInsightsSection({
   if (mode === "classifica-lega") {
     const rows = Array.isArray(leagueStandings) ? leagueStandings : [];
     const ownTeamKey = String(sessionTeam || "").trim().toLowerCase();
+    const liveValues = rows
+      .map((row) => resolveLiveDelta(row))
+      .filter((value) => Number.isFinite(value));
+    const liveAverage =
+      liveValues.length > 0
+        ? liveValues.reduce((sum, value) => sum + Number(value), 0) / liveValues.length
+        : null;
     return (
-      <section className="dashboard">
-        <div className="dashboard-header left row">
-          <div>
-            <p className="eyebrow">Lega</p>
-            <h2>Classifica live</h2>
-            <p className="muted">Vista globale compatta con punteggio, giornata, delta e stato live.</p>
-          </div>
-        </div>
-
-        <div className="league-live-table compact retro">
-          <div className="league-live-header compact" aria-hidden="true">
-            <span>Pos</span>
-            <span>Squadra</span>
-            <span>Punti</span>
-            <span>Delta</span>
-            <span>Stato</span>
-          </div>
-          {rows.map((row, index) => {
-            const pendingPlayers = Array.isArray(row?.pending_players) ? row.pending_players : [];
-            const resolvedSubs = Number(row?.resolved_substitutions || 0);
-            const pendingSubs = Number(row?.pending_substitutions || 0);
-            const positionDelta = resolvePositionDelta(row);
-            const positionTrend = buildPositionTrendMeta(positionDelta);
-            const liveDelta = resolveLiveDelta(row);
-            const liveTrend = buildLiveTrendMeta(liveDelta, 0);
-            const isOwnTeam =
-              ownTeamKey && String(row?.team || "").trim().toLowerCase() === ownTeamKey;
-            return (
-              <article
-                key={`${row?.team || "team"}-${index}`}
-                className={`league-live-row compact retro${isOwnTeam ? " is-own-team" : ""}`}
-              >
-                <div className="league-live-main compact retro">
-                  <div className="league-live-rank">#{row?.pos || index + 1}</div>
-                  <div className="league-live-team-block">
-                    <h3>
-                      {row?.team || "-"}
-                      {isOwnTeam ? <span className="league-live-own-badge">La tua squadra</span> : null}
-                    </h3>
-                  </div>
-                  <div className="league-live-points-block">
-                    <span className="league-live-score">{formatNumber(row?.points_live ?? row?.points, 2)}</span>
-                    <span className="league-live-score-sub">
-                      {toNumber(row?.live_total) !== null ? `G ${formatNumber(row?.live_total, 2)}` : "G -"}
-                    </span>
-                  </div>
-                  <div className="league-live-compact-metrics retro">
-                    <span className={`position-trend-pill ${positionTrend.tierClass}`} title="Delta posizione">
-                      <span className="position-trend-label">Pos</span>
-                      <span className="position-trend-arrow">{positionTrend.arrow}</span>
-                      <span className="position-trend-value">
-                        {positionTrend.value > 0 ? `+${positionTrend.value}` : String(positionTrend.value)}
-                      </span>
-                    </span>
-                    <span className={`live-trend-pill ${liveTrend.tierClass}`} title="Delta punteggio live">
-                      <span className="live-trend-label">Pt</span>
-                      <span className="live-trend-arrow">{liveTrend.arrow}</span>
-                      <span className="live-trend-value">{formatSignedNumber(liveDelta, 2)}</span>
-                    </span>
-                  </div>
-                  <div className="league-live-status-slot">
+      <ReportSection
+        eyebrow="Lega"
+        title="Classifica Lega"
+        description="Classifica ufficiale FantaPortoscuso."
+        loading={false}
+        error=""
+        onReload={null}
+        rows={rows}
+        rowClassName={(row) => {
+          const rowKey = String(row?.team || "").trim().toLowerCase();
+          return ownTeamKey && rowKey === ownTeamKey ? "report-row-own-team" : "";
+        }}
+        columns={[
+          { key: "pos", label: "Pos", render: (row) => row?.pos ?? "-" },
+          {
+            key: "team",
+            label: "Team",
+            render: (row) => {
+              const rowKey = String(row?.team || "").trim().toLowerCase();
+              const isOwnTeam = ownTeamKey && rowKey === ownTeamKey;
+              return (
+                <div className="league-standings-team">
+                  <span className="league-standings-team-name">{row?.team || "-"}</span>
+                  <span className="league-standings-inline-badges">
                     <LiveStatusBadge
                       status={row?.live_status}
                       label={row?.live_status_label}
                       reason={row?.live_status_reason}
                       compact
                     />
-                  </div>
+                    {isOwnTeam ? <span className="league-live-own-badge">La tua squadra</span> : null}
+                  </span>
                 </div>
-
-                {(pendingPlayers.length > 0 || pendingSubs > 0 || resolvedSubs > 0) ? (
-                  <details className="admin-details league-live-details-toggle">
-                    <summary>Dettagli live</summary>
-                    <p className="muted compact">{row?.live_status_reason || "Dato non disponibile"}</p>
-                    <div className="league-live-details">
-                      <div>
-                        <span>Sostituzioni risolte</span>
-                        <strong>{resolvedSubs}</strong>
-                      </div>
-                      <div>
-                        <span>Sostituzioni pendenti</span>
-                        <strong>{pendingSubs}</strong>
-                      </div>
-                      <div>
-                        <span>Giocatori pendenti</span>
-                        <strong>{pendingPlayers.length}</strong>
-                      </div>
-                    </div>
-                    {pendingPlayers.length > 0 ? <p className="muted compact">{pendingPlayers.join(", ")}</p> : null}
-                  </details>
-                ) : row?.live_status_reason ? (
-                  <details className="admin-details league-live-details-toggle">
-                    <summary>Dettagli live</summary>
-                    <p className="muted compact">{row.live_status_reason}</p>
-                  </details>
-                ) : null}
-              </article>
-            );
-          })}
-        </div>
-      </section>
+              );
+            },
+          },
+          { key: "points", label: "Pt Tot", render: (row) => formatNumber(row?.points, 2) },
+          {
+            key: "live_delta",
+            label: "Live ?",
+            render: (row) => {
+              const delta = resolveLiveDelta(row);
+              if (!Number.isFinite(delta)) return "-";
+              const trend = buildLiveTrendMeta(delta, liveAverage);
+              const averageLabel = formatNumber(liveAverage, 2);
+              const diffLabel =
+                trend.pctDiff === null ? "-" : `${formatSignedNumber(trend.pctDiff, 1)}%`;
+              return (
+                <span
+                  className={`live-trend-pill ${trend.tierClass}`}
+                  title={`Live ${formatSignedNumber(delta, 2)} | Media giornata ${averageLabel} | Scarto ${diffLabel}`}
+                >
+                  <span className="live-trend-arrow">{trend.arrow}</span>
+                  <span className="live-trend-value">{formatSignedNumber(delta, 2)}</span>
+                </span>
+              );
+            },
+          },
+          {
+            key: "position_delta",
+            label: "Pos ?",
+            render: (row) => {
+              const delta = resolvePositionDelta(row);
+              const trend = buildPositionTrendMeta(delta);
+              const basePos = toNumber(row?.base_pos);
+              const livePos = toNumber(row?.live_pos ?? row?.pos);
+              const title =
+                Number.isFinite(basePos) && Number.isFinite(livePos)
+                  ? `Posizione ${Math.trunc(basePos)} ? ${Math.trunc(livePos)}`
+                  : "Variazione posizione live";
+              const signed = trend.value > 0 ? `+${trend.value}` : String(trend.value);
+              return (
+                <span className={`position-trend-pill ${trend.tierClass}`} title={title}>
+                  <span className="position-trend-arrow">{trend.arrow}</span>
+                  <span className="position-trend-value">{signed}</span>
+                </span>
+              );
+            },
+          },
+          { key: "played", label: "PG", render: (row) => formatNumber(row?.played, 0) },
+          { key: "pts_avg", label: "Media", render: (row) => formatNumber(row?.pts_avg, 2) },
+        ]}
+      />
     );
   }
 
