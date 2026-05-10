@@ -5875,18 +5875,6 @@ body.theme-light .login-shell .select {
   font-variant-numeric: tabular-nums;
 }
 
-.league-live-own-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 1px 7px;
-  border-radius: 999px;
-  font-size: 0.66rem;
-  font-weight: 700;
-  color: #ffd8a3;
-  background: rgba(246, 176, 77, 0.12);
-  border: 1px solid rgba(246, 176, 77, 0.22);
-}
-
 .league-live-status-slot {
   display: flex;
   justify-content: flex-end;
@@ -5966,7 +5954,6 @@ body.theme-light .league-live-score {
   color: #101828;
 }
 
-body.theme-light .league-live-own-badge,
 body.theme-light .formation-own-badge {
   color: #9a5a12;
   background: rgba(246, 176, 77, 0.12);

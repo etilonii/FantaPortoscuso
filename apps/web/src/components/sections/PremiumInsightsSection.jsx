@@ -229,8 +229,6 @@ export default function PremiumInsightsSection({
             key: "team",
             label: "Team",
             render: (row) => {
-              const rowKey = String(row?.team || "").trim().toLowerCase();
-              const isOwnTeam = ownTeamKey && rowKey === ownTeamKey;
               return (
                 <div className="league-standings-team">
                   <span className="league-standings-team-name">{row?.team || "-"}</span>
@@ -241,7 +239,6 @@ export default function PremiumInsightsSection({
                       reason={row?.live_status_reason}
                       compact
                     />
-                    {isOwnTeam ? <span className="league-live-own-badge">La tua squadra</span> : null}
                   </span>
                 </div>
               );
